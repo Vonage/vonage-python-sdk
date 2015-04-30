@@ -1,4 +1,7 @@
-from urlparse import urljoin
+try:
+  from urllib.parse import urljoin
+except ImportError:
+  from urlparse import urljoin
 
 import requests, os
 
@@ -119,4 +122,8 @@ class Client():
       raise Error(message)
 
   def merge(self, d1, d2):
-    return dict(d1.items() + d2.items())
+    d3 = {}
+    d3.update(d1)
+    d3.update(d2)
+
+    return d3

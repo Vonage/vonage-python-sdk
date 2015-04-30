@@ -9,7 +9,7 @@ python:
   - "pypy"
 
 install:
-  - pip install --quiet requests
+  - pip install --quiet requests responses
   - python setup.py install
 
 script:

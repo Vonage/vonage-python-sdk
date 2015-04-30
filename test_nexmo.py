@@ -3,7 +3,10 @@ try:
 except ImportError:
   from urlparse import urlparse
 
-from urllib import quote_plus
+try:
+  from urllib.parse import quote_plus
+except ImportError:
+  from urllib import quote_plus
 
 import unittest, nexmo, responses
 
@@ -26,8 +29,8 @@ class NexmoClientTestCase(unittest.TestCase):
   def assertRequestBodyIncludes(self, params):
     body = responses.calls[0].request.body
 
-    for (k, v) in params.iteritems():
-      param = quote_plus(str(k)) + '=' + quote_plus(str(v))
+    for k in params:
+      param = quote_plus(str(k)) + '=' + quote_plus(str(params[k]))
 
       self.assertIn(param, body)
 

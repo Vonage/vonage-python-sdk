@@ -2,7 +2,7 @@ from setuptools import setup
 
 
 setup(name='nexmo',
-  version='1.0.1',
+  version='1.0.2',
   description='Python client for the Nexmo API',
   long_description='Python client for the Nexmo API',
   url='http://github.com/timcraft/python-nexmo',

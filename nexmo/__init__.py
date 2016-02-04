@@ -38,7 +38,7 @@ class Client():
     return self.get('/account/numbers', params or kwargs)
 
   def get_available_numbers(self, country_code, params=None, **kwargs):
-    return self.get('/number/search', self.merge(params or kwargs, {'country': country_code}))
+    return self.get('/number/search', dict(params or kwargs, country=country_code))
 
   def buy_number(self, params=None, **kwargs):
     return self.post('/number/buy', params or kwargs)
@@ -100,14 +100,14 @@ class Client():
   def get(self, request_uri, params={}):
     uri = urljoin('https://' + self.host, request_uri)
 
-    params = self.merge(params, {'api_key': self.api_key, 'api_secret': self.api_secret})
+    params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
 
     return self.parse(requests.get(uri, params=params))
 
   def post(self, request_uri, params):
     uri = urljoin('https://' + self.host, request_uri)
 
-    params = self.merge(params, {'api_key': self.api_key, 'api_secret': self.api_secret})
+    params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
 
     return self.parse(requests.post(uri, data=params))
 
@@ -120,10 +120,3 @@ class Client():
       message = "unexpected http {code} response from nexmo api".format(code=response.status_code)
 
       raise Error(message)
-
-  def merge(self, d1, d2):
-    d3 = {}
-    d3.update(d1)
-    d3.update(d2)
-
-    return d3

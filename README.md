@@ -2,7 +2,7 @@ nexmo
 =====
 
 
-A Python wrapper for the [Nexmo API](https://docs.nexmo.com/).
+Python client for the [Nexmo API](https://docs.nexmo.com/).
 
 
 Installation

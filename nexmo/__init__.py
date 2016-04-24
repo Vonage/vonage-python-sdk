@@ -94,6 +94,9 @@ class Client():
   def control_verification_request(self, params=None, **kwargs):
     return self.post('https://api.nexmo.com/verify/control/json', params or kwargs)
 
+  def get_number_insight(self, params=None, **kwargs):
+    return self.get('https://api.nexmo.com/number/lookup/json', params or kwargs)
+
   def request_number_insight(self, params=None, **kwargs):
     return self.post('/ni/json', params or kwargs)
 

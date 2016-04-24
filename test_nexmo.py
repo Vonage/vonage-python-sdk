@@ -243,6 +243,13 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertRequestBodyIncludes(params)
 
   @responses.activate
+  def test_get_number_insight(self):
+    self.stub(responses.GET, 'https://api.nexmo.com/number/lookup/json')
+
+    self.assertOK(self.client.get_number_insight(number='447525856424'))
+    self.assertRequestQueryIncludes('number=447525856424')
+
+  @responses.activate
   def test_request_number_insight(self):
     self.stub(responses.POST, 'https://rest.nexmo.com/ni/json')
 

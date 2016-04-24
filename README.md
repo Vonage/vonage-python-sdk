@@ -1,7 +1,7 @@
 Nexmo Client Library for Python
 ===============================
 
-[Installation](#Installation) | [Usage](#Usage) | [Examples](#Examples) | [License](#License)  
+[Installation](#installation) | [Usage](#usage) | [Examples](#examples) | [License](#license)
 
 This is the Python client library for Nexmo's API. To use it you'll
 need a Nexmo account. Sign up [for free at nexmo.com][signup].

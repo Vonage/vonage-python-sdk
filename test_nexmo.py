@@ -8,19 +8,21 @@ try:
 except ImportError:
   from urllib import quote_plus
 
-import unittest, nexmo, responses
+import unittest, nexmo, responses, platform
 
 
 class NexmoClientTestCase(unittest.TestCase):
   def setUp(self):
     self.api_key = 'nexmo-api-key'
     self.api_secret = 'nexmo-api-secret'
+    self.user_agent = 'nexmo-python/{0}/{1}'.format(nexmo.__version__, platform.python_version())
     self.client = nexmo.Client(key=self.api_key, secret=self.api_secret)
 
   def stub(self, method, url):
     responses.add(method, url, body='{"key":"value"}', status=200, content_type='application/json')
 
   def assertOK(self, response):
+    self.assertEqual(self.user_agent, responses.calls[0].request.headers['User-Agent'])
     self.assertIsInstance(response, dict)
 
   def assertRequestQueryIncludes(self, param):

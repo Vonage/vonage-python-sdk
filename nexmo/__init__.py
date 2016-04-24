@@ -1,9 +1,14 @@
+__version__ = '1.0.3'
+
+
 try:
   from urllib.parse import urljoin
 except ImportError:
   from urlparse import urljoin
 
 import requests, os
+
+from platform import python_version
 
 
 class Error(Exception):
@@ -19,6 +24,8 @@ class Client():
     self.api_key = kwargs.get('key', None) or os.environ['NEXMO_API_KEY']
 
     self.api_secret = kwargs.get('secret', None) or os.environ['NEXMO_API_SECRET']
+
+    self.headers = {'User-Agent': 'nexmo-python/{0}/{1}'.format(__version__, python_version())}
 
     self.host = 'rest.nexmo.com'
 
@@ -108,14 +115,14 @@ class Client():
 
     params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
 
-    return self.parse(requests.get(uri, params=params))
+    return self.parse(requests.get(uri, params=params, headers=self.headers))
 
   def post(self, request_uri, params):
     uri = urljoin('https://' + self.host, request_uri)
 
     params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
 
-    return self.parse(requests.post(uri, data=params))
+    return self.parse(requests.post(uri, data=params, headers=self.headers))
 
   def parse(self, response):
     if response.status_code == 401:

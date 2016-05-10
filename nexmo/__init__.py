@@ -38,6 +38,9 @@ class Client():
   def get_prefix_pricing(self, prefix):
     return self.get(self.host, '/account/get-prefix-pricing/outbound', {'prefix': prefix})
 
+  def update_settings(self, params=None, **kwargs):
+    return self.post(self.host, '/account/settings', params or kwargs)
+
   def get_account_numbers(self, params=None, **kwargs):
     return self.get(self.host, '/account/numbers', params or kwargs)
 

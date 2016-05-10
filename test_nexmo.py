@@ -66,6 +66,15 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertRequestQueryIncludes('prefix=44')
 
   @responses.activate
+  def test_update_settings(self):
+    self.stub(responses.POST, 'https://rest.nexmo.com/account/settings')
+
+    params = {'moCallBackUrl': 'http://example.com/callback'}
+
+    self.assertOK(self.client.update_settings(params))
+    self.assertRequestBodyIncludes(params)
+
+  @responses.activate
   def test_get_account_numbers(self):
     self.stub(responses.GET, 'https://rest.nexmo.com/account/numbers')
 

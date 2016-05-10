@@ -64,5 +64,5 @@ License
 This library is released under the [MIT License][license]
 
 [signup]: http://nexmo.com?src=python-client-library
-[doc_sms]: https://docs.nexmo.com/api-ref/sms-api
+[doc_sms]: https://docs.nexmo.com/messaging/sms-api
 [license]: LICENSE.txt

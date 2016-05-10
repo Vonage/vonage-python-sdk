@@ -10,7 +10,15 @@ class Error(Exception):
   pass
 
 
-class AuthenticationError(Error):
+class ClientError(Error):
+  pass
+
+
+class ServerError(Error):
+  pass
+
+
+class AuthenticationError(ClientError):
   pass
 
 
@@ -132,7 +140,11 @@ class Client():
       raise AuthenticationError
     elif 200 <= response.status_code < 300:
       return response.json()
-    else:
+    elif 400 <= response.status_code < 500:
       message = "{code} response from {host}".format(code=response.status_code, host=host)
 
-      raise Error(message)
+      raise ClientError(message)
+    elif 500 <= response.status_code < 600:
+      message = "{code} response from {host}".format(code=response.status_code, host=host)
+
+      raise ServerError(message)

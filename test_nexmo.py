@@ -18,6 +18,9 @@ class NexmoClientTestCase(unittest.TestCase):
     self.user_agent = 'nexmo-python/{0}/{1}'.format(nexmo.__version__, platform.python_version())
     self.client = nexmo.Client(key=self.api_key, secret=self.api_secret)
 
+    if not hasattr(self, 'assertRaisesRegex'):
+      self.assertRaisesRegex = self.assertRaisesRegexp
+
   def stub(self, method, url):
     responses.add(method, url, body='{"key":"value"}', status=200, content_type='application/json')
 
@@ -292,15 +295,20 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertRaises(nexmo.AuthenticationError, self.client.send_message, {})
 
   @responses.activate
-  def test_response_error(self):
-    responses.add(responses.POST, 'https://rest.nexmo.com/sms/json', status=500)
+  def test_client_error(self):
+    responses.add(responses.POST, 'https://rest.nexmo.com/sms/json', status=400)
 
-    if not hasattr(self, 'assertRaisesRegex'):
-      self.assertRaisesRegex = self.assertRaisesRegexp
+    message = '400 response from rest.nexmo.com'
+
+    self.assertRaisesRegex(nexmo.ClientError, message, self.client.send_message, {})
+
+  @responses.activate
+  def test_server_error(self):
+    responses.add(responses.POST, 'https://rest.nexmo.com/sms/json', status=500)
 
     message = '500 response from rest.nexmo.com'
 
-    self.assertRaisesRegex(nexmo.Error, message, self.client.send_message, {})
+    self.assertRaisesRegex(nexmo.ServerError, message, self.client.send_message, {})
 
 
 if __name__ == '__main__':

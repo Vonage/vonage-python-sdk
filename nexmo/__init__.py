@@ -41,6 +41,9 @@ class Client():
   def update_settings(self, params=None, **kwargs):
     return self.post(self.host, '/account/settings', params or kwargs)
 
+  def topup(self, params=None, **kwargs):
+    return self.post(self.host, '/account/top-up', params or kwargs)
+
   def get_account_numbers(self, params=None, **kwargs):
     return self.get(self.host, '/account/numbers', params or kwargs)
 

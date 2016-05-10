@@ -75,6 +75,15 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertRequestBodyIncludes(params)
 
   @responses.activate
+  def test_topup(self):
+    self.stub(responses.POST, 'https://rest.nexmo.com/account/top-up')
+
+    params = {'trx': '00X123456Y7890123Z'}
+
+    self.assertOK(self.client.topup(params))
+    self.assertRequestBodyIncludes(params)
+
+  @responses.activate
   def test_get_account_numbers(self):
     self.stub(responses.GET, 'https://rest.nexmo.com/account/numbers')
 

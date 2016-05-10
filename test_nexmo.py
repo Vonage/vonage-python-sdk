@@ -298,7 +298,7 @@ class NexmoClientTestCase(unittest.TestCase):
     if not hasattr(self, 'assertRaisesRegex'):
       self.assertRaisesRegex = self.assertRaisesRegexp
 
-    message = 'unexpected http 500 response from nexmo api'
+    message = '500 response from rest.nexmo.com'
 
     self.assertRaisesRegex(nexmo.Error, message, self.client.send_message, {})
 

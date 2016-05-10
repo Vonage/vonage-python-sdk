@@ -118,21 +118,21 @@ class Client():
 
     params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
 
-    return self.parse(requests.get(uri, params=params, headers=self.headers))
+    return self.parse(host, requests.get(uri, params=params, headers=self.headers))
 
   def post(self, host, request_uri, params):
     uri = 'https://' + host + request_uri
 
     params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
 
-    return self.parse(requests.post(uri, data=params, headers=self.headers))
+    return self.parse(host, requests.post(uri, data=params, headers=self.headers))
 
-  def parse(self, response):
+  def parse(self, host, response):
     if response.status_code == 401:
       raise AuthenticationError
     elif 200 <= response.status_code < 300:
       return response.json()
     else:
-      message = "unexpected http {code} response from nexmo api".format(code=response.status_code)
+      message = "{code} response from {host}".format(code=response.status_code, host=host)
 
       raise Error(message)

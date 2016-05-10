@@ -1,25 +1,35 @@
-# v1.1.0
+# 1.2.0
 
-  * Moved repository to https://github.com/Nexmo/nexmo-python
+* Added topup method
 
-  * Added `get_basic_number_insight` method for Number Insight Basic API
+* Added update_settings method
 
-  * Added `get_number_insight` method for Number Insight Standard API
+* Added api_host attribute
 
-  * Added User-Agent header to requests
+* Added ClientError and ServerError classes
 
-# v1.0.3
+# 1.1.0
 
-  * Changed license from LGPL-3.0 to MIT
+* Moved repository to https://github.com/Nexmo/nexmo-python
 
-# v1.0.2
+* Added get_basic_number_insight method for Number Insight Basic API
 
-  * Removed merge helper function
+* Added get_number_insight method for Number Insight Standard API
 
-# v1.0.1
+* Added User-Agent header to requests
 
-  * Python 3.x fixes
+# 1.0.3
 
-# v1.0.0
+* Changed license from LGPL-3.0 to MIT
 
-  * First version!
+# 1.0.2
+
+* Removed merge helper function
+
+# 1.0.1
+
+* Python 3.x fixes
+
+# 1.0.0
+
+* First version!

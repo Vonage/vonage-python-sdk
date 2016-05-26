@@ -52,16 +52,18 @@ Examples
 
 ### Sending A Message
 
-Use [Nexmo's SMS API][doc_sms] to send an SMS message. 
-
-Call the send_message method with a dictionary containing the message parameters. For example:
+To use [Nexmo's SMS API][doc_sms] to send an SMS message, call the send_message
+method with a dictionary containing the API parameters. For example:
 
 ```python
-import nexmo
+response = client.send_message({'from': 'Python', 'to': 'YOUR-NUMBER', 'text': 'Hello world'})
 
-client = nexmo.Client(key='YOUR-API-KEY', secret='YOUR-API-SECRET')
+message = response['messages'][0]
 
-client.send_message({'from': 'Python', 'to': 'YOUR-NUMBER', 'text': 'Hello world'})
+if message['status'] == '0':
+  print 'sent message', message['message-id'], 'remaining balance is', message['remaining-balance']
+else:
+  print 'error:', message['error-text']
 ```
 
 

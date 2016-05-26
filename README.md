@@ -17,9 +17,11 @@ Installation
 
 To install the Python client library using pip:
 
-    $ pip install nexmo
+    pip install nexmo
 
-Alternatively you can clone the repo or download the source.
+Alternatively you can clone the repository:
+
+    git clone git@github.com:Nexmo/nexmo-python.git
 
 
 Usage

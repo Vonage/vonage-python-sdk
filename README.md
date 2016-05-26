@@ -66,6 +66,16 @@ else:
   print 'error:', message['error-text']
 ```
 
+### Fetching A Message
+
+You can retrieve a message log from the API using the ID of the message:
+
+```python
+message = client.get_message('02000000DA7C52E7')
+
+print 'The body of the message was:', message['body']
+```
+
 
 License
 -------

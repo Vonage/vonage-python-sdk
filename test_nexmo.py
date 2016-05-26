@@ -69,6 +69,20 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertRequestQueryIncludes('prefix=44')
 
   @responses.activate
+  def test_get_sms_pricing(self):
+    self.stub(responses.GET, 'https://rest.nexmo.com/account/get-phone-pricing/outbound/sms')
+
+    self.assertOK(self.client.get_sms_pricing('447525856424'))
+    self.assertRequestQueryIncludes('phone=447525856424')
+
+  @responses.activate
+  def test_get_voice_pricing(self):
+    self.stub(responses.GET, 'https://rest.nexmo.com/account/get-phone-pricing/outbound/voice')
+
+    self.assertOK(self.client.get_voice_pricing('447525856424'))
+    self.assertRequestQueryIncludes('phone=447525856424')
+
+  @responses.activate
   def test_update_settings(self):
     self.stub(responses.POST, 'https://rest.nexmo.com/account/settings')
 

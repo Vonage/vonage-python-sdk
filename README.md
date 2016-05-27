@@ -119,6 +119,21 @@ else:
   print 'Error:', response['error_text']
 ```
 
+### Start an outbound call
+
+Use Nexmo's [Call API][doc_call] to initiate an outbound voice call by calling
+the initiate_call method with the number to call and the URL to a VoiceXML
+resource for controlling the call:
+
+```python
+response = client.initiate_call(to='447525856424', answer_url='http://example.com/call.xml')
+
+if response['status'] == '0':
+  print 'Started call', response['call-id']
+else:
+  print 'Error:', response['error-text']
+```
+
 
 License
 -------
@@ -128,4 +143,5 @@ This library is released under the [MIT License][license]
 [signup]: https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
 [doc_sms]: https://docs.nexmo.com/messaging/sms-api?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
 [doc_verify]: https://docs.nexmo.com/verify/api-reference?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
+[doc_call]: https://docs.nexmo.com/voice/call?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
 [license]: LICENSE.txt

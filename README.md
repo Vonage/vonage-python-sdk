@@ -105,6 +105,20 @@ client.control_verification_request(cmd='cancel', request_id='00e6c3377e5348cdaf
 client.control_verification_request(cmd='trigger_next_event', request_id='00e6c3377e5348cdaf567e1417c707a5')
 ```
 
+### Checking a verification
+
+To check a verification, call the check_verification_request method with
+the PIN code provided by the user and the id of the verification request:
+
+```python
+response = client.check_verification_request(code='1234', request_id='00e6c3377e5348cdaf567e1417c707a5')
+
+if response['status'] == '0':
+  print 'Verification complete, event ', response['event_id']
+else:
+  print 'Error:', response['error_text']
+```
+
 
 License
 -------

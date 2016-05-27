@@ -78,6 +78,22 @@ message = client.get_message('02000000DA7C52E7')
 print 'The body of the message was:', message['body']
 ```
 
+### Starting a verification
+
+Nexmo's [Verify API][doc_verify] makes it easy to prove that a user has provided their
+own phone number during signup, or implement second factor authentication during signin.
+
+You can start the verification process by calling the send_verification_request method:
+
+```python
+response = client.send_verification_request(number='441632960960', brand='MyApp')
+
+if response['status'] == '0':
+  print 'Started verification', response['request_id']
+else:
+  print 'Error:', response['error_text']
+```
+
 
 License
 -------
@@ -86,4 +102,5 @@ This library is released under the [MIT License][license]
 
 [signup]: https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
 [doc_sms]: https://docs.nexmo.com/messaging/sms-api?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
+[doc_verify]: https://docs.nexmo.com/verify/api-reference?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
 [license]: LICENSE.txt

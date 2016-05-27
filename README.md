@@ -58,12 +58,14 @@ method with a dictionary containing the API parameters. For example:
 ```python
 response = client.send_message({'from': 'Python', 'to': 'YOUR-NUMBER', 'text': 'Hello world'})
 
-message = response['messages'][0]
+response = response['messages'][0]
 
-if message['status'] == '0':
-  print 'sent message', message['message-id'], 'remaining balance is', message['remaining-balance']
+if response['status'] == '0':
+  print 'Sent message', response['message-id']
+
+  print 'Remaining balance is', response['remaining-balance']
 else:
-  print 'error:', message['error-text']
+  print 'Error:', response['error-text']
 ```
 
 ### Fetching a message

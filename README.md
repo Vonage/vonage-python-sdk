@@ -50,7 +50,7 @@ client = nexmo.Client(key='YOUR-API-KEY', secret='YOUR-API-SECRET')
 Examples
 --------
 
-### Sending A Message
+### Sending a message
 
 To use [Nexmo's SMS API][doc_sms] to send an SMS message, call the send_message
 method with a dictionary containing the API parameters. For example:
@@ -66,7 +66,7 @@ else:
   print 'error:', message['error-text']
 ```
 
-### Fetching A Message
+### Fetching a message
 
 You can retrieve a message log from the API using the ID of the message:
 

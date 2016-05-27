@@ -94,6 +94,17 @@ else:
   print 'Error:', response['error_text']
 ```
 
+### Controlling a verification
+
+To cancel an in-progress verification or to trigger the next attempt to
+send the confirmation code, call the control_verification_request method:
+
+```python
+client.control_verification_request(cmd='cancel', request_id='00e6c3377e5348cdaf567e1417c707a5')
+
+client.control_verification_request(cmd='trigger_next_event', request_id='00e6c3377e5348cdaf567e1417c707a5')
+```
+
 
 License
 -------

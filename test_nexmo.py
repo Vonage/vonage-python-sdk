@@ -219,6 +219,21 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertRequestBodyIncludes(params)
 
   @responses.activate
+  def test_get_event_alert_numbers(self):
+    self.stub(responses.GET, 'https://rest.nexmo.com/sc/us/alert/opt-in/query/json')
+
+    self.assertOK(self.client.get_event_alert_numbers())
+
+  @responses.activate
+  def test_resubscribe_event_alert_number(self):
+    self.stub(responses.POST, 'https://rest.nexmo.com/sc/us/alert/opt-in/manage/json')
+
+    params = {'msisdn': '441632960960'}
+
+    self.assertOK(self.client.resubscribe_event_alert_number(params))
+    self.assertRequestBodyIncludes(params)
+
+  @responses.activate
   def test_initiate_call(self):
     self.stub(responses.POST, 'https://rest.nexmo.com/call/json')
 

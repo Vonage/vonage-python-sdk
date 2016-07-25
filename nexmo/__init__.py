@@ -34,7 +34,7 @@ class Client():
 
     user_agent = 'nexmo-python/{0}/{1}'.format(__version__, python_version())
 
-    if kwargs.has_key('app_name') and kwargs.has_key('app_version'):
+    if 'app_name' in kwargs and 'app_version' in kwargs:
       user_agent += '/{0}/{1}'.format(kwargs['app_name'], kwargs['app_version'])
 
     self.headers = {'User-Agent': user_agent}

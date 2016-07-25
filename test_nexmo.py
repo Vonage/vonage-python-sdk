@@ -261,6 +261,15 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertRequestBodyIncludes(params)
 
   @responses.activate
+  def test_start_verification(self):
+    self.stub(responses.POST, 'https://api.nexmo.com/verify/json')
+
+    params = {'number': '447525856424', 'brand': 'MyApp'}
+
+    self.assertOK(self.client.start_verification(params))
+    self.assertRequestBodyIncludes(params)
+
+  @responses.activate
   def test_send_verification_request(self):
     self.stub(responses.POST, 'https://api.nexmo.com/verify/json')
 
@@ -268,6 +277,13 @@ class NexmoClientTestCase(unittest.TestCase):
 
     self.assertOK(self.client.send_verification_request(params))
     self.assertRequestBodyIncludes(params)
+
+  @responses.activate
+  def test_check_verification(self):
+    self.stub(responses.POST, 'https://api.nexmo.com/verify/check/json')
+
+    self.assertOK(self.client.check_verification('8g88g88eg8g8gg9g90', code='123445'))
+    self.assertRequestBodyIncludes({'code': '123445', 'request_id': '8g88g88eg8g8gg9g90'})
 
   @responses.activate
   def test_check_verification_request(self):
@@ -279,11 +295,32 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertRequestBodyIncludes(params)
 
   @responses.activate
+  def test_get_verification(self):
+    self.stub(responses.GET, 'https://api.nexmo.com/verify/search/json')
+
+    self.assertOK(self.client.get_verification('xxx'))
+    self.assertRequestQueryIncludes('request_id=xxx')
+
+  @responses.activate
   def test_get_verification_request(self):
     self.stub(responses.GET, 'https://api.nexmo.com/verify/search/json')
 
     self.assertOK(self.client.get_verification_request('xxx'))
     self.assertRequestQueryIncludes('request_id=xxx')
+
+  @responses.activate
+  def test_cancel_verification(self):
+    self.stub(responses.POST, 'https://api.nexmo.com/verify/control/json')
+
+    self.assertOK(self.client.cancel_verification('8g88g88eg8g8gg9g90'))
+    self.assertRequestBodyIncludes({'cmd': 'cancel', 'request_id': '8g88g88eg8g8gg9g90'})
+
+  @responses.activate
+  def test_trigger_next_verification_event(self):
+    self.stub(responses.POST, 'https://api.nexmo.com/verify/control/json')
+
+    self.assertOK(self.client.trigger_next_verification_event('8g88g88eg8g8gg9g90'))
+    self.assertRequestBodyIncludes({'cmd': 'trigger_next_event', 'request_id': '8g88g88eg8g8gg9g90'})
 
   @responses.activate
   def test_control_verification_request(self):

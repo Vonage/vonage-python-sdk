@@ -28,11 +28,17 @@ class Client():
 
     self.api_secret = kwargs.get('secret', None) or os.environ['NEXMO_API_SECRET']
 
-    self.headers = {'User-Agent': 'nexmo-python/{0}/{1}'.format(__version__, python_version())}
-
     self.host = 'rest.nexmo.com'
 
     self.api_host = 'api.nexmo.com'
+
+    user_agent = 'nexmo-python/{0}/{1}'.format(__version__, python_version())
+
+    if 'app_name' in kwargs and 'app_version' in kwargs:
+      user_agent += '/{0}/{1}'.format(kwargs['app_name'], kwargs['app_version'])
+
+    self.headers = {'User-Agent': user_agent}
+
 
   def send_message(self, params):
     return self.post(self.host, '/sms/json', params)

@@ -376,6 +376,17 @@ class NexmoClientTestCase(unittest.TestCase):
 
     self.assertRaisesRegex(nexmo.ServerError, message, self.client.send_message, {})
 
+  @responses.activate
+  def test_application_info_options(self):
+    app_name, app_version = 'ExampleApp', 'X.Y.Z'
+
+    self.stub(responses.GET, 'https://rest.nexmo.com/account/get-balance')
+
+    self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, app_name=app_name, app_version=app_version)
+    self.user_agent = '/'.join(['nexmo-python', nexmo.__version__, platform.python_version(), app_name, app_version])
+
+    self.assertOK(self.client.get_balance())
+
 
 if __name__ == '__main__':
   unittest.main()

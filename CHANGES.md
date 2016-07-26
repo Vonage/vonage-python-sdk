@@ -1,3 +1,15 @@
+# 1.3.0
+
+* Added get_sms_pricing method
+
+* Added get_voice_pricing method
+
+* Added get_event_alert_numbers method to get opt-in/opt-out numbers
+
+* Added resubscribe_event_alert_number method to opt-in a number
+
+* Added more clearly named methods for Verify API
+
 # 1.2.0
 
 * Added topup method

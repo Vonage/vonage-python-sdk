@@ -1,7 +1,7 @@
 __version__ = '1.3.0'
 
 
-import requests, os
+import requests, os, warnings
 
 from platform import python_version
 
@@ -122,18 +122,24 @@ class Client():
     return self.post(self.api_host, '/verify/json', params or kwargs)
 
   def send_verification_request(self, params=None, **kwargs):
+    warnings.warn('nexmo.Client#send_verification_request is deprecated (use #start_verification instead)', DeprecationWarning, stacklevel=2)
+
     return self.post(self.api_host, '/verify/json', params or kwargs)
 
   def check_verification(self, request_id, params=None, **kwargs):
     return self.post(self.api_host, '/verify/check/json', dict(params or kwargs, request_id=request_id))
 
   def check_verification_request(self, params=None, **kwargs):
+    warnings.warn('nexmo.Client#check_verification_request is deprecated (use #check_verification instead)', DeprecationWarning, stacklevel=2)
+
     return self.post(self.api_host, '/verify/check/json', params or kwargs)
 
   def get_verification(self, request_id):
     return self.get(self.api_host, '/verify/search/json', {'request_id': request_id})
 
   def get_verification_request(self, request_id):
+    warnings.warn('nexmo.Client#get_verification_request is deprecated (use #get_verification instead)', DeprecationWarning, stacklevel=2)
+
     return self.get(self.api_host, '/verify/search/json', {'request_id': request_id})
 
   def cancel_verification(self, request_id):
@@ -143,6 +149,8 @@ class Client():
     return self.post(self.api_host, '/verify/control/json', {'request_id': request_id, 'cmd': 'trigger_next_event'})
 
   def control_verification_request(self, params=None, **kwargs):
+    warnings.warn('nexmo.Client#control_verification_request is deprecated', DeprecationWarning, stacklevel=2)
+
     return self.post(self.api_host, '/verify/control/json', params or kwargs)
 
   def get_basic_number_insight(self, params=None, **kwargs):

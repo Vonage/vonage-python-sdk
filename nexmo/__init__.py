@@ -175,9 +175,9 @@ class Client():
     md5 = hashlib.md5()
 
     for key in sorted(params):
-      md5.update('&{0}={1}'.format(key, params[key]))
+      md5.update('&{0}={1}'.format(key, params[key]).encode('utf-8'))
 
-    md5.update(self.signature_secret)
+    md5.update(self.signature_secret.encode('utf-8'))
 
     return md5.hexdigest()
 

@@ -162,6 +162,21 @@ class Client():
   def request_number_insight(self, params=None, **kwargs):
     return self.post(self.host, '/ni/json', params or kwargs)
 
+  def get_applications(self, params=None, **kwargs):
+    return self.get(self.api_host, '/beta/account/applications', params or kwargs)
+
+  def get_application(self, application_id):
+    return self.get(self.api_host, '/beta/account/applications/' + application_id)
+
+  def create_application(self, params=None, **kwargs):
+    return self.post(self.api_host, '/beta/account/applications', params or kwargs)
+
+  def update_application(self, application_id, params=None, **kwargs):
+    return self.put(self.api_host, '/beta/account/applications/' + application_id, params or kwargs)
+
+  def delete_application(self, application_id):
+    return self.delete(self.api_host, '/beta/account/applications/' + application_id)
+
   def get(self, host, request_uri, params={}):
     uri = 'https://' + host + request_uri
 
@@ -176,9 +191,25 @@ class Client():
 
     return self.parse(host, requests.post(uri, data=params, headers=self.headers))
 
+  def put(self, host, request_uri, params):
+    uri = 'https://' + host + request_uri
+
+    params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
+
+    return self.parse(host, requests.put(uri, data=params, headers=self.headers))
+
+  def delete(self, host, request_uri):
+    uri = 'https://' + host + request_uri
+
+    params = dict(api_key=self.api_key, api_secret=self.api_secret)
+
+    return self.parse(host, requests.delete(uri, params=params, headers=self.headers))
+
   def parse(self, host, response):
     if response.status_code == 401:
       raise AuthenticationError
+    elif response.status_code == 204:
+      return None
     elif 200 <= response.status_code < 300:
       return response.json()
     elif 400 <= response.status_code < 500:

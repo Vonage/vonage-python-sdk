@@ -1,7 +1,7 @@
 __version__ = '1.3.0'
 
 
-import requests, os, warnings
+import requests, os, warnings, hashlib, hmac
 
 from platform import python_version
 
@@ -27,6 +27,8 @@ class Client():
     self.api_key = kwargs.get('key', None) or os.environ['NEXMO_API_KEY']
 
     self.api_secret = kwargs.get('secret', None) or os.environ['NEXMO_API_SECRET']
+
+    self.signature_secret = kwargs.get('signature_secret', None) or os.environ.get('NEXMO_SIGNATURE_SECRET', None)
 
     self.host = 'rest.nexmo.com'
 
@@ -176,6 +178,23 @@ class Client():
 
   def delete_application(self, application_id):
     return self.delete(self.api_host, '/v1/applications/' + application_id)
+
+  def check_signature(self, params):
+    params = dict(params)
+
+    signature = params.pop('sig', '')
+
+    return hmac.compare_digest(signature, self.signature(params))
+
+  def signature(self, params):
+    md5 = hashlib.md5()
+
+    for key in sorted(params):
+      md5.update('&{0}={1}'.format(key, params[key]).encode('utf-8'))
+
+    md5.update(self.signature_secret.encode('utf-8'))
+
+    return md5.hexdigest()
 
   def get(self, host, request_uri, params={}):
     uri = 'https://' + host + request_uri

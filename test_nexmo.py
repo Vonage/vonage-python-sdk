@@ -423,6 +423,20 @@ class NexmoClientTestCase(unittest.TestCase):
 
     self.assertOK(self.client.get_balance())
 
+  def test_check_signature(self):
+    params = {'a': '1', 'b': '2', 'timestamp': '1461605396', 'sig': '6af838ef94998832dbfc29020b564830'}
+
+    self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, signature_secret='secret')
+
+    self.assertTrue(self.client.check_signature(params))
+
+  def test_signature(self):
+    params = {'a': '1', 'b': '2', 'timestamp': '1461605396'}
+
+    self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, signature_secret='secret')
+
+    self.assertEqual(self.client.signature(params), '6af838ef94998832dbfc29020b564830')
+
 
 if __name__ == '__main__':
   unittest.main()

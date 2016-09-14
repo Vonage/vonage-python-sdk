@@ -163,19 +163,19 @@ class Client():
     return self.post(self.host, '/ni/json', params or kwargs)
 
   def get_applications(self, params=None, **kwargs):
-    return self.get(self.api_host, '/beta/account/applications', params or kwargs)
+    return self.get(self.api_host, '/v1/applications', params or kwargs)
 
   def get_application(self, application_id):
-    return self.get(self.api_host, '/beta/account/applications/' + application_id)
+    return self.get(self.api_host, '/v1/applications/' + application_id)
 
   def create_application(self, params=None, **kwargs):
-    return self.post(self.api_host, '/beta/account/applications', params or kwargs)
+    return self.post(self.api_host, '/v1/applications', params or kwargs)
 
   def update_application(self, application_id, params=None, **kwargs):
-    return self.put(self.api_host, '/beta/account/applications/' + application_id, params or kwargs)
+    return self.put(self.api_host, '/v1/applications/' + application_id, params or kwargs)
 
   def delete_application(self, application_id):
-    return self.delete(self.api_host, '/beta/account/applications/' + application_id)
+    return self.delete(self.api_host, '/v1/applications/' + application_id)
 
   def get(self, host, request_uri, params={}):
     uri = 'https://' + host + request_uri

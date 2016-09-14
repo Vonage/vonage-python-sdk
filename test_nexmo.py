@@ -356,19 +356,19 @@ class NexmoClientTestCase(unittest.TestCase):
 
   @responses.activate
   def test_get_applications(self):
-    self.stub(responses.GET, 'https://api.nexmo.com/beta/account/applications')
+    self.stub(responses.GET, 'https://api.nexmo.com/v1/applications')
 
     self.assertOK(self.client.get_applications())
 
   @responses.activate
   def test_get_application(self):
-    self.stub(responses.GET, 'https://api.nexmo.com/beta/account/applications/xx-xx-xx-xx')
+    self.stub(responses.GET, 'https://api.nexmo.com/v1/applications/xx-xx-xx-xx')
 
     self.assertOK(self.client.get_application('xx-xx-xx-xx'))
 
   @responses.activate
   def test_create_application(self):
-    self.stub(responses.POST, 'https://api.nexmo.com/beta/account/applications')
+    self.stub(responses.POST, 'https://api.nexmo.com/v1/applications')
 
     params = {'name': 'Example App', 'type': 'voice'}
 
@@ -377,7 +377,7 @@ class NexmoClientTestCase(unittest.TestCase):
 
   @responses.activate
   def test_update_application(self):
-    self.stub(responses.PUT, 'https://api.nexmo.com/beta/account/applications/xx-xx-xx-xx')
+    self.stub(responses.PUT, 'https://api.nexmo.com/v1/applications/xx-xx-xx-xx')
 
     params = {'answer_url': 'https://example.com/ncco'}
 
@@ -386,7 +386,7 @@ class NexmoClientTestCase(unittest.TestCase):
 
   @responses.activate
   def test_delete_application(self):
-    responses.add(responses.DELETE, 'https://api.nexmo.com/beta/account/applications/xx-xx-xx-xx', status=204)
+    responses.add(responses.DELETE, 'https://api.nexmo.com/v1/applications/xx-xx-xx-xx', status=204)
 
     self.assertEqual(None, self.client.delete_application('xx-xx-xx-xx'))
 

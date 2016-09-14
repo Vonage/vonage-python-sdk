@@ -1,7 +1,7 @@
 __version__ = '1.3.0'
 
 
-import requests, os, warnings, hashlib, hmac
+import requests, os, warnings, hashlib, hmac, jwt, time, uuid
 
 from platform import python_version
 
@@ -30,6 +30,10 @@ class Client():
 
     self.signature_secret = kwargs.get('signature_secret', None) or os.environ.get('NEXMO_SIGNATURE_SECRET', None)
 
+    self.application_id = kwargs.get('application_id', None)
+
+    self.private_key = kwargs.get('private_key', None)
+
     self.host = 'rest.nexmo.com'
 
     self.api_host = 'api.nexmo.com'
@@ -41,6 +45,10 @@ class Client():
 
     self.headers = {'User-Agent': user_agent}
 
+    self.auth_params = {}
+
+  def auth(self, params=None, **kwargs):
+    self.auth_params = params or kwargs
 
   def send_message(self, params):
     return self.post(self.host, '/sms/json', params)
@@ -179,6 +187,18 @@ class Client():
   def delete_application(self, application_id):
     return self.delete(self.api_host, '/v1/applications/' + application_id)
 
+  def start_call(self, params=None, **kwargs):
+    return self.__post('/v1/calls', params or kwargs)
+
+  def get_calls(self, params=None, **kwargs):
+    return self.__get('/v1/calls', params or kwargs)
+
+  def get_call(self, uuid):
+    return self.__get('/v1/calls/' + uuid)
+
+  def update_call(self, uuid, params=None, **kwargs):
+    return self.__put('/v1/calls/' + uuid, params or kwargs)
+
   def check_signature(self, params):
     params = dict(params)
 
@@ -239,3 +259,31 @@ class Client():
       message = "{code} response from {host}".format(code=response.status_code, host=host)
 
       raise ServerError(message)
+
+  def __get(self, request_uri, params={}):
+    uri = 'https://' + self.api_host + request_uri
+
+    return self.parse(self.api_host, requests.get(uri, params=params, headers=self.__headers()))
+
+  def __post(self, request_uri, params):
+    uri = 'https://' + self.api_host + request_uri
+
+    return self.parse(self.api_host, requests.post(uri, json=params, headers=self.__headers()))
+
+  def __put(self, request_uri, params):
+    uri = 'https://' + self.api_host + request_uri
+
+    return self.parse(self.api_host, requests.put(uri, json=params, headers=self.__headers()))
+
+  def __headers(self):
+    iat = int(time.time())
+
+    payload = dict(self.auth_params)
+    payload.setdefault('application_id', self.application_id)
+    payload.setdefault('iat', iat)
+    payload.setdefault('exp', iat + 60)
+    payload.setdefault('jti', str(uuid.uuid4()))
+
+    token = jwt.encode(payload, self.private_key, algorithm='RS256')
+
+    return dict(self.headers, Authorization=b'Bearer ' + token)

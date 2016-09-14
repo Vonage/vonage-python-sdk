@@ -8,15 +8,18 @@ try:
 except ImportError:
   from urllib import quote_plus
 
-import unittest, nexmo, responses, platform
+import unittest, nexmo, responses, platform, jwt, time
 
 
 class NexmoClientTestCase(unittest.TestCase):
   def setUp(self):
     self.api_key = 'nexmo-api-key'
     self.api_secret = 'nexmo-api-secret'
+    self.application_id = 'nexmo-application-id'
+    self.private_key = open('test/private_key.txt').read()
+    self.public_key = open('test/public_key.txt').read()
     self.user_agent = 'nexmo-python/{0}/{1}'.format(nexmo.__version__, platform.python_version())
-    self.client = nexmo.Client(key=self.api_key, secret=self.api_secret)
+    self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, application_id=self.application_id, private_key=self.private_key)
 
     if not hasattr(self, 'assertRaisesRegex'):
       self.assertRaisesRegex = self.assertRaisesRegexp
@@ -389,6 +392,60 @@ class NexmoClientTestCase(unittest.TestCase):
     responses.add(responses.DELETE, 'https://api.nexmo.com/v1/applications/xx-xx-xx-xx', status=204)
 
     self.assertEqual(None, self.client.delete_application('xx-xx-xx-xx'))
+
+  @responses.activate
+  def test_start_call(self):
+    self.stub(responses.POST, 'https://api.nexmo.com/v1/calls')
+
+    params = {
+      'to': [{'type': 'phone', 'number': '14843331234'}],
+      'from': {'type': 'phone', 'number': '14843335555'},
+      'answer_url': ['https://example.com/answer']
+    }
+
+    self.assertOK(self.client.start_call(params))
+    self.assertEqual(responses.calls[0].request.headers['Content-Type'], 'application/json')
+
+  @responses.activate
+  def test_get_calls(self):
+    self.stub(responses.GET, 'https://api.nexmo.com/v1/calls')
+
+    self.assertOK(self.client.get_calls())
+    self.assertRegexpMatches(responses.calls[0].request.headers['Authorization'].decode('utf-8'), r'\ABearer ')
+
+  @responses.activate
+  def test_get_call(self):
+    self.stub(responses.GET, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx')
+
+    self.assertOK(self.client.get_call('xx-xx-xx-xx'))
+    self.assertRegexpMatches(responses.calls[0].request.headers['Authorization'].decode('utf-8'), r'\ABearer ')
+
+  @responses.activate
+  def test_update_call(self):
+    self.stub(responses.PUT, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx')
+
+    self.assertOK(self.client.update_call('xx-xx-xx-xx', action='hangup'))
+    self.assertEqual(responses.calls[0].request.headers['Content-Type'], 'application/json')
+    self.assertEqual(responses.calls[0].request.body.decode('utf-8'), '{"action": "hangup"}')
+
+  @responses.activate
+  def test_user_provided_authorization(self):
+    self.stub(responses.GET, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx')
+
+    application_id = 'different-nexmo-application-id'
+    nbf = int(time.time())
+    exp = nbf + 3600
+
+    self.client.auth(application_id=application_id, nbf=nbf, exp=exp)
+    self.client.get_call('xx-xx-xx-xx')
+
+    token = responses.calls[0].request.headers['Authorization'].decode('utf-8').split()[1]
+
+    token = jwt.decode(token, self.public_key, algorithm='RS256')
+
+    self.assertEqual(token['application_id'], application_id)
+    self.assertEqual(token['nbf'], nbf)
+    self.assertEqual(token['exp'], exp)
 
   @responses.activate
   def test_authentication_error(self):

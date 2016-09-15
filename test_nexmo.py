@@ -473,7 +473,7 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertEqual(request_user_agent(), self.user_agent)
 
   @responses.activate
-  def test_start_call(self):
+  def test_create_call(self):
     self.stub(responses.POST, 'https://api.nexmo.com/v1/calls')
 
     params = {
@@ -482,7 +482,7 @@ class NexmoClientTestCase(unittest.TestCase):
       'answer_url': ['https://example.com/answer']
     }
 
-    self.assertIsInstance(self.client.start_call(params), dict)
+    self.assertIsInstance(self.client.create_call(params), dict)
     self.assertEqual(request_user_agent(), self.user_agent)
     self.assertEqual(request_content_type(), 'application/json')
 

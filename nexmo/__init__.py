@@ -187,7 +187,7 @@ class Client():
   def delete_application(self, application_id):
     return self.delete(self.api_host, '/v1/applications/' + application_id)
 
-  def start_call(self, params=None, **kwargs):
+  def create_call(self, params=None, **kwargs):
     return self.__post('/v1/calls', params or kwargs)
 
   def get_calls(self, params=None, **kwargs):

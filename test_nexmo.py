@@ -8,15 +8,38 @@ try:
 except ImportError:
   from urllib import quote_plus
 
-import unittest, nexmo, responses, platform
+import unittest, nexmo, responses, platform, jwt, time
+
+
+def request_body():
+  return responses.calls[0].request.body
+
+
+def request_query():
+  return urlparse(responses.calls[0].request.url).query
+
+
+def request_user_agent():
+  return responses.calls[0].request.headers['User-Agent']
+
+
+def request_authorization():
+  return responses.calls[0].request.headers['Authorization'].decode('utf-8')
+
+
+def request_content_type():
+  return responses.calls[0].request.headers['Content-Type']
 
 
 class NexmoClientTestCase(unittest.TestCase):
   def setUp(self):
     self.api_key = 'nexmo-api-key'
     self.api_secret = 'nexmo-api-secret'
+    self.application_id = 'nexmo-application-id'
+    self.private_key = open('test/private_key.txt').read()
+    self.public_key = open('test/public_key.txt').read()
     self.user_agent = 'nexmo-python/{0}/{1}'.format(nexmo.__version__, platform.python_version())
-    self.client = nexmo.Client(key=self.api_key, secret=self.api_secret)
+    self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, application_id=self.application_id, private_key=self.private_key)
 
     if not hasattr(self, 'assertRaisesRegex'):
       self.assertRaisesRegex = self.assertRaisesRegexp
@@ -24,63 +47,56 @@ class NexmoClientTestCase(unittest.TestCase):
   def stub(self, method, url):
     responses.add(method, url, body='{"key":"value"}', status=200, content_type='application/json')
 
-  def assertOK(self, response):
-    self.assertEqual(self.user_agent, responses.calls[0].request.headers['User-Agent'])
-    self.assertIsInstance(response, dict)
-
-  def assertRequestQueryIncludes(self, param):
-    self.assertIn(param, urlparse(responses.calls[0].request.url).query)
-
-  def assertRequestBodyIncludes(self, params):
-    body = responses.calls[0].request.body
-
-    for k in params:
-      param = quote_plus(str(k)) + '=' + quote_plus(str(params[k]))
-
-      self.assertIn(param, body)
-
   @responses.activate
   def test_send_message(self):
     self.stub(responses.POST, 'https://rest.nexmo.com/sms/json')
 
-    params = {'from': 'ruby', 'to': '447525856424', 'text': 'Hey!'}
+    params = {'from': 'Python', 'to': '447525856424', 'text': 'Hey!'}
 
-    self.assertOK(self.client.send_message(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.send_message(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('from=Python', request_body())
+    self.assertIn('to=447525856424', request_body())
+    self.assertIn('text=Hey%21', request_body())
 
   @responses.activate
   def test_get_balance(self):
     self.stub(responses.GET, 'https://rest.nexmo.com/account/get-balance')
 
-    self.assertOK(self.client.get_balance())
+    self.assertIsInstance(self.client.get_balance(), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
 
   @responses.activate
   def test_get_country_pricing(self):
     self.stub(responses.GET, 'https://rest.nexmo.com/account/get-pricing/outbound')
 
-    self.assertOK(self.client.get_country_pricing('GB'))
-    self.assertRequestQueryIncludes('country=GB')
+    self.assertIsInstance(self.client.get_country_pricing('GB'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('country=GB', request_query())
 
   @responses.activate
   def test_get_prefix_pricing(self):
     self.stub(responses.GET, 'https://rest.nexmo.com/account/get-prefix-pricing/outbound')
 
-    self.assertOK(self.client.get_prefix_pricing(44))
-    self.assertRequestQueryIncludes('prefix=44')
+    self.assertIsInstance(self.client.get_prefix_pricing(44), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('prefix=44', request_query())
 
   @responses.activate
   def test_get_sms_pricing(self):
     self.stub(responses.GET, 'https://rest.nexmo.com/account/get-phone-pricing/outbound/sms')
 
-    self.assertOK(self.client.get_sms_pricing('447525856424'))
-    self.assertRequestQueryIncludes('phone=447525856424')
+    self.assertIsInstance(self.client.get_sms_pricing('447525856424'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('phone=447525856424', request_query())
 
   @responses.activate
   def test_get_voice_pricing(self):
     self.stub(responses.GET, 'https://rest.nexmo.com/account/get-phone-pricing/outbound/voice')
 
-    self.assertOK(self.client.get_voice_pricing('447525856424'))
-    self.assertRequestQueryIncludes('phone=447525856424')
+    self.assertIsInstance(self.client.get_voice_pricing('447525856424'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('phone=447525856424', request_query())
 
   @responses.activate
   def test_update_settings(self):
@@ -88,8 +104,9 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'moCallBackUrl': 'http://example.com/callback'}
 
-    self.assertOK(self.client.update_settings(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.update_settings(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('moCallBackUrl=http%3A%2F%2Fexample.com%2Fcallback', request_body())
 
   @responses.activate
   def test_topup(self):
@@ -97,23 +114,26 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'trx': '00X123456Y7890123Z'}
 
-    self.assertOK(self.client.topup(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.topup(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('trx=00X123456Y7890123Z', request_body())
 
   @responses.activate
   def test_get_account_numbers(self):
     self.stub(responses.GET, 'https://rest.nexmo.com/account/numbers')
 
-    self.assertOK(self.client.get_account_numbers(size=25))
-    self.assertRequestQueryIncludes('size=25')
+    self.assertIsInstance(self.client.get_account_numbers(size=25), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('size=25', request_query())
 
   @responses.activate
   def test_get_available_numbers(self):
     self.stub(responses.GET, 'https://rest.nexmo.com/number/search')
 
-    self.assertOK(self.client.get_available_numbers('CA', size=25))
-    self.assertRequestQueryIncludes('country=CA')
-    self.assertRequestQueryIncludes('size=25')
+    self.assertIsInstance(self.client.get_available_numbers('CA', size=25), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('country=CA', request_query())
+    self.assertIn('size=25', request_query())
 
   @responses.activate
   def test_buy_number(self):
@@ -121,8 +141,10 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'country': 'US', 'msisdn': 'number'}
 
-    self.assertOK(self.client.buy_number(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.buy_number(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('country=US', request_body())
+    self.assertIn('msisdn=number', request_body())
 
   @responses.activate
   def test_cancel_number(self):
@@ -130,8 +152,10 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'country': 'US', 'msisdn': 'number'}
 
-    self.assertOK(self.client.cancel_number(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.cancel_number(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('country=US', request_body())
+    self.assertIn('msisdn=number', request_body())
 
   @responses.activate
   def test_update_number(self):
@@ -139,39 +163,46 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'country': 'US', 'msisdn': 'number', 'moHttpUrl': 'callback'}
 
-    self.assertOK(self.client.update_number(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.update_number(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('country=US', request_body())
+    self.assertIn('msisdn=number', request_body())
+    self.assertIn('moHttpUrl=callback', request_body())
 
   @responses.activate
   def test_get_message(self):
     self.stub(responses.GET, 'https://rest.nexmo.com/search/message')
 
-    self.assertOK(self.client.get_message('00A0B0C0'))
-    self.assertRequestQueryIncludes('id=00A0B0C0')
+    self.assertIsInstance(self.client.get_message('00A0B0C0'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('id=00A0B0C0', request_query())
 
   @responses.activate
   def test_get_message_rejections(self):
     self.stub(responses.GET, 'https://rest.nexmo.com/search/rejections')
 
-    self.assertOK(self.client.get_message_rejections(date='YYYY-MM-DD'))
-    self.assertRequestQueryIncludes('date=YYYY-MM-DD')
+    self.assertIsInstance(self.client.get_message_rejections(date='YYYY-MM-DD'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('date=YYYY-MM-DD', request_query())
 
   @responses.activate
   def test_search_messages(self):
     self.stub(responses.GET, 'https://rest.nexmo.com/search/messages')
 
-    self.assertOK(self.client.search_messages(to='1234567890', date='YYYY-MM-DD'))
-    self.assertRequestQueryIncludes('date=YYYY-MM-DD')
-    self.assertRequestQueryIncludes('to=1234567890')
+    self.assertIsInstance(self.client.search_messages(to='1234567890', date='YYYY-MM-DD'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('date=YYYY-MM-DD', request_query())
+    self.assertIn('to=1234567890', request_query())
 
   @responses.activate
   def test_search_messages_by_ids(self):
     self.stub(responses.GET, 'https://rest.nexmo.com/search/messages')
 
-    self.assertOK(self.client.search_messages(ids=['00A0B0C0', '00A0B0C1', '00A0B0C2']))
-    self.assertRequestQueryIncludes('ids=00A0B0C0')
-    self.assertRequestQueryIncludes('ids=00A0B0C1')
-    self.assertRequestQueryIncludes('ids=00A0B0C2')
+    self.assertIsInstance(self.client.search_messages(ids=['00A0B0C0', '00A0B0C1', '00A0B0C2']), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('ids=00A0B0C0', request_query())
+    self.assertIn('ids=00A0B0C1', request_query())
+    self.assertIn('ids=00A0B0C2', request_query())
 
   @responses.activate
   def test_send_ussd_push_message(self):
@@ -179,8 +210,11 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'from': 'MyCompany20', 'to': '447525856424', 'text': 'Hello'}
 
-    self.assertOK(self.client.send_ussd_push_message(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.send_ussd_push_message(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('from=MyCompany20', request_body())
+    self.assertIn('to=447525856424', request_body())
+    self.assertIn('text=Hello', request_body())
 
   @responses.activate
   def test_send_ussd_prompt_message(self):
@@ -188,8 +222,11 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'from': 'long-virtual-number', 'to': '447525856424', 'text': 'Hello'}
 
-    self.assertOK(self.client.send_ussd_prompt_message(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.send_ussd_prompt_message(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('from=long-virtual-number', request_body())
+    self.assertIn('to=447525856424', request_body())
+    self.assertIn('text=Hello', request_body())
 
   @responses.activate
   def test_send_2fa_message(self):
@@ -197,8 +234,10 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'to': '16365553226', 'pin': '1234'}
 
-    self.assertOK(self.client.send_2fa_message(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.send_2fa_message(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('to=16365553226', request_body())
+    self.assertIn('pin=1234', request_body())
 
   @responses.activate
   def test_send_event_alert_message(self):
@@ -206,8 +245,11 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'to': '16365553226', 'server': 'host', 'link': 'http://example.com/'}
 
-    self.assertOK(self.client.send_event_alert_message(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.send_event_alert_message(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('to=16365553226', request_body())
+    self.assertIn('server=host', request_body())
+    self.assertIn('link=http%3A%2F%2Fexample.com%2F', request_body())
 
   @responses.activate
   def test_send_marketing_message(self):
@@ -215,14 +257,19 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'from': 'short-code', 'to': '16365553226', 'keyword': 'NEXMO', 'text': 'Hello'}
 
-    self.assertOK(self.client.send_marketing_message(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.send_marketing_message(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('from=short-code', request_body())
+    self.assertIn('to=16365553226', request_body())
+    self.assertIn('keyword=NEXMO', request_body())
+    self.assertIn('text=Hello', request_body())
 
   @responses.activate
   def test_get_event_alert_numbers(self):
     self.stub(responses.GET, 'https://rest.nexmo.com/sc/us/alert/opt-in/query/json')
 
-    self.assertOK(self.client.get_event_alert_numbers())
+    self.assertIsInstance(self.client.get_event_alert_numbers(), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
 
   @responses.activate
   def test_resubscribe_event_alert_number(self):
@@ -230,8 +277,9 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'msisdn': '441632960960'}
 
-    self.assertOK(self.client.resubscribe_event_alert_number(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.resubscribe_event_alert_number(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('msisdn=441632960960', request_body())
 
   @responses.activate
   def test_initiate_call(self):
@@ -239,8 +287,10 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'to': '16365553226', 'answer_url': 'http://example.com/answer'}
 
-    self.assertOK(self.client.initiate_call(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.initiate_call(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('to=16365553226', request_body())
+    self.assertIn('answer_url=http%3A%2F%2Fexample.com%2Fanswer', request_body())
 
   @responses.activate
   def test_initiate_tts_call(self):
@@ -248,8 +298,10 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'to': '16365553226', 'text': 'Hello'}
 
-    self.assertOK(self.client.initiate_tts_call(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.initiate_tts_call(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('to=16365553226', request_body())
+    self.assertIn('text=Hello', request_body())
 
   @responses.activate
   def test_initiate_tts_prompt_call(self):
@@ -257,8 +309,12 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'to': '16365553226', 'text': 'Hello', 'max_digits': 4, 'bye_text': 'Goodbye'}
 
-    self.assertOK(self.client.initiate_tts_prompt_call(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.initiate_tts_prompt_call(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('to=16365553226', request_body())
+    self.assertIn('text=Hello', request_body())
+    self.assertIn('max_digits=4', request_body())
+    self.assertIn('bye_text=Goodbye', request_body())
 
   @responses.activate
   def test_start_verification(self):
@@ -266,8 +322,10 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'number': '447525856424', 'brand': 'MyApp'}
 
-    self.assertOK(self.client.start_verification(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.start_verification(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('number=447525856424', request_body())
+    self.assertIn('brand=MyApp', request_body())
 
   @responses.activate
   def test_send_verification_request(self):
@@ -275,15 +333,19 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'number': '447525856424', 'brand': 'MyApp'}
 
-    self.assertOK(self.client.send_verification_request(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.send_verification_request(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('number=447525856424', request_body())
+    self.assertIn('brand=MyApp', request_body())
 
   @responses.activate
   def test_check_verification(self):
     self.stub(responses.POST, 'https://api.nexmo.com/verify/check/json')
 
-    self.assertOK(self.client.check_verification('8g88g88eg8g8gg9g90', code='123445'))
-    self.assertRequestBodyIncludes({'code': '123445', 'request_id': '8g88g88eg8g8gg9g90'})
+    self.assertIsInstance(self.client.check_verification('8g88g88eg8g8gg9g90', code='123445'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('code=123445', request_body())
+    self.assertIn('request_id=8g88g88eg8g8gg9g90', request_body())
 
   @responses.activate
   def test_check_verification_request(self):
@@ -291,36 +353,44 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'code': '123445', 'request_id': '8g88g88eg8g8gg9g90'}
 
-    self.assertOK(self.client.check_verification_request(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.check_verification_request(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('code=123445', request_body())
+    self.assertIn('request_id=8g88g88eg8g8gg9g90', request_body())
 
   @responses.activate
   def test_get_verification(self):
     self.stub(responses.GET, 'https://api.nexmo.com/verify/search/json')
 
-    self.assertOK(self.client.get_verification('xxx'))
-    self.assertRequestQueryIncludes('request_id=xxx')
+    self.assertIsInstance(self.client.get_verification('xxx'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('request_id=xxx', request_query())
 
   @responses.activate
   def test_get_verification_request(self):
     self.stub(responses.GET, 'https://api.nexmo.com/verify/search/json')
 
-    self.assertOK(self.client.get_verification_request('xxx'))
-    self.assertRequestQueryIncludes('request_id=xxx')
+    self.assertIsInstance(self.client.get_verification_request('xxx'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('request_id=xxx', request_query())
 
   @responses.activate
   def test_cancel_verification(self):
     self.stub(responses.POST, 'https://api.nexmo.com/verify/control/json')
 
-    self.assertOK(self.client.cancel_verification('8g88g88eg8g8gg9g90'))
-    self.assertRequestBodyIncludes({'cmd': 'cancel', 'request_id': '8g88g88eg8g8gg9g90'})
+    self.assertIsInstance(self.client.cancel_verification('8g88g88eg8g8gg9g90'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('cmd=cancel', request_body())
+    self.assertIn('request_id=8g88g88eg8g8gg9g90', request_body())
 
   @responses.activate
   def test_trigger_next_verification_event(self):
     self.stub(responses.POST, 'https://api.nexmo.com/verify/control/json')
 
-    self.assertOK(self.client.trigger_next_verification_event('8g88g88eg8g8gg9g90'))
-    self.assertRequestBodyIncludes({'cmd': 'trigger_next_event', 'request_id': '8g88g88eg8g8gg9g90'})
+    self.assertIsInstance(self.client.trigger_next_verification_event('8g88g88eg8g8gg9g90'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('cmd=trigger_next_event', request_body())
+    self.assertIn('request_id=8g88g88eg8g8gg9g90', request_body())
 
   @responses.activate
   def test_control_verification_request(self):
@@ -328,22 +398,26 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'cmd': 'cancel', 'request_id': '8g88g88eg8g8gg9g90'}
 
-    self.assertOK(self.client.control_verification_request(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.control_verification_request(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('cmd=cancel', request_body())
+    self.assertIn('request_id=8g88g88eg8g8gg9g90', request_body())
 
   @responses.activate
   def test_get_basic_number_insight(self):
     self.stub(responses.GET, 'https://api.nexmo.com/number/format/json')
 
-    self.assertOK(self.client.get_basic_number_insight(number='447525856424'))
-    self.assertRequestQueryIncludes('number=447525856424')
+    self.assertIsInstance(self.client.get_basic_number_insight(number='447525856424'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('number=447525856424', request_query())
 
   @responses.activate
   def test_get_number_insight(self):
     self.stub(responses.GET, 'https://api.nexmo.com/number/lookup/json')
 
-    self.assertOK(self.client.get_number_insight(number='447525856424'))
-    self.assertRequestQueryIncludes('number=447525856424')
+    self.assertIsInstance(self.client.get_number_insight(number='447525856424'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('number=447525856424', request_query())
 
   @responses.activate
   def test_request_number_insight(self):
@@ -351,8 +425,110 @@ class NexmoClientTestCase(unittest.TestCase):
 
     params = {'number': '447525856424', 'callback': 'https://example.com'}
 
-    self.assertOK(self.client.request_number_insight(params))
-    self.assertRequestBodyIncludes(params)
+    self.assertIsInstance(self.client.request_number_insight(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('number=447525856424', request_body())
+    self.assertIn('callback=https%3A%2F%2Fexample.com', request_body())
+
+  @responses.activate
+  def test_get_applications(self):
+    self.stub(responses.GET, 'https://api.nexmo.com/v1/applications')
+
+    self.assertIsInstance(self.client.get_applications(), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+
+  @responses.activate
+  def test_get_application(self):
+    self.stub(responses.GET, 'https://api.nexmo.com/v1/applications/xx-xx-xx-xx')
+
+    self.assertIsInstance(self.client.get_application('xx-xx-xx-xx'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+
+  @responses.activate
+  def test_create_application(self):
+    self.stub(responses.POST, 'https://api.nexmo.com/v1/applications')
+
+    params = {'name': 'Example App', 'type': 'voice'}
+
+    self.assertIsInstance(self.client.create_application(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('name=Example+App', request_body())
+    self.assertIn('type=voice', request_body())
+
+  @responses.activate
+  def test_update_application(self):
+    self.stub(responses.PUT, 'https://api.nexmo.com/v1/applications/xx-xx-xx-xx')
+
+    params = {'answer_url': 'https://example.com/ncco'}
+
+    self.assertIsInstance(self.client.update_application('xx-xx-xx-xx', params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('answer_url=https%3A%2F%2Fexample.com%2Fncco', request_body())
+
+  @responses.activate
+  def test_delete_application(self):
+    responses.add(responses.DELETE, 'https://api.nexmo.com/v1/applications/xx-xx-xx-xx', status=204)
+
+    self.assertEqual(None, self.client.delete_application('xx-xx-xx-xx'))
+    self.assertEqual(request_user_agent(), self.user_agent)
+
+  @responses.activate
+  def test_create_call(self):
+    self.stub(responses.POST, 'https://api.nexmo.com/v1/calls')
+
+    params = {
+      'to': [{'type': 'phone', 'number': '14843331234'}],
+      'from': {'type': 'phone', 'number': '14843335555'},
+      'answer_url': ['https://example.com/answer']
+    }
+
+    self.assertIsInstance(self.client.create_call(params), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertEqual(request_content_type(), 'application/json')
+
+  @responses.activate
+  def test_get_calls(self):
+    self.stub(responses.GET, 'https://api.nexmo.com/v1/calls')
+
+    self.assertIsInstance(self.client.get_calls(), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertRegexpMatches(request_authorization(), r'\ABearer ')
+
+  @responses.activate
+  def test_get_call(self):
+    self.stub(responses.GET, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx')
+
+    self.assertIsInstance(self.client.get_call('xx-xx-xx-xx'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertRegexpMatches(request_authorization(), r'\ABearer ')
+
+  @responses.activate
+  def test_update_call(self):
+    self.stub(responses.PUT, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx')
+
+    self.assertIsInstance(self.client.update_call('xx-xx-xx-xx', action='hangup'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertEqual(request_content_type(), 'application/json')
+    self.assertEqual(request_body(), b'{"action": "hangup"}')
+
+  @responses.activate
+  def test_user_provided_authorization(self):
+    self.stub(responses.GET, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx')
+
+    application_id = 'different-nexmo-application-id'
+    nbf = int(time.time())
+    exp = nbf + 3600
+
+    self.client.auth(application_id=application_id, nbf=nbf, exp=exp)
+    self.client.get_call('xx-xx-xx-xx')
+
+    token = request_authorization().split()[1]
+
+    token = jwt.decode(token, self.public_key, algorithm='RS256')
+
+    self.assertEqual(token['application_id'], application_id)
+    self.assertEqual(token['nbf'], nbf)
+    self.assertEqual(token['exp'], exp)
 
   @responses.activate
   def test_authentication_error(self):
@@ -385,7 +561,22 @@ class NexmoClientTestCase(unittest.TestCase):
     self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, app_name=app_name, app_version=app_version)
     self.user_agent = '/'.join(['nexmo-python', nexmo.__version__, platform.python_version(), app_name, app_version])
 
-    self.assertOK(self.client.get_balance())
+    self.assertIsInstance(self.client.get_balance(), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+
+  def test_check_signature(self):
+    params = {'a': '1', 'b': '2', 'timestamp': '1461605396', 'sig': '6af838ef94998832dbfc29020b564830'}
+
+    self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, signature_secret='secret')
+
+    self.assertTrue(self.client.check_signature(params))
+
+  def test_signature(self):
+    params = {'a': '1', 'b': '2', 'timestamp': '1461605396'}
+
+    self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, signature_secret='secret')
+
+    self.assertEqual(self.client.signature(params), '6af838ef94998832dbfc29020b564830')
 
 
 if __name__ == '__main__':

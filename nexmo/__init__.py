@@ -1,7 +1,7 @@
 __version__ = '1.3.0'
 
 
-import requests, os
+import requests, os, warnings, hashlib, hmac, jwt, time, uuid
 
 from platform import python_version
 
@@ -28,6 +28,12 @@ class Client():
 
     self.api_secret = kwargs.get('secret', None) or os.environ['NEXMO_API_SECRET']
 
+    self.signature_secret = kwargs.get('signature_secret', None) or os.environ.get('NEXMO_SIGNATURE_SECRET', None)
+
+    self.application_id = kwargs.get('application_id', None)
+
+    self.private_key = kwargs.get('private_key', None)
+
     self.host = 'rest.nexmo.com'
 
     self.api_host = 'api.nexmo.com'
@@ -39,6 +45,10 @@ class Client():
 
     self.headers = {'User-Agent': user_agent}
 
+    self.auth_params = {}
+
+  def auth(self, params=None, **kwargs):
+    self.auth_params = params or kwargs
 
   def send_message(self, params):
     return self.post(self.host, '/sms/json', params)
@@ -122,18 +132,24 @@ class Client():
     return self.post(self.api_host, '/verify/json', params or kwargs)
 
   def send_verification_request(self, params=None, **kwargs):
+    warnings.warn('nexmo.Client#send_verification_request is deprecated (use #start_verification instead)', DeprecationWarning, stacklevel=2)
+
     return self.post(self.api_host, '/verify/json', params or kwargs)
 
   def check_verification(self, request_id, params=None, **kwargs):
     return self.post(self.api_host, '/verify/check/json', dict(params or kwargs, request_id=request_id))
 
   def check_verification_request(self, params=None, **kwargs):
+    warnings.warn('nexmo.Client#check_verification_request is deprecated (use #check_verification instead)', DeprecationWarning, stacklevel=2)
+
     return self.post(self.api_host, '/verify/check/json', params or kwargs)
 
   def get_verification(self, request_id):
     return self.get(self.api_host, '/verify/search/json', {'request_id': request_id})
 
   def get_verification_request(self, request_id):
+    warnings.warn('nexmo.Client#get_verification_request is deprecated (use #get_verification instead)', DeprecationWarning, stacklevel=2)
+
     return self.get(self.api_host, '/verify/search/json', {'request_id': request_id})
 
   def cancel_verification(self, request_id):
@@ -143,6 +159,8 @@ class Client():
     return self.post(self.api_host, '/verify/control/json', {'request_id': request_id, 'cmd': 'trigger_next_event'})
 
   def control_verification_request(self, params=None, **kwargs):
+    warnings.warn('nexmo.Client#control_verification_request is deprecated', DeprecationWarning, stacklevel=2)
+
     return self.post(self.api_host, '/verify/control/json', params or kwargs)
 
   def get_basic_number_insight(self, params=None, **kwargs):
@@ -153,6 +171,50 @@ class Client():
 
   def request_number_insight(self, params=None, **kwargs):
     return self.post(self.host, '/ni/json', params or kwargs)
+
+  def get_applications(self, params=None, **kwargs):
+    return self.get(self.api_host, '/v1/applications', params or kwargs)
+
+  def get_application(self, application_id):
+    return self.get(self.api_host, '/v1/applications/' + application_id)
+
+  def create_application(self, params=None, **kwargs):
+    return self.post(self.api_host, '/v1/applications', params or kwargs)
+
+  def update_application(self, application_id, params=None, **kwargs):
+    return self.put(self.api_host, '/v1/applications/' + application_id, params or kwargs)
+
+  def delete_application(self, application_id):
+    return self.delete(self.api_host, '/v1/applications/' + application_id)
+
+  def create_call(self, params=None, **kwargs):
+    return self.__post('/v1/calls', params or kwargs)
+
+  def get_calls(self, params=None, **kwargs):
+    return self.__get('/v1/calls', params or kwargs)
+
+  def get_call(self, uuid):
+    return self.__get('/v1/calls/' + uuid)
+
+  def update_call(self, uuid, params=None, **kwargs):
+    return self.__put('/v1/calls/' + uuid, params or kwargs)
+
+  def check_signature(self, params):
+    params = dict(params)
+
+    signature = params.pop('sig', '')
+
+    return hmac.compare_digest(signature, self.signature(params))
+
+  def signature(self, params):
+    md5 = hashlib.md5()
+
+    for key in sorted(params):
+      md5.update('&{0}={1}'.format(key, params[key]).encode('utf-8'))
+
+    md5.update(self.signature_secret.encode('utf-8'))
+
+    return md5.hexdigest()
 
   def get(self, host, request_uri, params={}):
     uri = 'https://' + host + request_uri
@@ -168,9 +230,25 @@ class Client():
 
     return self.parse(host, requests.post(uri, data=params, headers=self.headers))
 
+  def put(self, host, request_uri, params):
+    uri = 'https://' + host + request_uri
+
+    params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
+
+    return self.parse(host, requests.put(uri, data=params, headers=self.headers))
+
+  def delete(self, host, request_uri):
+    uri = 'https://' + host + request_uri
+
+    params = dict(api_key=self.api_key, api_secret=self.api_secret)
+
+    return self.parse(host, requests.delete(uri, params=params, headers=self.headers))
+
   def parse(self, host, response):
     if response.status_code == 401:
       raise AuthenticationError
+    elif response.status_code == 204:
+      return None
     elif 200 <= response.status_code < 300:
       return response.json()
     elif 400 <= response.status_code < 500:
@@ -181,3 +259,31 @@ class Client():
       message = "{code} response from {host}".format(code=response.status_code, host=host)
 
       raise ServerError(message)
+
+  def __get(self, request_uri, params={}):
+    uri = 'https://' + self.api_host + request_uri
+
+    return self.parse(self.api_host, requests.get(uri, params=params, headers=self.__headers()))
+
+  def __post(self, request_uri, params):
+    uri = 'https://' + self.api_host + request_uri
+
+    return self.parse(self.api_host, requests.post(uri, json=params, headers=self.__headers()))
+
+  def __put(self, request_uri, params):
+    uri = 'https://' + self.api_host + request_uri
+
+    return self.parse(self.api_host, requests.put(uri, json=params, headers=self.__headers()))
+
+  def __headers(self):
+    iat = int(time.time())
+
+    payload = dict(self.auth_params)
+    payload.setdefault('application_id', self.application_id)
+    payload.setdefault('iat', iat)
+    payload.setdefault('exp', iat + 60)
+    payload.setdefault('jti', str(uuid.uuid4()))
+
+    token = jwt.encode(payload, self.private_key, algorithm='RS256')
+
+    return dict(self.headers, Authorization=b'Bearer ' + token)

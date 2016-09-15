@@ -8,7 +8,10 @@ need a Nexmo account. Sign up [for free at nexmo.com][signup].
 
 * [Installation](#installation)
 * [Usage](#usage)
-* [Examples](#examples)
+* [SMS API](#sms-api)
+* [Voice API](#voice-api)
+* [Verify API](#verify-api)
+* [Application API](#application-api)
 * [Coverage](#api-coverage)
 * [License](#license)
 
@@ -28,33 +31,36 @@ Alternatively you can clone the repository:
 Usage
 -----
 
-Specify your credentials using the `NEXMO_API_KEY` and `NEXMO_API_SECRET`
-environment variables; import the nexmo package; and construct a client object.
-For example:
+Begin by importing the nexmo module:
 
 ```python
 import nexmo
-
-client = nexmo.Client()
 ```
 
-Alternatively you can specify your credentials directly using the `key`
-and `secret` keyword args:
+Then construct a client object with your key and secret:
 
 ```python
-import nexmo
-
-client = nexmo.Client(key='YOUR-API-KEY', secret='YOUR-API-SECRET')
+client = nexmo.Client(key=api_key, secret=api_secret)
 ```
 
+For production you can specify the `NEXMO_API_KEY` and `NEXMO_API_SECRET`
+environment variables instead of specifying the key and secret explicitly.
 
-Examples
---------
+For newer endpoints that support JWT authentication such as the Voice API,
+you can also specify the `application_id` and `private_key` arguments:
 
-### Sending a message
+```python
+client = nexmo.Client(application_id=application_id, private_key=private_key)
+```
 
-To use [Nexmo's SMS API][doc_sms] to send an SMS message, call the send_message
-method with a dictionary containing the API parameters. For example:
+In order to check signatures for incoming webhook requests, you'll also need
+to specify the `signature_secret` argument (or the `NEXMO_SIGNATURE_SECRET`
+environment variable).
+
+
+## SMS API
+
+### Send a text message
 
 ```python
 response = client.send_message({'from': 'Python', 'to': 'YOUR-NUMBER', 'text': 'Hello world'})
@@ -69,22 +75,51 @@ else:
   print 'Error:', response['error-text']
 ```
 
-### Fetching a message
+Docs: [https://docs.nexmo.com/messaging/sms-api/api-reference#request](https://docs.nexmo.com/messaging/sms-api/api-reference#request?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
-You can retrieve a message log from the API using the ID of the message:
+
+## Voice API
+
+### Make a call
 
 ```python
-message = client.get_message('02000000DA7C52E7')
-
-print 'The body of the message was:', message['body']
+response = client.create_call({
+  'to': [{'type': 'phone', 'number': '14843331234'}],
+  'from': {'type': 'phone', 'number': '14843335555'},
+  'answer_url': ['https://example.com/answer']
+})
 ```
 
-### Starting a verification
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#call_create](https://docs.nexmo.com/voice/voice-api/api-reference#call_create?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
-Nexmo's [Verify API][doc_verify] makes it easy to prove that a user has provided their
-own phone number during signup, or implement second factor authentication during signin.
+### Retrieve a list of calls
 
-You can start the verification process by calling the start_verification method:
+```python
+response = client.get_calls()
+```
+
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve](https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+### Retrieve a single call
+
+```python
+response = client.get_call(uuid)
+```
+
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve_single](https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve_single?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+### Update a call
+
+```python
+response = client.update_call(uuid, action='hangup')
+```
+
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#call_modify_single](https://docs.nexmo.com/voice/voice-api/api-reference#call_modify_single?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+
+## Verify API
+
+### Start a verification
 
 ```python
 response = client.start_verification(number='441632960960', brand='MyApp')
@@ -95,31 +130,12 @@ else:
   print 'Error:', response['error_text']
 ```
 
+Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#vrequest](https://docs.nexmo.com/verify/api-reference/api-reference#vrequest?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
 The response contains a verification request id which you will need to
 store temporarily (in the session, database, url etc).
 
-### Controlling a verification
-
-Call the cancel_verification method with the verification request id
-to cancel an in-progress verification:
-
-```python
-client.cancel_verification('00e6c3377e5348cdaf567e1417c707a5')
-```
-
-Call the trigger_next_verification_event method with the verification
-request id to trigger the next attempt to send the confirmation code:
-
-```python
-client.trigger_next_verification_event('00e6c3377e5348cdaf567e1417c707a5')
-```
-
-The verification request id comes from the call to the start_verification method.
-
-### Checking a verification
-
-Call the check_verification method with the verification request id and the
-PIN code to complete the verification process:
+### Check a verification
 
 ```python
 response = client.check_verification('00e6c3377e5348cdaf567e1417c707a5', code='1234')
@@ -130,22 +146,97 @@ else:
   print 'Error:', response['error_text']
 ```
 
+Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#check](https://docs.nexmo.com/verify/api-reference/api-reference#check?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
 The verification request id comes from the call to the start_verification method.
 The PIN code is entered into your application by the user.
 
-### Start an outbound call
-
-Use Nexmo's [Call API][doc_call] to initiate an outbound voice call by calling
-the initiate_call method with the number to call and the URL to a VoiceXML
-resource for controlling the call:
+### Cancel a verification
 
 ```python
-response = client.initiate_call(to='447525856424', answer_url='http://example.com/call.xml')
+client.cancel_verification('00e6c3377e5348cdaf567e1417c707a5')
+```
 
-if response['status'] == '0':
-  print 'Started call', response['call-id']
+Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#control](https://docs.nexmo.com/verify/api-reference/api-reference#control?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+### Trigger next verification step
+
+```python
+client.trigger_next_verification_event('00e6c3377e5348cdaf567e1417c707a5')
+```
+
+Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#control](https://docs.nexmo.com/verify/api-reference/api-reference#control?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+
+## Application API
+
+### Create an application
+
+```python
+response = client.create_application(name='Example App', type='voice', answer_url=answer_url)
+```
+
+Docs: [https://docs.nexmo.com/tools/application-api/api-reference#create](https://docs.nexmo.com/tools/application-api/api-reference#create?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+### Retrieve a list of applications
+
+```python
+response = client.get_applications()
+```
+
+Docs: [https://docs.nexmo.com/tools/application-api/api-reference#list](https://docs.nexmo.com/tools/application-api/api-reference#list?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+### Retrieve a single application
+
+```python
+response = client.get_application(uuid)
+```
+
+Docs: [https://docs.nexmo.com/tools/application-api/api-reference#retrieve](https://docs.nexmo.com/tools/application-api/api-reference#retrieve?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+### Update an application
+
+```python
+response = client.update_application(uuid, answer_method='POST')
+```
+
+Docs: [https://docs.nexmo.com/tools/application-api/api-reference#update](https://docs.nexmo.com/tools/application-api/api-reference#update?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+### Delete an application
+
+```python
+response = client.delete_application(uuid)
+```
+
+Docs: [https://docs.nexmo.com/tools/application-api/api-reference#delete](https://docs.nexmo.com/tools/application-api/api-reference#delete?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+
+## Validate webhook signatures
+
+```python
+client = nexmo.Client(signature_secret='secret')
+
+if client.check_signature(request.query):
+  # valid signature
 else:
-  print 'Error:', response['error-text']
+  # invalid signature
+```
+
+Docs: [https://docs.nexmo.com/messaging/signing-messages](https://docs.nexmo.com/messaging/signing-messages?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+Note: you'll need to contact support@nexmo.com to enable message signing on
+your account before you can validate webhook signatures.
+
+
+## JWT parameters
+
+By default the library generates short lived tokens for JWT authentication.
+
+Use the auth method to specify parameters for a longer life token or to
+specify a different token identifier:
+
+```python
+client.auth(nbf=nbf, exp=exp, jti=jti)
 ```
 
 
@@ -198,7 +289,4 @@ License
 This library is released under the [MIT License][license]
 
 [signup]: https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
-[doc_sms]: https://docs.nexmo.com/messaging/sms-api?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
-[doc_verify]: https://docs.nexmo.com/verify/api-reference?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
-[doc_call]: https://docs.nexmo.com/voice/call?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
 [license]: LICENSE.txt

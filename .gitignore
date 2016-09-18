@@ -1,3 +1,7 @@
+.coverage
+.tox/
+htmlcov/
+
 build/
 dist/
 nexmo.egg-info/

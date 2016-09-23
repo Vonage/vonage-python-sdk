@@ -512,6 +512,47 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertEqual(request_body(), b'{"action": "hangup"}')
 
   @responses.activate
+  def test_send_audio(self):
+    self.stub(responses.PUT, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx/stream')
+
+    self.assertIsInstance(self.client.send_audio('xx-xx-xx-xx', stream_url='http://example.com/audio.mp3'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertEqual(request_content_type(), 'application/json')
+    self.assertEqual(request_body(), b'{"stream_url": "http://example.com/audio.mp3"}')
+
+  @responses.activate
+  def test_stop_audio(self):
+    self.stub(responses.DELETE, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx/stream')
+
+    self.assertIsInstance(self.client.stop_audio('xx-xx-xx-xx'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+
+  @responses.activate
+  def test_send_speech(self):
+    self.stub(responses.PUT, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx/talk')
+
+    self.assertIsInstance(self.client.send_speech('xx-xx-xx-xx', text='Hello'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertEqual(request_content_type(), 'application/json')
+    self.assertEqual(request_body(), b'{"text": "Hello"}')
+
+  @responses.activate
+  def test_stop_speech(self):
+    self.stub(responses.DELETE, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx/talk')
+
+    self.assertIsInstance(self.client.stop_speech('xx-xx-xx-xx'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+
+  @responses.activate
+  def test_send_dtmf(self):
+    self.stub(responses.PUT, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx/dtmf')
+
+    self.assertIsInstance(self.client.send_dtmf('xx-xx-xx-xx', digits='1234'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertEqual(request_content_type(), 'application/json')
+    self.assertEqual(request_body(), b'{"digits": "1234"}')
+
+  @responses.activate
   def test_user_provided_authorization(self):
     self.stub(responses.GET, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx')
 

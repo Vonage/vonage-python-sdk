@@ -116,6 +116,48 @@ response = client.update_call(uuid, action='hangup')
 
 Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#call_modify_single](https://docs.nexmo.com/voice/voice-api/api-reference#call_modify_single?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
+### Stream audio to a call
+
+```python
+stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
+
+response = client.send_audio(uuid, stream_url=stream_url)
+```
+
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#stream_put](https://docs.nexmo.com/voice/voice-api/api-reference#stream_put?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+### Stop streaming audio to a call
+
+```python
+response = client.stop_audio(uuid)
+```
+
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#stream_delete](https://docs.nexmo.com/voice/voice-api/api-reference#stream_delete?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+### Send a synthesized speech message to a call
+
+```python
+response = client.send_speech(uuid, text='Hello')
+```
+
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#talk_put](https://docs.nexmo.com/voice/voice-api/api-reference#talk_put?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+### Stop sending a synthesized speech message to a call
+
+```python
+response = client.stop_speech(uuid)
+```
+
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#talk_delete](https://docs.nexmo.com/voice/voice-api/api-reference#talk_delete?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+### Send DTMF tones to a call
+
+```python
+response = client.send_dtmf(uuid, digits='1234')
+```
+
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#dtmf_put](https://docs.nexmo.com/voice/voice-api/api-reference#dtmf_put?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
 
 ## Verify API
 

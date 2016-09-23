@@ -199,6 +199,21 @@ class Client():
   def update_call(self, uuid, params=None, **kwargs):
     return self.__put('/v1/calls/' + uuid, params or kwargs)
 
+  def send_audio(self, uuid, params=None, **kwargs):
+    return self.__put('/v1/calls/' + uuid + '/stream', params or kwargs)
+
+  def stop_audio(self, uuid):
+    return self.__delete('/v1/calls/' + uuid + '/stream')
+
+  def send_speech(self, uuid, params=None, **kwargs):
+    return self.__put('/v1/calls/' + uuid + '/talk', params or kwargs)
+
+  def stop_speech(self, uuid):
+    return self.__delete('/v1/calls/' + uuid + '/talk')
+
+  def send_dtmf(self, uuid, params=None, **kwargs):
+    return self.__put('/v1/calls/' + uuid + '/dtmf', params or kwargs)
+
   def check_signature(self, params):
     params = dict(params)
 
@@ -274,6 +289,11 @@ class Client():
     uri = 'https://' + self.api_host + request_uri
 
     return self.parse(self.api_host, requests.put(uri, json=params, headers=self.__headers()))
+
+  def __delete(self, request_uri):
+    uri = 'https://' + self.api_host + request_uri
+
+    return self.parse(self.api_host, requests.delete(uri, headers=self.__headers()))
 
   def __headers(self):
     iat = int(time.time())

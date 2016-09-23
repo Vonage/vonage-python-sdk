@@ -1,3 +1,13 @@
+# 1.4.0
+
+* Added new Voice API call methods
+
+* Added Application API methods
+
+* Added check_signature method for checking callback signatures
+
+* Deprecated old Verify API methods
+
 # 1.3.0
 
 * Added get_sms_pricing method
@@ -9,6 +19,8 @@
 * Added resubscribe_event_alert_number method to opt-in a number
 
 * Added more clearly named methods for Verify API
+
+* Added app_name and app_version options
 
 # 1.2.0
 

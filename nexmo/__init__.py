@@ -1,4 +1,4 @@
-__version__ = '1.3.0'
+__version__ = '1.4.0'
 
 
 import requests, os, warnings, hashlib, hmac, jwt, time, uuid

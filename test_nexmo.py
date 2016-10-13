@@ -619,6 +619,19 @@ class NexmoClientTestCase(unittest.TestCase):
 
     self.assertEqual(self.client.signature(params), '6af838ef94998832dbfc29020b564830')
 
+  def test_client_doesnt_require_api_key(self):
+    try:
+      self.client = nexmo.Client(application_id='myid', private_key='abcde')
+    except Exception as e:
+      fail("Should be able to create a client without a key and secret")
+
+  @responses.activate
+  def test_client_can_make_application_requests_without_api_key(self):
+    self.stub(responses.POST, 'https://api.nexmo.com/v1/calls')
+
+    client = nexmo.Client(application_id='myid', private_key=self.private_key)
+    client.create_call("123455")
+
 
 if __name__ == '__main__':
   unittest.main()

@@ -425,6 +425,14 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertIn('number=447525856424', request_query())
 
   @responses.activate
+  def test_get_advanced_number_insight(self):
+    self.stub(responses.GET, 'https://api.nexmo.com/ni/advanced/json')
+
+    self.assertIsInstance(self.client.get_advanced_number_insight(number='447525856424'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('number=447525856424', request_query())
+
+  @responses.activate
   def test_request_number_insight(self):
     self.stub(responses.POST, 'https://rest.nexmo.com/ni/json')
 

@@ -1,9 +1,15 @@
 __version__ = '1.4.0'
 
 
-import requests, os, warnings, hashlib, hmac, jwt, time, uuid
+import requests, os, warnings, hashlib, hmac, jwt, time, uuid, sys
 
 from platform import python_version
+
+
+if sys.version_info[0] == 3:
+  string_types = (str, bytes)
+else:
+  string_types = (unicode, str)
 
 
 class Error(Exception):
@@ -33,6 +39,9 @@ class Client():
     self.application_id = kwargs.get('application_id', None)
 
     self.private_key = kwargs.get('private_key', None)
+
+    if isinstance(self.private_key, string_types) and '\n' not in self.private_key:
+      self.private_key = open(self.private_key, 'rb').read()
 
     self.host = 'rest.nexmo.com'
 

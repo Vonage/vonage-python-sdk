@@ -1,0 +1,12 @@
+cffi==1.9.1
+cookies==2.2.1
+cryptography==1.5.3
+idna==2.1
+pkg-resources==0.0.0
+pyasn1==0.1.9
+pycparser==2.17
+pycrypto==2.6.1
+PyJWT==1.4.2
+requests==2.12.1
+responses==0.5.1
+six==1.10.0

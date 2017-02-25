@@ -1,6 +1,5 @@
 __version__ = '1.4.0'
 
-
 import requests, os, warnings, hashlib, hmac, jwt, time, uuid
 
 from platform import python_version
@@ -218,7 +217,7 @@ class Client():
       # parameter injection.
       params[key] = params[key].replace("&", "_")
       params[key] = params[key].replace("=", "_")
-      md5.update('&{0}={1}'.format(key, params[key].encode('utf-8')))
+      md5.update('&{0}={1}'.format(key.encode('utf-8'), params[key].encode('utf-8')))
 
     md5.update(self.signature_secret.encode('utf-8'))
     return md5.hexdigest()

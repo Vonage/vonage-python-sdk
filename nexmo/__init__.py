@@ -1,7 +1,8 @@
 __version__ = '1.4.0'
 
 
-import requests, os, warnings, hashlib, hmac, jwt, time, uuid
+# import requests, os, warnings, hashlib, hmac, jwt, time, uuid, urllib
+import  os, warnings, hashlib, hmac, time, uuid, urllib
 
 from platform import python_version
 
@@ -209,11 +210,18 @@ class Client():
   def signature(self, params):
     md5 = hashlib.md5()
 
+    # Add timestamp if not already present
+    if not params.get("timestamp"):
+        params["timestamp"] = str(int(time.time()))
+
     for key in sorted(params):
-      md5.update('&{0}={1}'.format(key, params[key]).encode('utf-8'))
+      # Replace & and = with _ in parameter values to avoid 
+      # parameter injection.
+      params[key] = params[key].replace("&", "_")
+      params[key] = params[key].replace("=", "_")
+      md5.update('&{0}={1}'.format(key, params[key].encode('utf-8')))
 
     md5.update(self.signature_secret.encode('utf-8'))
-
     return md5.hexdigest()
 
   def get(self, host, request_uri, params={}):

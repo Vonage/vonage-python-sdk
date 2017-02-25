@@ -1,8 +1,7 @@
 __version__ = '1.4.0'
 
 
-# import requests, os, warnings, hashlib, hmac, jwt, time, uuid, urllib
-import  os, warnings, hashlib, hmac, time, uuid, urllib
+import requests, os, warnings, hashlib, hmac, jwt, time, uuid
 
 from platform import python_version
 

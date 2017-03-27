@@ -235,7 +235,7 @@ class Client():
 
     params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
 
-    return self.parse(host, requests.put(uri, data=params, headers=self.headers))
+    return self.parse(host, requests.put(uri, json=params, headers=self.headers))
 
   def delete(self, host, request_uri):
     uri = 'https://' + host + request_uri

@@ -468,7 +468,8 @@ class NexmoClientTestCase(unittest.TestCase):
 
     self.assertIsInstance(self.client.update_application('xx-xx-xx-xx', params), dict)
     self.assertEqual(request_user_agent(), self.user_agent)
-    self.assertIn('answer_url=https%3A%2F%2Fexample.com%2Fncco', request_body())
+    self.assertEqual(request_content_type(), 'application/json')
+    self.assertIn(b'"answer_url": "https://example.com/ncco"', request_body())
 
   @responses.activate
   def test_delete_application(self):

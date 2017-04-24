@@ -46,6 +46,9 @@ class NexmoClientTestCase(unittest.TestCase):
     self.user_agent = 'nexmo-python/{0}/{1}'.format(nexmo.__version__, platform.python_version())
     self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, application_id=self.application_id, private_key=self.private_key)
 
+    if not hasattr(self, 'assertRegex'):
+      self.assertRegex = self.assertRegexpMatches
+
     if not hasattr(self, 'assertRaisesRegex'):
       self.assertRaisesRegex = self.assertRaisesRegexp
 
@@ -498,7 +501,7 @@ class NexmoClientTestCase(unittest.TestCase):
 
     self.assertIsInstance(self.client.get_calls(), dict)
     self.assertEqual(request_user_agent(), self.user_agent)
-    self.assertRegexpMatches(request_authorization(), r'\ABearer ')
+    self.assertRegex(request_authorization(), r'\ABearer ')
 
   @responses.activate
   def test_get_call(self):
@@ -506,7 +509,7 @@ class NexmoClientTestCase(unittest.TestCase):
 
     self.assertIsInstance(self.client.get_call('xx-xx-xx-xx'), dict)
     self.assertEqual(request_user_agent(), self.user_agent)
-    self.assertRegexpMatches(request_authorization(), r'\ABearer ')
+    self.assertRegex(request_authorization(), r'\ABearer ')
 
   @responses.activate
   def test_update_call(self):

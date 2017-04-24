@@ -31,13 +31,18 @@ def request_content_type():
   return responses.calls[0].request.headers['Content-Type']
 
 
+def read_file(path):
+  with open(path) as input_file:
+    return input_file.read()
+
+
 class NexmoClientTestCase(unittest.TestCase):
   def setUp(self):
     self.api_key = 'nexmo-api-key'
     self.api_secret = 'nexmo-api-secret'
     self.application_id = 'nexmo-application-id'
-    self.private_key = open('test/private_key.txt').read()
-    self.public_key = open('test/public_key.txt').read()
+    self.private_key = read_file('test/private_key.txt')
+    self.public_key = read_file('test/public_key.txt')
     self.user_agent = 'nexmo-python/{0}/{1}'.format(nexmo.__version__, platform.python_version())
     self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, application_id=self.application_id, private_key=self.private_key)
 
@@ -620,10 +625,10 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertEqual(self.client.signature(params), '6af838ef94998832dbfc29020b564830')
 
   def test_client_doesnt_require_api_key(self):
-    try:
-      self.client = nexmo.Client(application_id='myid', private_key='abcde')
-    except Exception as e:
-      self.fail("Should be able to create a client without a key and secret")
+    client = nexmo.Client(application_id='myid', private_key='abcde')
+    self.assertIsNotNone(client)
+    self.assertIsNone(client.api_key)
+    self.assertIsNone(client.api_secret)
 
   @responses.activate
   def test_client_can_make_application_requests_without_api_key(self):

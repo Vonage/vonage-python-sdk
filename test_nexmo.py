@@ -577,6 +577,39 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertEqual(token['exp'], exp)
 
   @responses.activate
+  def test_authorization_with_private_key_path(self):
+    self.stub(responses.GET, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx')
+
+    private_key = 'test/private_key.txt'
+
+    self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, application_id=self.application_id, private_key=private_key)
+    self.client.get_call('xx-xx-xx-xx')
+
+    token = request_authorization().split()[1]
+
+    token = jwt.decode(token, self.public_key, algorithm='RS256')
+
+    self.assertEqual(token['application_id'], self.application_id)
+
+  @responses.activate
+  def test_authorization_with_private_key_object(self):
+    self.stub(responses.GET, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx')
+
+    from cryptography.hazmat.backends import default_backend
+    from cryptography.hazmat.primitives import serialization
+
+    private_key = serialization.load_pem_private_key(self.private_key.encode('utf-8'), password=None, backend=default_backend())
+
+    self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, application_id=self.application_id, private_key=private_key)
+    self.client.get_call('xx-xx-xx-xx')
+
+    token = request_authorization().split()[1]
+
+    token = jwt.decode(token, self.public_key, algorithm='RS256')
+
+    self.assertEqual(token['application_id'], self.application_id)
+
+  @responses.activate
   def test_authentication_error(self):
     responses.add(responses.POST, 'https://rest.nexmo.com/sms/json', status=401)
 
@@ -625,7 +658,7 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertEqual(self.client.signature(params), '6af838ef94998832dbfc29020b564830')
 
   def test_client_doesnt_require_api_key(self):
-    client = nexmo.Client(application_id='myid', private_key='abcde')
+    client = nexmo.Client(application_id='myid', private_key='abc\nde')
     self.assertIsNotNone(client)
     self.assertIsNone(client.api_key)
     self.assertIsNone(client.api_secret)

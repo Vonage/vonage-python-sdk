@@ -1,13 +1,21 @@
-__version__ = '1.4.0'
-
-import requests, os, warnings, hashlib, hmac, jwt, time, uuid, sys
-
 from platform import python_version
+
+import hashlib
+import hmac
+import jwt
+import os
+import requests
+import sys
+import time
+from uuid import uuid4
+import warnings
 
 if sys.version_info[0] == 3:
     string_types = (str, bytes)
 else:
     string_types = (unicode, str)
+
+__version__ = '1.4.0'
 
 
 class Error(Exception):
@@ -251,10 +259,10 @@ class Client():
 
         return md5.hexdigest()
 
-    def get(self, host, request_uri, params={}):
+    def get(self, host, request_uri, params=None):
         uri = 'https://' + host + request_uri
 
-        params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
+        params = dict(params or {}, api_key=self.api_key, api_secret=self.api_secret)
 
         return self.parse(host, requests.get(uri, params=params, headers=self.headers))
 
@@ -295,10 +303,10 @@ class Client():
 
             raise ServerError(message)
 
-    def __get(self, request_uri, params={}):
+    def __get(self, request_uri, params=None):
         uri = 'https://' + self.api_host + request_uri
 
-        return self.parse(self.api_host, requests.get(uri, params=params, headers=self.__headers()))
+        return self.parse(self.api_host, requests.get(uri, params=params or {}, headers=self.__headers()))
 
     def __post(self, request_uri, params):
         uri = 'https://' + self.api_host + request_uri
@@ -322,7 +330,7 @@ class Client():
         payload.setdefault('application_id', self.application_id)
         payload.setdefault('iat', iat)
         payload.setdefault('exp', iat + 60)
-        payload.setdefault('jti', str(uuid.uuid4()))
+        payload.setdefault('jti', str(uuid4()))
 
         token = jwt.encode(payload, self.private_key, algorithm='RS256')
 

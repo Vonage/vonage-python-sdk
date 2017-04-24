@@ -1,3 +1,6 @@
+*.pyc
+.coverage
+htmlcov/
 build/
 dist/
 nexmo.egg-info/

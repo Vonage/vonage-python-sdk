@@ -682,9 +682,18 @@ class NexmoClientTestCase(unittest.TestCase):
 
         self.assertEqual(self.client.signature(params), '6af838ef94998832dbfc29020b564830')
 
+    def test_signature_adds_timestamp(self):
+        params = {'a=7': '1', 'b': '2 & 5'}
+
+        self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, signature_secret='secret')
+
+        self.client.signature(params)
+        self.assertIsNotNone(params['timestamp'])
+
     def test_client_doesnt_require_api_key(self):
         client = nexmo.Client(application_id='myid', private_key='abc\nde')
         self.assertIsNotNone(client)
+        # Need to make sure this works properly when no env-vars are set:
         self.assertIsNone(client.api_key)
         self.assertIsNone(client.api_secret)
 

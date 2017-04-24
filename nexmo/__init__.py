@@ -244,11 +244,16 @@ class Client():
     def signature(self, params):
         md5 = hashlib.md5()
 
+        # Add timestamp if not already present
+        if not params.get("timestamp"):
+            params["timestamp"] = int(time.time())
+
         for key in sorted(params):
-            md5.update('&{0}={1}'.format(key, params[key]).encode('utf-8'))
-
+            # Replace & and = with _ in parameter values to avoid
+            # parameter injection.
+            value = str(params[key]).replace("&", "_").replace("=", "_")
+            md5.update(u'&{0}={1}'.format(key, value).encode('utf-8'))
         md5.update(self.signature_secret.encode('utf-8'))
-
         return md5.hexdigest()
 
     def get(self, host, request_uri, params={}):

@@ -174,10 +174,18 @@ class Client():
     return self.post(self.api_host, '/verify/control/json', params or kwargs)
 
   def get_basic_number_insight(self, params=None, **kwargs):
-    return self.get(self.api_host, '/number/format/json', params or kwargs)
+    return self.get(self.api_host, '/ni/basic/json', params or kwargs)
+
+  def get_standard_number_insight(self, params=None, **kwargs):
+    return self.get(self.api_host, '/ni/standard/json', params or kwargs)
 
   def get_number_insight(self, params=None, **kwargs):
+    warnings.warn('nexmo.Client#get_number_insight is deprecated (use #get_standard_number_insight instead)', DeprecationWarning, stacklevel=2)
+
     return self.get(self.api_host, '/number/lookup/json', params or kwargs)
+
+  def get_advanced_number_insight(self, params=None, **kwargs):
+    return self.get(self.api_host, '/ni/advanced/json', params or kwargs)
 
   def request_number_insight(self, params=None, **kwargs):
     return self.post(self.host, '/ni/json', params or kwargs)

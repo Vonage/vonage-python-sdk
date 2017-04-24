@@ -413,9 +413,17 @@ class NexmoClientTestCase(unittest.TestCase):
 
   @responses.activate
   def test_get_basic_number_insight(self):
-    self.stub(responses.GET, 'https://api.nexmo.com/number/format/json')
+    self.stub(responses.GET, 'https://api.nexmo.com/ni/basic/json')
 
     self.assertIsInstance(self.client.get_basic_number_insight(number='447525856424'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('number=447525856424', request_query())
+
+  @responses.activate
+  def test_get_standard_number_insight(self):
+    self.stub(responses.GET, 'https://api.nexmo.com/ni/standard/json')
+
+    self.assertIsInstance(self.client.get_standard_number_insight(number='447525856424'), dict)
     self.assertEqual(request_user_agent(), self.user_agent)
     self.assertIn('number=447525856424', request_query())
 
@@ -424,6 +432,14 @@ class NexmoClientTestCase(unittest.TestCase):
     self.stub(responses.GET, 'https://api.nexmo.com/number/lookup/json')
 
     self.assertIsInstance(self.client.get_number_insight(number='447525856424'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertIn('number=447525856424', request_query())
+
+  @responses.activate
+  def test_get_advanced_number_insight(self):
+    self.stub(responses.GET, 'https://api.nexmo.com/ni/advanced/json')
+
+    self.assertIsInstance(self.client.get_advanced_number_insight(number='447525856424'), dict)
     self.assertEqual(request_user_agent(), self.user_agent)
     self.assertIn('number=447525856424', request_query())
 

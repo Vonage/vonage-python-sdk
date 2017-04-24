@@ -174,7 +174,7 @@ class Client():
     return self.post(self.api_host, '/verify/control/json', params or kwargs)
 
   def get_basic_number_insight(self, params=None, **kwargs):
-    return self.get(self.api_host, '/number/format/json', params or kwargs)
+    return self.get(self.api_host, '/ni/basic/json', params or kwargs)
 
   def get_standard_number_insight(self, params=None, **kwargs):
     return self.get(self.api_host, '/ni/standard/json', params or kwargs)

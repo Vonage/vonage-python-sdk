@@ -410,7 +410,7 @@ class NexmoClientTestCase(unittest.TestCase):
 
   @responses.activate
   def test_get_basic_number_insight(self):
-    self.stub(responses.GET, 'https://api.nexmo.com/number/format/json')
+    self.stub(responses.GET, 'https://api.nexmo.com/ni/basic/json')
 
     self.assertIsInstance(self.client.get_basic_number_insight(number='447525856424'), dict)
     self.assertEqual(request_user_agent(), self.user_agent)

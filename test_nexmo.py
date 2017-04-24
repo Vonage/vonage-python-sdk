@@ -328,17 +328,6 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertIn('brand=MyApp', request_body())
 
   @responses.activate
-  def test_send_verification_request(self):
-    self.stub(responses.POST, 'https://api.nexmo.com/verify/json')
-
-    params = {'number': '447525856424', 'brand': 'MyApp'}
-
-    self.assertIsInstance(self.client.send_verification_request(params), dict)
-    self.assertEqual(request_user_agent(), self.user_agent)
-    self.assertIn('number=447525856424', request_body())
-    self.assertIn('brand=MyApp', request_body())
-
-  @responses.activate
   def test_check_verification(self):
     self.stub(responses.POST, 'https://api.nexmo.com/verify/check/json')
 
@@ -348,29 +337,10 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertIn('request_id=8g88g88eg8g8gg9g90', request_body())
 
   @responses.activate
-  def test_check_verification_request(self):
-    self.stub(responses.POST, 'https://api.nexmo.com/verify/check/json')
-
-    params = {'code': '123445', 'request_id': '8g88g88eg8g8gg9g90'}
-
-    self.assertIsInstance(self.client.check_verification_request(params), dict)
-    self.assertEqual(request_user_agent(), self.user_agent)
-    self.assertIn('code=123445', request_body())
-    self.assertIn('request_id=8g88g88eg8g8gg9g90', request_body())
-
-  @responses.activate
   def test_get_verification(self):
     self.stub(responses.GET, 'https://api.nexmo.com/verify/search/json')
 
     self.assertIsInstance(self.client.get_verification('xxx'), dict)
-    self.assertEqual(request_user_agent(), self.user_agent)
-    self.assertIn('request_id=xxx', request_query())
-
-  @responses.activate
-  def test_get_verification_request(self):
-    self.stub(responses.GET, 'https://api.nexmo.com/verify/search/json')
-
-    self.assertIsInstance(self.client.get_verification_request('xxx'), dict)
     self.assertEqual(request_user_agent(), self.user_agent)
     self.assertIn('request_id=xxx', request_query())
 
@@ -390,17 +360,6 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertIsInstance(self.client.trigger_next_verification_event('8g88g88eg8g8gg9g90'), dict)
     self.assertEqual(request_user_agent(), self.user_agent)
     self.assertIn('cmd=trigger_next_event', request_body())
-    self.assertIn('request_id=8g88g88eg8g8gg9g90', request_body())
-
-  @responses.activate
-  def test_control_verification_request(self):
-    self.stub(responses.POST, 'https://api.nexmo.com/verify/control/json')
-
-    params = {'cmd': 'cancel', 'request_id': '8g88g88eg8g8gg9g90'}
-
-    self.assertIsInstance(self.client.control_verification_request(params), dict)
-    self.assertEqual(request_user_agent(), self.user_agent)
-    self.assertIn('cmd=cancel', request_body())
     self.assertIn('request_id=8g88g88eg8g8gg9g90', request_body())
 
   @responses.activate

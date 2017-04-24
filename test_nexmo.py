@@ -658,7 +658,7 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertEqual(self.client.signature(params), '6af838ef94998832dbfc29020b564830')
 
   def test_client_doesnt_require_api_key(self):
-    client = nexmo.Client(application_id='myid', private_key='abcde')
+    client = nexmo.Client(application_id='myid', private_key='abc\nde')
     self.assertIsNotNone(client)
     self.assertIsNone(client.api_key)
     self.assertIsNone(client.api_secret)

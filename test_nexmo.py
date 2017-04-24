@@ -623,7 +623,7 @@ class NexmoClientTestCase(unittest.TestCase):
     try:
       self.client = nexmo.Client(application_id='myid', private_key='abcde')
     except Exception as e:
-      fail("Should be able to create a client without a key and secret")
+      self.fail("Should be able to create a client without a key and secret")
 
   @responses.activate
   def test_client_can_make_application_requests_without_api_key(self):

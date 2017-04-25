@@ -251,8 +251,9 @@ class Client():
         for key in sorted(params):
             # Replace & and = with _ in parameter values to avoid
             # parameter injection.
-            value = str(params[key]).replace("&", "_").replace("=", "_")
-            md5.update(u'&{0}={1}'.format(key, value).encode('utf-8'))
+            safe_key = key.replace("&", "_").replace("=", "_")
+            safe_value = str(params[key]).replace("&", "_").replace("=", "_")
+            md5.update(u'&{0}={1}'.format(safe_key, safe_value).encode('utf-8'))
         md5.update(self.signature_secret.encode('utf-8'))
         return md5.hexdigest()
 

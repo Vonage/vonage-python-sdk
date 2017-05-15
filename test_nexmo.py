@@ -40,6 +40,7 @@ class NexmoClientTestCase(unittest.TestCase):
     def setUp(self):
         self.api_key = 'nexmo-api-key'
         self.api_secret = 'nexmo-api-secret'
+        self.signature_secret = 'secret'
         self.application_id = 'nexmo-application-id'
         self.private_key = read_file('test/private_key.txt')
         self.public_key = read_file('test/public_key.txt')
@@ -671,16 +672,44 @@ class NexmoClientTestCase(unittest.TestCase):
     def test_check_signature(self):
         params = {'a': '1', 'b': '2', 'timestamp': '1461605396', 'sig': '6af838ef94998832dbfc29020b564830'}
 
-        self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, signature_secret='secret')
+        self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, signature_secret=self.signature_secret)
 
         self.assertTrue(self.client.check_signature(params))
 
     def test_signature(self):
         params = {'a': '1', 'b': '2', 'timestamp': '1461605396'}
 
-        self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, signature_secret='secret')
+        self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, signature_secret=self.signature_secret)
 
         self.assertEqual(self.client.signature(params), '6af838ef94998832dbfc29020b564830')
+
+    def test_signature_md5(self):
+        params = {'a': '1', 'b': '2', 'timestamp': '1461605396'}
+
+        self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, signature_secret=self.signature_secret, signature_method='md5')
+
+        self.assertEqual(self.client.signature(params), 'c15c21ced558c93a226c305f58f902f2')
+
+    def test_signature_sha1(self):
+        params = {'a': '1', 'b': '2', 'timestamp': '1461605396'}
+
+        self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, signature_secret=self.signature_secret, signature_method='sha1')
+
+        self.assertEqual(self.client.signature(params), '3e19a4e6880fdc2c1426bfd0587c98b9532f0210')
+
+    def test_signature_sha256(self):
+        params = {'a': '1', 'b': '2', 'timestamp': '1461605396'}
+
+        self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, signature_secret=self.signature_secret, signature_method='sha256')
+
+        self.assertEqual(self.client.signature(params), 'a321e824b9b816be7c3f28859a31749a098713d39f613c80d455bbaffae1cd24')
+
+    def test_signature_sha512(self):
+        params = {'a': '1', 'b': '2', 'timestamp': '1461605396'}
+
+        self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, signature_secret=self.signature_secret, signature_method='sha512')
+
+        self.assertEqual(self.client.signature(params), '812a18f76680fa0fe1b8bd9ee1625466ceb1bd96242e4d050d2cfd9a7b40166c63ed26ec9702168781b6edcf1633db8ff95af9341701004eec3fcf9550572ee8')
 
     def test_client_doesnt_require_api_key(self):
         client = nexmo.Client(application_id='myid', private_key='abc\nde')

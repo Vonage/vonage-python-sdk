@@ -258,7 +258,12 @@ class Client():
             hasher = hashlib.md5()
 
         for key in sorted(params):
-            hasher.update('&{0}={1}'.format(key, params[key].replace('&', '_').replace('=', '_')).encode('utf-8'))
+            value = params[key]
+
+            if isinstance(value, str):
+                value = value.replace('&', '_').replace('=', '_')
+
+            hasher.update('&{0}={1}'.format(key, value).encode('utf-8'))
 
         if self.signature_method is None:
             hasher.update(self.signature_secret.encode())

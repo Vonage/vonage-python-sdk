@@ -173,7 +173,7 @@ Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#control](https:
 ### Basic Number Insight
 
 ```python
-client.get_basic_number_insight('447700900000')
+client.get_basic_number_insight(number='447700900000')
 ```
 
 Docs: [https://docs.nexmo.com/number-insight/basic](https://docs.nexmo.com/number-insight/basic?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
@@ -181,7 +181,7 @@ Docs: [https://docs.nexmo.com/number-insight/basic](https://docs.nexmo.com/numbe
 ### Standard Number Insight
 
 ```python
-client.get_number_insight('447700900000')
+client.get_number_insight(number='447700900000')
 ```
 
 Docs: [https://docs.nexmo.com/number-insight/standard](https://docs.nexmo.com/number-insight/basic?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)

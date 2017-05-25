@@ -11,6 +11,7 @@ need a Nexmo account. Sign up [for free at nexmo.com][signup].
 * [SMS API](#sms-api)
 * [Voice API](#voice-api)
 * [Verify API](#verify-api)
+* [Number Insight API](#number-insight-api)
 * [Application API](#application-api)
 * [Coverage](#api-coverage)
 * [License](#license)
@@ -167,6 +168,25 @@ client.trigger_next_verification_event('00e6c3377e5348cdaf567e1417c707a5')
 
 Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#control](https://docs.nexmo.com/verify/api-reference/api-reference#control?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
+## Number Insight API
+
+### Basic Number Insight
+
+```python
+client.get_basic_number_insight(number='447700900000')
+```
+
+Docs: [https://docs.nexmo.com/number-insight/basic](https://docs.nexmo.com/number-insight/basic?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+### Standard Number Insight
+
+```python
+client.get_number_insight(number='447700900000')
+```
+
+Docs: [https://docs.nexmo.com/number-insight/standard](https://docs.nexmo.com/number-insight/basic?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+<!-- when the switchover to new Number Insight is done, then we'll add Advance Insight... -->   
 
 ## Application API
 

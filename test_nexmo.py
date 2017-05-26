@@ -31,13 +31,18 @@ def request_content_type():
   return responses.calls[0].request.headers['Content-Type']
 
 
+def read_file(path):
+  with open(path) as input_file:
+    return input_file.read()
+
+
 class NexmoClientTestCase(unittest.TestCase):
   def setUp(self):
     self.api_key = 'nexmo-api-key'
     self.api_secret = 'nexmo-api-secret'
     self.application_id = 'nexmo-application-id'
-    self.private_key = open('test/private_key.txt').read()
-    self.public_key = open('test/public_key.txt').read()
+    self.private_key = read_file('test/private_key.txt')
+    self.public_key = read_file('test/public_key.txt')
     self.user_agent = 'nexmo-python/{0}/{1}'.format(nexmo.__version__, platform.python_version())
     self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, application_id=self.application_id, private_key=self.private_key)
 
@@ -513,6 +518,47 @@ class NexmoClientTestCase(unittest.TestCase):
     self.assertEqual(request_body(), b'{"action": "hangup"}')
 
   @responses.activate
+  def test_send_audio(self):
+    self.stub(responses.PUT, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx/stream')
+
+    self.assertIsInstance(self.client.send_audio('xx-xx-xx-xx', stream_url='http://example.com/audio.mp3'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertEqual(request_content_type(), 'application/json')
+    self.assertEqual(request_body(), b'{"stream_url": "http://example.com/audio.mp3"}')
+
+  @responses.activate
+  def test_stop_audio(self):
+    self.stub(responses.DELETE, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx/stream')
+
+    self.assertIsInstance(self.client.stop_audio('xx-xx-xx-xx'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+
+  @responses.activate
+  def test_send_speech(self):
+    self.stub(responses.PUT, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx/talk')
+
+    self.assertIsInstance(self.client.send_speech('xx-xx-xx-xx', text='Hello'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertEqual(request_content_type(), 'application/json')
+    self.assertEqual(request_body(), b'{"text": "Hello"}')
+
+  @responses.activate
+  def test_stop_speech(self):
+    self.stub(responses.DELETE, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx/talk')
+
+    self.assertIsInstance(self.client.stop_speech('xx-xx-xx-xx'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+
+  @responses.activate
+  def test_send_dtmf(self):
+    self.stub(responses.PUT, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx/dtmf')
+
+    self.assertIsInstance(self.client.send_dtmf('xx-xx-xx-xx', digits='1234'), dict)
+    self.assertEqual(request_user_agent(), self.user_agent)
+    self.assertEqual(request_content_type(), 'application/json')
+    self.assertEqual(request_body(), b'{"digits": "1234"}')
+
+  @responses.activate
   def test_user_provided_authorization(self):
     self.stub(responses.GET, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx')
 
@@ -578,6 +624,19 @@ class NexmoClientTestCase(unittest.TestCase):
     self.client = nexmo.Client(key=self.api_key, secret=self.api_secret, signature_secret='secret')
 
     self.assertEqual(self.client.signature(params), '6af838ef94998832dbfc29020b564830')
+
+  def test_client_doesnt_require_api_key(self):
+    client = nexmo.Client(application_id='myid', private_key='abcde')
+    self.assertIsNotNone(client)
+    self.assertIsNone(client.api_key)
+    self.assertIsNone(client.api_secret)
+
+  @responses.activate
+  def test_client_can_make_application_requests_without_api_key(self):
+    self.stub(responses.POST, 'https://api.nexmo.com/v1/calls')
+
+    client = nexmo.Client(application_id='myid', private_key=self.private_key)
+    client.create_call("123455")
 
 
 if __name__ == '__main__':

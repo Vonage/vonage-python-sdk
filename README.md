@@ -223,12 +223,18 @@ Docs: [https://docs.nexmo.com/number-insight/basic](https://docs.nexmo.com/numbe
 ### Standard Number Insight
 
 ```python
-client.get_number_insight(number='447700900000')
+client.get_standard_number_insight(number='447700900000')
 ```
 
 Docs: [https://docs.nexmo.com/number-insight/standard](https://docs.nexmo.com/number-insight/basic?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
-<!-- when the switchover to new Number Insight is done, then we'll add Advance Insight... -->   
+### Advanced Number Insight
+
+```python
+client.get_advanced_number_insight(number='447700900000')
+```
+
+Docs: [https://docs.nexmo.com/number-insight/advanced](https://docs.nexmo.com/number-insight/advanced?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ## Application API
 

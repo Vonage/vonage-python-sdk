@@ -4,9 +4,8 @@ except ImportError:
     from urlparse import urlparse
     from urllib import quote_plus
 
-from util import *
-
 import nexmo
+from util import *
 
 
 @responses.activate

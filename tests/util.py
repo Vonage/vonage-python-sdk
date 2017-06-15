@@ -1,11 +1,14 @@
-import pytest
 import re
+
+import pytest
+
 try:
     from urllib.parse import urlparse, quote_plus
 except ImportError:
     from urlparse import urlparse
 
 import responses
+
 
 def request_body():
     return responses.calls[0].request.body

@@ -1,5 +1,5 @@
-import responses
 from util import *
+
 
 @responses.activate
 def test_start_verification(client, dummy_data):

@@ -1,7 +1,5 @@
-import responses
-from util import *
-
 import nexmo
+from util import *
 
 
 @responses.activate

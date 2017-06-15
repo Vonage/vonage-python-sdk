@@ -1,11 +1,11 @@
 import os.path
 import time
 
-import responses
+import jwt
+
+import nexmo
 from util import *
 
-import jwt
-import nexmo
 
 @responses.activate
 def test_create_call(client, dummy_data):

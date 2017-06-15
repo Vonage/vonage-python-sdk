@@ -1,8 +1,8 @@
-import responses
-from util import *
+import platform
 
 import nexmo
-import platform
+from util import *
+
 
 @responses.activate
 def test_get_balance(client, dummy_data):

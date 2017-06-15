@@ -1,10 +1,11 @@
+import os.path
 import platform
 
 import pytest
 
 
 def read_file(path):
-    with open(path) as input_file:
+    with open(os.path.join(os.path.dirname(__file__), path)) as input_file:
         return input_file.read()
 
 
@@ -14,8 +15,8 @@ class DummyData(object):
         self.api_key = 'nexmo-api-key'
         self.api_secret = 'nexmo-api-secret'
         self.application_id = 'nexmo-application-id'
-        self.private_key = read_file('test/private_key.txt')
-        self.public_key = read_file('test/public_key.txt')
+        self.private_key = read_file('data/private_key.txt')
+        self.public_key = read_file('data/public_key.txt')
         self.user_agent = 'nexmo-python/{0}/{1}'.format(nexmo.__version__, platform.python_version())
 
 

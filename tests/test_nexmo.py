@@ -1,4 +1,5 @@
 import re
+import os.path
 import pytest
 import responses
 
@@ -645,7 +646,10 @@ def test_user_provided_authorization(client, dummy_data):
 def test_authorization_with_private_key_path(dummy_data):
     stub(responses.GET, 'https://api.nexmo.com/v1/calls/xx-xx-xx-xx')
 
-    private_key = 'test/private_key.txt'
+    private_key = os.path.join(
+        os.path.dirname(__file__),
+        'data/private_key.txt',
+    )
 
     client = nexmo.Client(
         key=dummy_data.api_key,

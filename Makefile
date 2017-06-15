@@ -1,6 +1,6 @@
 .PHONY: test install requirements release release-test
 test:
-	pytest -v test_nexmo.py
+	pytest -v tests
 
 release-test:
 	python setup.py sdist bdist_wheel upload -r pypitest

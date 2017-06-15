@@ -1,6 +1,6 @@
 .PHONY: test install requirements release release-test
 test:
-	pytest -v tests
+	pytest -v
 
 release-test:
 	python setup.py sdist bdist_wheel upload -r pypitest

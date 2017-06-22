@@ -368,8 +368,8 @@ License
 
 This library is released under the [MIT License][license]
 
-[virtualenv]:
-[report-a-bug]:
-[pull-request]:
+[virtualenv]: https://virtualenv.pypa.io/en/stable/
+[report-a-bug]: https://github.com/Nexmo/nexmo-python/issues/new
+[pull-request]: https://github.com/Nexmo/nexmo-python/pulls
 [signup]: https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
 [license]: LICENSE.txt

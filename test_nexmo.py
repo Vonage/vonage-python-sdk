@@ -69,6 +69,25 @@ class NexmoClientTestCase(unittest.TestCase):
         self.assertIn('text=Hey%21', request_body())
 
     @responses.activate
+    def test_send_many(self):
+        self.stub(responses.POST, 'https://rest.nexmo.com/sms/json')
+
+        params = {'from': 'Python', 'text': 'Hey!'}
+
+        results = self.client.send_many(['447525856424', '447525856425', '447525856426'], params)
+        self.assertIsInstance(results, list)
+        self.assertEqual(request_user_agent(), self.user_agent)
+        self.assertIn('from=Python', responses.calls[0].request.body)
+        self.assertIn('from=Python', responses.calls[1].request.body)
+        self.assertIn('from=Python', responses.calls[2].request.body)
+        self.assertIn('to=447525856424', responses.calls[0].request.body)
+        self.assertIn('to=447525856425', responses.calls[1].request.body)
+        self.assertIn('to=447525856426', responses.calls[2].request.body)
+        self.assertIn('text=Hey%21', responses.calls[0].request.body)
+        self.assertIn('text=Hey%21', responses.calls[1].request.body)
+        self.assertIn('text=Hey%21', responses.calls[2].request.body)
+
+    @responses.activate
     def test_get_balance(self):
         self.stub(responses.GET, 'https://rest.nexmo.com/account/get-balance')
 

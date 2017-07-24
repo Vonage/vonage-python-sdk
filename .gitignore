@@ -1,3 +1,4 @@
 build/
 dist/
 nexmo.egg-info/
+.idea

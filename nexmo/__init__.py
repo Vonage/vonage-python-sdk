@@ -58,8 +58,16 @@ class Client():
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
 
-    def send_message(self, params):
-        return self.post(self.host, '/sms/json', params)
+    def send_many(self, recipients, params):
+        results = []
+        with requests.Session() as session:
+            for recipient in recipients:
+                params['to'] = recipient
+                results.append(self.send_message(params, session))
+        return results
+
+    def send_message(self, params, session=None):
+        return self.post(self.host, '/sms/json', params, session)
 
     def get_balance(self):
         return self.get(self.host, '/account/get-balance')
@@ -258,12 +266,16 @@ class Client():
 
         return self.parse(host, requests.get(uri, params=params, headers=self.headers))
 
-    def post(self, host, request_uri, params):
+    def post(self, host, request_uri, params, session=None):
         uri = 'https://' + host + request_uri
 
         params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
 
-        return self.parse(host, requests.post(uri, data=params, headers=self.headers))
+        if session is None:
+            return self.parse(host, requests.post(uri, data=params, headers=self.headers))
+        else:
+            return self.parse(host, session.post(uri, data=params, headers=self.headers))
+
 
     def put(self, host, request_uri, params):
         uri = 'https://' + host + request_uri

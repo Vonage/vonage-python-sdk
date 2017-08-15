@@ -1,4 +1,4 @@
-__version__ = '1.5.0'
+__version__ = '1.5.1'
 
 import requests, os, warnings, hashlib, hmac, jwt, time, uuid, sys
 
@@ -294,7 +294,23 @@ class Client():
             message = "{code} response from {host}".format(code=response.status_code, host=host)
 
             raise ServerError(message)
-
+    
+    def generate_jwt(self, validity=60, sub=None, acl=None):
+        iat = int(time.time())
+        payload = dict(self.auth_params)
+        payload.setdefault('application_id', self.application_id)
+        payload.setdefault('iat', iat)
+        payload.setdefault('exp', iat + validity)
+        payload.setdefault('jti', str(uuid.uuid4()))
+        if sub != None:
+            payload.setdefault('sub', sub)
+        if acl != None:
+            payload.setdefault('acl', acl)
+        token = jwt.encode(payload, self.private_key, algorithm='RS256')
+        
+        return token
+        
+        
     def __get(self, request_uri, params={}):
         uri = 'https://' + self.api_host + request_uri
 
@@ -316,14 +332,6 @@ class Client():
         return self.parse(self.api_host, requests.delete(uri, headers=self.__headers()))
 
     def __headers(self):
-        iat = int(time.time())
-
-        payload = dict(self.auth_params)
-        payload.setdefault('application_id', self.application_id)
-        payload.setdefault('iat', iat)
-        payload.setdefault('exp', iat + 60)
-        payload.setdefault('jti', str(uuid.uuid4()))
-
-        token = jwt.encode(payload, self.private_key, algorithm='RS256')
+        token = self.generate_jwt()
 
         return dict(self.headers, Authorization=b'Bearer ' + token)

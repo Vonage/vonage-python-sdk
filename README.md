@@ -348,7 +348,7 @@ API Coverage
 Contributing
 ------------
 
-We :heart: contributions, whether ! But if you plan to work on something big or controversial, please [contact us](mailto:devrel@nexmo.com) first!
+We :heart: contributions! But if you plan to work on something big or controversial, please [contact us](mailto:devrel@nexmo.com) first!
 
 We recommend working on `nexmo-python` with a [virtualenv][virtualenv]. The following command will install all the Python dependencies you need to run the tests:
 

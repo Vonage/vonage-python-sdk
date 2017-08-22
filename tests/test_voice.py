@@ -144,8 +144,6 @@ def test_authorization_with_private_key_object(client, dummy_data):
     from cryptography.hazmat.backends import default_backend
     from cryptography.hazmat.primitives import serialization
 
-    private_key = serialization.load_pem_private_key(dummy_data.private_key.encode('utf-8'), password=None,
-                                                     backend=default_backend())
     client.get_call('xx-xx-xx-xx')
 
     token = jwt.decode(request_authorization().split()[1], dummy_data.public_key, algorithm='RS256')

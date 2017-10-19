@@ -14,6 +14,7 @@ class DummyData(object):
         import nexmo
         self.api_key = 'nexmo-api-key'
         self.api_secret = 'nexmo-api-secret'
+        self.signature_secret = 'secret'
         self.application_id = 'nexmo-application-id'
         self.private_key = read_file('data/private_key.txt')
         self.public_key = read_file('data/public_key.txt')

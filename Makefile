@@ -13,5 +13,6 @@ install: requirements
 requirements: .requirements.txt
 
 .requirements.txt: requirements.txt
+	pip install --upgrade pip setuptools
 	pip install -r requirements.txt
 	pip freeze > .requirements.txt

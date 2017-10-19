@@ -106,6 +106,18 @@ def test_signature(client, dummy_data):
     assert client.signature(params) == '6af838ef94998832dbfc29020b564830'
 
 
+def test_signature_adds_timestamp(dummy_data):
+    params = {'a=7': '1', 'b': '2 & 5'}
+
+    client = nexmo.Client(
+        key=dummy_data.api_key,
+        secret=dummy_data.api_secret,
+        signature_secret='secret')
+
+    client.signature(params)
+    assert params['timestamp'] is not None
+
+
 def test_client_doesnt_require_api_key():
     client = nexmo.Client(application_id='myid', private_key='abc\nde')
     assert client is not None

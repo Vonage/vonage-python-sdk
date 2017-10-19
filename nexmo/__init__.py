@@ -1,13 +1,21 @@
-__version__ = '1.5.1'
-
-import requests, os, warnings, hashlib, hmac, jwt, time, uuid, sys
-
 from platform import python_version
+
+import hashlib
+import hmac
+import jwt
+import os
+import requests
+import sys
+import time
+from uuid import uuid4
+import warnings
 
 if sys.version_info[0] == 3:
     string_types = (str, bytes)
 else:
     string_types = (unicode, str)
+
+__version__ = '1.5.0'
 
 
 class Error(Exception):
@@ -244,17 +252,23 @@ class Client():
     def signature(self, params):
         md5 = hashlib.md5()
 
+        # Add timestamp if not already present
+        if not params.get("timestamp"):
+            params["timestamp"] = int(time.time())
+
         for key in sorted(params):
-            md5.update('&{0}={1}'.format(key, params[key]).encode('utf-8'))
-
+            # Replace & and = with _ in parameter values to avoid
+            # parameter injection.
+            safe_key = key.replace("&", "_").replace("=", "_")
+            safe_value = str(params[key]).replace("&", "_").replace("=", "_")
+            md5.update(u'&{0}={1}'.format(safe_key, safe_value).encode('utf-8'))
         md5.update(self.signature_secret.encode('utf-8'))
-
         return md5.hexdigest()
 
-    def get(self, host, request_uri, params={}):
+    def get(self, host, request_uri, params=None):
         uri = 'https://' + host + request_uri
 
-        params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
+        params = dict(params or {}, api_key=self.api_key, api_secret=self.api_secret)
 
         return self.parse(host, requests.get(uri, params=params, headers=self.headers))
 
@@ -310,11 +324,10 @@ class Client():
         
         return token
         
-        
-    def __get(self, request_uri, params={}):
+    def __get(self, request_uri, params=None):
         uri = 'https://' + self.api_host + request_uri
 
-        return self.parse(self.api_host, requests.get(uri, params=params, headers=self.__headers()))
+        return self.parse(self.api_host, requests.get(uri, params=params or {}, headers=self.__headers()))
 
     def __post(self, request_uri, params):
         uri = 'https://' + self.api_host + request_uri

@@ -11,6 +11,7 @@ need a Nexmo account. Sign up [for free at nexmo.com][signup].
 * [SMS API](#sms-api)
 * [Voice API](#voice-api)
 * [Verify API](#verify-api)
+* [Number Insight API](#number-insight-api)
 * [Application API](#application-api)
 * [Coverage](#api-coverage)
 * [License](#license)
@@ -31,7 +32,7 @@ Alternatively you can clone the repository:
 Usage
 -----
 
-Begin by importing the nexmo module:
+Begin by importing the `nexmo` module:
 
 ```python
 import nexmo
@@ -209,13 +210,32 @@ client.trigger_next_verification_event('00e6c3377e5348cdaf567e1417c707a5')
 
 Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#control](https://docs.nexmo.com/verify/api-reference/api-reference#control?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
+## Number Insight API
+
+### Basic Number Insight
+
+```python
+client.get_basic_number_insight(number='447700900000')
+```
+
+Docs: [https://docs.nexmo.com/number-insight/basic](https://docs.nexmo.com/number-insight/basic?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+### Standard Number Insight
+
+```python
+client.get_number_insight(number='447700900000')
+```
+
+Docs: [https://docs.nexmo.com/number-insight/standard](https://docs.nexmo.com/number-insight/basic?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+<!-- when the switchover to new Number Insight is done, then we'll add Advance Insight... -->   
 
 ## Application API
 
 ### Create an application
 
 ```python
-response = client.create_application(name='Example App', type='voice', answer_url=answer_url)
+response = client.create_application(name='Example App', type='voice', answer_url=answer_url, event_url=event_url)
 ```
 
 Docs: [https://docs.nexmo.com/tools/application-api/api-reference#create](https://docs.nexmo.com/tools/application-api/api-reference#create?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
@@ -325,10 +345,31 @@ API Coverage
     * [X] Text-To-Speech Prompt
 
 
+Contributing
+------------
+
+We :heart: contributions! But if you plan to work on something big or controversial, please [contact us](mailto:devrel@nexmo.com) first!
+
+We recommend working on `nexmo-python` with a [virtualenv][virtualenv]. The following command will install all the Python dependencies you need to run the tests:
+
+```bash
+make install
+```
+
+The tests are all written with pytest. You run them with:
+
+```bash
+make test
+```
+
+
 License
 -------
 
 This library is released under the [MIT License][license]
 
+[virtualenv]: https://virtualenv.pypa.io/en/stable/
+[report-a-bug]: https://github.com/Nexmo/nexmo-python/issues/new
+[pull-request]: https://github.com/Nexmo/nexmo-python/pulls
 [signup]: https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
 [license]: LICENSE.txt

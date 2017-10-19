@@ -1,3 +1,11 @@
+# 1.5.0
+
+* Added ability to provide a file path as private_key param no the nexmo.Client constructor
+
+* Added send/stop endpoints for audio/speech/dtmf
+
+* Added new number insight endpoints
+
 # 1.4.0
 
 * Added new Voice API call methods

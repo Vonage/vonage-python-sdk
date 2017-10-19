@@ -62,6 +62,10 @@ In order to check signatures for incoming webhook requests, you'll also
 need to specify the ``signature_secret`` argument (or the
 ``NEXMO_SIGNATURE_SECRET`` environment variable).
 
+If the argument ``signature_method`` is omitted, it will default to the md5 hash
+algorithm. Otherwise, it will use the selected method as in md5, sha1, sha256 or
+sha512 with hmac.
+
 SMS API
 -------
 
@@ -252,6 +256,16 @@ Validate webhook signatures
     client = nexmo.Client(signature_secret='secret')
 
     if client.check_signature(request.query):
+      # valid signature
+    else:
+      # invalid signature
+
+
+    or by using signature method via POST:
+
+    client = nexmo.Client(signature_secret='secret', signature_method='sha256')
+
+    if client.check_signature(request.body.decode()):
       # valid signature
     else:
       # invalid signature

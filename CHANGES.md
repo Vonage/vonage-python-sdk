@@ -1,3 +1,7 @@
+# Development
+* Drop support for Python 3.3 (in line with the cryptography library we depend upon)
+* Ensure timestamp is added the params list if signing requests
+
 # 1.5.0
 
 * Added ability to provide a file path as private_key param no the nexmo.Client constructor

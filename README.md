@@ -32,7 +32,7 @@ Alternatively you can clone the repository:
 Usage
 -----
 
-Begin by importing the nexmo module:
+Begin by importing the `nexmo` module:
 
 ```python
 import nexmo
@@ -351,10 +351,31 @@ API Coverage
     * [X] Text-To-Speech Prompt
 
 
+Contributing
+------------
+
+We :heart: contributions! But if you plan to work on something big or controversial, please [contact us](mailto:devrel@nexmo.com) first!
+
+We recommend working on `nexmo-python` with a [virtualenv][virtualenv]. The following command will install all the Python dependencies you need to run the tests:
+
+```bash
+make install
+```
+
+The tests are all written with pytest. You run them with:
+
+```bash
+make test
+```
+
+
 License
 -------
 
 This library is released under the [MIT License][license]
 
+[virtualenv]: https://virtualenv.pypa.io/en/stable/
+[report-a-bug]: https://github.com/Nexmo/nexmo-python/issues/new
+[pull-request]: https://github.com/Nexmo/nexmo-python/pulls
 [signup]: https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
 [license]: LICENSE.txt

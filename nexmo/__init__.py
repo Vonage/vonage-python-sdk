@@ -1,13 +1,21 @@
-__version__ = '1.5.0'
-
-import requests, os, warnings, hashlib, hmac, jwt, time, uuid, sys
-
 from platform import python_version
+
+import hashlib
+import hmac
+import jwt
+import os
+import requests
+import sys
+import time
+from uuid import uuid4
+import warnings
 
 if sys.version_info[0] == 3:
     string_types = (str, bytes)
 else:
     string_types = (unicode, str)
+
+__version__ = '1.5.0'
 
 
 class Error(Exception):
@@ -33,6 +41,16 @@ class Client():
         self.api_secret = kwargs.get('secret', None) or os.environ.get('NEXMO_API_SECRET', None)
 
         self.signature_secret = kwargs.get('signature_secret', None) or os.environ.get('NEXMO_SIGNATURE_SECRET', None)
+        self.signature_method = kwargs.get('signature_method', None) or os.environ.get('NEXMO_SIGNATURE_METHOD', None)
+
+        if self.signature_method == 'md5':
+            self.signature_method = hashlib.md5
+        elif self.signature_method == 'sha1':
+            self.signature_method = hashlib.sha1
+        elif self.signature_method == 'sha256':
+            self.signature_method = hashlib.sha256
+        elif self.signature_method == 'sha512':
+            self.signature_method = hashlib.sha512
 
         self.application_id = kwargs.get('application_id', None)
 
@@ -237,24 +255,37 @@ class Client():
     def check_signature(self, params):
         params = dict(params)
 
-        signature = params.pop('sig', '')
+        signature = params.pop('sig', '').lower()
 
         return hmac.compare_digest(signature, self.signature(params))
 
     def signature(self, params):
-        md5 = hashlib.md5()
+        if self.signature_method:
+            hasher = hmac.new(self.signature_secret.encode(), digestmod=self.signature_method)
+        else:
+            hasher = hashlib.md5()
+
+        # Add timestamp if not already present
+        if not params.get("timestamp"):
+            params["timestamp"] = int(time.time())
 
         for key in sorted(params):
-            md5.update('&{0}={1}'.format(key, params[key]).encode('utf-8'))
+            value = params[key]
 
-        md5.update(self.signature_secret.encode('utf-8'))
+            if isinstance(value, str):
+                value = value.replace('&', '_').replace('=', '_')
 
-        return md5.hexdigest()
+            hasher.update('&{0}={1}'.format(key, value).encode('utf-8'))
 
-    def get(self, host, request_uri, params={}):
+        if self.signature_method is None:
+            hasher.update(self.signature_secret.encode())
+
+        return hasher.hexdigest()
+
+    def get(self, host, request_uri, params=None):
         uri = 'https://' + host + request_uri
 
-        params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
+        params = dict(params or {}, api_key=self.api_key, api_secret=self.api_secret)
 
         return self.parse(host, requests.get(uri, params=params, headers=self.headers))
 
@@ -295,10 +326,10 @@ class Client():
 
             raise ServerError(message)
 
-    def __get(self, request_uri, params={}):
+    def __get(self, request_uri, params=None):
         uri = 'https://' + self.api_host + request_uri
 
-        return self.parse(self.api_host, requests.get(uri, params=params, headers=self.__headers()))
+        return self.parse(self.api_host, requests.get(uri, params=params or {}, headers=self.__headers()))
 
     def __post(self, request_uri, params):
         uri = 'https://' + self.api_host + request_uri
@@ -322,7 +353,7 @@ class Client():
         payload.setdefault('application_id', self.application_id)
         payload.setdefault('iat', iat)
         payload.setdefault('exp', iat + 60)
-        payload.setdefault('jti', str(uuid.uuid4()))
+        payload.setdefault('jti', str(uuid4()))
 
         token = jwt.encode(payload, self.private_key, algorithm='RS256')
 

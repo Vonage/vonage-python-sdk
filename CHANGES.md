@@ -1,6 +1,9 @@
-# Development
+# 2.0.0
 * Drop support for Python 3.3 (in line with the cryptography library we depend upon)
 * Ensure timestamp is added the params list if signing requests
+* Avoid value injection in signature auth.
+* Add support for different hashes for signature generation (thanks @trancee!)
+* Tests ported to pytest
 
 # 1.5.0
 

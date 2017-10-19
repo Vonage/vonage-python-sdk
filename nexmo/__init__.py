@@ -15,7 +15,7 @@ if sys.version_info[0] == 3:
 else:
     string_types = (unicode, str)
 
-__version__ = '1.5.0'
+__version__ = '2.0.0'
 
 
 class Error(Exception):

@@ -118,6 +118,46 @@ def test_signature_adds_timestamp(dummy_data):
     assert params['timestamp'] is not None
 
 
+def test_signature_md5(dummy_data):
+    params = {'a': '1', 'b': '2', 'timestamp': '1461605396'}
+    client = nexmo.Client(
+        key=dummy_data.api_key,
+        secret=dummy_data.api_secret,
+        signature_secret=dummy_data.signature_secret,
+        signature_method='md5')
+    assert client.signature(params) == 'c15c21ced558c93a226c305f58f902f2'
+
+
+def test_signature_sha1(dummy_data):
+    params = {'a': '1', 'b': '2', 'timestamp': '1461605396'}
+    client = nexmo.Client(
+        key=dummy_data.api_key,
+        secret=dummy_data.api_secret,
+        signature_secret=dummy_data.signature_secret,
+        signature_method='sha1')
+    assert client.signature(params) == '3e19a4e6880fdc2c1426bfd0587c98b9532f0210'
+
+
+def test_signature_sha256(dummy_data):
+    params = {'a': '1', 'b': '2', 'timestamp': '1461605396'}
+    client = nexmo.Client(
+        key=dummy_data.api_key,
+        secret=dummy_data.api_secret,
+        signature_secret=dummy_data.signature_secret,
+        signature_method='sha256')
+    assert client.signature(params) == 'a321e824b9b816be7c3f28859a31749a098713d39f613c80d455bbaffae1cd24'
+
+
+def test_signature_sha512(dummy_data):
+    params = {'a': '1', 'b': '2', 'timestamp': '1461605396'}
+    client = nexmo.Client(
+        key=dummy_data.api_key,
+        secret=dummy_data.api_secret,
+        signature_secret=dummy_data.signature_secret,
+        signature_method='sha512')
+    assert client.signature(params) == '812a18f76680fa0fe1b8bd9ee1625466ceb1bd96242e4d050d2cfd9a7b40166c63ed26ec9702168781b6edcf1633db8ff95af9341701004eec3fcf9550572ee8'
+
+
 def test_client_doesnt_require_api_key():
     client = nexmo.Client(application_id='myid', private_key='abc\nde')
     assert client is not None

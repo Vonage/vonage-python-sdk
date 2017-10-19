@@ -41,6 +41,16 @@ class Client():
         self.api_secret = kwargs.get('secret', None) or os.environ.get('NEXMO_API_SECRET', None)
 
         self.signature_secret = kwargs.get('signature_secret', None) or os.environ.get('NEXMO_SIGNATURE_SECRET', None)
+        self.signature_method = kwargs.get('signature_method', None) or os.environ.get('NEXMO_SIGNATURE_METHOD', None)
+
+        if self.signature_method == 'md5':
+            self.signature_method = hashlib.md5
+        elif self.signature_method == 'sha1':
+            self.signature_method = hashlib.sha1
+        elif self.signature_method == 'sha256':
+            self.signature_method = hashlib.sha256
+        elif self.signature_method == 'sha512':
+            self.signature_method = hashlib.sha512
 
         self.application_id = kwargs.get('application_id', None)
 
@@ -245,25 +255,32 @@ class Client():
     def check_signature(self, params):
         params = dict(params)
 
-        signature = params.pop('sig', '')
+        signature = params.pop('sig', '').lower()
 
         return hmac.compare_digest(signature, self.signature(params))
 
     def signature(self, params):
-        md5 = hashlib.md5()
+        if self.signature_method:
+            hasher = hmac.new(self.signature_secret.encode(), digestmod=self.signature_method)
+        else:
+            hasher = hashlib.md5()
 
         # Add timestamp if not already present
         if not params.get("timestamp"):
             params["timestamp"] = int(time.time())
 
         for key in sorted(params):
-            # Replace & and = with _ in parameter values to avoid
-            # parameter injection.
-            safe_key = key.replace("&", "_").replace("=", "_")
-            safe_value = str(params[key]).replace("&", "_").replace("=", "_")
-            md5.update(u'&{0}={1}'.format(safe_key, safe_value).encode('utf-8'))
-        md5.update(self.signature_secret.encode('utf-8'))
-        return md5.hexdigest()
+            value = params[key]
+
+            if isinstance(value, str):
+                value = value.replace('&', '_').replace('=', '_')
+
+            hasher.update('&{0}={1}'.format(key, value).encode('utf-8'))
+
+        if self.signature_method is None:
+            hasher.update(self.signature_secret.encode())
+
+        return hasher.hexdigest()
 
     def get(self, host, request_uri, params=None):
         uri = 'https://' + host + request_uri

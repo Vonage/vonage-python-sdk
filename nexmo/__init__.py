@@ -256,7 +256,7 @@ class Client():
 
     def get_recording(self, url):
         hostname = urlparse(url).hostname
-        return self.parse(hostname, requests.post(url, headers=self._headers()))
+        return self.parse(hostname, requests.get(url, headers=self._headers()))
 
     def check_signature(self, params):
         params = dict(params)
@@ -322,14 +322,15 @@ class Client():
         elif response.status_code == 204:
             return None
         elif 200 <= response.status_code < 300:
-            return response.json()
+            if response.headers.get('content-type') == 'application/json':
+                return response.json()
+            else:
+                return response.content
         elif 400 <= response.status_code < 500:
             message = "{code} response from {host}".format(code=response.status_code, host=host)
-
             raise ClientError(message)
         elif 500 <= response.status_code < 600:
             message = "{code} response from {host}".format(code=response.status_code, host=host)
-
             raise ServerError(message)
 
     def _jwt_signed_get(self, request_uri, params=None):

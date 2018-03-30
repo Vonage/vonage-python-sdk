@@ -12,7 +12,9 @@ import warnings
 
 if sys.version_info[0] == 3:
     string_types = (str, bytes)
+    from urllib.parse import urlparse
 else:
+    from urlparse import urlparse
     string_types = (unicode, str)
 
 __version__ = '2.0.0'
@@ -251,6 +253,10 @@ class Client():
 
     def send_dtmf(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put('/v1/calls/' + uuid + '/dtmf', params or kwargs)
+
+    def get_recording(self, url):
+        hostname = urlparse(url).hostname
+        return self.parse(hostname, requests.post(url, headers=self._headers()))
 
     def check_signature(self, params):
         params = dict(params)

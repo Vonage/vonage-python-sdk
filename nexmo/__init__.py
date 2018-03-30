@@ -226,31 +226,31 @@ class Client():
         return self.delete(self.api_host, '/v1/applications/' + application_id)
 
     def create_call(self, params=None, **kwargs):
-        return self.__post('/v1/calls', params or kwargs)
+        return self._jwt_signed_post('/v1/calls', params or kwargs)
 
     def get_calls(self, params=None, **kwargs):
-        return self.__get('/v1/calls', params or kwargs)
+        return self._jwt_signed_get('/v1/calls', params or kwargs)
 
     def get_call(self, uuid):
-        return self.__get('/v1/calls/' + uuid)
+        return self._jwt_signed_get('/v1/calls/' + uuid)
 
     def update_call(self, uuid, params=None, **kwargs):
-        return self.__put('/v1/calls/' + uuid, params or kwargs)
+        return self._jwt_signed_put('/v1/calls/' + uuid, params or kwargs)
 
     def send_audio(self, uuid, params=None, **kwargs):
-        return self.__put('/v1/calls/' + uuid + '/stream', params or kwargs)
+        return self._jwt_signed_put('/v1/calls/' + uuid + '/stream', params or kwargs)
 
     def stop_audio(self, uuid):
-        return self.__delete('/v1/calls/' + uuid + '/stream')
+        return self._jwt_signed_delete('/v1/calls/' + uuid + '/stream')
 
     def send_speech(self, uuid, params=None, **kwargs):
-        return self.__put('/v1/calls/' + uuid + '/talk', params or kwargs)
+        return self._jwt_signed_put('/v1/calls/' + uuid + '/talk', params or kwargs)
 
     def stop_speech(self, uuid):
-        return self.__delete('/v1/calls/' + uuid + '/talk')
+        return self._jwt_signed_delete('/v1/calls/' + uuid + '/talk')
 
     def send_dtmf(self, uuid, params=None, **kwargs):
-        return self.__put('/v1/calls/' + uuid + '/dtmf', params or kwargs)
+        return self._jwt_signed_put('/v1/calls/' + uuid + '/dtmf', params or kwargs)
 
     def check_signature(self, params):
         params = dict(params)
@@ -326,27 +326,27 @@ class Client():
 
             raise ServerError(message)
 
-    def __get(self, request_uri, params=None):
+    def _jwt_signed_get(self, request_uri, params=None):
         uri = 'https://' + self.api_host + request_uri
 
-        return self.parse(self.api_host, requests.get(uri, params=params or {}, headers=self.__headers()))
+        return self.parse(self.api_host, requests.get(uri, params=params or {}, headers=self._headers()))
 
-    def __post(self, request_uri, params):
+    def _jwt_signed_post(self, request_uri, params):
         uri = 'https://' + self.api_host + request_uri
 
-        return self.parse(self.api_host, requests.post(uri, json=params, headers=self.__headers()))
+        return self.parse(self.api_host, requests.post(uri, json=params, headers=self._headers()))
 
-    def __put(self, request_uri, params):
+    def _jwt_signed_put(self, request_uri, params):
         uri = 'https://' + self.api_host + request_uri
 
-        return self.parse(self.api_host, requests.put(uri, json=params, headers=self.__headers()))
+        return self.parse(self.api_host, requests.put(uri, json=params, headers=self._headers()))
 
-    def __delete(self, request_uri):
+    def _jwt_signed_delete(self, request_uri):
         uri = 'https://' + self.api_host + request_uri
 
-        return self.parse(self.api_host, requests.delete(uri, headers=self.__headers()))
+        return self.parse(self.api_host, requests.delete(uri, headers=self._headers()))
 
-    def __headers(self):
+    def _headers(self):
         iat = int(time.time())
 
         payload = dict(self.auth_params)

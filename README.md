@@ -78,6 +78,15 @@ else:
 
 Docs: [https://docs.nexmo.com/messaging/sms-api/api-reference#request](https://docs.nexmo.com/messaging/sms-api/api-reference#request?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
+### Tell Nexmo the SMS was received
+
+The following submits a successful conversion to Nexmo with the current timestamp. This feature must
+be enabled on your account first.
+
+```python
+response = client.submit_sms_conversion(message_id)
+```
+
 
 ## Voice API
 

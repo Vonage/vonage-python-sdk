@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 import logging
 from platform import python_version
 
@@ -6,6 +6,7 @@ import hashlib
 import hmac
 import jwt
 import os
+import pytz
 import requests
 import sys
 import time
@@ -151,7 +152,7 @@ class Client():
         params = {
             'message-id': message_id,
             'delivered': delivered,
-            'timestamp': timestamp or datetime.now(timezone.utc)
+            'timestamp': timestamp or datetime.now(pytz.utc),
         }
         # Ensure timestamp is a string:
         _format_date_param(params, 'timestamp')

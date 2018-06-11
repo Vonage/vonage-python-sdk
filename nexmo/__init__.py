@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+import logging
 from platform import python_version
 
 import hashlib
@@ -18,6 +20,8 @@ else:
     string_types = (unicode, str)
 
 __version__ = '2.0.0'
+
+logger = logging.getLogger('nexmo')
 
 
 class Error(Exception):
@@ -134,6 +138,24 @@ class Client():
 
     def send_2fa_message(self, params=None, **kwargs):
         return self.post(self.host, '/sc/us/2fa/json', params or kwargs)
+
+    def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
+        """
+        Notify Nexmo that an SMS was successfully received.
+
+        :param message_id: The `message-id` str returned by the send_message call.
+        :param delivered: A `bool` indicating that the message was or was not successfully delivered.
+        :param timestamp: A `datetime` object containing the time the SMS arrived.
+        :return: The parsed response from the server. On success, the bytestring b'OK'
+        """
+        params = {
+            'message-id': message_id,
+            'delivered': delivered,
+            'timestamp': timestamp or datetime.now(timezone.utc)
+        }
+        # Ensure timestamp is a string:
+        _format_date_param(params, 'timestamp')
+        return self.post(self.api_host, '/conversions/sms', params)
 
     def send_event_alert_message(self, params=None, **kwargs):
         return self.post(self.host, '/sc/us/alert/json', params or kwargs)
@@ -292,28 +314,28 @@ class Client():
         uri = 'https://' + host + request_uri
 
         params = dict(params or {}, api_key=self.api_key, api_secret=self.api_secret)
-
+        logger.debug("GET to %r with params %r", uri, params)
         return self.parse(host, requests.get(uri, params=params, headers=self.headers))
 
     def post(self, host, request_uri, params):
         uri = 'https://' + host + request_uri
 
         params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
-
+        logger.debug("POST to %r with params %r", uri, params)
         return self.parse(host, requests.post(uri, data=params, headers=self.headers))
 
     def put(self, host, request_uri, params):
         uri = 'https://' + host + request_uri
 
         params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
-
+        logger.debug("PUT to %r with params %r", uri, params)
         return self.parse(host, requests.put(uri, json=params, headers=self.headers))
 
     def delete(self, host, request_uri):
         uri = 'https://' + host + request_uri
 
         params = dict(api_key=self.api_key, api_secret=self.api_secret)
-
+        logger.debug("DELETE to %r with params %r", uri, params)
         return self.parse(host, requests.delete(uri, params=params, headers=self.headers))
 
     def parse(self, host, response):
@@ -327,9 +349,11 @@ class Client():
             else:
                 return response.content
         elif 400 <= response.status_code < 500:
+            logger.warn("Client error: %s %r", response.status_code, response.content)
             message = "{code} response from {host}".format(code=response.status_code, host=host)
             raise ClientError(message)
         elif 500 <= response.status_code < 600:
+            logger.warn("Server error: %s %r", response.status_code, response.content)
             message = "{code} response from {host}".format(code=response.status_code, host=host)
             raise ServerError(message)
 
@@ -365,3 +389,19 @@ class Client():
         token = jwt.encode(payload, self.private_key, algorithm='RS256')
 
         return dict(self.headers, Authorization=b'Bearer ' + token)
+
+
+def _format_date_param(params, key, format='%Y-%m-%d %H:%M:%S'):
+    """
+    Utility function to convert datetime values to strings.
+
+    If the value is already a str, or is not in the dict, no change is made.
+
+    :param params: A `dict` of params that may contain a `datetime` value.
+    :param key: The datetime value to be converted to a `str`
+    :param format: The `strftime` format to be used to format the date. The default value is '%Y-%m-%d %H:%M:%S'
+    """
+    if key in params:
+        param = params[key]
+        if hasattr(param, 'strftime'):
+            params[key] = param.strftime(format)

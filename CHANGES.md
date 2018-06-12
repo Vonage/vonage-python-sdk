@@ -1,3 +1,9 @@
+# 2.1.0
+* Added support for `get_recording`
+* Added support for SMS conversion
+* Added debug logging for most calls, under the 'nexmo' logger.
+* Internal refactoring (affects only private methods.)
+
 # 2.0.0
 * Drop support for Python 3.3 (in line with the cryptography library we depend upon)
 * Ensure timestamp is added the params list if signing requests

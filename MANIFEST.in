@@ -1,4 +1,14 @@
+include .editorconfig
 include CHANGES.md
 include LICENSE.txt
 include README.md
-include test_nexmo.py
+include requirements.txt
+include .pyup.yml
+include Makefile
+recursive-include docs *.bat
+recursive-include docs *.py
+recursive-include docs *.rst
+recursive-include docs Makefile
+recursive-include requirements *.txt
+recursive-include tests *.py
+recursive-include tests *.txt

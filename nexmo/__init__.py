@@ -1,9 +1,12 @@
+from datetime import datetime
+import logging
 from platform import python_version
 
 import hashlib
 import hmac
 import jwt
 import os
+import pytz
 import requests
 import sys
 import time
@@ -12,10 +15,14 @@ import warnings
 
 if sys.version_info[0] == 3:
     string_types = (str, bytes)
+    from urllib.parse import urlparse
 else:
+    from urlparse import urlparse
     string_types = (unicode, str)
 
 __version__ = '2.0.0'
+
+logger = logging.getLogger('nexmo')
 
 
 class Error(Exception):
@@ -133,6 +140,24 @@ class Client():
     def send_2fa_message(self, params=None, **kwargs):
         return self.post(self.host, '/sc/us/2fa/json', params or kwargs)
 
+    def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
+        """
+        Notify Nexmo that an SMS was successfully received.
+
+        :param message_id: The `message-id` str returned by the send_message call.
+        :param delivered: A `bool` indicating that the message was or was not successfully delivered.
+        :param timestamp: A `datetime` object containing the time the SMS arrived.
+        :return: The parsed response from the server. On success, the bytestring b'OK'
+        """
+        params = {
+            'message-id': message_id,
+            'delivered': delivered,
+            'timestamp': timestamp or datetime.now(pytz.utc),
+        }
+        # Ensure timestamp is a string:
+        _format_date_param(params, 'timestamp')
+        return self.post(self.api_host, '/conversions/sms', params)
+
     def send_event_alert_message(self, params=None, **kwargs):
         return self.post(self.host, '/sc/us/alert/json', params or kwargs)
 
@@ -226,31 +251,35 @@ class Client():
         return self.delete(self.api_host, '/v1/applications/' + application_id)
 
     def create_call(self, params=None, **kwargs):
-        return self.__post('/v1/calls', params or kwargs)
+        return self._jwt_signed_post('/v1/calls', params or kwargs)
 
     def get_calls(self, params=None, **kwargs):
-        return self.__get('/v1/calls', params or kwargs)
+        return self._jwt_signed_get('/v1/calls', params or kwargs)
 
     def get_call(self, uuid):
-        return self.__get('/v1/calls/' + uuid)
+        return self._jwt_signed_get('/v1/calls/' + uuid)
 
     def update_call(self, uuid, params=None, **kwargs):
-        return self.__put('/v1/calls/' + uuid, params or kwargs)
+        return self._jwt_signed_put('/v1/calls/' + uuid, params or kwargs)
 
     def send_audio(self, uuid, params=None, **kwargs):
-        return self.__put('/v1/calls/' + uuid + '/stream', params or kwargs)
+        return self._jwt_signed_put('/v1/calls/' + uuid + '/stream', params or kwargs)
 
     def stop_audio(self, uuid):
-        return self.__delete('/v1/calls/' + uuid + '/stream')
+        return self._jwt_signed_delete('/v1/calls/' + uuid + '/stream')
 
     def send_speech(self, uuid, params=None, **kwargs):
-        return self.__put('/v1/calls/' + uuid + '/talk', params or kwargs)
+        return self._jwt_signed_put('/v1/calls/' + uuid + '/talk', params or kwargs)
 
     def stop_speech(self, uuid):
-        return self.__delete('/v1/calls/' + uuid + '/talk')
+        return self._jwt_signed_delete('/v1/calls/' + uuid + '/talk')
 
     def send_dtmf(self, uuid, params=None, **kwargs):
-        return self.__put('/v1/calls/' + uuid + '/dtmf', params or kwargs)
+        return self._jwt_signed_put('/v1/calls/' + uuid + '/dtmf', params or kwargs)
+
+    def get_recording(self, url):
+        hostname = urlparse(url).hostname
+        return self.parse(hostname, requests.get(url, headers=self._headers()))
 
     def check_signature(self, params):
         params = dict(params)
@@ -286,28 +315,28 @@ class Client():
         uri = 'https://' + host + request_uri
 
         params = dict(params or {}, api_key=self.api_key, api_secret=self.api_secret)
-
+        logger.debug("GET to %r with params %r", uri, params)
         return self.parse(host, requests.get(uri, params=params, headers=self.headers))
 
     def post(self, host, request_uri, params):
         uri = 'https://' + host + request_uri
 
         params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
-
+        logger.debug("POST to %r with params %r", uri, params)
         return self.parse(host, requests.post(uri, data=params, headers=self.headers))
 
     def put(self, host, request_uri, params):
         uri = 'https://' + host + request_uri
 
         params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
-
+        logger.debug("PUT to %r with params %r", uri, params)
         return self.parse(host, requests.put(uri, json=params, headers=self.headers))
 
     def delete(self, host, request_uri):
         uri = 'https://' + host + request_uri
 
         params = dict(api_key=self.api_key, api_secret=self.api_secret)
-
+        logger.debug("DELETE to %r with params %r", uri, params)
         return self.parse(host, requests.delete(uri, params=params, headers=self.headers))
 
     def parse(self, host, response):
@@ -316,37 +345,40 @@ class Client():
         elif response.status_code == 204:
             return None
         elif 200 <= response.status_code < 300:
-            return response.json()
+            if response.headers.get('content-type') == 'application/json':
+                return response.json()
+            else:
+                return response.content
         elif 400 <= response.status_code < 500:
+            logger.warn("Client error: %s %r", response.status_code, response.content)
             message = "{code} response from {host}".format(code=response.status_code, host=host)
-
             raise ClientError(message)
         elif 500 <= response.status_code < 600:
+            logger.warn("Server error: %s %r", response.status_code, response.content)
             message = "{code} response from {host}".format(code=response.status_code, host=host)
-
             raise ServerError(message)
 
-    def __get(self, request_uri, params=None):
+    def _jwt_signed_get(self, request_uri, params=None):
         uri = 'https://' + self.api_host + request_uri
 
-        return self.parse(self.api_host, requests.get(uri, params=params or {}, headers=self.__headers()))
+        return self.parse(self.api_host, requests.get(uri, params=params or {}, headers=self._headers()))
 
-    def __post(self, request_uri, params):
+    def _jwt_signed_post(self, request_uri, params):
         uri = 'https://' + self.api_host + request_uri
 
-        return self.parse(self.api_host, requests.post(uri, json=params, headers=self.__headers()))
+        return self.parse(self.api_host, requests.post(uri, json=params, headers=self._headers()))
 
-    def __put(self, request_uri, params):
+    def _jwt_signed_put(self, request_uri, params):
         uri = 'https://' + self.api_host + request_uri
 
-        return self.parse(self.api_host, requests.put(uri, json=params, headers=self.__headers()))
+        return self.parse(self.api_host, requests.put(uri, json=params, headers=self._headers()))
 
-    def __delete(self, request_uri):
+    def _jwt_signed_delete(self, request_uri):
         uri = 'https://' + self.api_host + request_uri
 
-        return self.parse(self.api_host, requests.delete(uri, headers=self.__headers()))
+        return self.parse(self.api_host, requests.delete(uri, headers=self._headers()))
 
-    def __headers(self):
+    def _headers(self):
         iat = int(time.time())
 
         payload = dict(self.auth_params)
@@ -358,3 +390,19 @@ class Client():
         token = jwt.encode(payload, self.private_key, algorithm='RS256')
 
         return dict(self.headers, Authorization=b'Bearer ' + token)
+
+
+def _format_date_param(params, key, format='%Y-%m-%d %H:%M:%S'):
+    """
+    Utility function to convert datetime values to strings.
+
+    If the value is already a str, or is not in the dict, no change is made.
+
+    :param params: A `dict` of params that may contain a `datetime` value.
+    :param key: The datetime value to be converted to a `str`
+    :param format: The `strftime` format to be used to format the date. The default value is '%Y-%m-%d %H:%M:%S'
+    """
+    if key in params:
+        param = params[key]
+        if hasattr(param, 'strftime'):
+            params[key] = param.strftime(format)

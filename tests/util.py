@@ -34,6 +34,9 @@ def stub(method, url):
     responses.add(method, url, body='{"key":"value"}', status=200, content_type='application/json')
 
 
+def stub_bytes(method, url):
+    responses.add(method, url, body=b'THISISANMP3', status=200)
+
 def assert_re(pattern, string):
     __tracebackhide__ = True
     if not re.search(pattern, string):

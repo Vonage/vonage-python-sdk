@@ -1,4 +1,8 @@
 .PHONY: test install requirements release release-test
+
+coverage:
+	pytest -v --cov
+
 test:
 	pytest -v
 

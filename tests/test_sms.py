@@ -39,3 +39,11 @@ def test_server_error(client):
     with pytest.raises(nexmo.ServerError) as excinfo:
         client.send_message({})
     excinfo.match(r'500 response from rest.nexmo.com')
+
+@responses.activate
+def test_submit_sms_conversion(client):
+    responses.add(responses.POST, 'https://api.nexmo.com/conversions/sms', status=200, body=b'OK')
+
+    client.submit_sms_conversion('a-message-id')
+    assert 'message-id=a-message-id' in request_body()
+    assert 'timestamp' in request_body()

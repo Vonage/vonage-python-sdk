@@ -19,23 +19,26 @@ def request_query():
 
 
 def request_user_agent():
-    return responses.calls[0].request.headers['User-Agent']
+    return responses.calls[0].request.headers["User-Agent"]
 
 
 def request_authorization():
-    return responses.calls[0].request.headers['Authorization'].decode('utf-8')
+    return responses.calls[0].request.headers["Authorization"].decode("utf-8")
 
 
 def request_content_type():
-    return responses.calls[0].request.headers['Content-Type']
+    return responses.calls[0].request.headers["Content-Type"]
 
 
 def stub(method, url):
-    responses.add(method, url, body='{"key":"value"}', status=200, content_type='application/json')
+    responses.add(
+        method, url, body='{"key":"value"}', status=200, content_type="application/json"
+    )
 
 
 def stub_bytes(method, url):
-    responses.add(method, url, body=b'THISISANMP3', status=200)
+    responses.add(method, url, body=b"THISISANMP3", status=200)
+
 
 def assert_re(pattern, string):
     __tracebackhide__ = True

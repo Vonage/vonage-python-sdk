@@ -25,10 +25,14 @@ To install the Python client library using pip:
 
     pip install nexmo
 
+To upgrade your installed client library using pip:
+
+    pip install nexmo --upgrade
+
 Alternatively you can clone the repository:
 
     git clone git@github.com:Nexmo/nexmo-python.git
-
+    
 
 Usage
 -----
@@ -168,6 +172,12 @@ response = client.send_dtmf(uuid, digits='1234')
 ```
 
 Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#dtmf_put](https://docs.nexmo.com/voice/voice-api/api-reference#dtmf_put?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+### Get recording 
+
+``` python
+response = client.get_recording(RECORDING_URL)
+```
 
 
 ## Verify API

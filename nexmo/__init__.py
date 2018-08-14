@@ -332,11 +332,11 @@ class Client:
         hostname = urlparse(url).hostname
         return self.parse(hostname, requests.get(url, headers=self._headers()))
 
-    def redact_message(self, id, product, type=None):
+    def redact_transaction(self, id, product, type=None):
         params = {"id": id, "product": product}
         if type is not None:
             params["type"] = type
-        self.post(self.api_host, "/v1/redact/transaction", params)
+        return self._post_json(self.api_host, "/v1/redact/transaction", params)
 
     def check_signature(self, params):
         params = dict(params)
@@ -383,6 +383,12 @@ class Client:
         params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
         logger.debug("POST to %r with params %r", uri, params)
         return self.parse(host, requests.post(uri, data=params, headers=self.headers))
+
+    def _post_json(self, host, request_uri, json):
+        uri = "https://" + host + request_uri
+        params = dict(api_key=self.api_key, api_secret=self.api_secret)
+        logger.debug("POST to %r with params: %r, body: %r", request_uri, params, json)
+        return self.parse(host, requests.post(uri, params=params, headers=self.headers, json=json))
 
     def put(self, host, request_uri, params):
         uri = "https://" + host + request_uri

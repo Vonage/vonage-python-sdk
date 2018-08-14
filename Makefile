@@ -6,11 +6,11 @@ coverage:
 test:
 	pytest -v
 
-release-test:
-	python setup.py sdist bdist_wheel upload -r pypitest
+dist:
+	python setup.py sdist --formats zip,gztar bdist_wheel
 
 release:
-	python setup.py sdist bdist_wheel upload
+	twine upload dist/*
 
 install: requirements
 

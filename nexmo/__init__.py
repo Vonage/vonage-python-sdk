@@ -71,7 +71,7 @@ class Client:
         self.private_key = kwargs.get("private_key", None)
 
         if isinstance(self.private_key, string_types) and "\n" not in self.private_key:
-            with open(self.private_key, "rb") as key_file:
+            with open(self.private_key, "r") as key_file:
                 self.private_key = key_file.read()
 
         self.host = "rest.nexmo.com"

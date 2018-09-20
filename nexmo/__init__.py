@@ -2,6 +2,7 @@ from datetime import datetime
 import logging
 from platform import python_version
 
+import base64
 import hashlib
 import hmac
 import jwt
@@ -336,13 +337,24 @@ class Client:
         params = {"id": id, "product": product}
         if type is not None:
             params["type"] = type
-        return self._post_json(self.api_host, "/v1/redact/transaction", params)
+        return self._post_json(self.api_host, "/v1/redact/transaction", params, header_auth=True)
+
+    def list_secrets(self, api_key):
+        return self.get(self.api_host, '/accounts/' + api_key + '/secrets', header_auth=True)
+
+    def get_secret(self, api_key, secret_id):
+        return self.get(self.api_host, '/accounts/' + api_key + '/secrets/' + secret_id, header_auth=True)
+
+    def create_secret(self, api_key, secret):
+        body = {'secret': secret }
+        return self._post_json(self.api_host, '/accounts/' + api_key + '/secrets', body, header_auth=True)
+
+    def delete_secret(self, api_key, secret_id):
+        return self.delete(self.api_host, '/accounts/' + api_key + '/secrets/' + secret_id, header_auth=True)
 
     def check_signature(self, params):
         params = dict(params)
-
         signature = params.pop("sig", "").lower()
-
         return hmac.compare_digest(signature, self.signature(params))
 
     def signature(self, params):
@@ -370,25 +382,39 @@ class Client:
 
         return hasher.hexdigest()
 
-    def get(self, host, request_uri, params=None):
+    def get(self, host, request_uri, params=None, header_auth=False):
         uri = "https://" + host + request_uri
+        headers = self.headers
+        if header_auth:
+            h = base64.b64encode((self.api_key + ':' + self.api_secret).encode('utf-8')).decode('ascii')
+            headers = dict(headers or {}, Authorization='Basic {hash}'.format(hash=h))
+        else:
+            params = dict(params or {}, api_key=self.api_key, api_secret=self.api_secret)
+        logger.debug("GET to %r with params %r, headers %r", uri, params, headers)
+        return self.parse(host, requests.get(uri, params=params, headers=headers))
 
-        params = dict(params or {}, api_key=self.api_key, api_secret=self.api_secret)
-        logger.debug("GET to %r with params %r", uri, params)
-        return self.parse(host, requests.get(uri, params=params, headers=self.headers))
-
-    def post(self, host, request_uri, params):
+    def post(self, host, request_uri, params, header_auth=False):
         uri = "https://" + host + request_uri
+        headers = self.headers
+        if header_auth:
+            h = base64.b64encode((self.api_key + ':' + self.api_secret).encode('utf-8')).decode('ascii')
+            headers = dict(headers or {}, Authorization='Basic {hash}'.format(hash=h))
+        else:
+            params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
+        logger.debug("POST to %r with params %r, headers %r", uri, params)
+        return self.parse(host, requests.post(uri, data=params, headers=headers))
 
-        params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
-        logger.debug("POST to %r with params %r", uri, params)
-        return self.parse(host, requests.post(uri, data=params, headers=self.headers))
-
-    def _post_json(self, host, request_uri, json):
+    def _post_json(self, host, request_uri, json, header_auth=False):
         uri = "https://" + host + request_uri
-        params = dict(api_key=self.api_key, api_secret=self.api_secret)
-        logger.debug("POST to %r with params: %r, body: %r", request_uri, params, json)
-        return self.parse(host, requests.post(uri, params=params, headers=self.headers, json=json))
+        params = None
+        headers = self.headers
+        if header_auth:
+            h = base64.b64encode((self.api_key + ':' + self.api_secret).encode('utf-8')).decode('ascii')
+            headers = dict(headers or {}, Authorization='Basic {hash}'.format(hash=h))
+        else:
+            params = dict(api_key=self.api_key, api_secret=self.api_secret)
+        logger.debug("POST to %r with params: %r, body: %r, headers: %r", request_uri, params, json, headers)
+        return self.parse(host, requests.post(uri, params=params, headers=headers, json=json))
 
     def put(self, host, request_uri, params):
         uri = "https://" + host + request_uri
@@ -397,22 +423,29 @@ class Client:
         logger.debug("PUT to %r with params %r", uri, params)
         return self.parse(host, requests.put(uri, json=params, headers=self.headers))
 
-    def delete(self, host, request_uri):
+    def delete(self, host, request_uri, header_auth=False):
         uri = "https://" + host + request_uri
 
-        params = dict(api_key=self.api_key, api_secret=self.api_secret)
-        logger.debug("DELETE to %r with params %r", uri, params)
+        params = None
+        headers = self.headers
+        if header_auth:
+            h = base64.b64encode((self.api_key + ':' + self.api_secret).encode('utf-8')).decode('ascii')
+            headers = dict(headers or {}, Authorization='Basic {hash}'.format(hash=h))
+        else:
+            params = dict(api_key=self.api_key, api_secret=self.api_secret)
+        logger.debug("DELETE to %r with params %r, headers %r", uri, params, headers)
         return self.parse(
-            host, requests.delete(uri, params=params, headers=self.headers)
+            host, requests.delete(uri, params=params, headers=headers)
         )
 
     def parse(self, host, response):
+        logger.debug("Response headers %r", response.headers)
         if response.status_code == 401:
             raise AuthenticationError
         elif response.status_code == 204:
             return None
         elif 200 <= response.status_code < 300:
-            if response.headers.get("content-type") == "application/json":
+            if response.headers.get("content-type").split(';', 1)[0] == "application/json":
                 return response.json()
             else:
                 return response.content

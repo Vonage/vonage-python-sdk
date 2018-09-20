@@ -1,7 +1,12 @@
+import os
 import os.path
 import platform
 
 import pytest
+
+
+# Ensure our client isn't being configured with real values!
+os.environ.clear()
 
 
 def read_file(path):

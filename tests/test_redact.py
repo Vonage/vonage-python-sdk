@@ -1,9 +1,3 @@
-import os.path
-import time
-
-import jwt
-
-import nexmo
 from util import *
 
 

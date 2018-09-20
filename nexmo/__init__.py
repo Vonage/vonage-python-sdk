@@ -1,4 +1,5 @@
 from datetime import datetime
+from json import JSONDecodeError
 import logging
 from platform import python_version
 
@@ -337,7 +338,7 @@ class Client:
         params = {"id": id, "product": product}
         if type is not None:
             params["type"] = type
-        return self._post_json(self.api_host, "/v1/redact/transaction", params, header_auth=True)
+        return self._post_json(self.api_host, "/v1/redact/transaction", params)
 
     def list_secrets(self, api_key):
         return self.get(self.api_host, '/accounts/' + api_key + '/secrets', header_auth=True)
@@ -347,7 +348,7 @@ class Client:
 
     def create_secret(self, api_key, secret):
         body = {'secret': secret }
-        return self._post_json(self.api_host, '/accounts/' + api_key + '/secrets', body, header_auth=True)
+        return self._post_json(self.api_host, '/accounts/' + api_key + '/secrets', body)
 
     def delete_secret(self, api_key, secret_id):
         return self.delete(self.api_host, '/accounts/' + api_key + '/secrets/' + secret_id, header_auth=True)
@@ -404,17 +405,12 @@ class Client:
         logger.debug("POST to %r with params %r, headers %r", uri, params)
         return self.parse(host, requests.post(uri, data=params, headers=headers))
 
-    def _post_json(self, host, request_uri, json, header_auth=False):
+    def _post_json(self, host, request_uri, json):
         uri = "https://" + host + request_uri
-        params = None
-        headers = self.headers
-        if header_auth:
-            h = base64.b64encode((self.api_key + ':' + self.api_secret).encode('utf-8')).decode('ascii')
-            headers = dict(headers or {}, Authorization='Basic {hash}'.format(hash=h))
-        else:
-            params = dict(api_key=self.api_key, api_secret=self.api_secret)
-        logger.debug("POST to %r with params: %r, body: %r, headers: %r", request_uri, params, json, headers)
-        return self.parse(host, requests.post(uri, params=params, headers=headers, json=json))
+        auth = base64.b64encode((self.api_key + ':' + self.api_secret).encode('utf-8')).decode('ascii')
+        headers = dict(self.headers or {}, Authorization='Basic {hash}'.format(hash=auth))
+        logger.debug("POST to %r with body: %r, headers: %r", request_uri, json, headers)
+        return self.parse(host, requests.post(uri, headers=headers, json=json))
 
     def put(self, host, request_uri, params):
         uri = "https://" + host + request_uri
@@ -456,6 +452,13 @@ class Client:
             message = "{code} response from {host}".format(
                 code=response.status_code, host=host
             )
+            # Test for standard error format:
+            try:
+                error_data = response.json()
+                if 'type' in error_data and 'title' in error_data and 'detail' in error_data:
+                    message = "{} : {} : {} ({})".format(message, error_data['title'], error_data['detail'], error_data['type'])
+            except JSONDecodeError:
+                pass
             raise ClientError(message)
         elif 500 <= response.status_code < 600:
             logger.warning(

@@ -341,17 +341,27 @@ class Client:
         return self._post_json(self.api_host, "/v1/redact/transaction", params)
 
     def list_secrets(self, api_key):
-        return self.get(self.api_host, '/accounts/' + api_key + '/secrets', header_auth=True)
+        return self.get(
+            self.api_host, "/accounts/" + api_key + "/secrets", header_auth=True
+        )
 
     def get_secret(self, api_key, secret_id):
-        return self.get(self.api_host, '/accounts/' + api_key + '/secrets/' + secret_id, header_auth=True)
+        return self.get(
+            self.api_host,
+            "/accounts/" + api_key + "/secrets/" + secret_id,
+            header_auth=True,
+        )
 
     def create_secret(self, api_key, secret):
-        body = {'secret': secret }
-        return self._post_json(self.api_host, '/accounts/' + api_key + '/secrets', body)
+        body = {"secret": secret}
+        return self._post_json(self.api_host, "/accounts/" + api_key + "/secrets", body)
 
     def delete_secret(self, api_key, secret_id):
-        return self.delete(self.api_host, '/accounts/' + api_key + '/secrets/' + secret_id, header_auth=True)
+        return self.delete(
+            self.api_host,
+            "/accounts/" + api_key + "/secrets/" + secret_id,
+            header_auth=True,
+        )
 
     def check_signature(self, params):
         params = dict(params)
@@ -387,10 +397,14 @@ class Client:
         uri = "https://" + host + request_uri
         headers = self.headers
         if header_auth:
-            h = base64.b64encode((self.api_key + ':' + self.api_secret).encode('utf-8')).decode('ascii')
-            headers = dict(headers or {}, Authorization='Basic {hash}'.format(hash=h))
+            h = base64.b64encode(
+                (self.api_key + ":" + self.api_secret).encode("utf-8")
+            ).decode("ascii")
+            headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
         else:
-            params = dict(params or {}, api_key=self.api_key, api_secret=self.api_secret)
+            params = dict(
+                params or {}, api_key=self.api_key, api_secret=self.api_secret
+            )
         logger.debug("GET to %r with params %r, headers %r", uri, params, headers)
         return self.parse(host, requests.get(uri, params=params, headers=headers))
 
@@ -398,8 +412,10 @@ class Client:
         uri = "https://" + host + request_uri
         headers = self.headers
         if header_auth:
-            h = base64.b64encode((self.api_key + ':' + self.api_secret).encode('utf-8')).decode('ascii')
-            headers = dict(headers or {}, Authorization='Basic {hash}'.format(hash=h))
+            h = base64.b64encode(
+                (self.api_key + ":" + self.api_secret).encode("utf-8")
+            ).decode("ascii")
+            headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
         logger.debug("POST to %r with params %r, headers %r", uri, params)
@@ -407,9 +423,15 @@ class Client:
 
     def _post_json(self, host, request_uri, json):
         uri = "https://" + host + request_uri
-        auth = base64.b64encode((self.api_key + ':' + self.api_secret).encode('utf-8')).decode('ascii')
-        headers = dict(self.headers or {}, Authorization='Basic {hash}'.format(hash=auth))
-        logger.debug("POST to %r with body: %r, headers: %r", request_uri, json, headers)
+        auth = base64.b64encode(
+            (self.api_key + ":" + self.api_secret).encode("utf-8")
+        ).decode("ascii")
+        headers = dict(
+            self.headers or {}, Authorization="Basic {hash}".format(hash=auth)
+        )
+        logger.debug(
+            "POST to %r with body: %r, headers: %r", request_uri, json, headers
+        )
         return self.parse(host, requests.post(uri, headers=headers, json=json))
 
     def put(self, host, request_uri, params):
@@ -425,14 +447,14 @@ class Client:
         params = None
         headers = self.headers
         if header_auth:
-            h = base64.b64encode((self.api_key + ':' + self.api_secret).encode('utf-8')).decode('ascii')
-            headers = dict(headers or {}, Authorization='Basic {hash}'.format(hash=h))
+            h = base64.b64encode(
+                (self.api_key + ":" + self.api_secret).encode("utf-8")
+            ).decode("ascii")
+            headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
         else:
             params = dict(api_key=self.api_key, api_secret=self.api_secret)
         logger.debug("DELETE to %r with params %r, headers %r", uri, params, headers)
-        return self.parse(
-            host, requests.delete(uri, params=params, headers=headers)
-        )
+        return self.parse(host, requests.delete(uri, params=params, headers=headers))
 
     def parse(self, host, response):
         logger.debug("Response headers %r", response.headers)
@@ -441,7 +463,10 @@ class Client:
         elif response.status_code == 204:
             return None
         elif 200 <= response.status_code < 300:
-            if response.headers.get("content-type").split(';', 1)[0] == "application/json":
+            if (
+                response.headers.get("content-type").split(";", 1)[0]
+                == "application/json"
+            ):
                 return response.json()
             else:
                 return response.content
@@ -455,8 +480,16 @@ class Client:
             # Test for standard error format:
             try:
                 error_data = response.json()
-                if 'type' in error_data and 'title' in error_data and 'detail' in error_data:
-                    message = "{} : {} : {} ({})".format(message, error_data['title'], error_data['detail'], error_data['type'])
+                if (
+                    "type" in error_data
+                    and "title" in error_data
+                    and "detail" in error_data
+                ):
+                    message = "{title}: {detail} ({type})".format(
+                        title=error_data["title"],
+                        detail=error_data["detail"],
+                        type=error_data["type"],
+                    )
             except JSONDecodeError:
                 pass
             raise ClientError(message)

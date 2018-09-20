@@ -126,7 +126,7 @@ def test_list_secrets_missing(client):
     with pytest.raises(nexmo.ClientError) as ce:
         client.list_secrets('meaccountid')
     assert_basic_auth()
-    assert """nexmo.ClientError: 404 response from api.nexmo.com : Invalid API Key : API key 'ABC123' does not exist, or you do not have access (https://developer.nexmo.com/api-errors#invalid-api-key)""" in str(ce)
+    assert """nexmo.ClientError: Invalid API Key: API key 'ABC123' does not exist, or you do not have access (https://developer.nexmo.com/api-errors#invalid-api-key)""" in str(ce)
 
 
 @responses.activate
@@ -152,7 +152,7 @@ def test_delete_secret_last_secret(client):
     with pytest.raises(nexmo.ClientError) as ce:
         client.delete_secret('meaccountid', 'mahsecret')
     assert_basic_auth()
-    assert """nexmo.ClientError: 403 response from api.nexmo.com : Secret Deletion Forbidden : Can not delete the last secret. The account must always have at least 1 secret active at any time (https://developer.nexmo.com/api-errors/account/secret-management#delete-last-secret)""" in str(ce)
+    assert """nexmo.ClientError: Secret Deletion Forbidden: Can not delete the last secret. The account must always have at least 1 secret active at any time (https://developer.nexmo.com/api-errors/account/secret-management#delete-last-secret)""" in str(ce)
 
 
 @responses.activate
@@ -171,7 +171,7 @@ def test_create_secret_max_secrets(client):
     with pytest.raises(nexmo.ClientError) as ce:
         client.create_secret('meaccountid', 'mahsecret')
     assert_basic_auth()
-    assert """nexmo.ClientError: 403 response from api.nexmo.com : Maxmimum number of secrets already met : This account has reached maximum number of '2' allowed secrets (https://developer.nexmo.com/api-errors/account/secret-management#maximum-secrets-allowed)""" in str(ce)
+    assert """nexmo.ClientError: Maxmimum number of secrets already met: This account has reached maximum number of '2' allowed secrets (https://developer.nexmo.com/api-errors/account/secret-management#maximum-secrets-allowed)""" in str(ce)
 
 
 @responses.activate
@@ -181,5 +181,5 @@ def test_create_secret_validation(client):
     with pytest.raises(nexmo.ClientError) as ce:
         client.create_secret('meaccountid', 'mahsecret')
     assert_basic_auth()
-    assert """nexmo.ClientError: 400 response from api.nexmo.com : Bad Request : The request failed due to validation errors (https://developer.nexmo.com/api-errors/account/secret-management#validation)""" in str(ce)
+    assert """nexmo.ClientError: Bad Request: The request failed due to validation errors (https://developer.nexmo.com/api-errors/account/secret-management#validation)""" in str(ce)
 

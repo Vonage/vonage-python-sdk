@@ -43,16 +43,20 @@ class AuthenticationError(ClientError):
 
 
 class Client:
-    def __init__(self,
-                 key=None, secret=None,
-                 signature_secret=None, signature_method=None,
-                 application_id=None, private_key=None,
-                 app_name=None, app_version=None):
+    def __init__(
+        self,
+        key=None,
+        secret=None,
+        signature_secret=None,
+        signature_method=None,
+        application_id=None,
+        private_key=None,
+        app_name=None,
+        app_version=None,
+    ):
         self.api_key = key or os.environ.get("NEXMO_API_KEY", None)
 
-        self.api_secret = secret or os.environ.get(
-            "NEXMO_API_SECRET", None
-        )
+        self.api_secret = secret or os.environ.get("NEXMO_API_SECRET", None)
 
         self.signature_secret = signature_secret or os.environ.get(
             "NEXMO_SIGNATURE_SECRET", None
@@ -386,7 +390,9 @@ class Client:
         uri = "https://" + host + request_uri
         params = dict(api_key=self.api_key, api_secret=self.api_secret)
         logger.debug("POST to %r with params: %r, body: %r", request_uri, params, json)
-        return self.parse(host, requests.post(uri, params=params, headers=self.headers, json=json))
+        return self.parse(
+            host, requests.post(uri, params=params, headers=self.headers, json=json)
+        )
 
     def put(self, host, request_uri, params):
         uri = "https://" + host + request_uri

@@ -1,5 +1,4 @@
 from datetime import datetime
-from json import JSONDecodeError
 import logging
 from platform import python_version
 
@@ -18,8 +17,10 @@ import warnings
 if sys.version_info[0] == 3:
     string_types = (str, bytes)
     from urllib.parse import urlparse
+    from json import JSONDecodeError
 else:
     from urlparse import urlparse
+    JSONDecodeError = ValueError
 
     string_types = (unicode, str)
 

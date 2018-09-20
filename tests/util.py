@@ -60,7 +60,6 @@ def assert_re(pattern, string):
 
 def assert_basic_auth():
     params = request_params()
-    print("Params:", params)
     assert 'api_key' not in params
     assert 'api_secret' not in params
     assert request_headers()["Authorization"] == 'Basic bmV4bW8tYXBpLWtleTpuZXhtby1hcGktc2VjcmV0'

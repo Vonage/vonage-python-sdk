@@ -17,12 +17,15 @@ import warnings
 if sys.version_info[0] == 3:
     string_types = (str, bytes)
     from urllib.parse import urlparse
-    from json import JSONDecodeError
-else:
-    from urlparse import urlparse
-    JSONDecodeError = ValueError
 
+else:
     string_types = (unicode, str)
+    from urlparse import urlparse
+
+try:
+    from json import JSONDecodeError
+except ImportError:
+    JSONDecodeError = ValueError
 
 __version__ = "2.2.0"
 

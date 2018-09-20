@@ -467,10 +467,9 @@ class Client:
         elif response.status_code == 204:
             return None
         elif 200 <= response.status_code < 300:
-            if (
-                response.headers.get("content-type").split(";", 1)[0]
-                == "application/json"
-            ):
+            # Strip off any encoding from the content-type header:
+            content_mime = response.headers.get("content-type").split(";", 1)[0]
+            if content_mime == "application/json":
                 return response.json()
             else:
                 return response.content

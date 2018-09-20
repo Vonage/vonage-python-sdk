@@ -43,32 +43,30 @@ class AuthenticationError(ClientError):
 
 
 class Client:
-    def __init__(self, **kwargs):
-        self.api_key = kwargs.get("key", None) or os.environ.get("NEXMO_API_KEY", None)
+    def __init__(self,
+                 key=None, secret=None,
+                 signature_secret=None, signature_method=None,
+                 application_id=None, private_key=None,
+                 app_name=None, app_version=None):
+        self.api_key = key or os.environ.get("NEXMO_API_KEY", None)
 
-        self.api_secret = kwargs.get("secret", None) or os.environ.get(
+        self.api_secret = secret or os.environ.get(
             "NEXMO_API_SECRET", None
         )
 
-        self.signature_secret = kwargs.get("signature_secret", None) or os.environ.get(
+        self.signature_secret = signature_secret or os.environ.get(
             "NEXMO_SIGNATURE_SECRET", None
         )
-        self.signature_method = kwargs.get("signature_method", None) or os.environ.get(
+        self.signature_method = signature_method or os.environ.get(
             "NEXMO_SIGNATURE_METHOD", None
         )
 
-        if self.signature_method == "md5":
-            self.signature_method = hashlib.md5
-        elif self.signature_method == "sha1":
-            self.signature_method = hashlib.sha1
-        elif self.signature_method == "sha256":
-            self.signature_method = hashlib.sha256
-        elif self.signature_method == "sha512":
-            self.signature_method = hashlib.sha512
+        if signature_method in {"md5", "sha1", "sha256", "sha512"}:
+            self.signature_method = getattr(hashlib, signature_method)
 
-        self.application_id = kwargs.get("application_id", None)
+        self.application_id = application_id
 
-        self.private_key = kwargs.get("private_key", None)
+        self.private_key = private_key
 
         if isinstance(self.private_key, string_types) and "\n" not in self.private_key:
             with open(self.private_key, "rb") as key_file:
@@ -80,8 +78,8 @@ class Client:
 
         user_agent = "nexmo-python/{0}/{1}".format(__version__, python_version())
 
-        if "app_name" in kwargs and "app_version" in kwargs:
-            user_agent += "/{0}/{1}".format(kwargs["app_name"], kwargs["app_version"])
+        if app_name and app_version:
+            user_agent += "/{0}/{1}".format(app_name, app_version)
 
         self.headers = {"User-Agent": user_agent}
 

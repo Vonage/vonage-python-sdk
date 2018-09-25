@@ -1,3 +1,10 @@
+# In Development
+* Secret Management
+* Support for Authorization header authentication.
+
+# 2.2.0
+* Added support for `redact_transaction`.
+
 # 2.1.0
 * Added support for `get_recording`
 * Added support for SMS conversion

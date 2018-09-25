@@ -2,6 +2,7 @@
 
 coverage:
 	pytest -v --cov
+	coverage html
 
 test:
 	pytest -v

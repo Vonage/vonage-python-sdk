@@ -1,4 +1,7 @@
-.PHONY: test install requirements release release-test
+.PHONY: clean test dist coverage install requirements release release-test
+
+clean:
+	rm -rf dist build
 
 coverage:
 	pytest -v --cov

@@ -14,6 +14,7 @@ need a Nexmo account. Sign up [for free at nexmo.com][signup].
 * [Voice API](#voice-api)
 * [Verify API](#verify-api)
 * [Number Insight API](#number-insight-api)
+* [Managing Secrets](#managing-secrets)
 * [Application API](#application-api)
 * [License](#license)
 
@@ -25,10 +26,14 @@ To install the Python client library using pip:
 
     pip install nexmo
 
+To upgrade your installed client library using pip:
+
+    pip install nexmo --upgrade
+
 Alternatively you can clone the repository:
 
     git clone git@github.com:Nexmo/nexmo-python.git
-
+    
 
 Usage
 -----
@@ -169,6 +174,12 @@ response = client.send_dtmf(uuid, digits='1234')
 
 Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#dtmf_put](https://docs.nexmo.com/voice/voice-api/api-reference#dtmf_put?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
+### Get recording 
+
+``` python
+response = client.get_recording(RECORDING_URL)
+```
+
 
 ## Verify API
 
@@ -245,6 +256,34 @@ client.get_advanced_number_insight(number='447700900000')
 ```
 
 Docs: [https://docs.nexmo.com/number-insight/advanced](https://docs.nexmo.com/number-insight/advanced?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+
+
+## Managing Secrets
+
+ An API is provided to allow you to rotate your API secrets. You can create a new secret (up to a maximum of two secrets) and delete the existing one once all applications have been updated.
+
+### List Secrets
+
+ ```python
+secrets = client.list_secrets(API_KEY)
+```
+
+### Create A New Secret
+
+ Create a new secret (the created dates will help you know which is which):
+ ```python
+client.create_secret(API_KEY, 'awes0meNewSekret!!;');
+```
+
+
+### Delete A Secret
+
+Delete the old secret (any application still using these credentials will stop working):
+
+```python
+client.delete_secret(API_KEY, 'my-secret-id')
+```
+
 
 ## Application API
 

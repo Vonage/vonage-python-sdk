@@ -60,10 +60,13 @@ def assert_re(pattern, string):
 
 def assert_basic_auth():
     params = request_params()
-    assert 'api_key' not in params
-    assert 'api_secret' not in params
-    assert request_headers()["Authorization"] == 'Basic bmV4bW8tYXBpLWtleTpuZXhtby1hcGktc2VjcmV0'
+    assert "api_key" not in params
+    assert "api_secret" not in params
+    assert (
+        request_headers()["Authorization"]
+        == "Basic bmV4bW8tYXBpLWtleTpuZXhtby1hcGktc2VjcmV0"
+    )
 
 
 def load_fixture(fixture_path):
-    return open(os.path.join(os.path.dirname(__file__), 'data', fixture_path)).read()
+    return open(os.path.join(os.path.dirname(__file__), "data", fixture_path)).read()

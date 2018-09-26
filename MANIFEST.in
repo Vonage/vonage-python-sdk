@@ -13,3 +13,4 @@ recursive-include docs Makefile
 recursive-include requirements *.txt
 recursive-include tests *.py
 recursive-include tests *.txt
+recursive-include tests *.json

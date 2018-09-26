@@ -1,4 +1,5 @@
-# In Development
+# 2.3.0
+* Explicit parameter list for the `nexmo.Client` constructor. **This may cause errors in code passing incorrect or spurious arguments to the Client constructor.**
 * Secret Management
 * Support for Authorization header authentication.
 

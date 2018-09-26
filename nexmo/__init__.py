@@ -535,7 +535,11 @@ class Client:
         return self.parse(self.api_host, requests.delete(uri, headers=self._headers()))
 
     def _headers(self):
-        iat = int(time.time())
+        token = self.generate_application_jwt()
+        return dict(self.headers, Authorization=b"Bearer " + token)
+
+    def generate_application_jwt(self, when=None):
+        iat = int(when if when is not None else time.time())
 
         payload = dict(self.auth_params)
         payload.setdefault("application_id", self.application_id)
@@ -543,9 +547,7 @@ class Client:
         payload.setdefault("exp", iat + 60)
         payload.setdefault("jti", str(uuid4()))
 
-        token = jwt.encode(payload, self.private_key, algorithm="RS256")
-
-        return dict(self.headers, Authorization=b"Bearer " + token)
+        return jwt.encode(payload, self.private_key, algorithm="RS256")
 
 
 def _format_date_param(params, key, format="%Y-%m-%d %H:%M:%S"):

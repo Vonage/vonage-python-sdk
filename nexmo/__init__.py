@@ -86,10 +86,10 @@ class Client:
 
         self.api_host = "api.nexmo.com"
 
-        user_agent = "nexmo-python/{0}/{1}".format(__version__, python_version())
+        user_agent = "nexmo-python/{}/{}".format(__version__, python_version())
 
         if app_name and app_version:
-            user_agent += "/{0}/{1}".format(app_name, app_version)
+            user_agent += "/{}/{}".format(app_name, app_version)
 
         self.headers = {"User-Agent": user_agent}
 
@@ -392,7 +392,7 @@ class Client:
             if isinstance(value, str):
                 value = value.replace("&", "_").replace("=", "_")
 
-            hasher.update("&{0}={1}".format(key, value).encode("utf-8"))
+            hasher.update("&{}={}".format(key, value).encode("utf-8"))
 
         if self.signature_method is None:
             hasher.update(self.signature_secret.encode())

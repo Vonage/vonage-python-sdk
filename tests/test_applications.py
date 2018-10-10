@@ -49,5 +49,5 @@ def test_delete_application(client, dummy_data):
         status=204,
     )
 
-    assert None == client.delete_application("xx-xx-xx-xx")
+    assert client.delete_application("xx-xx-xx-xx") is None
     assert request_user_agent() == dummy_data.user_agent

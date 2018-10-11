@@ -30,7 +30,7 @@ To upgrade your installed client library using pip:
 
     pip install nexmo --upgrade
 
-Alternatively you can clone the repository:
+Alternatively, you can clone the repository:
 
     git clone git@github.com:Nexmo/nexmo-python.git
     
@@ -50,7 +50,7 @@ Then construct a client object with your key and secret:
 client = nexmo.Client(key=api_key, secret=api_secret)
 ```
 
-For production you can specify the `NEXMO_API_KEY` and `NEXMO_API_SECRET`
+For production, you can specify the `NEXMO_API_KEY` and `NEXMO_API_SECRET`
 environment variables instead of specifying the key and secret explicitly.
 
 For newer endpoints that support JWT authentication such as the Voice API,
@@ -60,7 +60,7 @@ you can also specify the `application_id` and `private_key` arguments:
 client = nexmo.Client(application_id=application_id, private_key=private_key)
 ```
 
-In order to check signatures for incoming webhook requests, you'll also need
+To check signatures for incoming webhook requests, you'll also need
 to specify the `signature_secret` argument (or the `NEXMO_SIGNATURE_SECRET`
 environment variable).
 
@@ -197,7 +197,7 @@ else:
 Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#vrequest](https://docs.nexmo.com/verify/api-reference/api-reference#vrequest?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 The response contains a verification request id which you will need to
-store temporarily (in the session, database, url etc).
+store temporarily (in the session, database, url, etc).
 
 ### Check a verification
 
@@ -347,7 +347,7 @@ your account before you can validate webhook signatures.
 
 ## JWT parameters
 
-By default the library generates short lived tokens for JWT authentication.
+By default, the library generates short lived tokens for JWT authentication.
 
 Use the auth method to specify parameters for a longer life token or to
 specify a different token identifier:

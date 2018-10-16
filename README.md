@@ -19,7 +19,7 @@ need a Nexmo account. Sign up [for free at nexmo.com][signup].
 * [License](#license)
 
 
-Installation
+Installation steps are as follows
 ------------
 
 To install the Python client library using pip:
@@ -174,7 +174,7 @@ response = client.send_dtmf(uuid, digits='1234')
 
 Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#dtmf_put](https://docs.nexmo.com/voice/voice-api/api-reference#dtmf_put?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
-### Get recording 
+### Get recording of the call
 
 ``` python
 response = client.get_recording(RECORDING_URL)
@@ -183,7 +183,7 @@ response = client.get_recording(RECORDING_URL)
 
 ## Verify API
 
-### Start a verification
+### Start a verification by otp
 
 ```python
 response = client.start_verification(number='441632960960', brand='MyApp')
@@ -359,7 +359,7 @@ client.auth(nbf=nbf, exp=exp, jti=jti)
 Contributing
 ------------
 
-We :heart: contributions! But if you plan to work on something big or controversial, please [contact us](mailto:devrel@nexmo.com) first!
+We :heart: contributions! But if you plan to work on something big, enormous or controversial, please [contact us](mailto:devrel@nexmo.com) first!
 
 We recommend working on `nexmo-python` with a [virtualenv][virtualenv]. The following command will install all the Python dependencies you need to run the tests:
 

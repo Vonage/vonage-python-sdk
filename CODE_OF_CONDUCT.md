@@ -7,7 +7,7 @@ contributors and maintainers pledge to making participation in our project and
 our community a harassment-free experience for everyone, regardless of age, body
 size, disability, ethnicity, sex characteristics, gender identity and expression,
 level of experience, education, socio-economic status, nationality, personal
-appearance, race, religion, or sexual identity and orientation.
+appearance, race, religion, or sexual identity and orientation and to also make sure that our community to grow each day in a better way.
 
 ## Our Standards
 
@@ -19,6 +19,8 @@ include:
 * Gracefully accepting constructive criticism
 * Focusing on what is best for the community
 * Showing empathy towards other community members
+* To collaborate and co-operate with the members and to encourage them to come up with the ideas that can bring about change in the 
+  community in a better way
 
 Examples of unacceptable behavior by participants include:
 

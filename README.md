@@ -94,7 +94,7 @@ response = client.submit_sms_conversion(message_id)
 ```
 
 
-## Voice API
+## Voice API( stans for Application Program Interface)
 
 ### Make a call
 

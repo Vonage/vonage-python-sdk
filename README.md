@@ -30,9 +30,10 @@ To upgrade your installed client library using pip:
 
     pip install nexmo --upgrade
 
-Alternatively you can clone the repository:
+Alternatively you can clone the repository via the command line:
 
     git clone git@github.com:Nexmo/nexmo-python.git
+or by opening it on GitHub desktop.
     
 
 Usage

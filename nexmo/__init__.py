@@ -16,7 +16,7 @@ import warnings
 
 if sys.version_info[0] == 3:
     string_types = (str, bytes)
-    from urllib.parse import urlparse
+    from urllib.parse import urlparse # coming up with error "no name 'parse' in module 'urllib'"
 
 else:
     string_types = (unicode, str)
@@ -424,7 +424,7 @@ class Client:
             headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
-        logger.debug("POST to %r with params %r, headers %r", uri, params)
+        logger.debug("POST to %r with params %r, headers %r", uri, params) # coming up with error of "not enough arguments for logging format string"
         return self.parse(host, requests.post(uri, data=params, headers=headers))
 
     def _post_json(self, host, request_uri, json):

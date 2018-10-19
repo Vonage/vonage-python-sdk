@@ -361,7 +361,23 @@ Contributing
 
 We :heart: contributions! But if you plan to work on something big or controversial, please [contact us](mailto:devrel@nexmo.com) first!
 
-We recommend working on `nexmo-python` with a [virtualenv][virtualenv]. The following command will install all the Python dependencies you need to run the tests:
+We recommend working on `nexmo-python` with a [virtualenv][virtualenv]. To create and run a virtualenv, do the following:
+
+```bash
+virtualenv --system-site-packages -p python3 ./venv
+```
+
+```bash
+.\venv\Scripts\activate
+```
+
+You can then pip install the requirements. To close the virtualenv when you're done, run the following:
+
+```bash
+deactivate
+```
+
+The following command will install all the Python dependencies you need to run the tests:
 
 ```bash
 make install

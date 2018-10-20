@@ -1,0 +1,327 @@
+Bibliothèque cliente Nexmo pour Python
+===============================
+
+[! [PyPI version] (https://badge.fury.io/py/nexmo.svg)] (https://badge.fury.io/py/nexmo)
+[! [Build Status] (https://api.travis-ci.org/Nexmo/nexmo-python.svg?branch=master)] (https://travis-ci.org/Nexmo/nexmo-python)
+[! [Statut de la couverture] (https://coveralls.io/repos/github/Nexmo/nexmo-python/badge.svg?branch=master)] (https://coveralls.io/github/Nexmo/nexmo-python ? branche = maître)
+
+Il s'agit de la bibliothèque cliente Python pour l'API de Nexmo. Pour l'utiliser, vous allez
+besoin d'un compte Nexmo. Inscrivez-vous [gratuitement sur nexmo.com] [inscrivez-vous].
+
+* [Installation] (# installation)
+* [Usage] (# usage)
+* [API SMS] (# sms-api)
+* [Voice API] (# voice-api)
+* [Verify API] (# verify-api)
+* [API Number Insight] (# number-insight-api)
+* [Managing Secrets] (# management-secrets)
+* [API d'application] (# application-api)
+* [Licence] (# licence)
+
+
+Installation
+------------
+
+Pour installer la bibliothèque client Python à l'aide de pip:
+
+    pip installer nexmo
+
+Pour mettre à niveau votre bibliothèque client installée à l'aide de pip:
+
+    pip installer nexmo --upgrade
+
+Sinon, vous pouvez cloner le référentiel:
+
+    git clone git@github.com: Nexmo / nexmo-python.git
+    
+
+Usage
+-----
+
+Commencez par importer le module `nexmo`:
+
+`` `python
+importer nexmo
+`` `
+
+Construisez ensuite un objet client avec votre clé et votre secret:
+
+`` `python
+client = nexmo.Client (clé = clé_api, secret = secret_api)
+`` `
+
+Pour la production, vous pouvez spécifier les paramètres `NEXMO_API_KEY` et` NEXMO_API_SECRET`
+variables d’environnement au lieu de spécifier explicitement la clé et le secret.
+
+Pour les systèmes d'extrémité plus récents prenant en charge l'authentification JWT, tels que l'API vocale,
+vous pouvez également spécifier les arguments `application_id` et` private_key`:
+
+`` `python
+client = nexmo.Client (id_application = id_application, clé privée = clé privée)
+`` `
+
+Afin de vérifier les signatures pour les demandes Webhook entrantes, vous aurez également besoin de
+pour spécifier l'argument `signature_secret` (ou le paramètre` NEXMO_SIGNATURE_SECRET`
+variable d'environnement).
+
+
+## SMS API
+
+### Envoyer un SMS
+
+`` `python
+response = client.send_message ({'from': 'Python', 'to': 'YOUR-NUMBER', 'text': 'Hello world'})
+
+response = response ['messages'] [0]
+
+si réponse ['status'] == '0':
+  print 'Message envoyé', réponse ['message-id']
+
+  print 'Solde restant', réponse ['solde-restant']
+autre:
+  print 'Error:', response ['error-text']
+`` `
+
+Docs: [https://docs.nexmo.com/messaging/sms-api/api-reference#request](https://docs.nexmo.com/messaging/sms-api/api-reference#request?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Dites à Nexmo que le SMS a été reçu
+
+Ce qui suit soumet une conversion réussie à Nexmo avec l’horodatage actuel. Cette fonctionnalité doit
+être activé sur votre compte en premier.
+
+`` `python
+response = client.submit_sms_conversion (id_message)
+`` `
+
+
+## Voice API
+
+### Passer un coup de téléphone
+
+`` `python
+response = client.create_call ({
+  'à': [{'type': 'téléphone', 'numéro': '14843331234'}],
+  'depuis': {'type': 'téléphone', 'numéro': '14843335555'},
+  'answer_url': ['https://example.com/answer']
+})
+`` `
+
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#call_create](https://docs.nexmo.com/voice/voice-api/api-reference#call_create?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Récupérer une liste d'appels
+
+`` `python
+response = client.get_calls ()
+`` `
+
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve](https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Récupérer un seul appel
+
+`` `python
+response = client.get_call (uuid)
+`` `
+
+Documents: [https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve_single](https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve_single?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Mettre à jour un appel
+
+`` `python
+response = client.update_call (uuid, action = 'hangup')
+`` `
+
+Documents: [https://docs.nexmo.com/voice/voice-api/api-reference#call_modify_single](https://docs.nexmo.com/voice/voice-api/api-reference#call_modify_single?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Diffuser de l'audio à un appel
+
+`` `python
+stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
+
+response = client.send_audio (uuid, stream_url = stream_url)
+`` `
+
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#stream_put](https://docs.nexmo.com/voice/voice-api/api-reference#stream_put?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Arrêter le streaming audio vers un appel
+
+`` `python
+response = client.stop_audio (uuid)
+`` `
+
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#stream_delete](https://docs.nexmo.com/voice/voice-api/api-reference#stream_delete? DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Envoyer un message vocal synthétisé à un appel
+
+`` `python
+response = client.send_speech (uuid, text = 'Hello')
+`` `
+
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#talk_put](https://docs.nexmo.com/voice/voice-api/api-reference#talk_put?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Arrête d'envoyer un message vocal synthétisé à un appel
+
+`` `python
+response = client.stop_speech (uuid)
+`` `
+
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#talk_delete](https://docs.nexmo.com/voice/voice-api/api-reference#talk_delete?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Envoi de tonalités DTMF à un appel
+
+`` `python
+response = client.send_dtmf (uuid, digits = '1234')
+`` `
+
+Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#dtmf_put](https://docs.nexmo.com/voice/voice-api/api-reference#dtmf_put?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Obtenir l'enregistrement
+
+`` `python
+response = client.get_recording (RECORDING_URL)
+`` `
+
+
+## Verify API
+
+### Lancer une vérification
+
+`` `python
+response = client.start_verification (number = '441632960960', brand = 'MyApp')
+
+si réponse ['status'] == '0':
+  print 'Started verification request_id =' + response ['request_id']
+autre:
+  print 'Error:', response ['error_text']
+`` `
+
+Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#vrequest](https://docs.nexmo.com/verify/api-reference/api-reference#vrequest?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+La réponse contient un identifiant de demande de vérification dont vous aurez besoin pour
+stocker temporairement (dans la session, base de données, URL etc.).
+### Vérifier une vérification
+
+`` `python
+response = client.check_verification ('00e6c3377e5348cdaf567e1417c707a5', code = '1234')
+
+si réponse ['status'] == '0':
+  print 'Vérification terminée, event_id =' + response ['event_id']
+autre:
+  print 'Error:', response ['error_text']
+`` `
+
+Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#check](https://docs.nexmo.com/verify/api-reference/api-reference#check?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+L'ID de demande de vérification provient de l'appel de la méthode start_verification.
+Le code PIN est entré dans votre application par l'utilisateur.
+
+### Annuler une vérification
+
+`` `python
+client.cancel_verification ('00e6c3377e5348cdaf567e1417c707a5')
+`` `
+
+Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#control](https://docs.nexmo.com/verify/api-reference/api-reference#control?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Déclenche la prochaine étape de vérification
+
+`` `python
+client.trigger_next_verification_event ('00e6c3377e5348cdaf567e1417c707a5')
+`` `
+
+Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#control](https://docs.nexmo.com/verify/api-reference/api-reference#control?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python? Utm_source = DEV_REL & utm_medium = github & utm_campaign = bibliothèque-python-client)
+
+## API Number Insight
+
+### Basic Number Insight
+
+`` `python
+client.get_basic_number_insight (number = '447700900000')
+`` `
+
+Docs: [https://docs.nexmo.com/number-insight/basic](https://docs.nexmo.com/number-insight/basic?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library-uthod_library=utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Standard Number Insight
+
+`` `python
+client.get_standard_number_insight (number = '447700900000')
+`` `
+
+Docs: [https://docs.nexmo.com/number-insight/standard](https://docs.nexmo.com/number-insight/basic?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-client-library=utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Advanced Number Insight
+
+`` `python
+client.get_advanced_number_insight (number = '447700900000')
+`` `
+
+Docs: [https://docs.nexmo.com/number-insight/advanced/https://docs.nexmo.com/number-insight/advanced?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-client-library?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+
+## Gestion des secrets
+
+ Une API est fournie pour vous permettre de faire pivoter vos secrets d'API. Vous pouvez créer un nouveau secret (deux secrets au maximum) et supprimer le secret existant une fois que toutes les applications ont été mises à jour.
+
+### Secrets de la liste
+
+ `` `python
+secrets = client.list_secrets (API_KEY)
+`` `
+
+### Créer un nouveau secret
+
+ Créez un nouveau secret (les dates créées vous aideront à savoir lequel est lequel):
+ `` `python
+client.create_secret (API_KEY, 'awes0meNewSekret !!;');
+`` `
+
+
+### Supprimer un secret
+
+Supprimez l'ancien secret (toute application utilisant encore ces informations d'identification cessera de fonctionner):
+
+`` `python
+client.delete_secret (API_KEY, 'my-secret-id')
+`` `
+
+
+## API d'application
+
+### Créer une application
+
+`` `python
+response = client.create_application (name = 'Example App', type = 'voice', answer_url = answer_url, event_url = event_url)
+`` `
+
+Docs: [https://docs.nexmo.com/tools/application-api/api-reference#create](https://docs.nexmo.com/tools/application-api/api-reference#create?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Récupérer une liste d'applications
+
+`` `python
+response = client.get_applications ()
+`` `
+
+Docs: [https://docs.nexmo.com/tools/application-api/api-reference#list](https://docs.nexmo.com/tools/application-api/api-reference#list?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Récupérer une seule application
+
+`` `python
+response = client.get_application (uuid)
+`` `
+
+Docs: [https://docs.nexmo.com/tools/application-api/api-reference#retrieve](https://docs.nexmo.com/tools/application-api/api-reference#retrieve?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Mettre à jour une application
+
+`` `python
+response = client.update_application (uuid, answer_method = 'POST')
+`` `
+
+Docs: [https://docs.nexmo.com/tools/application-api/api-reference#update](https://docs.nexmo.com/tools/application-api/api-reference#update?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)
+
+### Supprimer une application
+
+`` `python
+response = client.delete_application (uuid)
+`` `
+
+Docs: [https://docs.nexmo.com/tools/application-api/api-reference#delete](https://docs.nexmo.com/tools/application-api/api-reference#delete?utm_source= DEV_REL & utm_medium = github & utm_campaign = bibliothèque-client-python)

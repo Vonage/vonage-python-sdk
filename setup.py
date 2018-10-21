@@ -6,7 +6,7 @@ setup(
     name="nexmo",
     version="2.3.0",
     description="Nexmo Client Library for Python",
-    long_description="This is the Python client library for Nexmo's API. To use it you'll need a Nexmo account. Sign up `for free at nexmo.com <http://nexmo.com?src=python-client-library>`_.",
+    long_description="This is the Python client library for Nexmo's API. To use it you'll need a Nexmo account. Sign up 'for free at nexmo.com <http://nexmo.com?src=python-client-library>'_.",
     url="http://github.com/Nexmo/nexmo-python",
     author="Nexmo",
     author_email="devrel@nexmo.com",

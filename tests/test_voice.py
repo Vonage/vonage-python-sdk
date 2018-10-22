@@ -143,9 +143,6 @@ def test_authorization_with_private_key_path(dummy_data):
 def test_authorization_with_private_key_object(client, dummy_data):
     stub(responses.GET, "https://api.nexmo.com/v1/calls/xx-xx-xx-xx")
 
-    from cryptography.hazmat.backends import default_backend
-    from cryptography.hazmat.primitives import serialization
-
     client.get_call("xx-xx-xx-xx")
 
     token = jwt.decode(

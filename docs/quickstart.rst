@@ -216,7 +216,7 @@ Retrieve a list of applications
     response = client.get_applications()
 
 Docs:
-`https://docs.nexmo.com/tools/application-api/api-reference#list <https://docs.nexmo.com/tools/application-api/api-reference#list?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/tools/application-api/api-reference#list <https://developer.nexmo.com/api/application#retrieve-your-applications>`__
 
 Retrieve a single application
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -226,7 +226,7 @@ Retrieve a single application
     response = client.get_application(uuid)
 
 Docs:
-`https://docs.nexmo.com/tools/application-api/api-reference#retrieve <https://docs.nexmo.com/tools/application-api/api-reference#retrieve?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/tools/application-api/api-reference#retrieve <https://developer.nexmo.com/api/application#retrieve-an-application>`__
 
 Update an application
 ~~~~~~~~~~~~~~~~~~~~~

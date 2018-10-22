@@ -24,7 +24,7 @@ class DummyData(object):
         self.application_id = "nexmo-application-id"
         self.private_key = read_file("data/private_key.txt")
         self.public_key = read_file("data/public_key.txt")
-        self.user_agent = "nexmo-python/{0}/{1}".format(
+        self.user_agent = "nexmo-python/{}/{}".format(
             nexmo.__version__, platform.python_version()
         )
 

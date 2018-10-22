@@ -1,9 +1,3 @@
-try:
-    from urllib.parse import urlparse, quote_plus
-except ImportError:
-    from urlparse import urlparse
-    from urllib import quote_plus
-
 import nexmo
 from util import *
 

@@ -14,7 +14,7 @@ setup(
     description="Nexmo Client Library for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="http://github.com/Nexmo/nexmo-python",
+    url="https://github.com/Nexmo/nexmo-python",
     author="Nexmo",
     author_email="devrel@nexmo.com",
     license="MIT",

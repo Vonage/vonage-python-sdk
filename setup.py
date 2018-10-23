@@ -1,10 +1,19 @@
+import io
+import os
+
 from setuptools import setup
+
+
+with io.open(os.path.join(os.path.dirname(__file__), "README.md"),
+             encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
     name="nexmo",
     version="2.3.0",
     description="Nexmo Client Library for Python",
-    long_description="This is the Python client library for Nexmo's API. To use it you'll need a Nexmo account. Sign up `for free at nexmo.com <https://www.nexmo.com/?src=python-client-library>`_.",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     url="https://github.com/Nexmo/nexmo-python",
     author="Nexmo",
     author_email="devrel@nexmo.com",

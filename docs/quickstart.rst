@@ -79,11 +79,11 @@ Send a text message
     response = response['messages'][0]
 
     if response['status'] == '0':
-      print 'Sent message', response['message-id']
+      print('Sent message', response['message-id'])
 
-      print 'Remaining balance is', response['remaining-balance']
+      print('Remaining balance is', response['remaining-balance'])
     else:
-      print 'Error:', response['error-text']
+      print('Error:', response['error-text'])
 
 Docs:
 `https://docs.nexmo.com/messaging/sms-api/api-reference#request <https://docs.nexmo.com/messaging/sms-api/api-reference#request?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
@@ -146,9 +146,9 @@ Start a verification
     response = client.start_verification(number='441632960960', brand='MyApp')
 
     if response['status'] == '0':
-      print 'Started verification request_id=' + response['request_id']
+      print('Started verification request_id=' + response['request_id'])
     else:
-      print 'Error:', response['error_text']
+      print('Error:', response['error_text'])
 
 Docs:
 `https://docs.nexmo.com/verify/api-reference/api-reference#vrequest <https://docs.nexmo.com/verify/api-reference/api-reference#vrequest?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
@@ -164,9 +164,9 @@ Check a verification
     response = client.check_verification('00e6c3377e5348cdaf567e1417c707a5', code='1234')
 
     if response['status'] == '0':
-      print 'Verification complete, event_id=' + response['event_id']
+      print('Verification complete, event_id=' + response['event_id'])
     else:
-      print 'Error:', response['error_text']
+      print('Error:', response['error_text'])
 
 Docs:
 `https://docs.nexmo.com/verify/api-reference/api-reference#check <https://docs.nexmo.com/verify/api-reference/api-reference#check?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__

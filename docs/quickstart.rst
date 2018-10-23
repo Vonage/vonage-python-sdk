@@ -25,7 +25,7 @@ To install the Python client library using pip:
 
     pip install nexmo
 
-Alternatively you can clone the repository:
+Alternatively, you can clone the repository:
 
 ::
 
@@ -46,7 +46,7 @@ Then construct a client object with your key and secret:
 
     client = nexmo.Client(key=api_key, secret=api_secret)
 
-For production you can specify the ``NEXMO_API_KEY`` and
+For production, you can specify the ``NEXMO_API_KEY`` and
 ``NEXMO_API_SECRET`` environment variables instead of specifying the key
 and secret explicitly.
 
@@ -279,7 +279,7 @@ on your account before you can validate webhook signatures.
 JWT parameters
 --------------
 
-By default the library generates short lived tokens for JWT
+By default, the library generates short-lived tokens for JWT
 authentication.
 
 Use the auth method to specify parameters for a longer life token or to

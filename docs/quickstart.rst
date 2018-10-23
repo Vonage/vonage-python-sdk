@@ -226,7 +226,7 @@ Retrieve a single application
     response = client.get_application(uuid)
 
 Docs:
-`https://docs.nexmo.com/tools/application-api/api-reference#retrieve <https://developer.nexmo.com/api/application#retrieve-an-application>`__
+`https://developer.nexmo.com/api/application#retrieve-an-application <https://developer.nexmo.com/api/application#retrieve-an-application>`__
 
 Update an application
 ~~~~~~~~~~~~~~~~~~~~~

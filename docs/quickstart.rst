@@ -216,7 +216,7 @@ Retrieve a list of applications
     response = client.get_applications()
 
 Docs:
-`https://docs.nexmo.com/tools/application-api/api-reference#list <https://developer.nexmo.com/api/application#retrieve-your-applications>`__
+`https://developer.nexmo.com/api/application#retrieve-your-applications <https://developer.nexmo.com/api/application#retrieve-your-applications>`__
 
 Retrieve a single application
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

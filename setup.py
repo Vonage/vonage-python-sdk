@@ -20,8 +20,14 @@ setup(
     license="MIT",
     packages=["nexmo"],
     platforms=["any"],
-    install_requires=["requests>=2.4.2", "PyJWT[crypto]", "pytz"],
-    tests_require=["cryptography"],
+    install_requires=[
+        "requests>=2.4.2",
+        "PyJWT[crypto]>=1.6.4",
+        "pytz>=2018.5"
+    ],
+    tests_require=[
+        "cryptography>=2.3.1",
+    ],
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 2",

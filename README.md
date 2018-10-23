@@ -83,7 +83,7 @@ else:
   print 'Error:', response['error-text']
 ```
 
-Docs: [https://docs.nexmo.com/messaging/sms-api/api-reference#request](https://docs.nexmo.com/messaging/sms-api/api-reference#request?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/sms#send-an-sms](https://developer.nexmo.com/api/sms#send-an-sms?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Tell Nexmo the SMS was received
 
@@ -107,7 +107,7 @@ response = client.create_call({
 })
 ```
 
-Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#call_create](https://docs.nexmo.com/voice/voice-api/api-reference#call_create?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/voice#createCall](https://developer.nexmo.com/api/voice#createCall?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Retrieve a list of calls
 
@@ -115,7 +115,7 @@ Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#call_create](https:/
 response = client.get_calls()
 ```
 
-Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve](https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/voice#getCalls](https://developer.nexmo.com/api/voice#getCalls?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Retrieve a single call
 
@@ -123,7 +123,7 @@ Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve](https
 response = client.get_call(uuid)
 ```
 
-Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve_single](https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve_single?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/voice#getCall](https://developer.nexmo.com/api/voice#getCall?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Update a call
 
@@ -131,7 +131,7 @@ Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve_single
 response = client.update_call(uuid, action='hangup')
 ```
 
-Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#call_modify_single](https://docs.nexmo.com/voice/voice-api/api-reference#call_modify_single?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/voice#updateCall](https://developer.nexmo.com/api/voice#updateCall?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Stream audio to a call
 
@@ -141,7 +141,7 @@ stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_a
 response = client.send_audio(uuid, stream_url=stream_url)
 ```
 
-Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#stream_put](https://docs.nexmo.com/voice/voice-api/api-reference#stream_put?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/voice#startStream](https://developer.nexmo.com/api/voice#startStream#stream_put?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Stop streaming audio to a call
 
@@ -149,7 +149,7 @@ Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#stream_put](https://
 response = client.stop_audio(uuid)
 ```
 
-Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#stream_delete](https://docs.nexmo.com/voice/voice-api/api-reference#stream_delete?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/voice#stopStream](https://developer.nexmo.com/api/voice#stopStream?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Send a synthesized speech message to a call
 
@@ -157,7 +157,7 @@ Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#stream_delete](https
 response = client.send_speech(uuid, text='Hello')
 ```
 
-Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#talk_put](https://docs.nexmo.com/voice/voice-api/api-reference#talk_put?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/voice#startTalk](https://developer.nexmo.com/api/voice#startTalk?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Stop sending a synthesized speech message to a call
 
@@ -165,7 +165,7 @@ Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#talk_put](https://do
 response = client.stop_speech(uuid)
 ```
 
-Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#talk_delete](https://docs.nexmo.com/voice/voice-api/api-reference#talk_delete?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/voice#stopStream](https://developer.nexmo.com/api/voice#stopStream?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Send DTMF tones to a call
 
@@ -173,7 +173,7 @@ Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#talk_delete](https:/
 response = client.send_dtmf(uuid, digits='1234')
 ```
 
-Docs: [https://docs.nexmo.com/voice/voice-api/api-reference#dtmf_put](https://docs.nexmo.com/voice/voice-api/api-reference#dtmf_put?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/voice#startDTMF](https://developer.nexmo.com/api/voice#startDTMF?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Get recording 
 
@@ -195,7 +195,7 @@ else:
   print 'Error:', response['error_text']
 ```
 
-Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#vrequest](https://docs.nexmo.com/verify/api-reference/api-reference#vrequest?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/verify#verify-request](https://developer.nexmo.com/api/verify#verify-request?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 The response contains a verification request id which you will need to
 store temporarily (in the session, database, url etc).
@@ -211,7 +211,7 @@ else:
   print 'Error:', response['error_text']
 ```
 
-Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#check](https://docs.nexmo.com/verify/api-reference/api-reference#check?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/verify#verify-check](https://developer.nexmo.com/api/verify#verify-check?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 The verification request id comes from the call to the start_verification method.
 The PIN code is entered into your application by the user.
@@ -222,7 +222,7 @@ The PIN code is entered into your application by the user.
 client.cancel_verification('00e6c3377e5348cdaf567e1417c707a5')
 ```
 
-Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#control](https://docs.nexmo.com/verify/api-reference/api-reference#control?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/verify#verify-control](https://developer.nexmo.com/api/verify#verify-control?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Trigger next verification step
 
@@ -230,7 +230,7 @@ Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#control](https:
 client.trigger_next_verification_event('00e6c3377e5348cdaf567e1417c707a5')
 ```
 
-Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#control](https://docs.nexmo.com/verify/api-reference/api-reference#control?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/verify#verify-control](https://developer.nexmo.com/api/verify#verify-control?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ## Number Insight API
 
@@ -240,7 +240,7 @@ Docs: [https://docs.nexmo.com/verify/api-reference/api-reference#control](https:
 client.get_basic_number_insight(number='447700900000')
 ```
 
-Docs: [https://docs.nexmo.com/number-insight/basic](https://docs.nexmo.com/number-insight/basic?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightBasic](https://developer.nexmo.com/api/number-insight#getNumberInsightBasic?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Standard Number Insight
 
@@ -248,7 +248,7 @@ Docs: [https://docs.nexmo.com/number-insight/basic](https://docs.nexmo.com/numbe
 client.get_standard_number_insight(number='447700900000')
 ```
 
-Docs: [https://docs.nexmo.com/number-insight/standard](https://docs.nexmo.com/number-insight/basic?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightStandard](https://developer.nexmo.com/api/number-insight#getNumberInsightStandard?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Advanced Number Insight
 
@@ -256,7 +256,7 @@ Docs: [https://docs.nexmo.com/number-insight/standard](https://docs.nexmo.com/nu
 client.get_advanced_number_insight(number='447700900000')
 ```
 
-Docs: [https://docs.nexmo.com/number-insight/advanced](https://docs.nexmo.com/number-insight/advanced?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightAdvanced](https://developer.nexmo.com/api/number-insight#getNumberInsightAdvanced?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 
 ## Managing Secrets
@@ -294,7 +294,7 @@ client.delete_secret(API_KEY, 'my-secret-id')
 response = client.create_application(name='Example App', type='voice', answer_url=answer_url, event_url=event_url)
 ```
 
-Docs: [https://docs.nexmo.com/tools/application-api/api-reference#create](https://docs.nexmo.com/tools/application-api/api-reference#create?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/application#create-an-application](https://developer.nexmo.com/api/application#create-an-application?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Retrieve a list of applications
 
@@ -302,7 +302,7 @@ Docs: [https://docs.nexmo.com/tools/application-api/api-reference#create](https:
 response = client.get_applications()
 ```
 
-Docs: [https://docs.nexmo.com/tools/application-api/api-reference#list](https://docs.nexmo.com/tools/application-api/api-reference#list?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/application#retrieve-your-applications](https://developer.nexmo.com/api/application#retrieve-your-applications?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Retrieve a single application
 
@@ -310,7 +310,7 @@ Docs: [https://docs.nexmo.com/tools/application-api/api-reference#list](https://
 response = client.get_application(uuid)
 ```
 
-Docs: [https://docs.nexmo.com/tools/application-api/api-reference#retrieve](https://docs.nexmo.com/tools/application-api/api-reference#retrieve?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/application#retrieve-an-application](https://developer.nexmo.com/api/application#retrieve-an-application?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Update an application
 
@@ -318,7 +318,7 @@ Docs: [https://docs.nexmo.com/tools/application-api/api-reference#retrieve](http
 response = client.update_application(uuid, answer_method='POST')
 ```
 
-Docs: [https://docs.nexmo.com/tools/application-api/api-reference#update](https://docs.nexmo.com/tools/application-api/api-reference#update?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/application#retrieve-your-applications](https://developer.nexmo.com/api/application#retrieve-your-applications?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ### Delete an application
 
@@ -326,7 +326,7 @@ Docs: [https://docs.nexmo.com/tools/application-api/api-reference#update](https:
 response = client.delete_application(uuid)
 ```
 
-Docs: [https://docs.nexmo.com/tools/application-api/api-reference#delete](https://docs.nexmo.com/tools/application-api/api-reference#delete?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/application#destroy-an-application](https://developer.nexmo.com/api/application#destroy-an-application?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 
 ## Validate webhook signatures
@@ -340,7 +340,7 @@ else:
   # invalid signature
 ```
 
-Docs: [https://docs.nexmo.com/messaging/signing-messages](https://docs.nexmo.com/messaging/signing-messages?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/concepts/guides/signing-messages](https://developer.nexmo.com/concepts/guides/signing-messages?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 Note: you'll need to contact support@nexmo.com to enable message signing on
 your account before you can validate webhook signatures.

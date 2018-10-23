@@ -351,7 +351,7 @@ your account before you can validate webhook signatures.
 
 ## JWT parameters
 
-By default, the library generates short lived tokens for JWT authentication.
+By default, the library generates short-lived tokens for JWT authentication.
 
 Use the auth method to specify parameters for a longer life token or to
 specify a different token identifier:

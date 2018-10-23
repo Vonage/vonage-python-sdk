@@ -424,7 +424,7 @@ class Client:
             headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
-        logger.debug("POST to %r with params %r, headers %r", uri, params)
+        logger.debug("POST to %r with params %r, headers %r", uri, params, headers)
         return self.parse(host, requests.post(uri, data=params, headers=headers))
 
     def _post_json(self, host, request_uri, json):

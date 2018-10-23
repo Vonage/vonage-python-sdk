@@ -25,7 +25,7 @@ To install the Python client library using pip:
 
     pip install nexmo
 
-Alternatively you can clone the repository:
+Alternatively, you can clone the repository:
 
 ::
 
@@ -46,7 +46,7 @@ Then construct a client object with your key and secret:
 
     client = nexmo.Client(key=api_key, secret=api_secret)
 
-For production you can specify the ``NEXMO_API_KEY`` and
+For production, you can specify the ``NEXMO_API_KEY`` and
 ``NEXMO_API_SECRET`` environment variables instead of specifying the key
 and secret explicitly.
 
@@ -79,11 +79,11 @@ Send a text message
     response = response['messages'][0]
 
     if response['status'] == '0':
-      print 'Sent message', response['message-id']
+      print('Sent message', response['message-id'])
 
-      print 'Remaining balance is', response['remaining-balance']
+      print('Remaining balance is', response['remaining-balance'])
     else:
-      print 'Error:', response['error-text']
+      print('Error:', response['error-text'])
 
 Docs:
 `https://docs.nexmo.com/messaging/sms-api/api-reference#request <https://docs.nexmo.com/messaging/sms-api/api-reference#request?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
@@ -148,7 +148,7 @@ Start a verification
     if response['status'] == '0':
       print 'Started verification request_id={}'.format(response['request_id'])
     else:
-      print 'Error:', response['error_text']
+      print('Error:', response['error_text'])
 
 Docs:
 `https://docs.nexmo.com/verify/api-reference/api-reference#vrequest <https://docs.nexmo.com/verify/api-reference/api-reference#vrequest?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
@@ -166,7 +166,7 @@ Check a verification
     if response['status'] == '0':
       print 'Verification complete, event_id={}'.format(response['event_id'])
     else:
-      print 'Error:', response['error_text']
+      print('Error:', response['error_text'])
 
 Docs:
 `https://docs.nexmo.com/verify/api-reference/api-reference#check <https://docs.nexmo.com/verify/api-reference/api-reference#check?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
@@ -226,7 +226,7 @@ Retrieve a single application
     response = client.get_application(uuid)
 
 Docs:
-`https://docs.nexmo.com/tools/application-api/api-reference#retrieve <https://docs.nexmo.com/tools/application-api/api-reference#retrieve?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://developer.nexmo.com/api/application#retrieve-an-application <https://developer.nexmo.com/api/application#retrieve-an-application>`__
 
 Update an application
 ~~~~~~~~~~~~~~~~~~~~~
@@ -279,7 +279,7 @@ on your account before you can validate webhook signatures.
 JWT parameters
 --------------
 
-By default the library generates short lived tokens for JWT
+By default, the library generates short-lived tokens for JWT
 authentication.
 
 Use the auth method to specify parameters for a longer life token or to

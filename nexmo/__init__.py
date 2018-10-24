@@ -16,7 +16,7 @@ import warnings
 
 if sys.version_info[0] == 3:
     string_types = (str, bytes)
-    from urllib.parse import urlparse # coming up with error "no name 'parse' in module 'urllib'"
+    from urllib.parse import urlparse
 
 else:
     string_types = (unicode, str)
@@ -50,6 +50,10 @@ class AuthenticationError(ClientError):
 
 class Client:
     def __init__(
+        """
+        initialize Client object
+        variables, default as None, store API key and unique identifiers for individual user
+        """
         self,
         key=None,
         secret=None,
@@ -60,6 +64,7 @@ class Client:
         app_name=None,
         app_version=None,
     ):
+        # if user does not provide key in __init__(), environment variable is given default value of None
         self.api_key = key or os.environ.get("NEXMO_API_KEY", None)
 
         self.api_secret = secret or os.environ.get("NEXMO_API_SECRET", None)
@@ -78,6 +83,7 @@ class Client:
 
         self.private_key = private_key
 
+        # checks if private_key is formatted correctly to read and store back into variable
         if isinstance(self.private_key, string_types) and "\n" not in self.private_key:
             with open(self.private_key, "rb") as key_file:
                 self.private_key = key_file.read()
@@ -347,11 +353,13 @@ class Client:
         return self._post_json(self.api_host, "/v1/redact/transaction", params)
 
     def list_secrets(self, api_key):
+        """ obtains secrets from accounts """
         return self.get(
             self.api_host, "/accounts/" + api_key + "/secrets", header_auth=True
         )
 
     def get_secret(self, api_key, secret_id):
+        """ obtains each secret id from secrets """
         return self.get(
             self.api_host,
             "/accounts/" + api_key + "/secrets/" + secret_id,
@@ -359,10 +367,12 @@ class Client:
         )
 
     def create_secret(self, api_key, secret):
+        """ creates secret that is returned """
         body = {"secret": secret}
         return self._post_json(self.api_host, "/accounts/" + api_key + "/secrets", body)
 
     def delete_secret(self, api_key, secret_id):
+        """ deletes secret from object """
         return self.delete(
             self.api_host,
             "/accounts/" + api_key + "/secrets/" + secret_id,
@@ -424,7 +434,7 @@ class Client:
             headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
-        logger.debug("POST to %r with params %r, headers %r", uri, params) # coming up with error of "not enough arguments for logging format string"
+        logger.debug("POST to %r with params %r, headers %r", uri, params)
         return self.parse(host, requests.post(uri, data=params, headers=headers))
 
     def _post_json(self, host, request_uri, json):

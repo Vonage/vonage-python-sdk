@@ -25,6 +25,7 @@ setup(
         "PyJWT[crypto]>=1.6.4",
         "pytz>=2018.5"
     ],
+    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     tests_require=[
         "cryptography>=2.3.1",
     ],

@@ -193,7 +193,7 @@ response = client.get_recording(RECORDING_URL)
 response = client.start_verification(number='441632960960', brand='MyApp')
 
 if response['status'] == '0':
-  print 'Started verification request_id={}'.format(response['request_id'])
+  print 'Started verification request_id={request_id}'.format(request_id=response['request_id'])
 else:
   print 'Error:', response['error_text']
 ```
@@ -209,7 +209,7 @@ store temporarily (in the session, database, url, etc).
 response = client.check_verification('00e6c3377e5348cdaf567e1417c707a5', code='1234')
 
 if response['status'] == '0':
-  print 'Verification complete, event_id={}'.format(response['event_id'])
+  print 'Verification complete, event_id={event_id}'.format(event_id=response['event_id'])
 else:
   print 'Error:', response['error_text']
 ```

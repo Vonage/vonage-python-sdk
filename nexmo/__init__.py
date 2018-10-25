@@ -50,10 +50,6 @@ class AuthenticationError(ClientError):
 
 class Client:
     def __init__(
-        """
-        initialize Client object
-        variables, default as None, store API key and unique identifiers for individual user
-        """
         self,
         key=None,
         secret=None,
@@ -64,6 +60,10 @@ class Client:
         app_name=None,
         app_version=None,
     ):
+        """
+        initialize Client object
+        variables, default as None, store API key and unique identifiers for individual user
+        """
         # if user does not provide key in __init__(), environment variable is given default value of None
         self.api_key = key or os.environ.get("NEXMO_API_KEY", None)
 

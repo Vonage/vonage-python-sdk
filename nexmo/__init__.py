@@ -62,7 +62,8 @@ class Client:
     ):
         """
         initialize Client object
-        variables, default as None, store API key and unique identifiers for individual user
+        variables default as None if no value passed in
+        stores API key and unique identifiers for individual user
         """
         # if user does not provide key in __init__(), environment variable is given default value of None
         self.api_key = key or os.environ.get("NEXMO_API_KEY", None)
@@ -88,8 +89,10 @@ class Client:
             with open(self.private_key, "rb") as key_file:
                 self.private_key = key_file.read()
 
+        # calls to host refer to this website
         self.host = "rest.nexmo.com"
 
+        # calls to api host refer to this website
         self.api_host = "api.nexmo.com"
 
         user_agent = "nexmo-python/{0}/{1}".format(__version__, python_version())
@@ -102,41 +105,51 @@ class Client:
         self.auth_params = {}
 
     def auth(self, params=None, **kwargs):
+        """ auth_params assigned None if no params """
         self.auth_params = params or kwargs
 
     def send_message(self, params):
+        """ redirects to rest.nexmo.com/sms/json """
         return self.post(self.host, "/sms/json", params)
 
     def get_balance(self):
+        """ redirects to rest.nexmo.com/account/get-balance """
         return self.get(self.host, "/account/get-balance")
 
     def get_country_pricing(self, country_code):
+        """ redirects to rest.nexmo.com/account/get-pricing/outbound with country based on parameter """
         return self.get(
             self.host, "/account/get-pricing/outbound", {"country": country_code}
         )
 
     def get_prefix_pricing(self, prefix):
+        """ redirects to rest.nexmo.com/account/get-prefix-pricing/outbound with prefix based on parameter """
         return self.get(
             self.host, "/account/get-prefix-pricing/outbound", {"prefix": prefix}
         )
 
     def get_sms_pricing(self, number):
+        """ redirects to rest.nexmo.com/account/get-phone-pricing/outbound/sms with phone based on parameter """
         return self.get(
             self.host, "/account/get-phone-pricing/outbound/sms", {"phone": number}
         )
 
     def get_voice_pricing(self, number):
+        """ redirects to rest.nexmo.com/account/get-phone-pricing/outbound/voice with phone based on parameter """
         return self.get(
             self.host, "/account/get-phone-pricing/outbound/voice", {"phone": number}
         )
 
     def update_settings(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/account/settings with params if it exists """
         return self.post(self.host, "/account/settings", params or kwargs)
 
     def topup(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/account/top-up with params if it exists """
         return self.post(self.host, "/account/top-up", params or kwargs)
 
     def get_account_numbers(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/account/numbers with params if it exists """
         return self.get(self.host, "/account/numbers", params or kwargs)
 
     def get_available_numbers(self, country_code, params=None, **kwargs):
@@ -145,30 +158,39 @@ class Client:
         )
 
     def buy_number(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/number/buy with params if it exists """
         return self.post(self.host, "/number/buy", params or kwargs)
 
     def cancel_number(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/number/cancel with params if it exists """
         return self.post(self.host, "/number/cancel", params or kwargs)
 
     def update_number(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/number/update with params if it exists """
         return self.post(self.host, "/number/update", params or kwargs)
 
     def get_message(self, message_id):
+        """ redirects to rest.nexmo.com/search/message with id as parameter """
         return self.get(self.host, "/search/message", {"id": message_id})
 
     def get_message_rejections(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/search/rejections with params if it exists """
         return self.get(self.host, "/search/rejections", params or kwargs)
 
     def search_messages(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/search/messages with params if it exists """
         return self.get(self.host, "/search/messages", params or kwargs)
 
     def send_ussd_push_message(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/ussd/json with params if it exists """
         return self.post(self.host, "/ussd/json", params or kwargs)
 
     def send_ussd_prompt_message(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/ussd-prompt/json with params if it exists """
         return self.post(self.host, "/ussd-prompt/json", params or kwargs)
 
     def send_2fa_message(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/sc/us/2fa/json with params if it exists """
         return self.post(self.host, "/sc/us/2fa/json", params or kwargs)
 
     def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
@@ -190,30 +212,42 @@ class Client:
         return self.post(self.api_host, "/conversions/sms", params)
 
     def send_event_alert_message(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/sc/us/alert/json with params if it exists """
         return self.post(self.host, "/sc/us/alert/json", params or kwargs)
 
     def send_marketing_message(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/sc/us/marketing/json with params if it exists """
         return self.post(self.host, "/sc/us/marketing/json", params or kwargs)
 
     def get_event_alert_numbers(self):
+        """ redirects to rest.nexmo.com/sc/us/alert/opt-in/query/json """
         return self.get(self.host, "/sc/us/alert/opt-in/query/json")
 
     def resubscribe_event_alert_number(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/sc/us/alert/opt-in/manage/json """
         return self.post(self.host, "/sc/us/alert/opt-in/manage/json", params or kwargs)
 
     def initiate_call(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/call/json with params if it exists """
         return self.post(self.host, "/call/json", params or kwargs)
 
     def initiate_tts_call(self, params=None, **kwargs):
+        """ redirects to api.nexmo.com/tts/json with params if it exists """
         return self.post(self.api_host, "/tts/json", params or kwargs)
 
     def initiate_tts_prompt_call(self, params=None, **kwargs):
+        """ redirects to api.nexmo.com/tts-prompt/json with params if it exists """
         return self.post(self.api_host, "/tts-prompt/json", params or kwargs)
 
     def start_verification(self, params=None, **kwargs):
+        """ redirects to api.nexmo.com/verify/json with params if it exists """
         return self.post(self.api_host, "/verify/json", params or kwargs)
 
     def send_verification_request(self, params=None, **kwargs):
+        """ 
+        deprecated feature. warning appears
+        redirected to api.nexmo.com/verify/json with params if it exists
+        """
         warnings.warn(
             "nexmo.Client#send_verification_request is deprecated (use #start_verification instead)",
             DeprecationWarning,
@@ -230,6 +264,10 @@ class Client:
         )
 
     def check_verification_request(self, params=None, **kwargs):
+        """ 
+        deprecated feature. warning appears
+        redirected to api.nexmo.com/verify/check/json with params if it exists
+        """
         warnings.warn(
             "nexmo.Client#check_verification_request is deprecated (use #check_verification instead)",
             DeprecationWarning,
@@ -239,11 +277,16 @@ class Client:
         return self.post(self.api_host, "/verify/check/json", params or kwargs)
 
     def get_verification(self, request_id):
+        """ redirects to api.nexmo.com/verify/search/json with request_id as parameter """
         return self.get(
             self.api_host, "/verify/search/json", {"request_id": request_id}
         )
 
     def get_verification_request(self, request_id):
+        """ 
+        deprecated feature. warning appears
+        redirected to api.nexmo.com/verify/search/json with request_id as parameter
+        """
         warnings.warn(
             "nexmo.Client#get_verification_request is deprecated (use #get_verification instead)",
             DeprecationWarning,
@@ -278,12 +321,18 @@ class Client:
         return self.post(self.api_host, "/verify/control/json", params or kwargs)
 
     def get_basic_number_insight(self, params=None, **kwargs):
+        """ redirects to api.nexmo.com/ni/basic/json with params if it exists """
         return self.get(self.api_host, "/ni/basic/json", params or kwargs)
 
     def get_standard_number_insight(self, params=None, **kwargs):
+        """ redirects to api.nexmo.com/ni/standard/json with params if it exists """
         return self.get(self.api_host, "/ni/standard/json", params or kwargs)
 
     def get_number_insight(self, params=None, **kwargs):
+        """ 
+        deprecated feature. warning appears
+        redirected to api.nexmo.com/number/lookup/json with request_id as parameter
+        """
         warnings.warn(
             "nexmo.Client#get_number_insight is deprecated (use #get_standard_number_insight instead)",
             DeprecationWarning,
@@ -293,18 +342,23 @@ class Client:
         return self.get(self.api_host, "/number/lookup/json", params or kwargs)
 
     def get_advanced_number_insight(self, params=None, **kwargs):
+        """ redirects to api.nexmo.com/ni/advanced/json with params if it exists """
         return self.get(self.api_host, "/ni/advanced/json", params or kwargs)
 
     def request_number_insight(self, params=None, **kwargs):
+        """ redirects to rest.nexmo.com/ni/json with params if it exists """
         return self.post(self.host, "/ni/json", params or kwargs)
 
     def get_applications(self, params=None, **kwargs):
+        """ redirects to api.nexmo.com/v1/applications with params if it exists """
         return self.get(self.api_host, "/v1/applications", params or kwargs)
 
     def get_application(self, application_id):
+        """ redirects to api.nexmo.com/v1/applications with application_id parameter """
         return self.get(self.api_host, "/v1/applications/" + application_id)
 
     def create_application(self, params=None, **kwargs):
+        """ redirects to api.nexmo.com/v1/applications with params if it exists """
         return self.post(self.api_host, "/v1/applications", params or kwargs)
 
     def update_application(self, application_id, params=None, **kwargs):
@@ -313,6 +367,7 @@ class Client:
         )
 
     def delete_application(self, application_id):
+        """ deletes api.nexmo.com/v1/applications/application_id """
         return self.delete(self.api_host, "/v1/applications/" + application_id)
 
     def create_call(self, params=None, **kwargs):
@@ -353,13 +408,11 @@ class Client:
         return self._post_json(self.api_host, "/v1/redact/transaction", params)
 
     def list_secrets(self, api_key):
-        """ obtains secrets from accounts """
         return self.get(
             self.api_host, "/accounts/" + api_key + "/secrets", header_auth=True
         )
 
     def get_secret(self, api_key, secret_id):
-        """ obtains each secret id from secrets """
         return self.get(
             self.api_host,
             "/accounts/" + api_key + "/secrets/" + secret_id,
@@ -367,12 +420,10 @@ class Client:
         )
 
     def create_secret(self, api_key, secret):
-        """ creates secret that is returned """
         body = {"secret": secret}
         return self._post_json(self.api_host, "/accounts/" + api_key + "/secrets", body)
 
     def delete_secret(self, api_key, secret_id):
-        """ deletes secret from object """
         return self.delete(
             self.api_host,
             "/accounts/" + api_key + "/secrets/" + secret_id,

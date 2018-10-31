@@ -35,7 +35,7 @@
 
 * Add check_signature method for checking callback signatures
 
-* Deprecated old Verify API methods
+* Deprecate old Verify API methods
 
 # 1.3.0
 

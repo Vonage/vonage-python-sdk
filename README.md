@@ -381,7 +381,7 @@ make test
 License
 -------
 
-This library is released under the [MIT License][license]
+This library is released under the [MIT License][license].
 
 [virtualenv]: https://virtualenv.pypa.io/en/stable/
 [report-a-bug]: https://github.com/Nexmo/nexmo-python/issues/new

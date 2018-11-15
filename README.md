@@ -321,7 +321,7 @@ Docs: [https://developer.nexmo.com/api/application#retrieve-an-application](http
 response = client.update_application(uuid, answer_method='POST')
 ```
 
-Docs: [https://developer.nexmo.com/api/application#retrieve-your-applications](https://developer.nexmo.com/api/application?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-your-applications)
+Docs: [https://developer.nexmo.com/api/application#update-an-application](https://developer.nexmo.com/api/application?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#update-an-application)
 
 ### Delete an application
 

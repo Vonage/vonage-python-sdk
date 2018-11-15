@@ -168,7 +168,7 @@ Docs: [https://developer.nexmo.com/api/voice#startTalk](https://developer.nexmo.
 response = client.stop_speech(uuid)
 ```
 
-Docs: [https://developer.nexmo.com/api/voice#stopStream](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#stopStream)
+Docs: [https://developer.nexmo.com/api/voice#stopTalk](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#stopTalk)
 
 ### Send DTMF tones to a call
 

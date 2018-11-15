@@ -141,7 +141,7 @@ Docs: [https://developer.nexmo.com/api/voice#updateCall](https://developer.nexmo
 ```python
 stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
 
-response = client.send_audio(uuid, stream_url=stream_url)
+response = client.send_audio(uuid, stream_url=[stream_url])
 ```
 
 Docs: [https://developer.nexmo.com/api/voice#startStream](https://developer.nexmo.com/api/voice#startStream#stream_put?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)

@@ -141,7 +141,7 @@ Docs: [https://developer.nexmo.com/api/voice#updateCall](https://developer.nexmo
 ```python
 stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
 
-response = client.send_audio(uuid, stream_url=stream_url)
+response = client.send_audio(uuid, stream_url=[stream_url])
 ```
 
 Docs: [https://developer.nexmo.com/api/voice#startStream](https://developer.nexmo.com/api/voice#startStream#stream_put?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
@@ -193,7 +193,7 @@ response = client.get_recording(RECORDING_URL)
 response = client.start_verification(number='441632960960', brand='MyApp')
 
 if response['status'] == '0':
-  print('Started verification request_id=' + response['request_id'])
+  print('Started verification request_id={request_id}'.format(request_id=response['request_id']))
 else:
   print('Error:', response['error_text'])
 ```
@@ -209,7 +209,7 @@ store temporarily (in the session, database, url, etc).
 response = client.check_verification('00e6c3377e5348cdaf567e1417c707a5', code='1234')
 
 if response['status'] == '0':
-  print('Verification complete, event_id=' + response['event_id'])
+  print('Verification complete, event_id={event_id}'.format(event_id=response['event_id']))
 else:
   print('Error:', response['error_text'])
 ```
@@ -381,7 +381,7 @@ make test
 License
 -------
 
-This library is released under the [MIT License][license]
+This library is released under the [MIT License][license].
 
 [virtualenv]: https://virtualenv.pypa.io/en/stable/
 [report-a-bug]: https://github.com/Nexmo/nexmo-python/issues/new

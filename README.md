@@ -8,7 +8,7 @@ Nexmo Client Library for Python
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 This is the Python client library for Nexmo's API. To use it you'll
-need a Nexmo account. Sign up [for free at nexmo.com][signup].
+need a Nexmo account. [Sign up for free at Nexmo.](https://dashboard.nexmo.com/sign-up)
 
 * [Installation](#installation)
 * [Usage](#usage)

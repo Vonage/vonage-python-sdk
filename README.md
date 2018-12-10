@@ -345,7 +345,7 @@ else:
 
 Docs: [https://developer.nexmo.com/concepts/guides/signing-messages](https://developer.nexmo.com/concepts/guides/signing-messages?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
-Note: you'll need to contact support@nexmo.com to enable message signing on
+Note: you'll need to contact us at support@nexmo.com to enable message signing on
 your account before you can validate webhook signatures.
 
 
@@ -371,7 +371,7 @@ We recommend working on `nexmo-python` with a [virtualenv][virtualenv]. The foll
 make install
 ```
 
-The tests are all written with pytest. You run them with:
+The tests are all written with pytest. You can run them by using the following command:
 
 ```bash
 make test

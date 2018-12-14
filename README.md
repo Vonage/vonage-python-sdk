@@ -79,11 +79,11 @@ response = client.send_message({'from': 'Python', 'to': 'YOUR-NUMBER', 'text': '
 response = response['messages'][0]
 
 if response['status'] == '0':
-  print 'Sent message', response['message-id']
+  print('Sent message', response['message-id'])
 
-  print 'Remaining balance is', response['remaining-balance']
+  print('Remaining balance is', response['remaining-balance'])
 else:
-  print 'Error:', response['error-text']
+  print('Error:', response['error-text'])
 ```
 
 Docs: [https://developer.nexmo.com/api/sms#send-an-sms](https://developer.nexmo.com/api/sms#send-an-sms?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
@@ -193,9 +193,9 @@ response = client.get_recording(RECORDING_URL)
 response = client.start_verification(number='441632960960', brand='MyApp')
 
 if response['status'] == '0':
-  print 'Started verification request_id={request_id}'.format(request_id=response['request_id'])
+  print('Started verification request_id={request_id}'.format(request_id=response['request_id']))
 else:
-  print 'Error:', response['error_text']
+  print('Error:', response['error_text'])
 ```
 
 Docs: [https://developer.nexmo.com/api/verify#verify-request](https://developer.nexmo.com/api/verify#verify-request?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
@@ -209,9 +209,9 @@ store temporarily (in the session, database, url, etc).
 response = client.check_verification('00e6c3377e5348cdaf567e1417c707a5', code='1234')
 
 if response['status'] == '0':
-  print 'Verification complete, event_id={event_id}'.format(event_id=response['event_id'])
+  print('Verification complete, event_id={event_id}'.format(event_id=response['event_id']))
 else:
-  print 'Error:', response['error_text']
+  print('Error:', response['error_text'])
 ```
 
 Docs: [https://developer.nexmo.com/api/verify#verify-check](https://developer.nexmo.com/api/verify#verify-check?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)

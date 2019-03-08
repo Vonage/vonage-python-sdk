@@ -373,6 +373,23 @@ class Client:
             header_auth=True,
         )
 
+    # Conversation API -------------------------------------------------------
+
+    def create_conversation(self, conversation):
+        return self._jwt_signed_post("/beta/conversations", conversation)
+
+    def list_conversations(self,):
+        return self._jwt_signed_get("/beta/conversations", params or kwargs)
+
+    def update_conversations(self, conversation):
+        conversation_id = conversation.pop("conversation_id")
+        path = "/beta/conversations/{conversation_id}".format(
+            conversation_id=conversation_id
+        )
+        return self._jwt_signed_get(path, params or kwargs)
+
+    # End Conversation API ---------------------------------------------------
+
     def get_secret(self, api_key, secret_id):
         return self.get(
             self.api_host,

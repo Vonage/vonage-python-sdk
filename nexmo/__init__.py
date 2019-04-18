@@ -86,10 +86,14 @@ class Client:
 
         self.api_host = "api.nexmo.com"
 
-        user_agent = "nexmo-python/{version}/{python_version}".format(version=__version__, python_version=python_version())
+        user_agent = "nexmo-python/{version}/{python_version}".format(
+            version=__version__, python_version=python_version()
+        )
 
         if app_name and app_version:
-            user_agent += "/{app_name}/{app_version}".format(app_name=app_name, app_version=app_version)
+            user_agent += "/{app_name}/{app_version}".format(
+                app_name=app_name, app_version=app_version
+            )
 
         self.headers = {"User-Agent": user_agent}
 
@@ -296,18 +300,26 @@ class Client:
         return self.get(self.api_host, "/v1/applications", params or kwargs)
 
     def get_application(self, application_id):
-        return self.get(self.api_host, "/v1/applications/{application_id}".format(application_id=application_id))
+        return self.get(
+            self.api_host,
+            "/v1/applications/{application_id}".format(application_id=application_id),
+        )
 
     def create_application(self, params=None, **kwargs):
         return self.post(self.api_host, "/v1/applications", params or kwargs)
 
     def update_application(self, application_id, params=None, **kwargs):
         return self.put(
-            self.api_host, "/v1/applications/{application_id}".format(application_id=application_id), params or kwargs
+            self.api_host,
+            "/v1/applications/{application_id}".format(application_id=application_id),
+            params or kwargs,
         )
 
     def delete_application(self, application_id):
-        return self.delete(self.api_host, "/v1/applications/{application_id}".format(application_id=application_id))
+        return self.delete(
+            self.api_host,
+            "/v1/applications/{application_id}".format(application_id=application_id),
+        )
 
     def create_call(self, params=None, **kwargs):
         return self._jwt_signed_post("/v1/calls", params or kwargs)
@@ -319,22 +331,30 @@ class Client:
         return self._jwt_signed_get("/v1/calls/{uuid}".format(uuid=uuid))
 
     def update_call(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put("/v1/calls/{uuid}".format(uuid=uuid), params or kwargs)
+        return self._jwt_signed_put(
+            "/v1/calls/{uuid}".format(uuid=uuid), params or kwargs
+        )
 
     def send_audio(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put("/v1/calls/{uuid}/stream".format(uuid=uuid), params or kwargs)
+        return self._jwt_signed_put(
+            "/v1/calls/{uuid}/stream".format(uuid=uuid), params or kwargs
+        )
 
     def stop_audio(self, uuid):
         return self._jwt_signed_delete("/v1/calls/{uuid}/stream".format(uuid=uuid))
 
     def send_speech(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put("/v1/calls/{uuid}/talk".format(uuid=uuid), params or kwargs)
+        return self._jwt_signed_put(
+            "/v1/calls/{uuid}/talk".format(uuid=uuid), params or kwargs
+        )
 
     def stop_speech(self, uuid):
         return self._jwt_signed_delete("/v1/calls/{uuid}/talk".format(uuid=uuid))
 
     def send_dtmf(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put("/v1/calls/{uuid}/dtmf".format(uuid=uuid), params or kwargs)
+        return self._jwt_signed_put(
+            "/v1/calls/{uuid}/dtmf".format(uuid=uuid), params or kwargs
+        )
 
     def get_recording(self, url):
         hostname = urlparse(url).hostname
@@ -348,24 +368,32 @@ class Client:
 
     def list_secrets(self, api_key):
         return self.get(
-            self.api_host, "/accounts/{api_key}/secrets".format(api_key=api_key), header_auth=True
+            self.api_host,
+            "/accounts/{api_key}/secrets".format(api_key=api_key),
+            header_auth=True,
         )
 
     def get_secret(self, api_key, secret_id):
         return self.get(
             self.api_host,
-            "/accounts/{api_key}/secrets/{secret_id}".format(api_key=api_key, secret_id=secret_id),
+            "/accounts/{api_key}/secrets/{secret_id}".format(
+                api_key=api_key, secret_id=secret_id
+            ),
             header_auth=True,
         )
 
     def create_secret(self, api_key, secret):
         body = {"secret": secret}
-        return self._post_json(self.api_host, "/accounts/{api_key}/secrets".format(api_key=api_key), body)
+        return self._post_json(
+            self.api_host, "/accounts/{api_key}/secrets".format(api_key=api_key), body
+        )
 
     def delete_secret(self, api_key, secret_id):
         return self.delete(
             self.api_host,
-            "/accounts/{api_key}/secrets/{secret_id}".format(api_key=api_key, secret_id=secret_id),
+            "/accounts/{api_key}/secrets/{secret_id}".format(
+                api_key=api_key, secret_id=secret_id
+            ),
             header_auth=True,
         )
 
@@ -404,7 +432,11 @@ class Client:
         headers = self.headers
         if header_auth:
             h = base64.b64encode(
-                ("{api_key}:{api_secret}".format(api_key=self.api_key, api_secret=self.api_secret).encode("utf-8"))
+                (
+                    "{api_key}:{api_secret}".format(
+                        api_key=self.api_key, api_secret=self.api_secret
+                    ).encode("utf-8")
+                )
             ).decode("ascii")
             headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
         else:
@@ -419,7 +451,11 @@ class Client:
         headers = self.headers
         if header_auth:
             h = base64.b64encode(
-                ("{api_key}:{api_secret}".format(api_key=self.api_key, api_secret=self.api_secret).encode("utf-8"))
+                (
+                    "{api_key}:{api_secret}".format(
+                        api_key=self.api_key, api_secret=self.api_secret
+                    ).encode("utf-8")
+                )
             ).decode("ascii")
             headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
         else:
@@ -430,7 +466,11 @@ class Client:
     def _post_json(self, host, request_uri, json):
         uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
         auth = base64.b64encode(
-            ("{api_key}:{api_secret}".format(api_key=self.api_key, api_secret=self.api_secret).encode("utf-8"))
+            (
+                "{api_key}:{api_secret}".format(
+                    api_key=self.api_key, api_secret=self.api_secret
+                ).encode("utf-8")
+            )
         ).decode("ascii")
         headers = dict(
             self.headers or {}, Authorization="Basic {hash}".format(hash=auth)
@@ -454,7 +494,11 @@ class Client:
         headers = self.headers
         if header_auth:
             h = base64.b64encode(
-                ("{api_key}:{api_secret}".format(api_key=self.api_key, api_secret=self.api_secret).encode("utf-8"))
+                (
+                    "{api_key}:{api_secret}".format(
+                        api_key=self.api_key, api_secret=self.api_secret
+                    ).encode("utf-8")
+                )
             ).decode("ascii")
             headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
         else:
@@ -508,7 +552,9 @@ class Client:
             raise ServerError(message)
 
     def _jwt_signed_get(self, request_uri, params=None):
-        uri = "https://{api_host}{request_uri}".format(api_host=self.api_host, request_uri=request_uri)
+        uri = "https://{api_host}{request_uri}".format(
+            api_host=self.api_host, request_uri=request_uri
+        )
 
         return self.parse(
             self.api_host,
@@ -516,21 +562,27 @@ class Client:
         )
 
     def _jwt_signed_post(self, request_uri, params):
-        uri = "https://{api_host}{request_uri}".format(api_host=self.api_host, request_uri=request_uri)
+        uri = "https://{api_host}{request_uri}".format(
+            api_host=self.api_host, request_uri=request_uri
+        )
 
         return self.parse(
             self.api_host, requests.post(uri, json=params, headers=self._headers())
         )
 
     def _jwt_signed_put(self, request_uri, params):
-        uri = "https://{api_host}{request_uri}".format(api_host=self.api_host, request_uri=request_uri)
+        uri = "https://{api_host}{request_uri}".format(
+            api_host=self.api_host, request_uri=request_uri
+        )
 
         return self.parse(
             self.api_host, requests.put(uri, json=params, headers=self._headers())
         )
 
     def _jwt_signed_delete(self, request_uri):
-        uri = "https://{api_host}{request_uri}".format(api_host=self.api_host, request_uri=request_uri)
+        uri = "https://{api_host}{request_uri}".format(
+            api_host=self.api_host, request_uri=request_uri
+        )
 
         return self.parse(self.api_host, requests.delete(uri, headers=self._headers()))
 

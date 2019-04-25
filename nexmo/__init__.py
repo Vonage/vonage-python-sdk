@@ -27,25 +27,12 @@ try:
 except ImportError:
     JSONDecodeError = ValueError
 
+from .errors import *
+from ._internal import Server, ApplicationV2
+
 __version__ = "2.3.0"
 
 logger = logging.getLogger("nexmo")
-
-
-class Error(Exception):
-    pass
-
-
-class ClientError(Error):
-    pass
-
-
-class ServerError(Error):
-    pass
-
-
-class AuthenticationError(ClientError):
-    pass
 
 
 class Client:
@@ -98,6 +85,15 @@ class Client:
         self.headers = {"User-Agent": user_agent}
 
         self.auth_params = {}
+
+        api_server = Server(
+            "https://api.nexmo.com",
+            user_agent=user_agent,
+            api_key=self.api_key,
+            api_secret=self.api_secret,
+        )
+
+        self.application_v2 = ApplicationV2(api_server)
 
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
@@ -378,17 +374,48 @@ class Client:
     def create_conversation(self, conversation):
         return self._jwt_signed_post("/beta/conversations", conversation)
 
-    def list_conversations(self,):
-        return self._jwt_signed_get("/beta/conversations", params or kwargs)
+    def list_conversations(
+        self,
+        date_start=None,
+        date_end=None,
+        page_size=None,
+        record_index=None,
+        order=None,
+    ):
+        _locals = locals()
+        params = {
+            name: _locals[name]
+            for name in ["date_start", "date_end", "page_size", "record_index", "order"]
+            if _locals[name] is not None
+        }
+        _format_date_param(params, "date_start")
+        _format_date_param(params, "date_end")
+        return self._jwt_signed_get("/beta/conversations", params)
 
-    def update_conversations(self, conversation):
-        conversation_id = conversation.pop("conversation_id")
+    def update_conversation(self, conversation):
+        conversation_id = conversation.pop("uuid")
         path = "/beta/conversations/{conversation_id}".format(
             conversation_id=conversation_id
         )
-        return self._jwt_signed_get(path, params or kwargs)
+        return self._jwt_signed_put(path, conversation)
+
+    def get_conversation(self, conversation_id):
+        path = "/beta/conversations/{conversation_id}".format(
+            conversation_id=conversation_id
+        )
+        return self._jwt_signed_get(path)
+
+    def delete_conversation(self, conversation_id):
+        path = "/beta/conversations/{conversation_id}".format(
+            conversation_id=conversation_id
+        )
+        return self._jwt_signed_delete(path)
 
     # End Conversation API ---------------------------------------------------
+
+    # Application API v2 -----------------------------------------------------
+
+    # End Application API v2 -------------------------------------------------
 
     def get_secret(self, api_key, secret_id):
         return self.get(
@@ -464,6 +491,12 @@ class Client:
         return self.parse(host, requests.get(uri, params=params, headers=headers))
 
     def post(self, host, request_uri, params, header_auth=False):
+        """
+        Post form-encoded data to `request_uri`.
+
+        Auth is either key/secret added to the post data, or basic auth,
+        if `header_auth` is True.
+        """
         uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
         headers = self.headers
         if header_auth:
@@ -481,6 +514,9 @@ class Client:
         return self.parse(host, requests.post(uri, data=params, headers=headers))
 
     def _post_json(self, host, request_uri, json):
+        """
+        Post json to `request_uri`, using basic auth.
+        """
         uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
         auth = base64.b64encode(
             (
@@ -497,12 +533,24 @@ class Client:
         )
         return self.parse(host, requests.post(uri, headers=headers, json=json))
 
-    def put(self, host, request_uri, params):
+    def put(self, host, request_uri, params, header_auth=False):
         uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
 
-        params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
-        logger.debug("PUT to %r with params %r", uri, params)
-        return self.parse(host, requests.put(uri, json=params, headers=self.headers))
+        headers = self.headers
+        if header_auth:
+            h = base64.b64encode(
+                (
+                    "{api_key}:{api_secret}".format(
+                        api_key=self.api_key, api_secret=self.api_secret
+                    ).encode("utf-8")
+                )
+            ).decode("ascii")
+            # Must create a new headers dict here, otherwise we'd be mutating `self.headers`:
+            headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
+        else:
+            params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
+        logger.debug("PUT to %r with params %r, headers %r", uri, params, headers)
+        return self.parse(host, requests.put(uri, json=params, headers=headers))
 
     def delete(self, host, request_uri, header_auth=False):
         uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
@@ -517,6 +565,7 @@ class Client:
                     ).encode("utf-8")
                 )
             ).decode("ascii")
+            # Must create a new headers dict here, otherwise we'd be mutating `self.headers`:
             headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
         else:
             params = {"api_key": self.api_key, "api_secret": self.api_secret}

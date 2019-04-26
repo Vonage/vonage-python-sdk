@@ -88,29 +88,71 @@ class ApplicationV2(object):
     def __init__(self, api_server):
         self._api_server = api_server
 
-    def create_application(self, params=None):
-        return self._api_server.post("/v2/applications", params)
+    def create_application(self, application_data):
+        """
+        Create an application using the provided `application_data`.
+
+        :param dict application_data: A JSON-style dict describing the application to be created.
+
+        >>> client.application_v2.create_application({ 'name': 'My Cool App!' })
+
+        https://developer.nexmo.com/api/application.v2#createApplication
+        """
+        return self._api_server.post("/v2/applications", application_data)
+
+    def get_application(self, application_id):
+        """
+        Get application details for the application with `application_id`.
+
+        The format of the returned dict is described at <https://developer.nexmo.com/api/application.v2#getApplication>_
+
+        :param str application_id: The application ID.
+        :rtype: dict
+        """
+
+        return self._api_server.get(
+            "/v2/applications/{application_id}".format(application_id=application_id),
+            headers={"content-type": "application/json"},
+        )
 
     def update_application(self, application_id, params):
+        """
+        Update the application with `application_id` using the values provided in `params`.
+
+
+        """
         return self._api_server.put(
             "/v2/applications/{application_id}".format(application_id=application_id),
-            params or kwargs,
+            params,
         )
 
     def delete_application(self, application_id):
-        return self._api_server.delete(
+        """
+        Delete the application with `application_id`.
+        """
+
+        self._api_server.delete(
             "/v2/applications/{application_id}".format(application_id=application_id),
             headers={"content-type": "application/json"},
         )
 
-    def list_applications(self):
-        # TODO: Report that this doesn't work without the meaningless content-type header:
-        return self._api_server.get(
-            "/v2/applications", headers={"content-type": "application/json"}
-        )
+    def list_applications(self, page_size=None, page=None):
+        """
+        List all applications for your account.
 
-    def get_application(self, application_id):
+        Results are paged, so each page will need to be requested to see all applications.
+
+        :param int page_size: The number of items in the page to be returned
+        :param int page: The page number of the page to be returned.
+        """
+        params = _filter_none_values({"page_size": page_size, "page": page})
+
         return self._api_server.get(
-            "/v2/applications/{application_id}".format(application_id=application_id),
+            "/v2/applications",
+            params=params,
             headers={"content-type": "application/json"},
         )
+
+
+def _filter_none_values(d):
+    return {k: v for k, v in d.items() if v is not None}

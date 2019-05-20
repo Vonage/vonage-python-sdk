@@ -28,7 +28,13 @@ except ImportError:
     JSONDecodeError = ValueError
 
 from .errors import *
-from ._internal import Server, ApplicationV2
+from ._internal import (
+    ApplicationV2,
+    BasicAuthenticatedServer,
+    ConversationBeta,
+    TokenAuthenticatedServer,
+    _format_date_param,
+)
 
 __version__ = "2.3.0"
 
@@ -36,6 +42,35 @@ logger = logging.getLogger("nexmo")
 
 
 class Client:
+    """
+    Create a Client object to start making calls to Nexmo APIs.
+
+    Most methods corresponding to Nexmo API calls are on this class itself,
+    although newer APIs are under namespaces like :attr:`Client.application_v2`.
+
+    The credentials you provide when instantiating a Client determine which
+    methods can be called. Consult the `Nexmo API docs <https://developer.nexmo.com/api/>`_ for details of the
+    authentication used by the APIs you wish to use, and instantiate your
+    Client with the appropriate credentials.
+
+    :param str key: Your Nexmo API key
+    :param str secret: Your Nexmo API secret.
+    :param str signature_secret: Your Nexmo API signature secret.
+        You may need to have this enabled by Nexmo support. It is only used for SMS authentication.
+    :param str signature_method:
+        The encryption method used for signature encryption. This must match the method
+        configured in the Nexmo Dashboard. We recommend `sha256` or `sha512`.
+        This should be one of `md5`, `sha1`, `sha256`, or `sha512` if using HMAC digests.
+        If you want to use a simple MD5 hash, leave this as `None`.
+    :param str application_id: Your application ID if calling methods which use JWT authentication.
+    :param str private_key: Your private key if calling methods which use JWT authentication.
+        This should either be a str containing the key in its PEM form, or a path to a private key file.
+    :param str app_name: This optional value is added to the user-agent header
+        provided by this library and can be used by Nexmo to track your app statistics.
+    :param str app_name: This optional value is added to the user-agent header
+        provided by this library and can be used by Nexmo to track your app statistics.
+    """
+
     def __init__(
         self,
         key=None,
@@ -58,7 +93,7 @@ class Client:
             "NEXMO_SIGNATURE_METHOD", None
         )
 
-        if signature_method in {"md5", "sha1", "sha256", "sha512"}:
+        if self.signature_method in {"md5", "sha1", "sha256", "sha512"}:
             self.signature_method = getattr(hashlib, signature_method)
 
         self.application_id = application_id
@@ -86,14 +121,17 @@ class Client:
 
         self.auth_params = {}
 
-        api_server = Server(
+        api_server = BasicAuthenticatedServer(
             "https://api.nexmo.com",
             user_agent=user_agent,
             api_key=self.api_key,
             api_secret=self.api_secret,
         )
 
+        jwt_api_server = TokenAuthenticatedServer(self)
+
         self.application_v2 = ApplicationV2(api_server)
+        self.conversation_beta = ConversationBeta(jwt_api_server)
 
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
@@ -371,51 +409,7 @@ class Client:
 
     # Conversation API -------------------------------------------------------
 
-    def create_conversation(self, conversation):
-        return self._jwt_signed_post("/beta/conversations", conversation)
-
-    def list_conversations(
-        self,
-        date_start=None,
-        date_end=None,
-        page_size=None,
-        record_index=None,
-        order=None,
-    ):
-        _locals = locals()
-        params = {
-            name: _locals[name]
-            for name in ["date_start", "date_end", "page_size", "record_index", "order"]
-            if _locals[name] is not None
-        }
-        _format_date_param(params, "date_start")
-        _format_date_param(params, "date_end")
-        return self._jwt_signed_get("/beta/conversations", params)
-
-    def update_conversation(self, conversation):
-        conversation_id = conversation.pop("uuid")
-        path = "/beta/conversations/{conversation_id}".format(
-            conversation_id=conversation_id
-        )
-        return self._jwt_signed_put(path, conversation)
-
-    def get_conversation(self, conversation_id):
-        path = "/beta/conversations/{conversation_id}".format(
-            conversation_id=conversation_id
-        )
-        return self._jwt_signed_get(path)
-
-    def delete_conversation(self, conversation_id):
-        path = "/beta/conversations/{conversation_id}".format(
-            conversation_id=conversation_id
-        )
-        return self._jwt_signed_delete(path)
-
     # End Conversation API ---------------------------------------------------
-
-    # Application API v2 -----------------------------------------------------
-
-    # End Application API v2 -------------------------------------------------
 
     def get_secret(self, api_key, secret_id):
         return self.get(
@@ -666,19 +660,3 @@ class Client:
         payload.setdefault("jti", str(uuid4()))
 
         return jwt.encode(payload, self.private_key, algorithm="RS256")
-
-
-def _format_date_param(params, key, format="%Y-%m-%d %H:%M:%S"):
-    """
-    Utility function to convert datetime values to strings.
-
-    If the value is already a str, or is not in the dict, no change is made.
-
-    :param params: A `dict` of params that may contain a `datetime` value.
-    :param key: The datetime value to be converted to a `str`
-    :param format: The `strftime` format to be used to format the date. The default value is '%Y-%m-%d %H:%M:%S'
-    """
-    if key in params:
-        param = params[key]
-        if hasattr(param, "strftime"):
-            params[key] = param.strftime(format)

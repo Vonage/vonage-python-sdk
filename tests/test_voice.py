@@ -47,7 +47,7 @@ def test_update_call(client, dummy_data):
     assert isinstance(client.update_call("xx-xx-xx-xx", action="hangup"), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert request_content_type() == "application/json"
-    assert request_body() == b'{"action": "hangup"}'
+    assert request_body() == '{"action": "hangup"}'
 
 
 @responses.activate
@@ -60,7 +60,7 @@ def test_send_audio(client, dummy_data):
     )
     assert request_user_agent() == dummy_data.user_agent
     assert request_content_type() == "application/json"
-    assert request_body() == b'{"stream_url": "http://example.com/audio.mp3"}'
+    assert request_body() == '{"stream_url": "http://example.com/audio.mp3"}'
 
 
 @responses.activate
@@ -78,7 +78,7 @@ def test_send_speech(client, dummy_data):
     assert isinstance(client.send_speech("xx-xx-xx-xx", text="Hello"), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert request_content_type() == "application/json"
-    assert request_body() == b'{"text": "Hello"}'
+    assert request_body() == '{"text": "Hello"}'
 
 
 @responses.activate
@@ -96,7 +96,7 @@ def test_send_dtmf(client, dummy_data):
     assert isinstance(client.send_dtmf("xx-xx-xx-xx", digits="1234"), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert request_content_type() == "application/json"
-    assert request_body() == b'{"digits": "1234"}'
+    assert request_body() == '{"digits": "1234"}'
 
 
 @responses.activate

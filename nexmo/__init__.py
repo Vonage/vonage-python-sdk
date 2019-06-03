@@ -28,13 +28,7 @@ except ImportError:
     JSONDecodeError = ValueError
 
 from .errors import *
-from ._internal import (
-    ApplicationV2,
-    BasicAuthenticatedServer,
-    ConversationBeta,
-    TokenAuthenticatedServer,
-    _format_date_param,
-)
+from ._internal import ApplicationV2, BasicAuthenticatedServer, _format_date_param
 
 __version__ = "2.3.0"
 
@@ -127,11 +121,7 @@ class Client:
             api_key=self.api_key,
             api_secret=self.api_secret,
         )
-
-        jwt_api_server = TokenAuthenticatedServer(self)
-
         self.application_v2 = ApplicationV2(api_server)
-        self.conversation_beta = ConversationBeta(jwt_api_server)
 
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs

@@ -14,6 +14,7 @@ def test_redact_transaction(client, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert request_content_type() == "application/json"
 
+
 @responses.activate
 def test_redact_transaction_with_type(client, dummy_data):
     responses.add(

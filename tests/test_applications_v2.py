@@ -4,27 +4,45 @@ from util import *
 
 @responses.activate
 def test_list_applications(client, dummy_data):
-    stub(responses.GET, "https://api.nexmo.com/v2/applications")
+    stub(
+        responses.GET,
+        "https://api.nexmo.com/v2/applications",
+        fixture_path="applications_v2/list_applications.json",
+    )
 
-    assert isinstance(client.application_v2.list_applications(), dict)
+    apps = client.application_v2.list_applications()
+    assert isinstance(apps, dict)
+    assert apps["total_items"] == 30
     assert request_user_agent() == dummy_data.user_agent
 
 
 @responses.activate
 def test_get_application(client, dummy_data):
-    stub(responses.GET, "https://api.nexmo.com/v2/applications/xx-xx-xx-xx")
+    stub(
+        responses.GET,
+        "https://api.nexmo.com/v2/applications/xx-xx-xx-xx",
+        fixture_path="applications_v2/get_application.json",
+    )
 
-    assert isinstance(client.application_v2.get_application("xx-xx-xx-xx"), dict)
+    app = client.application_v2.get_application("xx-xx-xx-xx")
+    assert isinstance(app, dict)
+    assert app["name"] == "My Test Application"
     assert request_user_agent() == dummy_data.user_agent
 
 
 @responses.activate
 def test_create_application(client, dummy_data):
-    stub(responses.POST, "https://api.nexmo.com/v2/applications")
+    stub(
+        responses.POST,
+        "https://api.nexmo.com/v2/applications",
+        fixture_path="applications_v2/create_application.json",
+    )
 
     params = {"name": "Example App", "type": "voice"}
 
-    assert isinstance(client.application_v2.create_application(params), dict)
+    app = client.application_v2.create_application(params)
+    assert isinstance(app, dict)
+    assert app["name"] == "My Test Application"
     assert request_user_agent() == dummy_data.user_agent
     body_data = json.loads(request_body())
     assert body_data["type"] == "voice"
@@ -32,16 +50,21 @@ def test_create_application(client, dummy_data):
 
 @responses.activate
 def test_update_application(client, dummy_data):
-    stub(responses.PUT, "https://api.nexmo.com/v2/applications/xx-xx-xx-xx")
+    stub(
+        responses.PUT,
+        "https://api.nexmo.com/v2/applications/xx-xx-xx-xx",
+        fixture_path="applications_v2/update_application.json",
+    )
 
     params = {"answer_url": "https://example.com/ncco"}
 
-    assert isinstance(
-        client.application_v2.update_application("xx-xx-xx-xx", params), dict
-    )
+    app = client.application_v2.update_application("xx-xx-xx-xx", params)
+    assert isinstance(app, dict)
     assert request_user_agent() == dummy_data.user_agent
     assert request_content_type() == "application/json"
     assert b'"answer_url": "https://example.com/ncco"' in request_body()
+
+    assert app["name"] == "A Better Name"
 
 
 @responses.activate

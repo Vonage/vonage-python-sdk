@@ -1,0 +1,14 @@
+{
+  "id": "680754a2-86b9-11e9-9729-3200112428c0",
+  "name": "My Test Application",
+  "keys": {
+    "private_key": "-----BEGIN PRIVATE KEY-----\nABCDE\nabcde\n12345\n-----END PRIVATE KEY-----\n",
+    "public_key": "-----BEGIN PUBLIC KEY-----\nA123BC\n2345ADC\n-----END PUBLIC KEY-----\n"
+  },
+  "capabilities": {},
+  "_links": {
+    "self": {
+      "href": "/v2/applications/680754a2-86b9-11e9-9729-3200112428c0"
+    }
+  }
+}

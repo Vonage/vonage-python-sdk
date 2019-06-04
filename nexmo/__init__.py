@@ -321,18 +321,38 @@ class Client:
         return self.post(self.host, "/ni/json", params or kwargs)
 
     def get_applications(self, params=None, **kwargs):
+        warnings.warn(
+            "nexmo.Client#get_applications is deprecated (use methods from #application_v2 instead)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.get(self.api_host, "/v1/applications", params or kwargs)
 
     def get_application(self, application_id):
+        warnings.warn(
+            "nexmo.Client#get_application is deprecated (use methods from #application_v2 instead)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.get(
             self.api_host,
             "/v1/applications/{application_id}".format(application_id=application_id),
         )
 
     def create_application(self, params=None, **kwargs):
+        warnings.warn(
+            "nexmo.Client#create_application is deprecated (use methods from #application_v2 instead)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.post(self.api_host, "/v1/applications", params or kwargs)
 
     def update_application(self, application_id, params=None, **kwargs):
+        warnings.warn(
+            "nexmo.Client#update_application is deprecated (use methods from #application_v2 instead)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.put(
             self.api_host,
             "/v1/applications/{application_id}".format(application_id=application_id),
@@ -340,6 +360,11 @@ class Client:
         )
 
     def delete_application(self, application_id):
+        warnings.warn(
+            "nexmo.Client#delete_application is deprecated (use methods from #application_v2 instead)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.delete(
             self.api_host,
             "/v1/applications/{application_id}".format(application_id=application_id),

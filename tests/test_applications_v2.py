@@ -44,7 +44,7 @@ def test_create_application(client, dummy_data):
     assert isinstance(app, dict)
     assert app["name"] == "My Test Application"
     assert request_user_agent() == dummy_data.user_agent
-    body_data = json.loads(request_body())
+    body_data = json.loads(request_body().decode("utf-8"))
     assert body_data["type"] == "voice"
 
 

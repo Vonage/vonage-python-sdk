@@ -37,7 +37,7 @@ Alternatively, you can clone the repository via the command line:
     git clone git@github.com:Nexmo/nexmo-python.git
 
 or by opening it on GitHub desktop.
-    
+
 
 Usage
 -----
@@ -178,7 +178,7 @@ response = client.send_dtmf(uuid, digits='1234')
 
 Docs: [https://developer.nexmo.com/api/voice#startDTMF](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#startDTMF)
 
-### Get recording 
+### Get recording
 
 ``` python
 response = client.get_recording(RECORDING_URL)
@@ -294,42 +294,42 @@ client.delete_secret(API_KEY, 'my-secret-id')
 ### Create an application
 
 ```python
-response = client.create_application(name='Example App', type='voice', answer_url=answer_url, event_url=event_url)
+response = client.application_v2.create_application({name='Example App', type='voice'})
 ```
 
-Docs: [https://developer.nexmo.com/api/application#create-an-application](https://developer.nexmo.com/api/application?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#create-an-application)
+Docs: [https://developer.nexmo.com/api/application.v2#createApplication](https://developer.nexmo.com/api/application.v2#createApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#create-an-application)
 
 ### Retrieve a list of applications
 
 ```python
-response = client.get_applications()
+response = client.application_v2.list_applications()
 ```
 
-Docs: [https://developer.nexmo.com/api/application#retrieve-your-applications](https://developer.nexmo.com/api/application?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-your-applications)
+Docs: [https://developer.nexmo.com/api/application.v2#listApplication](https://developer.nexmo.com/api/application.v2#listApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-your-applications)
 
 ### Retrieve a single application
 
 ```python
-response = client.get_application(uuid)
+response = client.application_v2.get_application(uuid)
 ```
 
-Docs: [https://developer.nexmo.com/api/application#retrieve-an-application](https://developer.nexmo.com/api/application?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-an-application)
+Docs: [https://developer.nexmo.com/api/application.v2#getApplication](https://developer.nexmo.com/api/application.v2#getApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-an-application)
 
 ### Update an application
 
 ```python
-response = client.update_application(uuid, answer_method='POST')
+response = client.application_v2.update_application(uuid, answer_method='POST')
 ```
 
-Docs: [https://developer.nexmo.com/api/application#update-an-application](https://developer.nexmo.com/api/application?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#update-an-application)
+Docs: [https://developer.nexmo.com/api/application.v2#updateApplication](https://developer.nexmo.com/api/application.v2#updateApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#update-an-application)
 
 ### Delete an application
 
 ```python
-response = client.delete_application(uuid)
+response = client.application_v2.delete_application(uuid)
 ```
 
-Docs: [https://developer.nexmo.com/api/application#destroy-an-application](https://developer.nexmo.com/api/application?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#destroy-an-application)
+Docs: [https://developer.nexmo.com/api/application.v2#deleteApplication](https://developer.nexmo.com/api/application.v2#deleteApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#destroy-an-application)
 
 
 ## Validate webhook signatures

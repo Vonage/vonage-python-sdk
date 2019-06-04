@@ -422,10 +422,6 @@ class Client:
             header_auth=True,
         )
 
-    # Conversation API -------------------------------------------------------
-
-    # End Conversation API ---------------------------------------------------
-
     def get_secret(self, api_key, secret_id):
         return self.get(
             self.api_host,

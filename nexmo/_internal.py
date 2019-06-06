@@ -49,12 +49,7 @@ class BasicAuthenticatedServer(object):
         elif response.status_code == 204:
             return None
         elif 200 <= response.status_code < 300:
-            # Strip off any encoding from the content-type header:
-            content_mime = response.headers.get("content-type").split(";", 1)[0]
-            if content_mime == "application/json":
-                return response.json()
-            else:
-                return response.content
+            return response.json()
         elif 400 <= response.status_code < 500:
             logger.warning(
                 "Client error: %s %r", response.status_code, response.content

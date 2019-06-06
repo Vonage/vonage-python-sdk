@@ -30,7 +30,7 @@ except ImportError:
 from .errors import *
 from ._internal import ApplicationV2, BasicAuthenticatedServer, _format_date_param
 
-__version__ = "2.3.0"
+__version__ = "2.4.0"
 
 logger = logging.getLogger("nexmo")
 

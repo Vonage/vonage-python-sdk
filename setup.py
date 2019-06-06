@@ -10,7 +10,7 @@ with io.open(os.path.join(os.path.dirname(__file__), "README.md"),
 
 setup(
     name="nexmo",
-    version="2.3.0",
+    version="2.4.0",
     description="Nexmo Client Library for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -25,8 +25,7 @@ def test_get_with_auth(client, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert "aaa=xxx" in request_query()
     assert "bbb=yyy" in request_query()
-    assert "Authorization" in request_headers()
-    assert request_headers()["Authorization"].startswith("Basic")
+    assert_basic_auth()
 
 
 @responses.activate
@@ -53,8 +52,7 @@ def test_post_with_auth(client, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert "aaa=xxx" in request_body()
     assert "bbb=yyy" in request_body()
-    assert "Authorization" in request_headers()
-    assert request_headers()["Authorization"].startswith("Basic")
+    assert_basic_auth()
 
 
 @responses.activate
@@ -106,5 +104,4 @@ def test_delete_with_auth(client, dummy_data):
     response = client.delete(host, request_uri, header_auth=True)
     assert isinstance(response, dict)
     assert request_user_agent() == dummy_data.user_agent
-    assert "Authorization" in request_headers()
-    assert request_headers()["Authorization"].startswith("Basic")
+    assert_basic_auth()

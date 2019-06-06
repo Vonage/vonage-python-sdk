@@ -12,23 +12,6 @@ except ImportError:
 logger = logging.getLogger("nexmo")
 
 
-class TokenAuthenticatedServer(object):
-    def __init__(self, client):
-        self._client = client
-
-    def get(self, path, params=None):
-        return self._client._jwt_signed_get(path, params=params)
-
-    def post(self, path, body=None):
-        return self._client._jwt_signed_post(path, params=body)
-
-    def put(self, path, body=None):
-        return self._client._jwt_signed_put(path, params=body)
-
-    def delete(self, path):
-        self._client._jwt_signed_delete(path)
-
-
 class BasicAuthenticatedServer(object):
     def __init__(self, host, user_agent, api_key, api_secret):
         self._host = host

@@ -73,6 +73,22 @@ def test_put(client, dummy_data):
 
 
 @responses.activate
+def test_put_with_auth(client, dummy_data):
+    stub(responses.PUT, "https://api.nexmo.com/v1/applications")
+    host = "api.nexmo.com"
+    request_uri = "/v1/applications"
+    params = {"aaa": "xxx", "bbb": "yyy"}
+    response = client.put(host, request_uri, params=params, header_auth=True)
+    assert_basic_auth()
+    assert isinstance(response, dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert b"aaa" in request_body()
+    assert b"xxx" in request_body()
+    assert b"bbb" in request_body()
+    assert b"yyy" in request_body()
+
+
+@responses.activate
 def test_delete(client, dummy_data):
     stub(responses.DELETE, "https://api.nexmo.com/v1/applications")
     host = "api.nexmo.com"

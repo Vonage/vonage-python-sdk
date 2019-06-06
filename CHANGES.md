@@ -1,3 +1,7 @@
+# 2.4.0
+* Application V2 API added under `Client.application_v2`
+* Existing application methods under `Client` are now deprecated.
+
 # 2.3.0
 * Explicit parameter list for the `nexmo.Client` constructor. **This may cause errors in code passing incorrect or spurious arguments to the Client constructor.**
 * Secret Management

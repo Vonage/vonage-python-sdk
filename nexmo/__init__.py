@@ -61,7 +61,7 @@ class Client:
         This should either be a str containing the key in its PEM form, or a path to a private key file.
     :param str app_name: This optional value is added to the user-agent header
         provided by this library and can be used by Nexmo to track your app statistics.
-    :param str app_name: This optional value is added to the user-agent header
+    :param str app_version: This optional value is added to the user-agent header
         provided by this library and can be used by Nexmo to track your app statistics.
     """
 
@@ -102,12 +102,12 @@ class Client:
 
         self.api_host = "api.nexmo.com"
 
-        user_agent = "nexmo-python/{version}/{python_version}".format(
+        user_agent = "nexmo-python/{version} python/{python_version}".format(
             version=__version__, python_version=python_version()
         )
 
         if app_name and app_version:
-            user_agent += "/{app_name}/{app_version}".format(
+            user_agent += " {app_name}/{app_version}".format(
                 app_name=app_name, app_version=app_version
             )
 

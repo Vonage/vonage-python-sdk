@@ -123,6 +123,8 @@ class Client:
         )
         self.application_v2 = ApplicationV2(api_server)
 
+        self.session = requests.Session()
+
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
 
@@ -407,7 +409,7 @@ class Client:
 
     def get_recording(self, url):
         hostname = urlparse(url).hostname
-        return self.parse(hostname, requests.get(url, headers=self._headers()))
+        return self.parse(hostname, self.session.get(url, headers=self._headers()))
 
     def redact_transaction(self, id, product, type=None):
         params = {"id": id, "product": product}
@@ -493,7 +495,7 @@ class Client:
                 params or {}, api_key=self.api_key, api_secret=self.api_secret
             )
         logger.debug("GET to %r with params %r, headers %r", uri, params, headers)
-        return self.parse(host, requests.get(uri, params=params, headers=headers))
+        return self.parse(host, self.session.get(uri, params=params, headers=headers))
 
     def post(self, host, request_uri, params, header_auth=False):
         """
@@ -516,7 +518,7 @@ class Client:
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
         logger.debug("POST to %r with params %r, headers %r", uri, params, headers)
-        return self.parse(host, requests.post(uri, data=params, headers=headers))
+        return self.parse(host, self.session.post(uri, data=params, headers=headers))
 
     def _post_json(self, host, request_uri, json):
         """
@@ -536,7 +538,7 @@ class Client:
         logger.debug(
             "POST to %r with body: %r, headers: %r", request_uri, json, headers
         )
-        return self.parse(host, requests.post(uri, headers=headers, json=json))
+        return self.parse(host, self.session.post(uri, headers=headers, json=json))
 
     def put(self, host, request_uri, params, header_auth=False):
         uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
@@ -555,7 +557,7 @@ class Client:
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
         logger.debug("PUT to %r with params %r, headers %r", uri, params, headers)
-        return self.parse(host, requests.put(uri, json=params, headers=headers))
+        return self.parse(host, self.session.put(uri, json=params, headers=headers))
 
     def delete(self, host, request_uri, header_auth=False):
         uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
@@ -575,7 +577,7 @@ class Client:
         else:
             params = {"api_key": self.api_key, "api_secret": self.api_secret}
         logger.debug("DELETE to %r with params %r, headers %r", uri, params, headers)
-        return self.parse(host, requests.delete(uri, params=params, headers=headers))
+        return self.parse(host, self.session.delete(uri, params=params, headers=headers))
 
     def parse(self, host, response):
         logger.debug("Response headers %r", response.headers)
@@ -629,7 +631,7 @@ class Client:
 
         return self.parse(
             self.api_host,
-            requests.get(uri, params=params or {}, headers=self._headers()),
+            self.session.get(uri, params=params or {}, headers=self._headers()),
         )
 
     def _jwt_signed_post(self, request_uri, params):
@@ -638,7 +640,7 @@ class Client:
         )
 
         return self.parse(
-            self.api_host, requests.post(uri, json=params, headers=self._headers())
+            self.api_host, self.session.post(uri, json=params, headers=self._headers())
         )
 
     def _jwt_signed_put(self, request_uri, params):
@@ -647,7 +649,7 @@ class Client:
         )
 
         return self.parse(
-            self.api_host, requests.put(uri, json=params, headers=self._headers())
+            self.api_host, self.session.put(uri, json=params, headers=self._headers())
         )
 
     def _jwt_signed_delete(self, request_uri):
@@ -655,7 +657,7 @@ class Client:
             api_host=self.api_host, request_uri=request_uri
         )
 
-        return self.parse(self.api_host, requests.delete(uri, headers=self._headers()))
+        return self.parse(self.api_host, self.session.delete(uri, headers=self._headers()))
 
     def _headers(self):
         token = self.generate_application_jwt()

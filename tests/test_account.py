@@ -27,14 +27,11 @@ def test_application_info_options(dummy_data):
         app_name=app_name,
         app_version=app_version,
     )
-    user_agent = "/".join(
-        [
-            "nexmo-python",
+    user_agent = "nexmo-python/{} python/{} {}/{}".format(
             nexmo.__version__,
             platform.python_version(),
             app_name,
             app_version,
-        ]
     )
 
     assert isinstance(client.get_balance(), dict)

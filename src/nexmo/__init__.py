@@ -577,7 +577,9 @@ class Client:
         else:
             params = {"api_key": self.api_key, "api_secret": self.api_secret}
         logger.debug("DELETE to %r with params %r, headers %r", uri, params, headers)
-        return self.parse(host, self.session.delete(uri, params=params, headers=headers))
+        return self.parse(
+            host, self.session.delete(uri, params=params, headers=headers)
+        )
 
     def parse(self, host, response):
         logger.debug("Response headers %r", response.headers)
@@ -657,7 +659,9 @@ class Client:
             api_host=self.api_host, request_uri=request_uri
         )
 
-        return self.parse(self.api_host, self.session.delete(uri, headers=self._headers()))
+        return self.parse(
+            self.api_host, self.session.delete(uri, headers=self._headers())
+        )
 
     def _headers(self):
         token = self.generate_application_jwt()

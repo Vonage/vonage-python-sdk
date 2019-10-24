@@ -29,7 +29,7 @@ def test_client_error(client):
 
     with pytest.raises(nexmo.ClientError) as excinfo:
         client.send_message({})
-    excinfo.match(r"400 response from rest.nexmo.com")
+    excinfo.match(r"400 response from https://rest.nexmo.com")
 
 
 @responses.activate
@@ -38,7 +38,7 @@ def test_server_error(client):
 
     with pytest.raises(nexmo.ServerError) as excinfo:
         client.send_message({})
-    excinfo.match(r"500 response from rest.nexmo.com")
+    excinfo.match(r"500 response from https://rest.nexmo.com")
 
 
 @responses.activate

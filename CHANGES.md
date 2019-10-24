@@ -1,3 +1,6 @@
+# Development
+* Client.host & Client.api_host must now include the protocol prefix. eg: "api.nexmo.com" is now "https://api.nexmo.com"
+
 # 2.4.0
 * Application V2 API added under `Client.application_v2`
 * Existing application methods under `Client` are now deprecated.

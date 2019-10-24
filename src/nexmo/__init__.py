@@ -28,7 +28,13 @@ except ImportError:
     JSONDecodeError = ValueError
 
 from .errors import *
-from ._internal import ApplicationV2, BasicAuthenticatedServer, _format_date_param
+from ._internal import (
+    ApplicationV2,
+    Conversation,
+    BasicAuthenticatedServer,
+    JWTAuthenticatedServer,
+    _format_date_param,
+)
 
 __version__ = "2.4.0"
 
@@ -98,9 +104,9 @@ class Client:
             with open(self.private_key, "rb") as key_file:
                 self.private_key = key_file.read()
 
-        self.host = "rest.nexmo.com"
+        self._host = "https://rest.nexmo.com"
 
-        self.api_host = "api.nexmo.com"
+        self._api_host = "https://api.nexmo.com"
 
         user_agent = "nexmo-python/{version} python/{python_version}".format(
             version=__version__, python_version=python_version()
@@ -115,85 +121,112 @@ class Client:
 
         self.auth_params = {}
 
-        api_server = BasicAuthenticatedServer(
-            "https://api.nexmo.com",
+        self._basic_api_server = BasicAuthenticatedServer(
+            self._api_host,
             user_agent=user_agent,
             api_key=self.api_key,
             api_secret=self.api_secret,
         )
-        self.application_v2 = ApplicationV2(api_server)
+
+        self._jwt_api_server = JWTAuthenticatedServer(
+            self._api_host,
+            user_agent=user_agent,
+            application_id=application_id,
+            private_key=private_key,
+        )
+
+        self.application_v2 = ApplicationV2(self._basic_api_server)
+        self.conversation = Conversation(self._jwt_api_server)
 
         self.session = requests.Session()
+
+    @property
+    def host(self):
+        return self._host
+
+    @host.setter
+    def host(self, host):
+        self._host = host
+
+    @property
+    def api_host(self):
+        return self._api_host
+
+    @api_host.setter
+    def api_host(self, host):
+        self._api_host = host
+        self.basic_api_server.host = host
+        self.jwt_api_server.host = host
 
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
 
     def send_message(self, params):
-        return self.post(self.host, "/sms/json", params)
+        return self.post(self._host, "/sms/json", params)
 
     def get_balance(self):
-        return self.get(self.host, "/account/get-balance")
+        return self.get(self._host, "/account/get-balance")
 
     def get_country_pricing(self, country_code):
         return self.get(
-            self.host, "/account/get-pricing/outbound", {"country": country_code}
+            self._host, "/account/get-pricing/outbound", {"country": country_code}
         )
 
     def get_prefix_pricing(self, prefix):
         return self.get(
-            self.host, "/account/get-prefix-pricing/outbound", {"prefix": prefix}
+            self._host, "/account/get-prefix-pricing/outbound", {"prefix": prefix}
         )
 
     def get_sms_pricing(self, number):
         return self.get(
-            self.host, "/account/get-phone-pricing/outbound/sms", {"phone": number}
+            self._host, "/account/get-phone-pricing/outbound/sms", {"phone": number}
         )
 
     def get_voice_pricing(self, number):
         return self.get(
-            self.host, "/account/get-phone-pricing/outbound/voice", {"phone": number}
+            self._host, "/account/get-phone-pricing/outbound/voice", {"phone": number}
         )
 
     def update_settings(self, params=None, **kwargs):
-        return self.post(self.host, "/account/settings", params or kwargs)
+        return self.post(self._host, "/account/settings", params or kwargs)
 
     def topup(self, params=None, **kwargs):
-        return self.post(self.host, "/account/top-up", params or kwargs)
+        return self.post(self._host, "/account/top-up", params or kwargs)
 
     def get_account_numbers(self, params=None, **kwargs):
-        return self.get(self.host, "/account/numbers", params or kwargs)
+        return self.get(self._host, "/account/numbers", params or kwargs)
 
     def get_available_numbers(self, country_code, params=None, **kwargs):
         return self.get(
-            self.host, "/number/search", dict(params or kwargs, country=country_code)
+            self._host, "/number/search", dict(params or kwargs, country=country_code)
         )
 
     def buy_number(self, params=None, **kwargs):
-        return self.post(self.host, "/number/buy", params or kwargs)
+        return self.post(self._host, "/number/buy", params or kwargs)
 
     def cancel_number(self, params=None, **kwargs):
-        return self.post(self.host, "/number/cancel", params or kwargs)
+        return self.post(self._host, "/number/cancel", params or kwargs)
 
     def update_number(self, params=None, **kwargs):
-        return self.post(self.host, "/number/update", params or kwargs)
+        return self.post(self._host, "/number/update", params or kwargs)
 
     def get_message(self, message_id):
-        return self.get(self.host, "/search/message", {"id": message_id})
+        return self.get(self._host, "/search/message", {"id": message_id})
 
     def get_message_rejections(self, params=None, **kwargs):
-        return self.get(self.host, "/search/rejections", params or kwargs)
+        return self.get(self._host, "/search/rejections", params or kwargs)
 
     def search_messages(self, params=None, **kwargs):
-        return self.get(self.host, "/search/messages", params or kwargs)
+        return self.get(self._host, "/search/messages", params or kwargs)
 
     def send_ussd_push_message(self, params=None, **kwargs):
-        return self.post(self.host, "/ussd/json", params or kwargs)
+        return self.post(self._host, "/ussd/json", params or kwargs)
 
     def send_ussd_prompt_message(self, params=None, **kwargs):
-        return self.post(self.host, "/ussd-prompt/json", params or kwargs)
+        return self.post(self._host, "/ussd-prompt/json", params or kwargs)
 
     def send_2fa_message(self, params=None, **kwargs):
-        return self.post(self.host, "/sc/us/2fa/json", params or kwargs)
+        return self.post(self._host, "/sc/us/2fa/json", params or kwargs)
 
     def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
         """
@@ -211,31 +244,33 @@ class Client:
         }
         # Ensure timestamp is a string:
         _format_date_param(params, "timestamp")
-        return self.post(self.api_host, "/conversions/sms", params)
+        return self.post(self._api_host, "/conversions/sms", params)
 
     def send_event_alert_message(self, params=None, **kwargs):
-        return self.post(self.host, "/sc/us/alert/json", params or kwargs)
+        return self.post(self._host, "/sc/us/alert/json", params or kwargs)
 
     def send_marketing_message(self, params=None, **kwargs):
-        return self.post(self.host, "/sc/us/marketing/json", params or kwargs)
+        return self.post(self._host, "/sc/us/marketing/json", params or kwargs)
 
     def get_event_alert_numbers(self):
-        return self.get(self.host, "/sc/us/alert/opt-in/query/json")
+        return self.get(self._host, "/sc/us/alert/opt-in/query/json")
 
     def resubscribe_event_alert_number(self, params=None, **kwargs):
-        return self.post(self.host, "/sc/us/alert/opt-in/manage/json", params or kwargs)
+        return self.post(
+            self._host, "/sc/us/alert/opt-in/manage/json", params or kwargs
+        )
 
     def initiate_call(self, params=None, **kwargs):
-        return self.post(self.host, "/call/json", params or kwargs)
+        return self.post(self._host, "/call/json", params or kwargs)
 
     def initiate_tts_call(self, params=None, **kwargs):
-        return self.post(self.api_host, "/tts/json", params or kwargs)
+        return self.post(self._api_host, "/tts/json", params or kwargs)
 
     def initiate_tts_prompt_call(self, params=None, **kwargs):
-        return self.post(self.api_host, "/tts-prompt/json", params or kwargs)
+        return self.post(self._api_host, "/tts-prompt/json", params or kwargs)
 
     def start_verification(self, params=None, **kwargs):
-        return self.post(self.api_host, "/verify/json", params or kwargs)
+        return self.post(self._api_host, "/verify/json", params or kwargs)
 
     def send_verification_request(self, params=None, **kwargs):
         warnings.warn(
@@ -244,11 +279,11 @@ class Client:
             stacklevel=2,
         )
 
-        return self.post(self.api_host, "/verify/json", params or kwargs)
+        return self.post(self._api_host, "/verify/json", params or kwargs)
 
     def check_verification(self, request_id, params=None, **kwargs):
         return self.post(
-            self.api_host,
+            self._api_host,
             "/verify/check/json",
             dict(params or kwargs, request_id=request_id),
         )
@@ -260,11 +295,11 @@ class Client:
             stacklevel=2,
         )
 
-        return self.post(self.api_host, "/verify/check/json", params or kwargs)
+        return self.post(self._api_host, "/verify/check/json", params or kwargs)
 
     def get_verification(self, request_id):
         return self.get(
-            self.api_host, "/verify/search/json", {"request_id": request_id}
+            self._api_host, "/verify/search/json", {"request_id": request_id}
         )
 
     def get_verification_request(self, request_id):
@@ -275,19 +310,19 @@ class Client:
         )
 
         return self.get(
-            self.api_host, "/verify/search/json", {"request_id": request_id}
+            self._api_host, "/verify/search/json", {"request_id": request_id}
         )
 
     def cancel_verification(self, request_id):
         return self.post(
-            self.api_host,
+            self._api_host,
             "/verify/control/json",
             {"request_id": request_id, "cmd": "cancel"},
         )
 
     def trigger_next_verification_event(self, request_id):
         return self.post(
-            self.api_host,
+            self._api_host,
             "/verify/control/json",
             {"request_id": request_id, "cmd": "trigger_next_event"},
         )
@@ -299,13 +334,13 @@ class Client:
             stacklevel=2,
         )
 
-        return self.post(self.api_host, "/verify/control/json", params or kwargs)
+        return self.post(self._api_host, "/verify/control/json", params or kwargs)
 
     def get_basic_number_insight(self, params=None, **kwargs):
-        return self.get(self.api_host, "/ni/basic/json", params or kwargs)
+        return self.get(self._api_host, "/ni/basic/json", params or kwargs)
 
     def get_standard_number_insight(self, params=None, **kwargs):
-        return self.get(self.api_host, "/ni/standard/json", params or kwargs)
+        return self.get(self._api_host, "/ni/standard/json", params or kwargs)
 
     def get_number_insight(self, params=None, **kwargs):
         warnings.warn(
@@ -314,13 +349,13 @@ class Client:
             stacklevel=2,
         )
 
-        return self.get(self.api_host, "/number/lookup/json", params or kwargs)
+        return self.get(self._api_host, "/number/lookup/json", params or kwargs)
 
     def get_advanced_number_insight(self, params=None, **kwargs):
-        return self.get(self.api_host, "/ni/advanced/json", params or kwargs)
+        return self.get(self._api_host, "/ni/advanced/json", params or kwargs)
 
     def request_number_insight(self, params=None, **kwargs):
-        return self.post(self.host, "/ni/json", params or kwargs)
+        return self.post(self._host, "/ni/json", params or kwargs)
 
     def get_applications(self, params=None, **kwargs):
         warnings.warn(
@@ -328,7 +363,7 @@ class Client:
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.get(self.api_host, "/v1/applications", params or kwargs)
+        return self.get(self._api_host, "/v1/applications", params or kwargs)
 
     def get_application(self, application_id):
         warnings.warn(
@@ -337,7 +372,7 @@ class Client:
             stacklevel=2,
         )
         return self.get(
-            self.api_host,
+            self._api_host,
             "/v1/applications/{application_id}".format(application_id=application_id),
         )
 
@@ -347,7 +382,7 @@ class Client:
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.post(self.api_host, "/v1/applications", params or kwargs)
+        return self.post(self._api_host, "/v1/applications", params or kwargs)
 
     def update_application(self, application_id, params=None, **kwargs):
         warnings.warn(
@@ -356,7 +391,7 @@ class Client:
             stacklevel=2,
         )
         return self.put(
-            self.api_host,
+            self._api_host,
             "/v1/applications/{application_id}".format(application_id=application_id),
             params or kwargs,
         )
@@ -368,7 +403,7 @@ class Client:
             stacklevel=2,
         )
         return self.delete(
-            self.api_host,
+            self._api_host,
             "/v1/applications/{application_id}".format(application_id=application_id),
         )
 
@@ -415,18 +450,18 @@ class Client:
         params = {"id": id, "product": product}
         if type is not None:
             params["type"] = type
-        return self._post_json(self.api_host, "/v1/redact/transaction", params)
+        return self._post_json(self._api_host, "/v1/redact/transaction", params)
 
     def list_secrets(self, api_key):
         return self.get(
-            self.api_host,
+            self._api_host,
             "/accounts/{api_key}/secrets".format(api_key=api_key),
             header_auth=True,
         )
 
     def get_secret(self, api_key, secret_id):
         return self.get(
-            self.api_host,
+            self._api_host,
             "/accounts/{api_key}/secrets/{secret_id}".format(
                 api_key=api_key, secret_id=secret_id
             ),
@@ -436,12 +471,12 @@ class Client:
     def create_secret(self, api_key, secret):
         body = {"secret": secret}
         return self._post_json(
-            self.api_host, "/accounts/{api_key}/secrets".format(api_key=api_key), body
+            self._api_host, "/accounts/{api_key}/secrets".format(api_key=api_key), body
         )
 
     def delete_secret(self, api_key, secret_id):
         return self.delete(
-            self.api_host,
+            self._api_host,
             "/accounts/{api_key}/secrets/{secret_id}".format(
                 api_key=api_key, secret_id=secret_id
             ),
@@ -479,7 +514,7 @@ class Client:
         return hasher.hexdigest()
 
     def get(self, host, request_uri, params=None, header_auth=False):
-        uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
+        uri = "{host}{request_uri}".format(host=host, request_uri=request_uri)
         headers = self.headers
         if header_auth:
             h = base64.b64encode(
@@ -504,7 +539,7 @@ class Client:
         Auth is either key/secret added to the post data, or basic auth,
         if `header_auth` is True.
         """
-        uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
+        uri = "{host}{request_uri}".format(host=host, request_uri=request_uri)
         headers = self.headers
         if header_auth:
             h = base64.b64encode(
@@ -524,7 +559,7 @@ class Client:
         """
         Post json to `request_uri`, using basic auth.
         """
-        uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
+        uri = "{host}{request_uri}".format(host=host, request_uri=request_uri)
         auth = base64.b64encode(
             (
                 "{api_key}:{api_secret}".format(
@@ -541,7 +576,7 @@ class Client:
         return self.parse(host, self.session.post(uri, headers=headers, json=json))
 
     def put(self, host, request_uri, params, header_auth=False):
-        uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
+        uri = "{host}{request_uri}".format(host=host, request_uri=request_uri)
 
         headers = self.headers
         if header_auth:
@@ -560,7 +595,7 @@ class Client:
         return self.parse(host, self.session.put(uri, json=params, headers=headers))
 
     def delete(self, host, request_uri, header_auth=False):
-        uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
+        uri = "{host}{request_uri}".format(host=host, request_uri=request_uri)
 
         params = None
         headers = self.headers
@@ -627,40 +662,40 @@ class Client:
             raise ServerError(message)
 
     def _jwt_signed_get(self, request_uri, params=None):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host, request_uri=request_uri
+        uri = "{api_host}{request_uri}".format(
+            api_host=self._api_host, request_uri=request_uri
         )
 
         return self.parse(
-            self.api_host,
+            self._api_host,
             self.session.get(uri, params=params or {}, headers=self._headers()),
         )
 
     def _jwt_signed_post(self, request_uri, params):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host, request_uri=request_uri
+        uri = "{api_host}{request_uri}".format(
+            api_host=self._api_host, request_uri=request_uri
         )
 
         return self.parse(
-            self.api_host, self.session.post(uri, json=params, headers=self._headers())
+            self._api_host, self.session.post(uri, json=params, headers=self._headers())
         )
 
     def _jwt_signed_put(self, request_uri, params):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host, request_uri=request_uri
+        uri = "{api_host}{request_uri}".format(
+            api_host=self._api_host, request_uri=request_uri
         )
 
         return self.parse(
-            self.api_host, self.session.put(uri, json=params, headers=self._headers())
+            self._api_host, self.session.put(uri, json=params, headers=self._headers())
         )
 
     def _jwt_signed_delete(self, request_uri):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host, request_uri=request_uri
+        uri = "{api_host}{request_uri}".format(
+            api_host=self._api_host, request_uri=request_uri
         )
 
         return self.parse(
-            self.api_host, self.session.delete(uri, headers=self._headers())
+            self._api_host, self.session.delete(uri, headers=self._headers())
         )
 
     def _headers(self):

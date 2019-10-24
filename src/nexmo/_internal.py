@@ -1,4 +1,11 @@
+"""
+This module contains implementations of Nexmo Server SDK internals.
+Their interfaces are unstable and should not be relied upon.
+
+"""
+import jwt
 import logging
+from uuid import uuid4
 
 from requests.sessions import Session
 
@@ -14,15 +21,16 @@ logger = logging.getLogger("nexmo")
 
 class BasicAuthenticatedServer(object):
     def __init__(self, host, user_agent, api_key, api_secret):
-        self._host = host
+        self.host = host
         self._session = session = Session()
         session.auth = (api_key, api_secret)  # Basic authentication.
         session.headers.update({"User-Agent": user_agent})
 
     def _uri(self, path):
-        return "{host}{path}".format(host=self._host, path=path)
+        return "{host}{path}".format(host=self.host, path=path)
 
     def get(self, path, params=None, headers=None):
+
         return self._parse(
             self._session.get(self._uri(path), params=params, headers=headers)
         )
@@ -41,6 +49,100 @@ class BasicAuthenticatedServer(object):
         return self._parse(
             self._session.delete(self._uri(path), json=body, headers=headers)
         )
+
+    def _parse(self, response):
+        logger.debug("Response headers %r", response.headers)
+        if response.status_code == 401:
+            raise AuthenticationError()
+        elif response.status_code == 204:
+            return None
+        elif 200 <= response.status_code < 300:
+            return response.json()
+        elif 400 <= response.status_code < 500:
+            logger.warning(
+                "Client error: %s %r", response.status_code, response.content
+            )
+            message = "{code} response".format(code=response.status_code)
+            # Test for standard error format:
+            try:
+                error_data = response.json()
+                if (
+                    "type" in error_data
+                    and "title" in error_data
+                    and "detail" in error_data
+                ):
+                    message = "{title}: {detail} ({type})".format(
+                        title=error_data["title"],
+                        detail=error_data["detail"],
+                        type=error_data["type"],
+                    )
+            except JSONDecodeError:
+                pass
+            raise ClientError(message)
+        elif 500 <= response.status_code < 600:
+            logger.warning(
+                "Server error: %s %r", response.status_code, response.content
+            )
+            message = "{code} response".format(code=response.status_code)
+            raise ServerError(message)
+
+
+class JWTAuthenticatedServer(object):
+    def __init__(self, host, user_agent, application_id, private_key):
+        self.host = host
+        self.application_id = application_id
+        self.private_key = private_key
+        self._session = session = Session()
+        session.headers.update({"User-Agent": user_agent})
+        session.headers.update({"Accept": "application/json"})
+
+    def _uri(self, path):
+        return "{host}{path}".format(host=self.host, path=path)
+
+    def get(self, path, params=None, headers=None):
+        return self._parse(
+            self._session.get(
+                self._uri(path), params=params, headers=self._headers(headers)
+            )
+        )
+
+    def post(self, path, body=None, headers=None):
+        return self._parse(
+            self._session.post(
+                self._uri(path), json=body, headers=self._headers(headers)
+            )
+        )
+
+    def put(self, path, body=None, headers=None):
+        return self._parse(
+            self._session.put(
+                self._uri(path), json=body, headers=self._headers(headers)
+            )
+        )
+
+    def delete(self, path, body=None, headers=None):
+        return self._parse(
+            self._session.delete(
+                self._uri(path), json=body, headers=self._headers(headers)
+            )
+        )
+
+    def _headers(self, headers):
+        if headers is None:
+            headers = {}
+        token = self.generate_application_jwt()
+        return dict(headers, Authorization=b"Bearer " + token)
+
+    def generate_application_jwt(self, when=None):
+        iat = int(when if when is not None else time.time())
+
+        payload = dict(self.auth_params)
+        payload.setdefault("application_id", self.application_id)
+        payload.setdefault("iat", iat)
+        payload.setdefault("exp", iat + 60)
+        payload.setdefault("jti", str(uuid4()))
+
+        return jwt.encode(payload, self.private_key, algorithm="RS256")
 
     def _parse(self, response):
         logger.debug("Response headers %r", response.headers)
@@ -119,8 +221,6 @@ class ApplicationV2(object):
     def update_application(self, application_id, params):
         """
         Update the application with `application_id` using the values provided in `params`.
-
-
         """
         return self._api_server.put(
             "/v2/applications/{application_id}".format(application_id=application_id),
@@ -153,6 +253,20 @@ class ApplicationV2(object):
             params=params,
             headers={"content-type": "application/json"},
         )
+
+
+class Conversation(object):
+    """
+    Provides Conversation API functionality.
+
+    Don't instantiate this class yourself, access it via :py:attr:`nexmo.Client.conversation`
+    """
+
+    def __init__(self, api_server):
+        self._api_server = api_server
+
+    def create_conversation(self, conversation_data):
+        return self._api_server.post("/beta/conversations", conversation_data)
 
 
 def _filter_none_values(d):

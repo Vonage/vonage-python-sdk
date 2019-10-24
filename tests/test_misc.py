@@ -4,7 +4,7 @@ from util import *
 @responses.activate
 def test_get(client, dummy_data):
     stub(responses.GET, "https://api.nexmo.com/v1/applications")
-    host = "api.nexmo.com"
+    host = "https://api.nexmo.com"
     request_uri = "/v1/applications"
     params = {"aaa": "xxx", "bbb": "yyy"}
     response = client.get(host, request_uri, params=params)
@@ -17,7 +17,7 @@ def test_get(client, dummy_data):
 @responses.activate
 def test_get_with_auth(client, dummy_data):
     stub(responses.GET, "https://api.nexmo.com/v1/applications")
-    host = "api.nexmo.com"
+    host = "https://api.nexmo.com"
     request_uri = "/v1/applications"
     params = {"aaa": "xxx", "bbb": "yyy"}
     response = client.get(host, request_uri, params=params, header_auth=True)
@@ -31,7 +31,7 @@ def test_get_with_auth(client, dummy_data):
 @responses.activate
 def test_post(client, dummy_data):
     stub(responses.POST, "https://api.nexmo.com/v1/applications")
-    host = "api.nexmo.com"
+    host = "https://api.nexmo.com"
     request_uri = "/v1/applications"
     params = {"aaa": "xxx", "bbb": "yyy"}
     response = client.post(host, request_uri, params)
@@ -44,7 +44,7 @@ def test_post(client, dummy_data):
 @responses.activate
 def test_post_with_auth(client, dummy_data):
     stub(responses.POST, "https://api.nexmo.com/v1/applications")
-    host = "api.nexmo.com"
+    host = "https://api.nexmo.com"
     request_uri = "/v1/applications"
     params = {"aaa": "xxx", "bbb": "yyy"}
     response = client.post(host, request_uri, params, header_auth=True)
@@ -58,7 +58,7 @@ def test_post_with_auth(client, dummy_data):
 @responses.activate
 def test_put(client, dummy_data):
     stub(responses.PUT, "https://api.nexmo.com/v1/applications")
-    host = "api.nexmo.com"
+    host = "https://api.nexmo.com"
     request_uri = "/v1/applications"
     params = {"aaa": "xxx", "bbb": "yyy"}
     response = client.put(host, request_uri, params=params)
@@ -73,7 +73,7 @@ def test_put(client, dummy_data):
 @responses.activate
 def test_put_with_auth(client, dummy_data):
     stub(responses.PUT, "https://api.nexmo.com/v1/applications")
-    host = "api.nexmo.com"
+    host = "https://api.nexmo.com"
     request_uri = "/v1/applications"
     params = {"aaa": "xxx", "bbb": "yyy"}
     response = client.put(host, request_uri, params=params, header_auth=True)
@@ -89,7 +89,7 @@ def test_put_with_auth(client, dummy_data):
 @responses.activate
 def test_delete(client, dummy_data):
     stub(responses.DELETE, "https://api.nexmo.com/v1/applications")
-    host = "api.nexmo.com"
+    host = "https://api.nexmo.com"
     request_uri = "/v1/applications"
     response = client.delete(host, request_uri)
     assert isinstance(response, dict)
@@ -99,7 +99,7 @@ def test_delete(client, dummy_data):
 @responses.activate
 def test_delete_with_auth(client, dummy_data):
     stub(responses.DELETE, "https://api.nexmo.com/v1/applications")
-    host = "api.nexmo.com"
+    host = "https://api.nexmo.com"
     request_uri = "/v1/applications"
     response = client.delete(host, request_uri, header_auth=True)
     assert isinstance(response, dict)

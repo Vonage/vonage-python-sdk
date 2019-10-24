@@ -102,7 +102,7 @@ class Client:
 
         if isinstance(self.private_key, string_types) and "\n" not in self.private_key:
             with open(self.private_key, "rb") as key_file:
-                self.private_key = key_file.read()
+                self.private_key = private_key = key_file.read()
 
         self._host = "https://rest.nexmo.com"
 
@@ -132,7 +132,7 @@ class Client:
             self._api_host,
             user_agent=user_agent,
             application_id=application_id,
-            private_key=private_key,
+            private_key=self.private_key,
         )
 
         self.application_v2 = ApplicationV2(self._basic_api_server)

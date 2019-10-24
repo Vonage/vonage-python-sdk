@@ -5,6 +5,7 @@ Their interfaces are unstable and should not be relied upon.
 """
 import jwt
 import logging
+import time
 from uuid import uuid4
 
 from requests.sessions import Session
@@ -92,6 +93,7 @@ class JWTAuthenticatedServer(object):
         self.host = host
         self.application_id = application_id
         self.private_key = private_key
+        self.auth_params = {}
         self._session = session = Session()
         session.headers.update({"User-Agent": user_agent})
         session.headers.update({"Accept": "application/json"})
@@ -170,6 +172,11 @@ class JWTAuthenticatedServer(object):
                         detail=error_data["detail"],
                         type=error_data["type"],
                     )
+                elif "code" in error_data and "description" in error_data:
+                    message = "({code}) {description}".format(
+                        code=error_data["code"], description=error_data["description"]
+                    )
+
             except JSONDecodeError:
                 pass
             raise ClientError(message)

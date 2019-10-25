@@ -3,6 +3,7 @@ This module contains implementations of Nexmo Server SDK internals.
 Their interfaces are unstable and should not be relied upon.
 
 """
+from enum import Enum
 import jwt
 import logging
 import time
@@ -18,6 +19,11 @@ except ImportError:
     JSONDecodeError = ValueError
 
 logger = logging.getLogger("nexmo")
+
+
+class Order(Enum):
+    ASC = "asc"
+    DESC = "desc"
 
 
 class BasicAuthenticatedServer(object):
@@ -136,6 +142,11 @@ class JWTAuthenticatedServer(object):
         return dict(headers, Authorization=b"Bearer " + token)
 
     def generate_application_jwt(self, when=None):
+        if self.private_key is None:
+            raise ClientError(
+                "private_key must be provided to call JWT-authenticated methods."
+            )
+
         iat = int(when if when is not None else time.time())
 
         payload = dict(self.auth_params)
@@ -273,7 +284,16 @@ class Conversation(object):
         self._api_server = api_server
 
     def create_conversation(self, conversation_data):
-        return self._api_server.post("/beta/conversations", conversation_data)
+        return self._api_server.post("/v0.1/conversations", conversation_data)
+
+    def list_conversations(self, page_size=None, order=None, cursor=None):
+        if order is not None and not isinstance(order, Order):
+            raise ClientError("order should be an instance of the Order enum.")
+
+        params = _filter_none_values(
+            {"page_size": page_size, "order": order and order.value, "cursor": cursor}
+        )
+        return self._api_server.get("/v0.1/conversations", params=params)
 
 
 def _filter_none_values(d):

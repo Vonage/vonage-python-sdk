@@ -155,8 +155,8 @@ class Client:
     @api_host.setter
     def api_host(self, host):
         self._api_host = host
-        self.basic_api_server.host = host
-        self.jwt_api_server.host = host
+        self._basic_api_server.host = host
+        self._jwt_api_server.host = host
 
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs

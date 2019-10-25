@@ -1,8 +1,12 @@
 import io
 import os
+import sys
 
 from setuptools import setup, find_packages
 
+INSTALL_REQUIRES = ["requests>=2.4.2", "PyJWT[crypto]>=1.6.4", "pytz>=2018.5"]
+if sys.version_info < (3, 4):
+    INSTALL_REQUIRES.append("enum34>=1.1.6")
 
 with io.open(
     os.path.join(os.path.dirname(__file__), "README.md"), encoding="utf-8"
@@ -22,7 +26,7 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     platforms=["any"],
-    install_requires=["requests>=2.4.2", "PyJWT[crypto]>=1.6.4", "pytz>=2018.5"],
+    install_requires=INSTALL_REQUIRES,
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     tests_require=["cryptography>=2.3.1"],
     classifiers=[

@@ -1,11 +1,12 @@
 import io
 import os
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
-with io.open(os.path.join(os.path.dirname(__file__), "README.md"),
-             encoding='utf-8') as f:
+with io.open(
+    os.path.join(os.path.dirname(__file__), "README.md"), encoding="utf-8"
+) as f:
     long_description = f.read()
 
 setup(
@@ -18,17 +19,12 @@ setup(
     author="Nexmo",
     author_email="devrel@nexmo.com",
     license="MIT",
-    packages=["nexmo"],
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     platforms=["any"],
-    install_requires=[
-        "requests>=2.4.2",
-        "PyJWT[crypto]>=1.6.4",
-        "pytz>=2018.5"
-    ],
+    install_requires=["requests>=2.4.2", "PyJWT[crypto]>=1.6.4", "pytz>=2018.5"],
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
-    tests_require=[
-        "cryptography>=2.3.1",
-    ],
+    tests_require=["cryptography>=2.3.1"],
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 2",

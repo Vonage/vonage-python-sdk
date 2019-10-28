@@ -102,7 +102,6 @@ class JWTAuthenticatedServer(object):
         self.auth_params = {}
         self._session = session = Session()
         session.headers.update({"User-Agent": user_agent})
-        session.headers.update({"Accept": "application/json"})
 
     def _uri(self, path):
         return "{host}{path}".format(host=self.host, path=path)
@@ -137,7 +136,7 @@ class JWTAuthenticatedServer(object):
 
     def _headers(self, headers):
         if headers is None:
-            headers = {}
+            headers = {"Accept": "application/json"}
         token = self.generate_application_jwt()
         return dict(headers, Authorization=b"Bearer " + token)
 
@@ -294,6 +293,102 @@ class Conversation(object):
             {"page_size": page_size, "order": order and order.value, "cursor": cursor}
         )
         return self._api_server.get("/v0.1/conversations", params=params)
+
+    def update_conversation(self, conversation):
+        conversation_id = conversation.pop("id")
+        path = "/v0.1/conversations/{conversation_id}".format(
+            conversation_id=conversation_id
+        )
+        return self._api_server.put(path, conversation)
+
+    def get_conversation(self, conversation_id):
+        path = "/v0.1/conversations/{conversation_id}".format(
+            conversation_id=conversation_id
+        )
+        return self._api_server.get(path)
+
+    def delete_conversation(self, conversation_id):
+        path = "/v0.1/conversations/{conversation_id}".format(
+            conversation_id=conversation_id
+        )
+        return self._api_server.delete(path, headers={})
+
+    def list_users(self):
+        return self._api_server.get("/v0.1/users")
+
+    def create_user(self, user_data):
+        return self._api_server.post("/v0.1/users", user_data)
+
+    def get_user(self, user_id):
+        path = "/v0.1/users/{user_id}".format(user_id=user_id)
+        return self._api_server.get(path)
+
+    def update_user(self, user_data):
+        user_id = user_data.pop("id")
+        path = "/v0.1/users/{user_id}".format(user_id=user_id)
+        return self._api_server.put(path, user_data)
+
+    def delete_user(self, user_id):
+        path = "/v0.1/users/{user_id}".format(user_id=user_id)
+        return self._api_server.delete(path, headers={})
+
+    def create_member(self, conversation_id, body):
+        path = "/v0.1/conversations/{conversation_id}/members".format(
+            conversation_id=conversation_id
+        )
+        return self._api_server.post(path, body)
+
+    def list_members(self, conversation_id, page_size=None, order=None, cursor=None):
+        path = "/v0.1/conversations/{conversation_id}/members".format(
+            conversation_id=conversation_id
+        )
+        params = _filter_none_values(
+            {"page_size": page_size, "order": order and order.value, "cursor": cursor}
+        )
+        return self._api_server.get(path, params=params)
+
+    def get_member(self, conversation_id, member_id):
+        path = "/v0.1/conversations/{conversation_id}/members/{member_id}".format(
+            conversation_id=conversation_id, member_id=member_id
+        )
+        return self._api_server.get(path)
+
+    def update_member(self, conversation_id, member_id, body):
+        path = "/v0.1/conversations/{conversation_id}/members/{member_id}".format(
+            conversation_id=conversation_id, member_id=member_id
+        )
+        return self._api_server.put(path)
+
+    def delete_member(self, conversation_id, member_id):
+        path = "/v0.1/conversations/{conversation_id}/members/{member_id}".format(
+            conversation_id=conversation_id, member_id=member_id
+        )
+        return self._api_server.delete(path, headers={})
+
+    def create_event(self, conversation_id, event_data):
+        path = "/v0.1/conversations/{conversation_id}/events".format(
+            conversation_id=conversation_id
+        )
+        return self._api_server.post(path, event_data)
+
+    def list_events(self, conversation_id, start_id=None, end_id=None):
+        params = _filter_none_values({"start_id": start_id, "end_id": end_id})
+        path = "/v0.1/conversations/{conversation_id}/events".format(
+            conversation_id=conversation_id
+        )
+        return self._api_server.get(path, params=params)
+
+    def get_event(self, conversation_id, event_id):
+        path = "/v0.1/conversations/{conversation_id}/events/{event_id}".format(
+            conversation_id=conversation_id, event_id=event_id
+        )
+        return self._api_server.get(path)
+
+    def delete_event(self, conversation_id, event_id):
+        path = "/v0.1/conversations/{conversation_id}/events/{event_id}".format(
+            conversation_id=conversation_id, event_id=event_id
+        )
+        return self._api_server.delete(path, headers={})
 
 
 def _filter_none_values(d):

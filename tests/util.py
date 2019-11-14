@@ -1,5 +1,6 @@
 import os.path
 import re
+import jwt
 
 import pytest
 
@@ -42,7 +43,10 @@ def request_content_type():
 
 
 def stub(method, url, fixture_path=None, status_code=200):
-    body = load_fixture(fixture_path) if fixture_path else '{"key":"value"}'
+    if status_code == 204:
+        body = None
+    else:
+        body = load_fixture(fixture_path) if fixture_path else '{"key":"value"}'
     responses.add(
         method, url, body=body, status=status_code, content_type="application/json"
     )

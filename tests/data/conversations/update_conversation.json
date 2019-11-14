@@ -1,0 +1,17 @@
+{
+  "id": "CON-afe887d8-d587-4280-9aae-dfa4c9227d5e",
+  "name": "my-conversation",
+  "display_name": "Conversation with Ashley",
+  "image_url": "https://example.com/my-image.png",
+  "timestamp": {
+    "created": "2019-09-03T18:40:24.324Z"
+  },
+  "_links": {
+    "self": {
+      "href": "https://api.nexmo.com/v0.1/conversations/CON-c4724477-72ac-438e-9fc0-1d3e2ff8728c"
+    }
+  },
+  "properties": {
+    "custom_data": {}
+  }
+}

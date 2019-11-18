@@ -1,5 +1,5 @@
 import json
-from .util import *
+from util import *
 
 import nexmo
 

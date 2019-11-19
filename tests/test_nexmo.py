@@ -211,3 +211,25 @@ def test_get_recording(client, dummy_data):
         bytes_type,
     )
     assert request_user_agent() == dummy_data.user_agent
+
+
+@responses.activate
+def test_custom_host(client):
+    stub(responses.POST, "https://hoopy.nexmo.com/frood/ussd/json")
+
+    client.host = "https://hoopy.nexmo.com/frood"
+
+    params = {"from": "MyCompany20", "to": "447525856424", "text": "Hello"}
+
+    client.send_ussd_push_message(params)
+    assert responses.calls[0].request.url == "https://hoopy.nexmo.com/frood/ussd/json"
+
+
+@responses.activate
+def test_custom_api_host(client):
+    stub(responses.POST, "https://hoopy.nexmo.com/frood/v1/calls")
+
+    client.api_host = "https://hoopy.nexmo.com/frood"
+
+    client.create_call("123455")
+    assert responses.calls[0].request.url == "https://hoopy.nexmo.com/frood/v1/calls"

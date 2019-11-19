@@ -31,11 +31,23 @@ def test_list_conversations(client, dummy_data, auth):
         fixture_path="conversations/list_conversations.json",
     )
 
-    conversations = client.conversation.list_conversations()
+    conversations = client.conversation.list_conversations(order=nexmo.Order.ASC)
     auth.assert_jwt_auth()
     assert isinstance(conversations, dict)
     assert conversations["page_size"] == 10
     assert request_user_agent() == dummy_data.user_agent
+
+
+@responses.activate
+def test_list_conversations_bad_order(client, dummy_data, auth):
+    stub(
+        responses.GET,
+        "https://api.nexmo.com/v0.1/conversations",
+        fixture_path="conversations/list_conversations.json",
+    )
+
+    with pytest.raises(nexmo.ClientError):
+        client.conversation.list_conversations(order="asc")
 
 
 @responses.activate
@@ -125,6 +137,18 @@ def test_list_users(client, dummy_data, auth):
 
 
 @responses.activate
+def test_list_users_bad_order(client, dummy_data, auth):
+    stub(
+        responses.GET,
+        "https://api.nexmo.com/v0.1/users",
+        fixture_path="conversations/list_users.json",
+    )
+
+    with pytest.raises(nexmo.ClientError):
+        client.conversation.list_users(order="asc")
+
+
+@responses.activate
 def test_get_user(client, dummy_data, auth):
     stub(
         responses.GET,
@@ -209,6 +233,20 @@ def test_list_members(client, dummy_data, auth):
     assert isinstance(members, dict)
     assert members["page_size"] == 10
     assert request_user_agent() == dummy_data.user_agent
+
+
+@responses.activate
+def test_list_members_bad_order(client, dummy_data, auth):
+    stub(
+        responses.GET,
+        "https://api.nexmo.com/v0.1/conversations/CON-afe887d8-d587-4280-9aae-dfa4c9227d5e/members",
+        fixture_path="conversations/list_members.json",
+    )
+
+    with pytest.raises(nexmo.ClientError):
+        client.conversation.list_members(
+            "CON-afe887d8-d587-4280-9aae-dfa4c9227d5e", order="asc"
+        )
 
 
 @responses.activate

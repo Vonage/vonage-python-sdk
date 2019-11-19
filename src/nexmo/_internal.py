@@ -26,37 +26,7 @@ class Order(Enum):
     DESC = "desc"
 
 
-class BasicAuthenticatedServer(object):
-    def __init__(self, host, user_agent, api_key, api_secret):
-        self.host = host
-        self._session = session = Session()
-        session.auth = (api_key, api_secret)  # Basic authentication.
-        session.headers.update({"User-Agent": user_agent})
-
-    def _uri(self, path):
-        return "{host}{path}".format(host=self.host, path=path)
-
-    def get(self, path, params=None, headers=None):
-
-        return self._parse(
-            self._session.get(self._uri(path), params=params, headers=headers)
-        )
-
-    def post(self, path, body=None, headers=None):
-        return self._parse(
-            self._session.post(self._uri(path), json=body, headers=headers)
-        )
-
-    def put(self, path, body=None, headers=None):
-        return self._parse(
-            self._session.put(self._uri(path), json=body, headers=headers)
-        )
-
-    def delete(self, path, body=None, headers=None):
-        return self._parse(
-            self._session.delete(self._uri(path), json=body, headers=headers)
-        )
-
+class BaseServer(object):
     def _parse(self, response):
         logger.debug("Response headers %r", response.headers)
         if response.status_code == 401:
@@ -94,7 +64,39 @@ class BasicAuthenticatedServer(object):
             raise ServerError(message)
 
 
-class JWTAuthenticatedServer(object):
+class BasicAuthenticatedServer(BaseServer):
+    def __init__(self, host, user_agent, api_key, api_secret):
+        self.host = host
+        self._session = session = Session()
+        session.auth = (api_key, api_secret)  # Basic authentication.
+        session.headers.update({"User-Agent": user_agent})
+
+    def _uri(self, path):
+        return "{host}{path}".format(host=self.host, path=path)
+
+    def get(self, path, params=None, headers=None):
+
+        return self._parse(
+            self._session.get(self._uri(path), params=params, headers=headers)
+        )
+
+    def post(self, path, body=None, headers=None):
+        return self._parse(
+            self._session.post(self._uri(path), json=body, headers=headers)
+        )
+
+    def put(self, path, body=None, headers=None):
+        return self._parse(
+            self._session.put(self._uri(path), json=body, headers=headers)
+        )
+
+    def delete(self, path, body=None, headers=None):
+        return self._parse(
+            self._session.delete(self._uri(path), json=body, headers=headers)
+        )
+
+
+class JWTAuthenticatedServer(BaseServer):
     def __init__(self, host, user_agent, application_id, private_key):
         self.host = host
         self.application_id = application_id
@@ -155,47 +157,6 @@ class JWTAuthenticatedServer(object):
         payload.setdefault("jti", str(uuid4()))
 
         return jwt.encode(payload, self.private_key, algorithm="RS256")
-
-    def _parse(self, response):
-        logger.debug("Response headers %r", response.headers)
-        if response.status_code == 401:
-            raise AuthenticationError()
-        elif response.status_code == 204:
-            return None
-        elif 200 <= response.status_code < 300:
-            return response.json()
-        elif 400 <= response.status_code < 500:
-            logger.warning(
-                "Client error: %s %r", response.status_code, response.content
-            )
-            message = "{code} response".format(code=response.status_code)
-            # Test for standard error format:
-            try:
-                error_data = response.json()
-                if (
-                    "type" in error_data
-                    and "title" in error_data
-                    and "detail" in error_data
-                ):
-                    message = "{title}: {detail} ({type})".format(
-                        title=error_data["title"],
-                        detail=error_data["detail"],
-                        type=error_data["type"],
-                    )
-                elif "code" in error_data and "description" in error_data:
-                    message = "({code}) {description}".format(
-                        code=error_data["code"], description=error_data["description"]
-                    )
-
-            except JSONDecodeError:
-                pass
-            raise ClientError(message)
-        elif 500 <= response.status_code < 600:
-            logger.warning(
-                "Server error: %s %r", response.status_code, response.content
-            )
-            message = "{code} response".format(code=response.status_code)
-            raise ServerError(message)
 
 
 class ApplicationV2(object):
@@ -288,7 +249,8 @@ class Conversation(object):
 
         See https://developer.nexmo.com/api/conversation#createConversation for details.
 
-        :param conversation_data: A dict containing the request body configuration for the conversation to be created.
+        :param dict conversation_data: A dict containing the request body
+        configuration for the conversation to be created.
         """
         return self._api_server.post("/v0.1/conversations", conversation_data)
 
@@ -297,12 +259,13 @@ class Conversation(object):
         List all, or a filtered set, of conversations.
 
         Only a summary of conversation data is provided.
-        Once you've identified the conversation you need to work with, use :py:func: #get_conversation: to fetch all of the conversation details.
+        Once you've identified the conversation you need to work with, use
+        :py:func: #get_conversation: to fetch all of the conversation details.
 
         See https://developer.nexmo.com/api/conversation#get-conversations for details.
 
         :param int page_size: The number of items in the page to be returned
-        :param str order: Sort the conversations by date created. Either 'asc' or 'desc'.
+        :param Order order: Sort the conversations by date created.
         :param str cursor: The identifier needed to request the page.
         """
         if order is not None and not isinstance(order, Order):
@@ -349,17 +312,23 @@ class Conversation(object):
         )
         return self._api_server.delete(path, headers={})
 
-    def list_users(self):
+    def list_users(self, page_size=None, order=None, cursor=None):
         """
         List all, or a filtered set, of users.
 
         See https://developer.nexmo.com/api/conversation#get-users for details.
 
         :param int page_size: The number of items in the page to be returned
-        :param str order: Sort the users by date created. Either 'asc' or 'desc'.
+        :param Order order: Sort the users by date created.
         :param str cursor: The identifier needed to request a page.
         """
-        return self._api_server.get("/v0.1/users")
+        if order is not None and not isinstance(order, Order):
+            raise ClientError("order should be an instance of the Order enum.")
+
+        params = _filter_none_values(
+            {"page_size": page_size, "order": order and order.value, "cursor": cursor}
+        )
+        return self._api_server.get("/v0.1/users", params=params)
 
     def create_user(self, user_data):
         """
@@ -426,12 +395,16 @@ class Conversation(object):
         See https://developer.nexmo.com/api/conversation#get-members for details.
 
         :param int page_size: The number of items in the page to be returned
-        :param str order: Sort the entries by date created. Either 'asc' or 'desc'.
+        :param Order order: Sort the entries by date created.
         :param str cursor: The identifier needed to request a page.
         """
         path = "/v0.1/conversations/{conversation_id}/members".format(
             conversation_id=conversation_id
         )
+
+        if order is not None and not isinstance(order, Order):
+            raise ClientError("order should be an instance of the Order enum.")
+
         params = _filter_none_values(
             {"page_size": page_size, "order": order and order.value, "cursor": cursor}
         )

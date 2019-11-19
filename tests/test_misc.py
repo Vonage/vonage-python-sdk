@@ -1,5 +1,8 @@
 from util import *
 
+import nexmo
+import pytest
+
 
 @responses.activate
 def test_get(client, dummy_data):
@@ -105,3 +108,10 @@ def test_delete_with_auth(client, dummy_data):
     assert isinstance(response, dict)
     assert request_user_agent() == dummy_data.user_agent
     assert_basic_auth()
+
+
+def test_generate_jwt_no_key():
+    """ Ensure the correct exception is thrown if generating a JWT with a client with no API key. """
+    client = nexmo.Client()
+    with pytest.raises(nexmo.ClientError):
+        client._jwt_api_server.generate_application_jwt()

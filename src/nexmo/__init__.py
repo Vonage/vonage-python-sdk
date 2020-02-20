@@ -97,10 +97,10 @@ class Client:
         if isinstance(self.private_key, string_types) and "\n" not in self.private_key:
             with open(self.private_key, "rb") as key_file:
                 self.private_key = key_file.read()
+                
+        self.host = os.environ.get("NEXMO_REST_API_URL", "rest.nexmo.com")
 
-        self.host = "rest.nexmo.com"
-
-        self.api_host = "api.nexmo.com"
+        self.api_host = os.environ.get("NEXMO_API_URL", "api.nexmo.com")
 
         user_agent = "nexmo-python/{version} python/{python_version}".format(
             version=__version__, python_version=python_version()
@@ -116,7 +116,7 @@ class Client:
         self.auth_params = {}
 
         api_server = BasicAuthenticatedServer(
-            "https://api.nexmo.com",
+            "https://{api_host}".format(api_host=self.api_host),
             user_agent=user_agent,
             api_key=self.api_key,
             api_secret=self.api_secret,

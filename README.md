@@ -376,15 +376,14 @@ client.api_host = 'new.api.host'
 - Creating a new class that extends from client class and overrides these values in the constructor:
 
 ```python
-import nexmo
 class MyClient(nexmo.Client):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, NEXMO_API_KEY, NEXMO_API_SECRET, APPLICATION_ID, APPLICATION_PRIVATE_KEY_PATH):
+        super().__init__(application_id=APPLICATION_ID, private_key=APPLICATION_PRIVATE_KEY_PATH, key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
         self.host = 'new.hosts.url'
         self.api_host = 'new.api.hosts'
 
-#Usage
-client = MyClient()
+#usage
+client = MyClient(NEXMO_API_KEY, NEXMO_API_SECRET, APPLICATION_ID, APPLICATION_PRIVATE_KEY_PATH)
 ```
 
 

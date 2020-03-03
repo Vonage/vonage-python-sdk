@@ -18,6 +18,7 @@ need a Nexmo account. Sign up [for free at nexmo.com][signup].
 * [Number Insight API](#number-insight-api)
 * [Managing Secrets](#managing-secrets)
 * [Application API](#application-api)
+* [Overriding API url's](#overriding-api-url's)
 * [License](#license)
 
 
@@ -360,6 +361,32 @@ specify a different token identifier:
 client.auth(nbf=nbf, exp=exp, jti=jti)
 ```
 
+## Overriding API url's
+
+By default, our API url's are hardcoded. For use cases where these url's are not accessible, best practices to override these url's are the following:
+
+- Setting new API url's when creating an instance of the client:
+
+```python
+import nexmo
+client = nexmo.Client()
+client.host = 'new.host.url'
+client.api_host = 'new.api.host'
+```
+- Creating a new class that extends from client class and overrides these values in the constructor:
+
+```python
+class MyClient(nexmo.Client):
+    def __init__(self, NEXMO_API_KEY, NEXMO_API_SECRET, APPLICATION_ID, APPLICATION_PRIVATE_KEY_PATH):
+        super().__init__(application_id=APPLICATION_ID, private_key=APPLICATION_PRIVATE_KEY_PATH, key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
+        self.host = 'new.hosts.url'
+        self.api_host = 'new.api.hosts'
+
+#usage
+client = MyClient(NEXMO_API_KEY, NEXMO_API_SECRET, APPLICATION_ID, APPLICATION_PRIVATE_KEY_PATH)
+```
+
+
 Contributing
 ------------
 
@@ -376,7 +403,6 @@ The tests are all written with pytest. You run them with:
 ```bash
 make test
 ```
-
 
 License
 -------

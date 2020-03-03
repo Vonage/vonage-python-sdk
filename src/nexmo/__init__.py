@@ -129,12 +129,7 @@ class Client:
         self.auth_params = params or kwargs
 
     def send_message(self, params):
-        if ("message" in params and "content" in params["message"]) and ("from" in params and ("type" in params["from"]) and ("to" in params and ("type" in params["to"]))):
-            self.headers["Content-Type"] = "application/json"
-            self.headers["Accept"] = "application/json"
-            return self._post_json(self.api_host, '/v0.1/messages', json=params)
-        else:
-            return self.post(self.host, "/sms/json", params)
+      return self.post(self.host, "/sms/json", params)
 
     def get_balance(self):
         return self.get(self.host, "/account/get-balance")
@@ -486,23 +481,6 @@ class Client:
             hasher.update(self.signature_secret.encode())
 
         return hasher.hexdigest()
-
-    def create_report(self, params):
-        self.headers["Content-Type"] = "application/json"
-        self.headers["Accept"] = "application/json"
-        return self._post_json(
-            self.api_host, "/v2/reports/", params
-        )
-    
-    def check_report(self, report_id):
-        return self.get(
-            self.api_host, "/v2/reports/{report_id}".format(report_id=report_id), header_auth=True
-        )
-    
-    def report_data(self, file_id):
-        return self.get(
-            self.api_host, "/v3/media/{file_id}".format(file_id=file_id), header_auth=True
-        )
 
     def get(self, host, request_uri, params=None, header_auth=False):
         uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)

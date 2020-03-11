@@ -18,7 +18,7 @@ need a Nexmo account. Sign up [for free at nexmo.com][signup].
 * [Number Insight API](#number-insight-api)
 * [Managing Secrets](#managing-secrets)
 * [Application API](#application-api)
-* [Overriding API url's](#overriding-api-url's)
+* [Overriding API url's](#overriding-api-urls)
 * [License](#license)
 
 

@@ -18,6 +18,7 @@ need a Nexmo account. Sign up [for free at nexmo.com][signup].
 * [Voice API](#voice-api)
 * [Verify API](#verify-api)
 * [Number Insight API](#number-insight-api)
+* [Number Management API](#number-management-api)
 * [Managing Secrets](#managing-secrets)
 * [Application API](#application-api)
 * [Overriding API url's](#overriding-api-urls)
@@ -264,6 +265,39 @@ client.get_advanced_number_insight(number='447700900000')
 
 Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightAdvanced](https://developer.nexmo.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightAdvanced)
 
+## Number Management API
+
+### List Your Numbers
+
+```python
+client.get_account_numbers()
+```
+
+Docs: [https://developer.nexmo.com/api/numbers#getOwnedNumbers](https://developer.nexmo.com/api/numbers?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getOwnedNumbers)
+
+### Search for a Number
+
+```python
+client.get_available_numbers('GB', {"type":"SMS"})
+```
+
+Docs: [https://developer.nexmo.com/api/numbers#getAvailableNumbers](https://developer.nexmo.com/api/numbers?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getAvailableNumbers)
+
+### Buy a Number
+
+```python
+client.buy_number({"country": 'GB', "msisdn": '447700900000'})
+```
+
+Docs: [https://developer.nexmo.com/api/numbers#buyANumber](https://developer.nexmo.com/api/numbers?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#buyANumber)
+
+### Cancel a Number
+
+```python
+client.cancel_number({"country": 'GB', "msisdn": '447700900000'})
+```
+
+Docs: [https://developer.nexmo.com/api/numbers#cancelANumber](https://developer.nexmo.com/api/numbers?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#cancelANumber)
 
 ## Managing Secrets
 

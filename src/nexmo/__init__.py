@@ -98,7 +98,7 @@ class Client:
 
         self.api_host = "api.nexmo.com"
 
-        user_agent = "nexmo-python/{version}/{python_version}".format(
+       user_agent = "nexmo-python/{version} python/{python_version}".format(
             version=__version__, python_version=python_version()
         )
 

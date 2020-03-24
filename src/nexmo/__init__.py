@@ -326,7 +326,6 @@ class Client:
     def get_advanced_number_insight(self, params=None, **kwargs):
         return self.get(self.api_host, "/ni/advanced/json", params or kwargs)
 
-
     def request_number_insight(self, params=None, **kwargs):
         return self.post(self.host, "/ni/json", params or kwargs)
 

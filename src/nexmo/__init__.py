@@ -98,28 +98,28 @@ class Client:
 
         self.api_host = "api.nexmo.com"
 
-       user_agent = "nexmo-python/{version} python/{python_version}".format(
-            version=__version__, python_version=python_version()
+    user_agent = "nexmo-python/{version} python/{python_version}".format(
+        version=__version__, python_version=python_version()
+    )
+
+    if app_name and app_version:
+        user_agent += " {app_name}/{app_version}".format(
+            app_name=app_name, app_version=app_version
         )
 
-        if app_name and app_version:
-            user_agent += " {app_name}/{app_version}".format(
-                app_name=app_name, app_version=app_version
-            )
+    self.headers = {"User-Agent": user_agent}
 
-        self.headers = {"User-Agent": user_agent}
+    self.auth_params = {}
 
-        self.auth_params = {}
+    api_server = BasicAuthenticatedServer(
+        "https://api.nexmo.com",
+        user_agent=user_agent,
+        api_key=self.api_key,
+        api_secret=self.api_secret,
+    )
+    self.application_v2 = ApplicationV2(api_server)
 
-        api_server = BasicAuthenticatedServer(
-            "https://api.nexmo.com",
-            user_agent=user_agent,
-            api_key=self.api_key,
-            api_secret=self.api_secret,
-        )
-        self.application_v2 = ApplicationV2(api_server)
-
-        self.session = requests.Session()
+    self.session = requests.Session()
 
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
@@ -279,7 +279,7 @@ class Client:
     def cancel_verification(self, request_id):
         return self.post(
             self.api_host,
-            "/verify/control/json", 
+            "/verify/control/json",
             {"request_id": request_id, "cmd": "cancel"}
         )
 
@@ -292,8 +292,8 @@ class Client:
 
     def control_verification_request(self, params=None, **kwargs):
         warnings.warn(
-            "nexmo.Client#control_verification_request is deprecated", 
-            DeprecationWarning, 
+            "nexmo.Client#control_verification_request is deprecated",
+            DeprecationWarning,
             stacklevel=2
         )
 

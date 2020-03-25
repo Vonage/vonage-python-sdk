@@ -290,13 +290,6 @@ class Client:
 
         return self.get(self.api_host, "/number/lookup/json", params or kwargs)
 
-    def get_async_advanced_number_insight(self, params=None, **kwargs):
-        argoparams = params or kwargs
-        if "callback" in argoparams:
-            return self.get(self.api_host, "/ni/advanced/async/json", params or kwargs)
-        else:
-            raise ClientError("Error: Callback needed for async advanced number insight")
-
     def get_advanced_number_insight(self, params=None, **kwargs):
         return self.get(self.api_host, "/ni/advanced/json", params or kwargs)
 

@@ -142,16 +142,24 @@ class Client:
         return self.get(self.host, "/account/get-balance")
 
     def get_country_pricing(self, country_code):
-        return self.get(self.host, "/account/get-pricing/outbound", {"country": country_code})
+        return self.get(
+            self.host, "/account/get-pricing/outbound", {"country": country_code}
+        )
 
     def get_prefix_pricing(self, prefix):
-        return self.get(self.host, "/account/get-prefix-pricing/outbound", {"prefix": prefix})
+        return self.get(
+            self.host, "/account/get-prefix-pricing/outbound", {"prefix": prefix}
+        )
 
     def get_sms_pricing(self, number):
-        return self.get(self.host, "/account/get-phone-pricing/outbound/sms", {"phone": number})
+        return self.get(
+            self.host, "/account/get-phone-pricing/outbound/sms", {"phone": number}
+        )
 
     def get_voice_pricing(self, number):
-        return self.get(self.host, "/account/get-phone-pricing/outbound/voice", {"phone": number})
+        return self.get(
+            self.host, "/account/get-phone-pricing/outbound/voice", {"phone": number}
+        )
 
     def update_settings(self, params=None, **kwargs):
         return self.post(self.host, "/account/settings", params or kwargs)
@@ -253,7 +261,9 @@ class Client:
         return self.post(self.api_host, "/verify/check/json", params or kwargs)
 
     def get_verification(self, request_id):
-        return self.get(self.api_host, "/verify/search/json", {"request_id": request_id})
+        return self.get(
+            self.api_host, "/verify/search/json", {"request_id": request_id}
+        )
 
     def get_verification_request(self, request_id):
         warnings.warn(
@@ -262,16 +272,30 @@ class Client:
             stacklevel=2,
         )
 
-        return self.get(self.api_host, "/verify/search/json", {"request_id": request_id})
+        return self.get(
+            self.api_host, "/verify/search/json", {"request_id": request_id}
+        )
 
     def cancel_verification(self, request_id):
-        return self.post(self.api_host, "/verify/control/json", {"request_id": request_id, "cmd": "cancel"})
+        return self.post(
+            self.api_host,
+            "/verify/control/json", 
+            {"request_id": request_id, "cmd": "cancel"}
+        )
 
     def trigger_next_verification_event(self, request_id):
-        return self.post(self.api_host, "/verify/control/json", {"request_id": request_id, "cmd": "trigger_next_event"})
+        return self.post(
+            self.api_host,
+            "/verify/control/json",
+            {"request_id": request_id, "cmd": "trigger_next_event"}
+        )
 
     def control_verification_request(self, params=None, **kwargs):
-        warnings.warn("nexmo.Client#control_verification_request is deprecated", DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "nexmo.Client#control_verification_request is deprecated", 
+            DeprecationWarning, 
+            stacklevel=2
+        )
 
         return self.post(self.api_host, "/verify/control/json", params or kwargs)
 

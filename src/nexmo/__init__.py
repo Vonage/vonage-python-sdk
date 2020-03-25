@@ -80,8 +80,13 @@ class Client:
 
         self.api_secret = secret or os.environ.get("NEXMO_API_SECRET", None)
 
-        self.signature_secret = signature_secret or os.environ.get("NEXMO_SIGNATURE_SECRET", None)
-        self.signature_method = signature_method or os.environ.get("NEXMO_SIGNATURE_METHOD", None)
+        self.signature_secret = signature_secret or os.environ.get(
+            "NEXMO_SIGNATURE_SECRET", None
+        )
+
+        self.signature_method = signature_method or os.environ.get(
+            "NEXMO_SIGNATURE_METHOD", None
+        )
 
         if self.signature_method in {"md5", "sha1", "sha256", "sha512"}:
             self.signature_method = getattr(hashlib, signature_method)

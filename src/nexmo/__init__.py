@@ -488,9 +488,7 @@ class Client:
             ).decode("ascii")
             headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
         else:
-            params = dict(
-                params=dict(params or {}, api_key=self.api_key, api_secret=self.api_secret)
-            )
+        params=dict(params or {}, api_key=self.api_key, api_secret=self.api_secret)
         logger.debug("GET to %r with params %r, headers %r", uri, params, headers)
         return self.parse(host, self.session.get(uri, params=params, headers=headers))
 

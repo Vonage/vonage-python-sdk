@@ -221,7 +221,6 @@ class Client:
             "delivered": delivered,
             "timestamp": timestamp or datetime.now(pytz.utc),
         }
-
         # Ensure timestamp is a string:
         _format_date_param(params, "timestamp")
         return self.post(self.api_host, "/conversions/sms", params)
@@ -654,7 +653,7 @@ class Client:
 
         return self.parse(
             self.api_host,
-            requests.get(uri, params=params or {}, headers=self._headers()),
+            self.session.get(uri, params=params or {}, headers=self._headers()),
         )
 
     def _jwt_signed_post(self, request_uri, params):
@@ -663,7 +662,7 @@ class Client:
         )
 
         return self.parse(
-            self.api_host, requests.post(uri, json=params, headers=self._headers())
+            self.api_host, self.session.post(uri, json=params, headers=self._headers())
         )
 
     def _jwt_signed_put(self, request_uri, params):
@@ -672,7 +671,7 @@ class Client:
         )
 
         return self.parse(
-            self.api_host, requests.put(uri, json=params, headers=self._headers())
+            self.api_host, self.session.put(uri, json=params, headers=self._headers())
         )
 
     def _jwt_signed_delete(self, request_uri):

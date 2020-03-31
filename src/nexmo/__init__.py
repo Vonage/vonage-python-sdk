@@ -141,7 +141,7 @@ class Client:
             })
         :param dict params: A dict of values described at `Send an SMS <https://developer.nexmo.com/api/sms#send-an-sms>`_
         """
-        return self.post(self.host, "/sms/json", params, signature_auth=True)
+        return self.post(self.host, "/sms/json", params, supports_signature_auth=True)
 
     def get_balance(self):
         return self.get(self.host, "/account/get-balance")
@@ -509,19 +509,26 @@ class Client:
         logger.debug("GET to %r with params %r, headers %r", uri, params, headers)
         return self.parse(host, self.session.get(uri, params=params, headers=headers))
 
-    def post(self, host, request_uri, params, signature_auth=False, header_auth=False):
+    def post(
+        self,
+        host,
+        request_uri,
+        params,
+        supports_signature_auth=False,
+        header_auth=False,
+    ):
         """
         Low-level method to make a post request to a Nexmo API server.
         This method automatically adds authentication, picking the first applicable authentication method from the following:
-        - If the signature_auth param is True, and the client was instantiated with a signature_secret, then signature authentication will be used.
+        - If the supports_signature_auth param is True, and the client was instantiated with a signature_secret, then signature authentication will be used.
         - If the header_auth param is True, then basic authentication will be used, with the client's key and secret.
         - Otherwise the client's key and secret are appended to the post request's params.
-        :param bool signature_auth: Preferentially use signature authentication if a signature_secret was provided when initializing this client.
+        :param bool supports_signature_auth: Preferentially use signature authentication if a signature_secret was provided when initializing this client.
         :param bool header_auth: Use basic authentication instead of adding api_key and api_secret to the request params.
         """
         uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
         headers = self.headers
-        if signature_auth and self.signature_secret:
+        if supports_signature_auth and self.signature_secret:
             params["api_key"] = self.api_key
             params["sig"] = self.signature(params)
         elif header_auth:

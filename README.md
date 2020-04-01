@@ -100,7 +100,53 @@ be enabled on your account first.
 ```python
 response = client.submit_sms_conversion(message_id)
 ```
+### Signing a Message
 
+*You may also like to read the [documentation about message signing](https://developer.nexmo.com/concepts/guides/signing-messages).* 
+
+The SMS API supports the ability to sign messages by generating and adding a signature using a "Signature Secret" rather than your API secret. The algorithms supported are:
+
+md5hash1
+md5
+sha1
+sha256
+sha512
+
+Both your application and Nexmo need to agree on which algorithm is used. In the dashboard, visit your account settings page and under "API Settings" you can select the algorithm to use. This is also the location where you will find your "Signature Secret" (it's different from the API secret).
+
+### Create a client using these credentials and the algorithm to use, for example:
+
+```python
+client = nexmo.Client(
+            key = os.getenv('NEXMO_API_KEY'),
+            signature_secret = os.getenv('NEXMO_SIGNATURE_SECRET'),
+            signature_method = 'sha256'
+)
+```
+
+Using this client, your SMS API messages will be sent as signed messages.
+
+### Verifying an Incoming Message Signature
+
+*You may also like to read the [documentation about message signing](https://developer.nexmo.com/concepts/guides/signing-messages)*. 
+
+If you have message signing enabled for incoming messages, the SMS webhook will include the fields sig, nonce and timestamp. 
+
+To verify the signature is from Nexmo, you create a Signature object using the incoming data, your signature secret and the signature method. 
+
+Then use the `check_signature()` method with the actual signature that was received (usually present in request.form or request.args. you can merge those in a single variable called params) to make sure that it is correct.
+
+### Get the params
+
+```python
+if request.is_json:
+    params = request.get_json()
+else:
+    params = request.args or request.form
+is_valid = client.check_signature(params)// is it valid? Will be true or false
+```
+
+Using your signature secret and the other supplied parameters, the signature can be calculated and checked against the incoming signature value.
 
 ## Voice API
 

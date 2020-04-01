@@ -1,3 +1,5 @@
+from ._internal import ApplicationV2, BasicAuthenticatedServer, _format_date_param
+from .errors import *
 from datetime import datetime
 import logging
 from platform import python_version
@@ -27,8 +29,6 @@ try:
 except ImportError:
     JSONDecodeError = ValueError
 
-from .errors import *
-from ._internal import ApplicationV2, BasicAuthenticatedServer, _format_date_param
 
 __version__ = "2.4.0"
 
@@ -83,6 +83,7 @@ class Client:
         self.signature_secret = signature_secret or os.environ.get(
             "NEXMO_SIGNATURE_SECRET", None
         )
+
         self.signature_method = signature_method or os.environ.get(
             "NEXMO_SIGNATURE_METHOD", None
         )
@@ -129,7 +130,18 @@ class Client:
         self.auth_params = params or kwargs
 
     def send_message(self, params):
-        return self.post(self.host, "/sms/json", params)
+        """
+        Send an SMS message.
+        Requires a client initialized with `key` and either `secret` or `signature_secret`.
+        ::
+            client.send_message({
+                "to": MY_CELLPHONE,
+                "from": MY_NEXMO_NUMBER,
+                "text": "Hello From Nexmo!",
+            })
+        :param dict params: A dict of values described at `Send an SMS <https://developer.nexmo.com/api/sms#send-an-sms>`_
+        """
+        return self.post(self.host, "/sms/json", params, supports_signature_auth=True)
 
     def get_balance(self):
         return self.get(self.host, "/account/get-balance")
@@ -504,16 +516,29 @@ class Client:
         logger.debug("GET to %r with params %r, headers %r", uri, params, headers)
         return self.parse(host, self.session.get(uri, params=params, headers=headers))
 
-    def post(self, host, request_uri, params, header_auth=False):
+    def post(
+        self,
+        host,
+        request_uri,
+        params,
+        supports_signature_auth=False,
+        header_auth=False,
+    ):
         """
-        Post form-encoded data to `request_uri`.
-
-        Auth is either key/secret added to the post data, or basic auth,
-        if `header_auth` is True.
+        Low-level method to make a post request to a Nexmo API server.
+        This method automatically adds authentication, picking the first applicable authentication method from the following:
+        - If the supports_signature_auth param is True, and the client was instantiated with a signature_secret, then signature authentication will be used.
+        - If the header_auth param is True, then basic authentication will be used, with the client's key and secret.
+        - Otherwise the client's key and secret are appended to the post request's params.
+        :param bool supports_signature_auth: Preferentially use signature authentication if a signature_secret was provided when initializing this client.
+        :param bool header_auth: Use basic authentication instead of adding api_key and api_secret to the request params.
         """
         uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
         headers = self.headers
-        if header_auth:
+        if supports_signature_auth and self.signature_secret:
+            params["api_key"] = self.api_key
+            params["sig"] = self.signature(params)
+        elif header_auth:
             h = base64.b64encode(
                 (
                     "{api_key}:{api_secret}".format(
@@ -595,6 +620,7 @@ class Client:
         elif response.status_code == 204:
             return None
         elif 200 <= response.status_code < 300:
+
             # Strip off any encoding from the content-type header:
             content_mime = response.headers.get("content-type").split(";", 1)[0]
             if content_mime == "application/json":
@@ -608,6 +634,7 @@ class Client:
             message = "{code} response from {host}".format(
                 code=response.status_code, host=host
             )
+
             # Test for standard error format:
             try:
                 error_data = response.json()

@@ -468,6 +468,24 @@ class MyClient(nexmo.Client):
 client = MyClient(NEXMO_API_KEY, NEXMO_API_SECRET, APPLICATION_ID, APPLICATION_PRIVATE_KEY_PATH)
 ```
 
+Should the above instructions not be enough for your specific case, another way to customise is:
+
+```python
+import nexmo
+
+class NexmoClient(nexmo.Client):
+    def __init__(....):
+        super().__init__(....)
+        api_server = BasicAuthenticatedServer(
+            "mycustomurl",
+            user_agent=user_agent,
+            api_key=self.api_key,
+            api_secret=self.api_secret,
+        )
+        self.application_v2 = ApplicationV2(api_server)
+```
+
+Then proceed to create your personalised instance of the class.
 
 Contributing
 ------------

@@ -468,7 +468,7 @@ class MyClient(nexmo.Client):
 client = MyClient(NEXMO_API_KEY, NEXMO_API_SECRET, APPLICATION_ID, APPLICATION_PRIVATE_KEY_PATH)
 ```
 
-Should the above instructions not be enough for your specific case, another way to customise is:
+For a more specific case, another way to customise is:
 
 ```python
 import nexmo

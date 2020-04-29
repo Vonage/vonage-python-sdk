@@ -22,7 +22,7 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     platforms=["any"],
-    install_requires=["requests>=2.4.2", "PyJWT[crypto]>=1.6.4", "pytz>=2018.5"],
+    install_requires=["requests>=2.4.2", "nexmo-jwt>=1.0.1", "pytz>=2018.5", ""],
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     tests_require=["cryptography>=2.3.1"],
     classifiers=[

@@ -616,7 +616,10 @@ class Client:
                     )
             except JSONDecodeError:
                 pass
-            raise ClientError(message)
+            if self.__error_handler.validate_code(str(response.status_code)):
+                self.__error_handler.trigger(str(response.status_code), response.content or message)
+            else:
+                raise ClientError(message)
         elif 500 <= response.status_code < 600:
             logger.warning("Server error: %s %r", response.status_code, response.content)
             message = "{code} response from {host}".format(code=response.status_code, host=host)

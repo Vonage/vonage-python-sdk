@@ -1,3 +1,5 @@
+import json
+
 class Error(Exception):
     pass
 
@@ -96,6 +98,25 @@ class BlackListDestinationError(NexmoError):
 class MsisdnError(NexmoError):
     pass
 
+#Code 400: Bad request - when voice Api
+class BadRequestError(NexmoError):
+    def __init__(self, data):
+        error_data = data
+        message = data
+        if isinstance(data, bytes):
+            #convert data bytes in dict and re-assign
+            error_data = json.loads(data.decode('utf-8'))
+        if "type" in error_data and "title" in error_data:
+            if "detail" in error_data:
+                message = "{title}: {detail} ({type})".format(
+                        title=error_data["title"], detail=error_data["detail"], type=error_data["type"]
+                )
+            elif "invalid_parameters" in error_data:
+                message = "{title}: Invalid parameters, reason: {reason}, param hint: {name}".format(
+                    title=error_data["title"], reason=error_data["invalid_parameters"][0]["reason"], name=error_data["invalid_parameters"][0]["name"]
+                )
+        super().__init__(message)
+
 class ExceptionHandler():
     #Register exceptions by error code in the private exception matrix
     __exceptions = {
@@ -118,7 +139,8 @@ class ExceptionHandler():
         '20': InvalidMessageClassError,
         '23': MissingProtocolError,
         '29': BlackListDestinationError,
-        '34': MsisdnError
+        '34': MsisdnError,
+        '400': BadRequestError
     }
 
     def validate_code(self, code):

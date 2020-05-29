@@ -225,6 +225,6 @@ def test_create_secret_validation(client):
         client.create_secret("meaccountid", "mahsecret")
     assert_basic_auth()
     assert (
-        """Bad Request: The request failed due to validation errors (https://developer.nexmo.com/api-errors/account/secret-management#validation)"""
+        """ClientError: Bad Request: The request failed due to validation errors (https://developer.nexmo.com/api-errors/account/secret-management#validation)"""
         in str(ce)
     )

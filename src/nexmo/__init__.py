@@ -16,13 +16,9 @@ import time
 from uuid import uuid4
 import warnings
 
-if sys.version_info[0] == 3:
-    string_types = (str, bytes)
-    from urllib.parse import urlparse
 
-else:
-    string_types = (unicode, str)
-    from urlparse import urlparse
+string_types = (str, bytes)
+from urllib.parse import urlparse
 
 try:
     from json import JSONDecodeError
@@ -64,9 +60,6 @@ class Client:
     :param str app_version: This optional value is added to the user-agent header
         provided by this library and can be used by Nexmo to track your app statistics.
     """
-
-    # Call exception handler - as private for internal usage
-    __error_handler = ExceptionHandler()
 
     def __init__(
         self,
@@ -336,9 +329,7 @@ class Client:
         if "callback" in argoparams:
             return self.get(self.api_host, "/ni/advanced/async/json", params or kwargs)
         else:
-            raise ClientError(
-                "Error: Callback needed for async advanced number insight"
-            )
+            raise ClientError("Error: Callback needed for async advanced number insight")
 
     def get_advanced_number_insight(self, params=None, **kwargs):
         return self.get(self.api_host, "/ni/advanced/json", params or kwargs)
@@ -629,16 +620,7 @@ class Client:
             # Strip off any encoding from the content-type header:
             content_mime = response.headers.get("content-type").split(";", 1)[0]
             if content_mime == "application/json":
-                # Check for exceptions before retrieve data
-                data = response.json()
-                if "messages" in data and self.__error_handler.validate_code(
-                    data["messages"][0]["status"]
-                ):
-                    exception_code = data["messages"][0]["status"]
-                    exception_text = data["messages"][0]["error-text"]
-                    # raise exception
-                    self.__error_handler.trigger(exception_code, exception_text)
-                return data
+                return response.json()
             else:
                 return response.content
         elif 400 <= response.status_code < 500:
@@ -664,12 +646,7 @@ class Client:
                     )
             except JSONDecodeError:
                 pass
-            if self.__error_handler.validate_code(str(response.status_code)):
-                self.__error_handler.trigger(
-                    str(response.status_code), response.content or message
-                )
-            else:
-                raise ClientError(message)
+            raise ClientError(message)
         elif 500 <= response.status_code < 600:
             logger.warning(
                 "Server error: %s %r", response.status_code, response.content

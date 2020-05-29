@@ -3,10 +3,7 @@ from util import *
 
 import sys
 
-if sys.version_info[0] == 3:
-    bytes_type = bytes
-else:
-    bytes_type = str
+bytes_type = bytes
 
 
 @responses.activate

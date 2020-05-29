@@ -65,7 +65,7 @@ class Client:
         provided by this library and can be used by Nexmo to track your app statistics.
     """
 
-    #Call exception handler - as private for internal usage
+    # Call exception handler - as private for internal usage
     __error_handler = ExceptionHandler()
 
     def __init__(
@@ -107,7 +107,7 @@ class Client:
         self.api_host = "api.nexmo.com"
 
         user_agent = "nexmo-python/{version} python/{python_version}".format(
-        version=__version__, python_version=python_version()
+            version=__version__, python_version=python_version()
         )
 
         if app_name and app_version:
@@ -125,7 +125,6 @@ class Client:
             api_key=self.api_key,
             api_secret=self.api_secret,
         )
-
         self.application_v2 = ApplicationV2(api_server)
 
         self.session = requests.Session()
@@ -145,7 +144,7 @@ class Client:
             })
         :param dict params: A dict of values described at `Send an SMS <https://developer.nexmo.com/api/sms#send-an-sms>`_
         """
-        return self.post(self.host, "/sms/json", params, signature_auth=True)
+        return self.post(self.host, "/sms/json", params, supports_signature_auth=True)
 
     def get_balance(self):
         return self.get(self.host, "/account/get-balance")
@@ -180,7 +179,9 @@ class Client:
         return self.get(self.host, "/account/numbers", params or kwargs)
 
     def get_available_numbers(self, country_code, params=None, **kwargs):
-        return self.get(self.host, "/number/search", dict(params or kwargs, country=country_code))
+        return self.get(
+            self.host, "/number/search", dict(params or kwargs, country=country_code)
+        )
 
     def buy_number(self, params=None, **kwargs):
         return self.post(self.host, "/number/buy", params or kwargs)
@@ -218,8 +219,11 @@ class Client:
         :param timestamp: A `datetime` object containing the time the SMS arrived.
         :return: The parsed response from the server. On success, the bytestring b'OK'
         """
-        params = {"message-id": message_id, "delivered": delivered, "timestamp": timestamp or datetime.now(pytz.utc)}
-
+        params = {
+            "message-id": message_id,
+            "delivered": delivered,
+            "timestamp": timestamp or datetime.now(pytz.utc),
+        }
         # Ensure timestamp is a string:
         _format_date_param(params, "timestamp")
         return self.post(self.api_host, "/conversions/sms", params)
@@ -258,7 +262,11 @@ class Client:
         return self.post(self.api_host, "/verify/json", params or kwargs)
 
     def check_verification(self, request_id, params=None, **kwargs):
-        return self.post(self.api_host, "/verify/check/json", dict(params or kwargs, request_id=request_id))
+        return self.post(
+            self.api_host,
+            "/verify/check/json",
+            dict(params or kwargs, request_id=request_id),
+        )
 
     def check_verification_request(self, params=None, **kwargs):
         warnings.warn(
@@ -289,21 +297,21 @@ class Client:
         return self.post(
             self.api_host,
             "/verify/control/json",
-            {"request_id": request_id, "cmd": "cancel"}
+            {"request_id": request_id, "cmd": "cancel"},
         )
 
     def trigger_next_verification_event(self, request_id):
         return self.post(
             self.api_host,
             "/verify/control/json",
-            {"request_id": request_id, "cmd": "trigger_next_event"}
+            {"request_id": request_id, "cmd": "trigger_next_event"},
         )
 
     def control_verification_request(self, params=None, **kwargs):
         warnings.warn(
             "nexmo.Client#control_verification_request is deprecated",
             DeprecationWarning,
-            stacklevel=2
+            stacklevel=2,
         )
 
         return self.post(self.api_host, "/verify/control/json", params or kwargs)
@@ -322,6 +330,15 @@ class Client:
         )
 
         return self.get(self.api_host, "/number/lookup/json", params or kwargs)
+
+    def get_async_advanced_number_insight(self, params=None, **kwargs):
+        argoparams = params or kwargs
+        if "callback" in argoparams:
+            return self.get(self.api_host, "/ni/advanced/async/json", params or kwargs)
+        else:
+            raise ClientError(
+                "Error: Callback needed for async advanced number insight"
+            )
 
     def get_advanced_number_insight(self, params=None, **kwargs):
         return self.get(self.api_host, "/ni/advanced/json", params or kwargs)
@@ -425,7 +442,11 @@ class Client:
         return self._post_json(self.api_host, "/v1/redact/transaction", params)
 
     def list_secrets(self, api_key):
-        return self.get(self.api_host, "/accounts/{api_key}/secrets".format(api_key=api_key), header_auth=True)
+        return self.get(
+            self.api_host,
+            "/accounts/{api_key}/secrets".format(api_key=api_key),
+            header_auth=True,
+        )
 
     def get_secret(self, api_key, secret_id):
         return self.get(
@@ -458,7 +479,9 @@ class Client:
 
     def signature(self, params):
         if self.signature_method:
-            hasher = hmac.new(self.signature_secret.encode(), digestmod=self.signature_method)
+            hasher = hmac.new(
+                self.signature_secret.encode(), digestmod=self.signature_method
+            )
         else:
             hasher = hashlib.md5()
 
@@ -492,23 +515,32 @@ class Client:
             ).decode("ascii")
             headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
         else:
-            params=dict(params or {}, api_key=self.api_key, api_secret=self.api_secret)
+            params = dict(
+                params or {}, api_key=self.api_key, api_secret=self.api_secret
+            )
         logger.debug("GET to %r with params %r, headers %r", uri, params, headers)
         return self.parse(host, self.session.get(uri, params=params, headers=headers))
 
-    def post(self, host, request_uri, params, signature_auth=False, header_auth=False):
+    def post(
+        self,
+        host,
+        request_uri,
+        params,
+        supports_signature_auth=False,
+        header_auth=False,
+    ):
         """
         Low-level method to make a post request to a Nexmo API server.
         This method automatically adds authentication, picking the first applicable authentication method from the following:
-        - If the signature_auth param is True, and the client was instantiated with a signature_secret, then signature authentication will be used.
+        - If the supports_signature_auth param is True, and the client was instantiated with a signature_secret, then signature authentication will be used.
         - If the header_auth param is True, then basic authentication will be used, with the client's key and secret.
         - Otherwise the client's key and secret are appended to the post request's params.
-        :param bool signature_auth: Preferentially use signature authentication if a signature_secret was provided when initializing this client.
+        :param bool supports_signature_auth: Preferentially use signature authentication if a signature_secret was provided when initializing this client.
         :param bool header_auth: Use basic authentication instead of adding api_key and api_secret to the request params.
         """
         uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
         headers = self.headers
-        if signature_auth and self.signature_secret:
+        if supports_signature_auth and self.signature_secret:
             params["api_key"] = self.api_key
             params["sig"] = self.signature(params)
         elif header_auth:
@@ -537,8 +569,12 @@ class Client:
                 ).encode("utf-8")
             )
         ).decode("ascii")
-        headers = dict(self.headers or {}, Authorization="Basic {hash}".format(hash=auth))
-        logger.debug("POST to %r with body: %r, headers: %r", request_uri, json, headers)
+        headers = dict(
+            self.headers or {}, Authorization="Basic {hash}".format(hash=auth)
+        )
+        logger.debug(
+            "POST to %r with body: %r, headers: %r", request_uri, json, headers
+        )
         return self.parse(host, self.session.post(uri, headers=headers, json=json))
 
     def put(self, host, request_uri, params, header_auth=False):
@@ -593,36 +629,54 @@ class Client:
             # Strip off any encoding from the content-type header:
             content_mime = response.headers.get("content-type").split(";", 1)[0]
             if content_mime == "application/json":
-                #Check for exceptions before retrieve data
+                # Check for exceptions before retrieve data
                 data = response.json()
-                if "messages" in data and self.__error_handler.validate_code(data["messages"][0]["status"]):
+                if "messages" in data and self.__error_handler.validate_code(
+                    data["messages"][0]["status"]
+                ):
                     exception_code = data["messages"][0]["status"]
                     exception_text = data["messages"][0]["error-text"]
-                    #raise exception
+                    # raise exception
                     self.__error_handler.trigger(exception_code, exception_text)
                 return data
             else:
                 return response.content
         elif 400 <= response.status_code < 500:
-            logger.warning("Client error: %s %r", response.status_code, response.content)
-            message = "{code} response from {host}".format(code=response.status_code, host=host)
+            logger.warning(
+                "Client error: %s %r", response.status_code, response.content
+            )
+            message = "{code} response from {host}".format(
+                code=response.status_code, host=host
+            )
 
             # Test for standard error format:
             try:
                 error_data = response.json()
-                if "type" in error_data and "title" in error_data and "detail" in error_data:
+                if (
+                    "type" in error_data
+                    and "title" in error_data
+                    and "detail" in error_data
+                ):
                     message = "{title}: {detail} ({type})".format(
-                        title=error_data["title"], detail=error_data["detail"], type=error_data["type"]
+                        title=error_data["title"],
+                        detail=error_data["detail"],
+                        type=error_data["type"],
                     )
             except JSONDecodeError:
                 pass
             if self.__error_handler.validate_code(str(response.status_code)):
-                self.__error_handler.trigger(str(response.status_code), response.content or message)
+                self.__error_handler.trigger(
+                    str(response.status_code), response.content or message
+                )
             else:
                 raise ClientError(message)
         elif 500 <= response.status_code < 600:
-            logger.warning("Server error: %s %r", response.status_code, response.content)
-            message = "{code} response from {host}".format(code=response.status_code, host=host)
+            logger.warning(
+                "Server error: %s %r", response.status_code, response.content
+            )
+            message = "{code} response from {host}".format(
+                code=response.status_code, host=host
+            )
             raise ServerError(message)
 
     def _jwt_signed_get(self, request_uri, params=None):
@@ -630,21 +684,28 @@ class Client:
             api_host=self.api_host, request_uri=request_uri
         )
 
-        return self.parse(self.api_host, requests.get(uri, params=params or {}, headers=self._headers()))
+        return self.parse(
+            self.api_host,
+            self.session.get(uri, params=params or {}, headers=self._headers()),
+        )
 
     def _jwt_signed_post(self, request_uri, params):
         uri = "https://{api_host}{request_uri}".format(
             api_host=self.api_host, request_uri=request_uri
         )
 
-        return self.parse(self.api_host, requests.post(uri, json=params, headers=self._headers()))
+        return self.parse(
+            self.api_host, self.session.post(uri, json=params, headers=self._headers())
+        )
 
     def _jwt_signed_put(self, request_uri, params):
         uri = "https://{api_host}{request_uri}".format(
             api_host=self.api_host, request_uri=request_uri
         )
 
-        return self.parse(self.api_host, requests.put(uri, json=params, headers=self._headers()))
+        return self.parse(
+            self.api_host, self.session.put(uri, json=params, headers=self._headers())
+        )
 
     def _jwt_signed_delete(self, request_uri):
         uri = "https://{api_host}{request_uri}".format(

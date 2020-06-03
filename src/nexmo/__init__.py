@@ -16,13 +16,9 @@ import time
 from uuid import uuid4
 import warnings
 
-if sys.version_info[0] == 3:
-    string_types = (str, bytes)
-    from urllib.parse import urlparse
 
-else:
-    string_types = (unicode, str)
-    from urlparse import urlparse
+string_types = (str, bytes)
+from urllib.parse import urlparse
 
 try:
     from json import JSONDecodeError

@@ -23,12 +23,10 @@ setup(
     package_dir={"": "src"},
     platforms=["any"],
     install_requires=["requests>=2.4.2", "PyJWT[crypto]>=1.6.4", "pytz>=2018.5"],
-    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
+    python_requires=">=3, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     tests_require=["cryptography>=2.3.1"],
     classifiers=[
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",

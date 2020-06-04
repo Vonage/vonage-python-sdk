@@ -1,5 +1,6 @@
 from ._internal import ApplicationV2, BasicAuthenticatedServer, _format_date_param
 from .errors import *
+from .voice import *
 from datetime import datetime
 import logging
 from platform import python_version
@@ -16,9 +17,13 @@ import time
 from uuid import uuid4
 import warnings
 
+if sys.version_info[0] == 3:
+    string_types = (str, bytes)
+    from urllib.parse import urlparse
 
-string_types = (str, bytes)
-from urllib.parse import urlparse
+else:
+    string_types = (unicode, str)
+    from urlparse import urlparse
 
 try:
     from json import JSONDecodeError
@@ -233,15 +238,6 @@ class Client:
     def resubscribe_event_alert_number(self, params=None, **kwargs):
         return self.post(self.host, "/sc/us/alert/opt-in/manage/json", params or kwargs)
 
-    def initiate_call(self, params=None, **kwargs):
-        return self.post(self.host, "/call/json", params or kwargs)
-
-    def initiate_tts_call(self, params=None, **kwargs):
-        return self.post(self.api_host, "/tts/json", params or kwargs)
-
-    def initiate_tts_prompt_call(self, params=None, **kwargs):
-        return self.post(self.api_host, "/tts-prompt/json", params or kwargs)
-
     def start_verification(self, params=None, **kwargs):
         return self.post(self.api_host, "/verify/json", params or kwargs)
 
@@ -385,41 +381,6 @@ class Client:
         return self.delete(
             self.api_host,
             "/v1/applications/{application_id}".format(application_id=application_id),
-        )
-
-    def create_call(self, params=None, **kwargs):
-        return self._jwt_signed_post("/v1/calls", params or kwargs)
-
-    def get_calls(self, params=None, **kwargs):
-        return self._jwt_signed_get("/v1/calls", params or kwargs)
-
-    def get_call(self, uuid):
-        return self._jwt_signed_get("/v1/calls/{uuid}".format(uuid=uuid))
-
-    def update_call(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put(
-            "/v1/calls/{uuid}".format(uuid=uuid), params or kwargs
-        )
-
-    def send_audio(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put(
-            "/v1/calls/{uuid}/stream".format(uuid=uuid), params or kwargs
-        )
-
-    def stop_audio(self, uuid):
-        return self._jwt_signed_delete("/v1/calls/{uuid}/stream".format(uuid=uuid))
-
-    def send_speech(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put(
-            "/v1/calls/{uuid}/talk".format(uuid=uuid), params or kwargs
-        )
-
-    def stop_speech(self, uuid):
-        return self._jwt_signed_delete("/v1/calls/{uuid}/talk".format(uuid=uuid))
-
-    def send_dtmf(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put(
-            "/v1/calls/{uuid}/dtmf".format(uuid=uuid), params or kwargs
         )
 
     def get_recording(self, url):
@@ -655,43 +616,6 @@ class Client:
                 code=response.status_code, host=host
             )
             raise ServerError(message)
-
-    def _jwt_signed_get(self, request_uri, params=None):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host, request_uri=request_uri
-        )
-
-        return self.parse(
-            self.api_host,
-            self.session.get(uri, params=params or {}, headers=self._headers()),
-        )
-
-    def _jwt_signed_post(self, request_uri, params):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host, request_uri=request_uri
-        )
-
-        return self.parse(
-            self.api_host, self.session.post(uri, json=params, headers=self._headers())
-        )
-
-    def _jwt_signed_put(self, request_uri, params):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host, request_uri=request_uri
-        )
-
-        return self.parse(
-            self.api_host, self.session.put(uri, json=params, headers=self._headers())
-        )
-
-    def _jwt_signed_delete(self, request_uri):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host, request_uri=request_uri
-        )
-
-        return self.parse(
-            self.api_host, self.session.delete(uri, headers=self._headers())
-        )
 
     def _headers(self):
         token = self.generate_application_jwt()

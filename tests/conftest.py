@@ -44,3 +44,11 @@ def client(dummy_data):
         application_id=dummy_data.application_id,
         private_key=dummy_data.private_key,
     )
+
+@pytest.fixture
+def voice(client, dummy_data):
+    import nexmo
+
+    return nexmo.Voice(
+        client
+    )

@@ -3,7 +3,10 @@ from util import *
 
 import sys
 
-bytes_type = bytes
+if sys.version_info[0] == 3:
+    bytes_type = bytes
+else:
+    bytes_type = str
 
 
 @responses.activate
@@ -191,7 +194,8 @@ def test_client_can_make_application_requests_without_api_key(dummy_data):
     stub(responses.POST, "https://api.nexmo.com/v1/calls")
 
     client = nexmo.Client(application_id="myid", private_key=dummy_data.private_key)
-    client.create_call("123455")
+    voice = nexmo.Voice(client)
+    voice.create_call("123455")
 
 
 @responses.activate

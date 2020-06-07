@@ -1,6 +1,7 @@
 from ._internal import ApplicationV2, BasicAuthenticatedServer, _format_date_param
 from .errors import *
 from .voice import *
+from .sms import *
 from datetime import datetime
 import logging
 from platform import python_version
@@ -17,13 +18,9 @@ import time
 from uuid import uuid4
 import warnings
 
-if sys.version_info[0] == 3:
-    string_types = (str, bytes)
-    from urllib.parse import urlparse
 
-else:
-    string_types = (unicode, str)
-    from urlparse import urlparse
+string_types = (str, bytes)
+from urllib.parse import urlparse
 
 try:
     from json import JSONDecodeError
@@ -130,20 +127,6 @@ class Client:
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
 
-    def send_message(self, params):
-        """
-        Send an SMS message.
-        Requires a client initialized with `key` and either `secret` or `signature_secret`.
-        ::
-            client.send_message({
-                "to": MY_CELLPHONE,
-                "from": MY_NEXMO_NUMBER,
-                "text": "Hello From Nexmo!",
-            })
-        :param dict params: A dict of values described at `Send an SMS <https://developer.nexmo.com/api/sms#send-an-sms>`_
-        """
-        return self.post(self.host, "/sms/json", params, supports_signature_auth=True)
-
     def get_balance(self):
         return self.get(self.host, "/account/get-balance")
 
@@ -207,24 +190,6 @@ class Client:
 
     def send_2fa_message(self, params=None, **kwargs):
         return self.post(self.host, "/sc/us/2fa/json", params or kwargs)
-
-    def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
-        """
-        Notify Nexmo that an SMS was successfully received.
-
-        :param message_id: The `message-id` str returned by the send_message call.
-        :param delivered: A `bool` indicating that the message was or was not successfully delivered.
-        :param timestamp: A `datetime` object containing the time the SMS arrived.
-        :return: The parsed response from the server. On success, the bytestring b'OK'
-        """
-        params = {
-            "message-id": message_id,
-            "delivered": delivered,
-            "timestamp": timestamp or datetime.now(pytz.utc),
-        }
-        # Ensure timestamp is a string:
-        _format_date_param(params, "timestamp")
-        return self.post(self.api_host, "/conversions/sms", params)
 
     def send_event_alert_message(self, params=None, **kwargs):
         return self.post(self.host, "/sc/us/alert/json", params or kwargs)

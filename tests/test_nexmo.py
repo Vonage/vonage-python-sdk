@@ -5,7 +5,6 @@ import sys
 
 bytes_type = bytes
 
-
 @responses.activate
 def test_send_ussd_push_message(client, dummy_data):
     stub(responses.POST, "https://rest.nexmo.com/ussd/json")

@@ -99,3 +99,14 @@ def test_control_verification_request(client, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert "cmd=cancel" in request_body()
     assert "request_id=8g88g88eg8g8gg9g90" in request_body()
+
+@responses.activate
+def test_start_psd2_verification(client, dummy_data):
+    stub(responses.POST, "https://api.nexmo.com/verify/psd2/json")
+
+    params = {"number": "447525856424", "brand": "MyApp"}
+
+    assert isinstance(client.start_psd2_verification_request(params), dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert "number=447525856424" in request_body()
+    assert "brand=MyApp" in request_body()

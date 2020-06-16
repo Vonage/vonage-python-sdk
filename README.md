@@ -21,7 +21,7 @@ need a Nexmo account. Sign up [for free at nexmo.com][signup].
 * [Number Management API](#number-management-api)
 * [Managing Secrets](#managing-secrets)
 * [Application API](#application-api)
-* [Overriding API url's](#overriding-api-urls)
+* [Overriding API attributes](#overriding-api-attributes)
 * [License](#license)
 
 
@@ -443,49 +443,41 @@ specify a different token identifier:
 client.auth(nbf=nbf, exp=exp, jti=jti)
 ```
 
-## Overriding API url's
+## Overriding API Attributes
 
-By default, our API url's are hardcoded. For use cases where these url's are not accessible, best practices to override these url's are the following:
+In order to rewrite/get the value of variables used across all the nexmo classes Python uses `Call by Object Reference` that allows you to create a single client for Sms/Voice Classes. This means that if you make a change on a client instance this will be available for the Sms class.
 
-- Setting new API url's when creating an instance of the client:
-
-```python
-import nexmo
-client = nexmo.Client()
-client.host = 'new.host.url'
-client.api_host = 'new.api.host'
-```
-- Creating a new class that extends from client class and overrides these values in the constructor:
+An example using setters/getters with `Object references`:
 
 ```python
-class MyClient(nexmo.Client):
-    def __init__(self, NEXMO_API_KEY, NEXMO_API_SECRET, APPLICATION_ID, APPLICATION_PRIVATE_KEY_PATH):
-        super().__init__(application_id=APPLICATION_ID, private_key=APPLICATION_PRIVATE_KEY_PATH, key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
-        self.host = 'new.hosts.url'
-        self.api_host = 'new.api.hosts'
+from nexmo import Client, Sms
 
-#usage
-client = MyClient(NEXMO_API_KEY, NEXMO_API_SECRET, APPLICATION_ID, APPLICATION_PRIVATE_KEY_PATH)
+#Defines the client
+client = Client(key='YOUR_API_KEY', secret='YOUR_API_SECRET')
+print(client.host()) # using getter for host -- value returned: rest.nexmo.com
+
+#Define the sms instance
+sms = Sms(client)
+
+#Change the value in client
+client.host('mio.nexmo.com') #Change host to mio.nexmo.com - this change will be available for sms
+
 ```
 
-For a more specific case, another way to customise is:
+### Overriding API Host / Host Attributes
+
+These attributes are private in the client class and the only way to access them is using the getters/setters we provide.
+
 
 ```python
-import nexmo
+from nexmo import Client
 
-class NexmoClient(nexmo.Client):
-    def __init__(....):
-        super().__init__(....)
-        api_server = BasicAuthenticatedServer(
-            "mycustomurl",
-            user_agent=user_agent,
-            api_key=self.api_key,
-            api_secret=self.api_secret,
-        )
-        self.application_v2 = ApplicationV2(api_server)
+client = Client(key='YOUR_API_KEY', secret='YOUR_API_SECRET')
+print(client.host()) # return rest.nexmo.com
+client.host('mio.nexmo.com') # rewrites the host value to mio.nexmo.com
+print(client.api_host()) # returns api.nexmo.com
+client.api_host('myapi.nexmo.com') # rewrite the value of api_host
 ```
-
-Then proceed to create your personalised instance of the class.
 
 Contributing
 ------------

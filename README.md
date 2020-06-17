@@ -21,7 +21,7 @@ need a Nexmo account. Sign up [for free at nexmo.com][signup].
 * [Number Management API](#number-management-api)
 * [Managing Secrets](#managing-secrets)
 * [Application API](#application-api)
-* [Overriding API attributes](#overriding-api-attributes)
+* [Overriding API Attributes](#overriding-api-attributes)
 * [License](#license)
 
 

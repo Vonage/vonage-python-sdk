@@ -445,7 +445,7 @@ client.auth(nbf=nbf, exp=exp, jti=jti)
 
 ## Overriding API Attributes
 
-In order to rewrite/get the value of variables used across all the nexmo classes Python uses `Call by Object Reference` that allows you to create a single client for Sms/Voice Classes. This means that if you make a change on a client instance this will be available for the Sms class.
+In order to rewrite/get the value of variables used across all the Nexmo classes Python uses `Call by Object Reference` that allows you to create a single client for Sms/Voice Classes. This means that if you make a change on a client instance this will be available for the Sms class.
 
 An example using setters/getters with `Object references`:
 

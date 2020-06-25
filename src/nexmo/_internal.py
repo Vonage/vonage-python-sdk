@@ -13,9 +13,10 @@ logger = logging.getLogger("nexmo")
 
 
 class BasicAuthenticatedServer(object):
-    def __init__(self, host, user_agent, api_key, api_secret):
+    def __init__(self, host, user_agent, api_key, api_secret, timeout=None):
         self._host = host
         self._session = session = Session()
+        self.timeout = None
         session.auth = (api_key, api_secret)  # Basic authentication.
         session.headers.update({"User-Agent": user_agent})
 
@@ -24,22 +25,22 @@ class BasicAuthenticatedServer(object):
 
     def get(self, path, params=None, headers=None):
         return self._parse(
-            self._session.get(self._uri(path), params=params, headers=headers)
+            self._session.get(self._uri(path), params=params, headers=headers, timeout=self.timeout)
         )
 
     def post(self, path, body=None, headers=None):
         return self._parse(
-            self._session.post(self._uri(path), json=body, headers=headers)
+            self._session.post(self._uri(path), json=body, headers=headers, timeout=self.timeout)
         )
 
     def put(self, path, body=None, headers=None):
         return self._parse(
-            self._session.put(self._uri(path), json=body, headers=headers)
+            self._session.put(self._uri(path), json=body, headers=headers, timeout=self.timeout)
         )
 
     def delete(self, path, body=None, headers=None):
         return self._parse(
-            self._session.delete(self._uri(path), json=body, headers=headers)
+            self._session.delete(self._uri(path), json=body, headers=headers, timeout=self.timeout)
         )
 
     def _parse(self, response):

@@ -59,6 +59,7 @@ class Client:
         provided by this library and can be used by Nexmo to track your app statistics.
     :param str app_version: This optional value is added to the user-agent header
         provided by this library and can be used by Nexmo to track your app statistics.
+    :param float timeout: This optional value sets the timeout value for calling the api.
     """
 
     def __init__(
@@ -71,6 +72,7 @@ class Client:
         private_key=None,
         app_name=None,
         app_version=None,
+        timeout=None
     ):
         self.api_key = key or os.environ.get("NEXMO_API_KEY", None)
 
@@ -99,6 +101,8 @@ class Client:
 
         self.api_host = "api.nexmo.com"
 
+        self.timeout = timeout
+
         user_agent = "nexmo-python/{version} python/{python_version}".format(
             version=__version__, python_version=python_version()
         )
@@ -117,6 +121,7 @@ class Client:
             user_agent=user_agent,
             api_key=self.api_key,
             api_secret=self.api_secret,
+            timeout=self.timeout
         )
         self.application_v2 = ApplicationV2(api_server)
 
@@ -510,7 +515,7 @@ class Client:
                 params or {}, api_key=self.api_key, api_secret=self.api_secret
             )
         logger.debug("GET to %r with params %r, headers %r", uri, params, headers)
-        return self.parse(host, self.session.get(uri, params=params, headers=headers))
+        return self.parse(host, self.session.get(uri, params=params, headers=headers, timeout=self.timeout))
 
     def post(
         self,
@@ -546,7 +551,7 @@ class Client:
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
         logger.debug("POST to %r with params %r, headers %r", uri, params, headers)
-        return self.parse(host, self.session.post(uri, data=params, headers=headers))
+        return self.parse(host, self.session.post(uri, data=params, headers=headers, timeout=self.timeout))
 
     def _post_json(self, host, request_uri, json):
         """
@@ -566,7 +571,7 @@ class Client:
         logger.debug(
             "POST to %r with body: %r, headers: %r", request_uri, json, headers
         )
-        return self.parse(host, self.session.post(uri, headers=headers, json=json))
+        return self.parse(host, self.session.post(uri, headers=headers, json=json, timeout=self.timeout))
 
     def put(self, host, request_uri, params, header_auth=False):
         uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
@@ -585,7 +590,7 @@ class Client:
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
         logger.debug("PUT to %r with params %r, headers %r", uri, params, headers)
-        return self.parse(host, self.session.put(uri, json=params, headers=headers))
+        return self.parse(host, self.session.put(uri, json=params, headers=headers, timeout=self.timeout))
 
     def delete(self, host, request_uri, header_auth=False):
         uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
@@ -606,7 +611,7 @@ class Client:
             params = {"api_key": self.api_key, "api_secret": self.api_secret}
         logger.debug("DELETE to %r with params %r, headers %r", uri, params, headers)
         return self.parse(
-            host, self.session.delete(uri, params=params, headers=headers)
+            host, self.session.delete(uri, params=params, headers=headers, timeout=self.timeout)
         )
 
     def parse(self, host, response):

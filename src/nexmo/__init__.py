@@ -16,8 +16,7 @@ import time
 from uuid import uuid4
 import warnings
 
-
-string_types = (str, bytes)
+string_types = (str, bytes)	
 from urllib.parse import urlparse
 
 try:
@@ -265,6 +264,9 @@ class Client:
             "/verify/check/json",
             dict(params or kwargs, request_id=request_id),
         )
+    
+    def start_psd2_verification_request(self, params=None, **kwargs):
+        return self.post(self.api_host, "/verify/psd2/json", params or kwargs)
 
     def check_verification_request(self, params=None, **kwargs):
         warnings.warn(

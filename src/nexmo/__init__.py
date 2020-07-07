@@ -156,6 +156,23 @@ class Client:
         else:
             self.__api_host = value
 
+        # Internal Verify Object - a method that return a verify install, just for cool definitions
+        self.Verify = Verify(self)
+    
+    # Get and Set __host attribute
+    def host(self, value=None):
+        if value is None:
+            return self.__host
+        else:
+            self.__host = value
+    
+    # Gets And sets __api_host attribute
+    def api_host(self, value=None):
+        if value is None:
+            return self.__api_host
+        else:
+            self.__api_host = value
+
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
 

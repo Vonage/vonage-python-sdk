@@ -7,19 +7,7 @@ def test_start_verification(verify, dummy_data):
 
     params = {"number": "447525856424", "brand": "MyApp"}
 
-    assert isinstance(verify.request(params), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "number=447525856424" in request_body()
-    assert "brand=MyApp" in request_body()
-
-
-@responses.activate
-def test_send_verification_request(verify, dummy_data):
-    stub(responses.POST, "https://api.nexmo.com/verify/json")
-
-    params = {"number": "447525856424", "brand": "MyApp"}
-
-    assert isinstance(verify.send_verification_request(params), dict)
+    assert isinstance(verify.start_verification(params), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "number=447525856424" in request_body()
     assert "brand=MyApp" in request_body()
@@ -38,31 +26,10 @@ def test_check_verification(verify, dummy_data):
 
 
 @responses.activate
-def test_check_verification_request(verify, dummy_data):
-    stub(responses.POST, "https://api.nexmo.com/verify/check/json")
-
-    params = {"code": "123445", "request_id": "8g88g88eg8g8gg9g90"}
-
-    assert isinstance(verify.check_verification_request(params), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "code=123445" in request_body()
-    assert "request_id=8g88g88eg8g8gg9g90" in request_body()
-
-
-@responses.activate
 def test_get_verification(verify, dummy_data):
     stub(responses.GET, "https://api.nexmo.com/verify/search/json")
 
     assert isinstance(verify.search("xxx"), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "request_id=xxx" in request_query()
-
-
-@responses.activate
-def test_get_verification_request(verify, dummy_data):
-    stub(responses.GET, "https://api.nexmo.com/verify/search/json")
-
-    assert isinstance(verify.get_verification_request("xxx"), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "request_id=xxx" in request_query()
 
@@ -86,18 +53,6 @@ def test_trigger_next_verification_event(verify, dummy_data):
     )
     assert request_user_agent() == dummy_data.user_agent
     assert "cmd=trigger_next_event" in request_body()
-    assert "request_id=8g88g88eg8g8gg9g90" in request_body()
-
-
-@responses.activate
-def test_control_verification_request(verify, dummy_data):
-    stub(responses.POST, "https://api.nexmo.com/verify/control/json")
-
-    params = {"cmd": "cancel", "request_id": "8g88g88eg8g8gg9g90"}
-
-    assert isinstance(verify.control_verification_request(params), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "cmd=cancel" in request_body()
     assert "request_id=8g88g88eg8g8gg9g90" in request_body()
 
 @responses.activate

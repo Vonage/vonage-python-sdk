@@ -45,23 +45,6 @@ def client(dummy_data):
         private_key=dummy_data.private_key,
     )
 
-#Represents an instance of the Voice class for testing
-@pytest.fixture
-def voice(client, dummy_data):
-    import nexmo
-
-    return nexmo.Voice(
-        client
-    )
-
-#Represents an instance of the Sms class for testing
-@pytest.fixture
-def sms(client, dummy_data):
-    import nexmo
-
-    return nexmo.Sms(
-        client
-    )
 
 #Represents an instance of the Verify class for testing
 @pytest.fixture

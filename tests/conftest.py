@@ -44,3 +44,13 @@ def client(dummy_data):
         application_id=dummy_data.application_id,
         private_key=dummy_data.private_key,
     )
+
+
+#Represents an instance of the Verify class for testing
+@pytest.fixture
+def verify(client, dummy_data):
+    import nexmo
+
+    return nexmo.Verify(
+        client
+    )

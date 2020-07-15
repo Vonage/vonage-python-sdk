@@ -1,5 +1,6 @@
 from ._internal import ApplicationV2, BasicAuthenticatedServer, _format_date_param
 from .errors import *
+from .verify import *
 from datetime import datetime
 import logging
 from platform import python_version
@@ -16,7 +17,8 @@ import time
 from uuid import uuid4
 import warnings
 
-string_types = (str, bytes)	
+
+string_types = (str, bytes)
 from urllib.parse import urlparse
 
 try:
@@ -58,7 +60,6 @@ class Client:
         provided by this library and can be used by Nexmo to track your app statistics.
     :param str app_version: This optional value is added to the user-agent header
         provided by this library and can be used by Nexmo to track your app statistics.
-    :param float timeout: This optional value sets the timeout value for calling the api.
     """
 
     def __init__(
@@ -71,7 +72,6 @@ class Client:
         private_key=None,
         app_name=None,
         app_version=None,
-        timeout=None
     ):
         self.api_key = key or os.environ.get("NEXMO_API_KEY", None)
 
@@ -100,8 +100,6 @@ class Client:
 
         self.api_host = "api.nexmo.com"
 
-        self.timeout = timeout
-
         user_agent = "nexmo-python/{version} python/{python_version}".format(
             version=__version__, python_version=python_version()
         )
@@ -120,11 +118,13 @@ class Client:
             user_agent=user_agent,
             api_key=self.api_key,
             api_secret=self.api_secret,
-            timeout=self.timeout
         )
         self.application_v2 = ApplicationV2(api_server)
 
         self.session = requests.Session()
+
+        # Internal Verify Object - a method that return a verify instance, just for cool definitions
+        self.Verify = Verify(self)
 
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
@@ -245,76 +245,6 @@ class Client:
 
     def initiate_tts_prompt_call(self, params=None, **kwargs):
         return self.post(self.api_host, "/tts-prompt/json", params or kwargs)
-
-    def start_verification(self, params=None, **kwargs):
-        return self.post(self.api_host, "/verify/json", params or kwargs)
-
-    def send_verification_request(self, params=None, **kwargs):
-        warnings.warn(
-            "nexmo.Client#send_verification_request is deprecated (use #start_verification instead)",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-        return self.post(self.api_host, "/verify/json", params or kwargs)
-
-    def check_verification(self, request_id, params=None, **kwargs):
-        return self.post(
-            self.api_host,
-            "/verify/check/json",
-            dict(params or kwargs, request_id=request_id),
-        )
-    
-    def start_psd2_verification_request(self, params=None, **kwargs):
-        return self.post(self.api_host, "/verify/psd2/json", params or kwargs)
-
-    def check_verification_request(self, params=None, **kwargs):
-        warnings.warn(
-            "nexmo.Client#check_verification_request is deprecated (use #check_verification instead)",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-        return self.post(self.api_host, "/verify/check/json", params or kwargs)
-
-    def get_verification(self, request_id):
-        return self.get(
-            self.api_host, "/verify/search/json", {"request_id": request_id}
-        )
-
-    def get_verification_request(self, request_id):
-        warnings.warn(
-            "nexmo.Client#get_verification_request is deprecated (use #get_verification instead)",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-        return self.get(
-            self.api_host, "/verify/search/json", {"request_id": request_id}
-        )
-
-    def cancel_verification(self, request_id):
-        return self.post(
-            self.api_host,
-            "/verify/control/json",
-            {"request_id": request_id, "cmd": "cancel"},
-        )
-
-    def trigger_next_verification_event(self, request_id):
-        return self.post(
-            self.api_host,
-            "/verify/control/json",
-            {"request_id": request_id, "cmd": "trigger_next_event"},
-        )
-
-    def control_verification_request(self, params=None, **kwargs):
-        warnings.warn(
-            "nexmo.Client#control_verification_request is deprecated",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-        return self.post(self.api_host, "/verify/control/json", params or kwargs)
 
     def get_basic_number_insight(self, params=None, **kwargs):
         return self.get(self.api_host, "/ni/basic/json", params or kwargs)
@@ -517,7 +447,7 @@ class Client:
                 params or {}, api_key=self.api_key, api_secret=self.api_secret
             )
         logger.debug("GET to %r with params %r, headers %r", uri, params, headers)
-        return self.parse(host, self.session.get(uri, params=params, headers=headers, timeout=self.timeout))
+        return self.parse(host, self.session.get(uri, params=params, headers=headers))
 
     def post(
         self,
@@ -553,7 +483,7 @@ class Client:
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
         logger.debug("POST to %r with params %r, headers %r", uri, params, headers)
-        return self.parse(host, self.session.post(uri, data=params, headers=headers, timeout=self.timeout))
+        return self.parse(host, self.session.post(uri, data=params, headers=headers))
 
     def _post_json(self, host, request_uri, json):
         """
@@ -573,7 +503,7 @@ class Client:
         logger.debug(
             "POST to %r with body: %r, headers: %r", request_uri, json, headers
         )
-        return self.parse(host, self.session.post(uri, headers=headers, json=json, timeout=self.timeout))
+        return self.parse(host, self.session.post(uri, headers=headers, json=json))
 
     def put(self, host, request_uri, params, header_auth=False):
         uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
@@ -592,7 +522,7 @@ class Client:
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
         logger.debug("PUT to %r with params %r, headers %r", uri, params, headers)
-        return self.parse(host, self.session.put(uri, json=params, headers=headers, timeout=self.timeout))
+        return self.parse(host, self.session.put(uri, json=params, headers=headers))
 
     def delete(self, host, request_uri, header_auth=False):
         uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
@@ -613,7 +543,7 @@ class Client:
             params = {"api_key": self.api_key, "api_secret": self.api_secret}
         logger.debug("DELETE to %r with params %r, headers %r", uri, params, headers)
         return self.parse(
-            host, self.session.delete(uri, params=params, headers=headers, timeout=self.timeout)
+            host, self.session.delete(uri, params=params, headers=headers)
         )
 
     def parse(self, host, response):

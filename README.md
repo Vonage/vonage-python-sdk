@@ -1,5 +1,4 @@
-Nexmo Client Library for Python
-===============================
+# Nexmo Client Library for Python
 
 [![PyPI version](https://badge.fury.io/py/nexmo.svg)](https://badge.fury.io/py/nexmo)
 [![Build Status](https://api.travis-ci.org/Nexmo/nexmo-python.svg?branch=master)](https://travis-ci.org/Nexmo/nexmo-python)
@@ -12,21 +11,19 @@ Nexmo Client Library for Python
 This is the Python client library for Nexmo's API. To use it you'll
 need a Nexmo account. Sign up [for free at nexmo.com][signup].
 
-* [Installation](#installation)
-* [Usage](#usage)
-* [SMS API](#sms-api)
-* [Voice API](#voice-api)
-* [Verify API](#verify-api)
-* [Number Insight API](#number-insight-api)
-* [Number Management API](#number-management-api)
-* [Managing Secrets](#managing-secrets)
-* [Application API](#application-api)
-* [Overriding API url's](#overriding-api-urls)
-* [License](#license)
+- [Installation](#installation)
+- [Usage](#usage)
+- [SMS API](#sms-api)
+- [Voice API](#voice-api)
+- [Verify API](#verify-api)
+- [Number Insight API](#number-insight-api)
+- [Number Management API](#number-management-api)
+- [Managing Secrets](#managing-secrets)
+- [Application API](#application-api)
+- [Overriding API url's](#overriding-api-urls)
+- [License](#license)
 
-
-Installation
-------------
+## Installation
 
 To install the Python client library using pip:
 
@@ -42,9 +39,7 @@ Alternatively, you can clone the repository via the command line:
 
 or by opening it on GitHub desktop.
 
-
-Usage
------
+## Usage
 
 Begin by importing the `nexmo` module:
 
@@ -71,7 +66,6 @@ client = nexmo.Client(application_id=application_id, private_key=private_key)
 To check signatures for incoming webhook requests, you'll also need
 to specify the `signature_secret` argument (or the `NEXMO_SIGNATURE_SECRET`
 environment variable).
-
 
 ## SMS API
 
@@ -100,9 +94,10 @@ be enabled on your account first.
 ```python
 response = client.submit_sms_conversion(message_id)
 ```
+
 ### Signing a Message
 
-*You may also like to read the [documentation about message signing](https://developer.nexmo.com/concepts/guides/signing-messages).* 
+_You may also like to read the [documentation about message signing](https://developer.nexmo.com/concepts/guides/signing-messages)._
 
 The SMS API supports the ability to sign messages by generating and adding a signature using a "Signature Secret" rather than your API secret. The algorithms supported are:
 
@@ -128,11 +123,11 @@ Using this client, your SMS API messages will be sent as signed messages.
 
 ### Verifying an Incoming Message Signature
 
-*You may also like to read the [documentation about message signing](https://developer.nexmo.com/concepts/guides/signing-messages)*. 
+_You may also like to read the [documentation about message signing](https://developer.nexmo.com/concepts/guides/signing-messages)_.
 
-If you have message signing enabled for incoming messages, the SMS webhook will include the fields sig, nonce and timestamp. 
+If you have message signing enabled for incoming messages, the SMS webhook will include the fields sig, nonce and timestamp.
 
-To verify the signature is from Nexmo, you create a Signature object using the incoming data, your signature secret and the signature method. 
+To verify the signature is from Nexmo, you create a Signature object using the incoming data, your signature secret and the signature method.
 
 Then use the `check_signature()` method with the actual signature that was received (usually present in request.form or request.args. you can merge those in a single variable called params) to make sure that it is correct.
 
@@ -230,60 +225,151 @@ Docs: [https://developer.nexmo.com/api/voice#startDTMF](https://developer.nexmo.
 
 ### Get recording
 
-``` python
+```python
 response = client.get_recording(RECORDING_URL)
 ```
 
-
 ## Verify API
 
-### Start a verification
+### Create an instance of the class
+
+To create an instance of the Verify class, Just follow the following steps:
+
+- **Import the class from module** (3 different ways)
 
 ```python
-response = client.start_verification(number='441632960960', brand='MyApp')
+#First way
+from nexmo import Verify
 
-if response['status'] == '0':
-  print('Started verification request_id={request_id}'.format(request_id=response['request_id']))
+#Second way
+from nexmo.verify import Verify
+
+#Third valid way
+import nexmo #then tou can use nexmo.Verify() to create an instance
+```
+
+- **Create the instance**
+
+```python
+#First way - pass key and secret to the constructor
+verify = Verify(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
+
+#Second way - Create a client instance and then pass the client to the Verify constructor
+client = Client(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
+verify = Verify(client)
+```
+
+### Search for a Verification request
+
+```python
+client = Client(key='API_KEY', secret='API_SECRET')
+
+verify = Verify(client)
+response = verify.search('69e2626cbc23451fbbc02f627a959677')
+
+if response is not None:
+    print(response['status'])
+```
+
+### Send verification code
+
+```python
+client = Client(key='API_KEY', secret='API_SECRET')
+
+verify = Verify(client)
+response = verify.request(number=RECIPIENT_NUMBER, brand='AcmeInc')
+
+if response["status"] == "0":
+    print("Started verification request_id is %s" % (response["request_id"]))
 else:
-  print('Error:', response['error_text'])
+    print("Error: %s" % response["error_text"])
 ```
 
-Docs: [https://developer.nexmo.com/api/verify#verify-request](https://developer.nexmo.com/api/verify?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#verify-request)
-
-The response contains a verification request id which you will need to
-store temporarily (in the session, database, url, etc).
-
-### Check a verification
+### Send verification code with workflow
 
 ```python
-response = client.check_verification('00e6c3377e5348cdaf567e1417c707a5', code='1234')
+client = Client(key='API_KEY', secret='API_SECRET')
 
-if response['status'] == '0':
-  print('Verification complete, event_id={event_id}'.format(event_id=response['event_id']))
+verify = Verify(client)
+response = verify.request(number=RECIPIENT_NUMBER, brand='AcmeInc', workflow_id=1)
+
+if response["status"] == "0":
+    print("Started verification request_id is %s" % (response["request_id"]))
 else:
-  print('Error:', response['error_text'])
+    print("Error: %s" % response["error_text"])
 ```
 
-Docs: [https://developer.nexmo.com/api/verify#verify-check](https://developer.nexmo.com/api/verify?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#verify-check)
-
-The verification request id comes from the call to the start_verification method.
-The PIN code is entered into your application by the user.
-
-### Cancel a verification
+### Check verification code
 
 ```python
-client.cancel_verification('00e6c3377e5348cdaf567e1417c707a5')
+client = Client(key='API_KEY', secret='API_SECRET')
+
+verify = Verify(client)
+response = verify.check(REQUEST_ID, code=CODE)
+
+if response["status"] == "0":
+    print("Verification successful, event_id is %s" % (response["event_id"]))
+else:
+    print("Error: %s" % response["error_text"])
 ```
 
-Docs: [https://developer.nexmo.com/api/verify#verify-control](https://developer.nexmo.com/api/verify?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#verify-control)
-
-### Trigger next verification step
+### Cancel Verification Request
 
 ```python
-client.trigger_next_verification_event('00e6c3377e5348cdaf567e1417c707a5')
+client = Client(key='API_KEY', secret='API_SECRET')
+
+verify = Verify(client)
+response = verify.cancel(REQUEST_ID)
+
+if response["status"] == "0":
+    print("Cancellation successful")
+else:
+    print("Error: %s" % response["error_text"])
 ```
 
-Docs: [https://developer.nexmo.com/api/verify#verify-control](https://developer.nexmo.com/api/verify?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#verify-control)
+### Trigger next verification proccess
+
+```python
+client = Client(key='API_KEY', secret='API_SECRET')
+
+verify = Verify(client)
+response = verify.trigger_next_event(REQUEST_ID)
+
+if response["status"] == "0":
+    print("Next verification stage triggered")
+else:
+    print("Error: %s" % response["error_text"])
+```
+
+### Send payment authentication code
+
+```python
+client = Client(key='API_KEY', secret='API_SECRET')
+
+verify = Verify(client)
+response = verify.psd2(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT)
+
+if response["status"] == "0":
+    print("Started PSD2 verification request_id is %s" % (response["request_id"]))
+else:
+    print("Error: %s" % response["error_text"])
+```
+
+### Send payment authentication code with workflow
+
+```python
+client = Client(key='API_KEY', secret='API_SECRET')
+
+verify = Verify(client)
+verify.psd2(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT, workflow_id: WORKFLOW_ID)
+
+if response["status"] == "0":
+    print("Started PSD2 verification request_id is %s" % (response["request_id"]))
+else:
+    print("Error: %s" % response["error_text"])
+```
+
+Docs: [https://developer.nexmo.com/api/verify](https://developer.nexmo.com/api/verify?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
 ## Number Insight API
 
@@ -347,21 +433,21 @@ Docs: [https://developer.nexmo.com/api/numbers#cancelANumber](https://developer.
 
 ## Managing Secrets
 
- An API is provided to allow you to rotate your API secrets. You can create a new secret (up to a maximum of two secrets) and delete the existing one once all applications have been updated.
+An API is provided to allow you to rotate your API secrets. You can create a new secret (up to a maximum of two secrets) and delete the existing one once all applications have been updated.
 
 ### List Secrets
 
- ```python
+```python
 secrets = client.list_secrets(API_KEY)
 ```
 
 ### Create A New Secret
 
- Create a new secret (the created dates will help you know which is which):
- ```python
+Create a new secret (the created dates will help you know which is which):
+
+```python
 client.create_secret(API_KEY, 'awes0meNewSekret!!;');
 ```
-
 
 ### Delete A Secret
 
@@ -370,7 +456,6 @@ Delete the old secret (any application still using these credentials will stop w
 ```python
 client.delete_secret(API_KEY, 'my-secret-id')
 ```
-
 
 ## Application API
 
@@ -414,7 +499,6 @@ response = client.application_v2.delete_application(uuid)
 
 Docs: [https://developer.nexmo.com/api/application.v2#deleteApplication](https://developer.nexmo.com/api/application.v2#deleteApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#destroy-an-application)
 
-
 ## Validate webhook signatures
 
 ```python
@@ -430,7 +514,6 @@ Docs: [https://developer.nexmo.com/concepts/guides/signing-messages](https://dev
 
 Note: you'll need to contact support@nexmo.com to enable message signing on
 your account before you can validate webhook signatures.
-
 
 ## JWT parameters
 
@@ -455,6 +538,7 @@ client = nexmo.Client()
 client.host = 'new.host.url'
 client.api_host = 'new.api.host'
 ```
+
 - Creating a new class that extends from client class and overrides these values in the constructor:
 
 ```python
@@ -487,8 +571,7 @@ class NexmoClient(nexmo.Client):
 
 Then proceed to create your personalised instance of the class.
 
-Contributing
-------------
+## Contributing
 
 We :heart: contributions! But if you plan to work on something big or controversial, please [contact us](mailto:devrel@nexmo.com) first!
 
@@ -504,8 +587,7 @@ The tests are all written with pytest. You run them with:
 make test
 ```
 
-License
--------
+## License
 
 This library is released under the [MIT License][license].
 

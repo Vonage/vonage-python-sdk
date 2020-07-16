@@ -1,5 +1,7 @@
 from ._internal import ApplicationV2, BasicAuthenticatedServer, _format_date_param
 from .errors import *
+from .voice import *
+from .sms import *
 from datetime import datetime
 import logging
 from platform import python_version
@@ -129,20 +131,6 @@ class Client:
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
 
-    def send_message(self, params):
-        """
-        Send an SMS message.
-        Requires a client initialized with `key` and either `secret` or `signature_secret`.
-        ::
-            client.send_message({
-                "to": MY_CELLPHONE,
-                "from": MY_NEXMO_NUMBER,
-                "text": "Hello From Nexmo!",
-            })
-        :param dict params: A dict of values described at `Send an SMS <https://developer.nexmo.com/api/sms#send-an-sms>`_
-        """
-        return self.post(self.host, "/sms/json", params, supports_signature_auth=True)
-
     def get_balance(self):
         return self.get(self.host, "/account/get-balance")
 
@@ -207,24 +195,6 @@ class Client:
     def send_2fa_message(self, params=None, **kwargs):
         return self.post(self.host, "/sc/us/2fa/json", params or kwargs)
 
-    def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
-        """
-        Notify Nexmo that an SMS was successfully received.
-
-        :param message_id: The `message-id` str returned by the send_message call.
-        :param delivered: A `bool` indicating that the message was or was not successfully delivered.
-        :param timestamp: A `datetime` object containing the time the SMS arrived.
-        :return: The parsed response from the server. On success, the bytestring b'OK'
-        """
-        params = {
-            "message-id": message_id,
-            "delivered": delivered,
-            "timestamp": timestamp or datetime.now(pytz.utc),
-        }
-        # Ensure timestamp is a string:
-        _format_date_param(params, "timestamp")
-        return self.post(self.api_host, "/conversions/sms", params)
-
     def send_event_alert_message(self, params=None, **kwargs):
         return self.post(self.host, "/sc/us/alert/json", params or kwargs)
 
@@ -236,15 +206,6 @@ class Client:
 
     def resubscribe_event_alert_number(self, params=None, **kwargs):
         return self.post(self.host, "/sc/us/alert/opt-in/manage/json", params or kwargs)
-
-    def initiate_call(self, params=None, **kwargs):
-        return self.post(self.host, "/call/json", params or kwargs)
-
-    def initiate_tts_call(self, params=None, **kwargs):
-        return self.post(self.api_host, "/tts/json", params or kwargs)
-
-    def initiate_tts_prompt_call(self, params=None, **kwargs):
-        return self.post(self.api_host, "/tts-prompt/json", params or kwargs)
 
     def start_verification(self, params=None, **kwargs):
         return self.post(self.api_host, "/verify/json", params or kwargs)
@@ -392,41 +353,6 @@ class Client:
         return self.delete(
             self.api_host,
             "/v1/applications/{application_id}".format(application_id=application_id),
-        )
-
-    def create_call(self, params=None, **kwargs):
-        return self._jwt_signed_post("/v1/calls", params or kwargs)
-
-    def get_calls(self, params=None, **kwargs):
-        return self._jwt_signed_get("/v1/calls", params or kwargs)
-
-    def get_call(self, uuid):
-        return self._jwt_signed_get("/v1/calls/{uuid}".format(uuid=uuid))
-
-    def update_call(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put(
-            "/v1/calls/{uuid}".format(uuid=uuid), params or kwargs
-        )
-
-    def send_audio(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put(
-            "/v1/calls/{uuid}/stream".format(uuid=uuid), params or kwargs
-        )
-
-    def stop_audio(self, uuid):
-        return self._jwt_signed_delete("/v1/calls/{uuid}/stream".format(uuid=uuid))
-
-    def send_speech(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put(
-            "/v1/calls/{uuid}/talk".format(uuid=uuid), params or kwargs
-        )
-
-    def stop_speech(self, uuid):
-        return self._jwt_signed_delete("/v1/calls/{uuid}/talk".format(uuid=uuid))
-
-    def send_dtmf(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put(
-            "/v1/calls/{uuid}/dtmf".format(uuid=uuid), params or kwargs
         )
 
     def get_recording(self, url):
@@ -662,43 +588,6 @@ class Client:
                 code=response.status_code, host=host
             )
             raise ServerError(message)
-
-    def _jwt_signed_get(self, request_uri, params=None):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host, request_uri=request_uri
-        )
-
-        return self.parse(
-            self.api_host,
-            self.session.get(uri, params=params or {}, headers=self._headers()),
-        )
-
-    def _jwt_signed_post(self, request_uri, params):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host, request_uri=request_uri
-        )
-
-        return self.parse(
-            self.api_host, self.session.post(uri, json=params, headers=self._headers())
-        )
-
-    def _jwt_signed_put(self, request_uri, params):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host, request_uri=request_uri
-        )
-
-        return self.parse(
-            self.api_host, self.session.put(uri, json=params, headers=self._headers())
-        )
-
-    def _jwt_signed_delete(self, request_uri):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host, request_uri=request_uri
-        )
-
-        return self.parse(
-            self.api_host, self.session.delete(uri, headers=self._headers())
-        )
 
     def _headers(self):
         token = self.generate_application_jwt()

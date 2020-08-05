@@ -1,5 +1,7 @@
 from ._internal import ApplicationV2, BasicAuthenticatedServer, _format_date_param
 from .errors import *
+from .voice import *
+from .sms import *
 from datetime import datetime
 import logging
 from platform import python_version

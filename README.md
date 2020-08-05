@@ -9,15 +9,19 @@
 This is the Python client library for Nexmo's API. To use it you'll
 need a Nexmo account. Sign up [for free at nexmo.com][signup].
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [SMS API](#sms-api)
-- [Voice API](#voice-api)
-- [Verify API](#verify-api)
-- [Number Insight API](#number-insight-api)
-- [Managing Secrets](#managing-secrets)
-- [Application API](#application-api)
-- [License](#license)
+
+* [Installation](#installation)
+* [Usage](#usage)
+* [SMS API](#sms-api)
+* [Voice API](#voice-api)
+* [Verify API](#verify-api)
+* [Number Insight API](#number-insight-api)
+* [Number Management API](#number-management-api)
+* [Managing Secrets](#managing-secrets)
+* [Application API](#application-api)
+* [Overriding API Attributes](#overriding-api-attributes)
+* [License](#license)
+
 
 ## Installation
 
@@ -559,6 +563,42 @@ specify a different token identifier:
 
 ```python
 client.auth(nbf=nbf, exp=exp, jti=jti)
+```
+
+## Overriding API Attributes
+
+In order to rewrite/get the value of variables used across all the Nexmo classes Python uses `Call by Object Reference` that allows you to create a single client for Sms/Voice Classes. This means that if you make a change on a client instance this will be available for the Sms class.
+
+An example using setters/getters with `Object references`:
+
+```python
+from nexmo import Client, Sms
+
+#Defines the client
+client = Client(key='YOUR_API_KEY', secret='YOUR_API_SECRET')
+print(client.host()) # using getter for host -- value returned: rest.nexmo.com
+
+#Define the sms instance
+sms = Sms(client)
+
+#Change the value in client
+client.host('mio.nexmo.com') #Change host to mio.nexmo.com - this change will be available for sms
+
+```
+
+### Overriding API Host / Host Attributes
+
+These attributes are private in the client class and the only way to access them is using the getters/setters we provide.
+
+
+```python
+from nexmo import Client
+
+client = Client(key='YOUR_API_KEY', secret='YOUR_API_SECRET')
+print(client.host()) # return rest.nexmo.com
+client.host('mio.nexmo.com') # rewrites the host value to mio.nexmo.com
+print(client.api_host()) # returns api.nexmo.com
+client.api_host('myapi.nexmo.com') # rewrite the value of api_host
 ```
 
 ## Contributing

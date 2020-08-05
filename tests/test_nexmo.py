@@ -5,7 +5,6 @@ import sys
 
 bytes_type = bytes
 
-
 @responses.activate
 def test_send_ussd_push_message(client, dummy_data):
     stub(responses.POST, "https://rest.nexmo.com/ussd/json")
@@ -191,7 +190,8 @@ def test_client_can_make_application_requests_without_api_key(dummy_data):
     stub(responses.POST, "https://api.nexmo.com/v1/calls")
 
     client = nexmo.Client(application_id="myid", private_key=dummy_data.private_key)
-    client.create_call("123455")
+    voice = nexmo.Voice(client)
+    voice.create_call("123455")
 
 
 @responses.activate

@@ -6,10 +6,9 @@
 [![Python versions supported](https://img.shields.io/pypi/pyversions/nexmo.svg)](https://pypi.python.org/pypi/nexmo)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-<img src="https://developer.nexmo.com/assets/images/Vonage_Nexmo.svg" height="48px" alt="Nexmo is now known as Vonage" />
-
 This is the Python client library for Nexmo's API. To use it you'll
 need a Nexmo account. Sign up [for free at nexmo.com][signup].
+
 
 - [Installation](#installation)
 - [Usage](#usage)
@@ -69,27 +68,26 @@ environment variable).
 
 ## SMS API
 
-### Send a text message
+## SMS Class
+
+### Creating an instance of the SMS class
+
+To create an instance of the SMS class follow these steps:
+
+- Import the class
 
 ```python
-response = client.send_message({'from': 'Python', 'to': 'YOUR-NUMBER', 'text': 'Hello world'})
+#Option 1
+from nexmo import Sms
 
-response = response['messages'][0]
+#Option 2
+from nexmo.sms import Sms
 
-if response['status'] == '0':
-  print('Sent message', response['message-id'])
-
-  print('Remaining balance is', response['remaining-balance'])
-else:
-  print('Error:', response['error-text'])
+#Option 3
+import nexmo #then tou can use nexmo.Sms() to create an instance
 ```
 
-Docs: [https://developer.nexmo.com/api/sms#send-an-sms](https://developer.nexmo.com/api/sms?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#send-an-sms)
-
-### Tell Nexmo the SMS was received
-
-The following submits a successful conversion to Nexmo with the current timestamp. This feature must
-be enabled on your account first.
+- Create an instance
 
 ```python
 response = client.submit_sms_conversion(message_id)
@@ -99,29 +97,44 @@ response = client.submit_sms_conversion(message_id)
 
 _You may also like to read the [documentation about message signing](https://developer.nexmo.com/concepts/guides/signing-messages)._
 
-The SMS API supports the ability to sign messages by generating and adding a signature using a "Signature Secret" rather than your API secret. The algorithms supported are:
-
-md5hash1
-md5
-sha1
-sha256
-sha512
-
-Both your application and Nexmo need to agree on which algorithm is used. In the dashboard, visit your account settings page and under "API Settings" you can select the algorithm to use. This is also the location where you will find your "Signature Secret" (it's different from the API secret).
-
-### Create a client using these credentials and the algorithm to use, for example:
-
 ```python
-client = nexmo.Client(
-            key = os.getenv('NEXMO_API_KEY'),
-            signature_secret = os.getenv('NEXMO_SIGNATURE_SECRET'),
-            signature_method = 'sha256'
-)
+#Option 1 - pass key and secret to the constructor
+sms = Sms(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
+
+#Option 2 - Create a client instance and then pass the client to the Sms instance
+client = Client(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
+sms = Sms(client)
 ```
 
-Using this client, your SMS API messages will be sent as signed messages.
+### Send an SMS
 
-### Verifying an Incoming Message Signature
+```python
+    responseData = client.send_message(
+        {
+            "from": NEXMO_BRAND_NAME,
+            "to": TO_NUMBER,
+            "text": "A text message sent using the Nexmo SMS API",
+        }
+    )
+```
+
+Reference: [Send sms](https://developer.nexmo.com/messaging/sms/code-snippets/send-an-sms)
+
+**Using the Sms class**
+
+```python
+from nexmo import Sms
+sms = Sms(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
+sms.send_message({
+            "from": NEXMO_BRAND_NAME,
+            "to": TO_NUMBER,
+            "text": "A text message sent using the Nexmo SMS API",
+})
+```
+
+Support link: [Send sms](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/17e17c6f05f6d28c53596f2412c627c2/SMSSendMessage.PNG)
+
+### Send SMS with unicode
 
 _You may also like to read the [documentation about message signing](https://developer.nexmo.com/concepts/guides/signing-messages)_.
 
@@ -129,19 +142,48 @@ If you have message signing enabled for incoming messages, the SMS webhook will 
 
 To verify the signature is from Nexmo, you create a Signature object using the incoming data, your signature secret and the signature method.
 
-Then use the `check_signature()` method with the actual signature that was received (usually present in request.form or request.args. you can merge those in a single variable called params) to make sure that it is correct.
-
-### Get the params
-
 ```python
-if request.is_json:
-    params = request.get_json()
-else:
-    params = request.args or request.form
-is_valid = client.check_signature(params)// is it valid? Will be true or false
+responseData = client.send_message({
+    'from': NEXMO_BRAND_NAME,
+    'to': TO_NUMBER,
+    'text': 'こんにちは世界',
+    'type': 'unicode',
+})
 ```
 
-Using your signature secret and the other supplied parameters, the signature can be calculated and checked against the incoming signature value.
+Reference: [Send sms with unicode](https://developer.nexmo.com/messaging/sms/code-snippets/send-an-sms-with-unicode)
+
+**Using Sms Class**
+
+
+```python
+sms.send_message({
+    'from': NEXMO_BRAND_NAME,
+    'to': TO_NUMBER,
+    'text': 'こんにちは世界',
+    'type': 'unicode',
+})
+```
+
+### Submit SMS Conversion
+
+```python
+client.submit_sms_conversion("a-message-id")
+```
+
+**With the SMS Class**
+
+```python
+from nexmo import Client, Sms
+client = Client(key=NEXMO_API_KEY, secret=NEXMO_SECRET)
+sms = Sms(client)
+response = sms.send_message({
+    'from': NEXMO_BRAND_NAME,
+    'to': TO_NUMBER,
+    'text': 'Hi from Vonage'
+})
+sms.submit_sms_conversion(response['message-id'])
+```
 
 ## Voice API
 
@@ -157,6 +199,21 @@ response = client.create_call({
 
 Docs: [https://developer.nexmo.com/api/voice#createCall](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#createCall)
 
+**with voice class**
+
+```python
+from nexmo import Client, Voice
+client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
+voice = Voice(client)
+voice.create_all({
+  'to': [{'type': 'phone', 'number': '14843331234'}],
+  'from': {'type': 'phone', 'number': '14843335555'},
+  'answer_url': ['https://example.com/answer']
+})
+```
+
+Testing screenshots:[create call](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/fc104415f55a4ad22ecf8defd90b926b/NexmoVoiceUsage.PNG)
+
 ### Retrieve a list of calls
 
 ```python
@@ -164,6 +221,17 @@ response = client.get_calls()
 ```
 
 Docs: [https://developer.nexmo.com/api/voice#getCalls](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getCalls)
+
+**with voice class**
+
+```python
+from nexmo import Client, Voice
+client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
+voice = Voice(client)
+voice.get_calls()
+```
+
+Testing screenshots: [get calls](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/a5cc162f255dc83b8cdd1d2f80531925/NexmoVoiceGetCalls.PNG)
 
 ### Retrieve a single call
 
@@ -173,6 +241,17 @@ response = client.get_call(uuid)
 
 Docs: [https://developer.nexmo.com/api/voice#getCall](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getCall)
 
+**with voice class**
+
+```python
+from nexmo import Client, Voice
+client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
+voice = Voice(client)
+voice.get_call(uuid)
+```
+
+Testing Screenshots: [get single call](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/5cef34880afdc6a4c3cd3dee0e84aae2/NexmoVoiceGetSingleCall.PNG)
+
 ### Update a call
 
 ```python
@@ -180,6 +259,22 @@ response = client.update_call(uuid, action='hangup')
 ```
 
 Docs: [https://developer.nexmo.com/api/voice#updateCall](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#updateCall)
+
+**with voice class**
+
+```python
+from nexmo import Client, Voice
+client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
+voice = Voice(client)
+response = voice.create_all({
+  'to': [{'type': 'phone', 'number': '14843331234'}],
+  'from': {'type': 'phone', 'number': '14843335555'},
+  'answer_url': ['https://example.com/answer']
+})
+voice.update_call(response['uuid'], action='hangup')
+```
+
+Support Link: [update call](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/bdf7c0990b6d4019a2758a7148fdf1e4/VoiceUpdateCall.PNG)
 
 ### Stream audio to a call
 
@@ -191,6 +286,23 @@ response = client.send_audio(uuid, stream_url=[stream_url])
 
 Docs: [https://developer.nexmo.com/api/voice#startStream](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#startStream)
 
+**with voice class**
+
+```python
+from nexmo import Client, Voice
+client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
+voice = Voice(client)
+stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
+response = voice.create_call({
+  'to': [{'type': 'phone', 'number': '14843331234'}],
+  'from': {'type': 'phone', 'number': '14843335555'},
+  'answer_url': ['https://example.com/answer']
+})
+voice.send_audio(response['uuid'],stream_url=[stream_url])
+```
+
+Support link: [Send audio stream](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/fdc22d76f6bb5c8abf625311f222512a/VoiceSendAudioStream.PNG)
+
 ### Stop streaming audio to a call
 
 ```python
@@ -198,6 +310,24 @@ response = client.stop_audio(uuid)
 ```
 
 Docs: [https://developer.nexmo.com/api/voice#stopStream](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#stopStream)
+
+**Using voice class**
+
+```python
+from nexmo import Client, Voice
+client = Client(application_id='0d4884d1-eae8-4f18-a46a-6fb14d5fdaa6', private_key='./private.key')
+voice = Voice(client)
+stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
+response = voice.create_call({
+  'to': [{'type': 'phone', 'number': '14843331234'}],
+  'from': {'type': 'phone', 'number': '14843335555'},
+  'answer_url': ['https://example.com/answer']
+})
+voice.send_audio(response['uuid'],stream_url=[stream_url])
+voice.stop_audio(response['uuid'])
+```
+
+Support Link: [Stop audio stream](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/589be23c5a31694e310aacf0fa6a2314/VoiceSendStopAudioStream.PNG)
 
 ### Send a synthesized speech message to a call
 
@@ -207,6 +337,22 @@ response = client.send_speech(uuid, text='Hello')
 
 Docs: [https://developer.nexmo.com/api/voice#startTalk](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#startTalk)
 
+**Using voice class**
+
+```python
+from nexmo import Client, Voice
+client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
+voice = Voice(client)
+response = voice.create_call({
+  'to': [{'type': 'phone', 'number': '14843331234'}],
+  'from': {'type': 'phone', 'number': '14843335555'},
+  'answer_url': ['https://example.com/answer']
+})
+voice.send_speech(response['uuid'], text='Hello from nexmo')
+```
+
+Support link: [Send speech](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/d608bfe3b1fb288c9f4854d76fba37af/VoiceSendSpeech.PNG)
+
 ### Stop sending a synthesized speech message to a call
 
 ```python
@@ -215,6 +361,23 @@ response = client.stop_speech(uuid)
 
 Docs: [https://developer.nexmo.com/api/voice#stopTalk](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#stopTalk)
 
+**Using voice class**
+
+```python
+>>> from nexmo import Client, Voice
+>>> client = Client(application_id=APPLICATION_ID, private_key=APPLICATION_ID)
+>>> voice = Voice(client)
+>>> response = voice.create_call({
+  'to': [{'type': 'phone', 'number': '14843331234'}],
+  'from': {'type': 'phone', 'number': '14843335555'},
+  'answer_url': ['https://example.com/answer']
+})
+>>> voice.send_speech(response['uuid'], text='Hello from nexmo')
+>>> voice.stop_speech(response['uuid'])
+```
+
+Support link: [Stop speech](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/246801f2e34d147955ac3531e4e7b65d/VoiceSendStopSpeech.PNG)
+
 ### Send DTMF tones to a call
 
 ```python
@@ -222,6 +385,22 @@ response = client.send_dtmf(uuid, digits='1234')
 ```
 
 Docs: [https://developer.nexmo.com/api/voice#startDTMF](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#startDTMF)
+
+**Using voice class**
+
+```python
+from nexmo import Client, Voice
+client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
+voice = Voice(client)
+response = voice.create_call({
+  'to': [{'type': 'phone', 'number': '14843331234'}],
+  'from': {'type': 'phone', 'number': '14843335555'},
+  'answer_url': ['https://example.com/answer']
+})
+voice.send_dtmf(response['uuid'], digits='1234')
+```
+
+Support link: [Send DTMF](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/7c4b25014d6c94eb886cbaa9a55d2ae3/VoiceSendDTMF.PNG)
 
 ### Get recording
 
@@ -397,40 +576,6 @@ client.get_advanced_number_insight(number='447700900000')
 
 Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightAdvanced](https://developer.nexmo.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightAdvanced)
 
-## Number Management API
-
-### List Your Numbers
-
-```python
-client.get_account_numbers()
-```
-
-Docs: [https://developer.nexmo.com/api/numbers#getOwnedNumbers](https://developer.nexmo.com/api/numbers?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getOwnedNumbers)
-
-### Search for a Number
-
-```python
-client.get_available_numbers('GB', {"type":"SMS"})
-```
-
-Docs: [https://developer.nexmo.com/api/numbers#getAvailableNumbers](https://developer.nexmo.com/api/numbers?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getAvailableNumbers)
-
-### Buy a Number
-
-```python
-client.buy_number({"country": 'GB', "msisdn": '447700900000'})
-```
-
-Docs: [https://developer.nexmo.com/api/numbers#buyANumber](https://developer.nexmo.com/api/numbers?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#buyANumber)
-
-### Cancel a Number
-
-```python
-client.cancel_number({"country": 'GB', "msisdn": '447700900000'})
-```
-
-Docs: [https://developer.nexmo.com/api/numbers#cancelANumber](https://developer.nexmo.com/api/numbers?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#cancelANumber)
-
 ## Managing Secrets
 
 An API is provided to allow you to rotate your API secrets. You can create a new secret (up to a maximum of two secrets) and delete the existing one once all applications have been updated.
@@ -526,11 +671,11 @@ specify a different token identifier:
 client.auth(nbf=nbf, exp=exp, jti=jti)
 ```
 
-## Overriding API url's
+## Overriding API Attributes
 
-By default, our API url's are hardcoded. For use cases where these url's are not accessible, best practices to override these url's are the following:
+In order to rewrite/get the value of variables used across all the Nexmo classes Python uses `Call by Object Reference` that allows you to create a single client for Sms/Voice Classes. This means that if you make a change on a client instance this will be available for the Sms class.
 
-- Setting new API url's when creating an instance of the client:
+An example using setters/getters with `Object references`:
 
 ```python
 import nexmo
@@ -542,34 +687,37 @@ client.api_host = 'new.api.host'
 - Creating a new class that extends from client class and overrides these values in the constructor:
 
 ```python
-class MyClient(nexmo.Client):
-    def __init__(self, NEXMO_API_KEY, NEXMO_API_SECRET, APPLICATION_ID, APPLICATION_PRIVATE_KEY_PATH):
-        super().__init__(application_id=APPLICATION_ID, private_key=APPLICATION_PRIVATE_KEY_PATH, key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
-        self.host = 'new.hosts.url'
-        self.api_host = 'new.api.hosts'
+from nexmo import Client, Sms
 
-#usage
-client = MyClient(NEXMO_API_KEY, NEXMO_API_SECRET, APPLICATION_ID, APPLICATION_PRIVATE_KEY_PATH)
+#Defines the client
+client = Client(key='YOUR_API_KEY', secret='YOUR_API_SECRET')
+print(client.host()) # using getter for host -- value returned: rest.nexmo.com
+
+#Define the sms instance
+sms = Sms(client)
+
+#Change the value in client
+client.host('mio.nexmo.com') #Change host to mio.nexmo.com - this change will be available for sms
+
 ```
 
-For a more specific case, another way to customise is:
+### Overriding API Host / Host Attributes
+
+These attributes are private in the client class and the only way to access them is using the getters/setters we provide.
+
 
 ```python
-import nexmo
+from nexmo import Client
 
-class NexmoClient(nexmo.Client):
-    def __init__(....):
-        super().__init__(....)
-        api_server = BasicAuthenticatedServer(
-            "mycustomurl",
-            user_agent=user_agent,
-            api_key=self.api_key,
-            api_secret=self.api_secret,
-        )
-        self.application_v2 = ApplicationV2(api_server)
+client = Client(key='YOUR_API_KEY', secret='YOUR_API_SECRET')
+print(client.host()) # return rest.nexmo.com
+client.host('mio.nexmo.com') # rewrites the host value to mio.nexmo.com
+print(client.api_host()) # returns api.nexmo.com
+client.api_host('myapi.nexmo.com') # rewrite the value of api_host
 ```
 
 Then proceed to create your personalised instance of the class.
+
 
 ## Contributing
 

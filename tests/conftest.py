@@ -27,6 +27,8 @@ class DummyData(object):
         self.user_agent = "nexmo-python/{} python/{}".format(
             nexmo.__version__, platform.python_version()
         )
+        self.host = "rest.nexmo.com"
+        self.api_host = "api.nexmo.com"
 
 
 @pytest.fixture(scope="session")
@@ -45,12 +47,20 @@ def client(dummy_data):
         private_key=dummy_data.private_key,
     )
 
-
-#Represents an instance of the Verify class for testing
+#Represents an instance of the Voice class for testing
 @pytest.fixture
-def verify(client, dummy_data):
+def voice(client, dummy_data):
     import nexmo
 
-    return nexmo.Verify(
+    return nexmo.Voice(
+        client
+    )
+
+#Represents an instance of the Sms class for testing
+@pytest.fixture
+def sms(client, dummy_data):
+    import nexmo
+
+    return nexmo.Sms(
         client
     )

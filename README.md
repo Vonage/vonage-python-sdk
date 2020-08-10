@@ -10,17 +10,18 @@ This is the Python client library for Nexmo's API. To use it you'll
 need a Nexmo account. Sign up [for free at nexmo.com][signup].
 
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [SMS API](#sms-api)
-- [Voice API](#voice-api)
-- [Verify API](#verify-api)
-- [Number Insight API](#number-insight-api)
-- [Number Management API](#number-management-api)
-- [Managing Secrets](#managing-secrets)
-- [Application API](#application-api)
-- [Overriding API url's](#overriding-api-urls)
-- [License](#license)
+* [Installation](#installation)
+* [Usage](#usage)
+* [SMS API](#sms-api)
+* [Voice API](#voice-api)
+* [Verify API](#verify-api)
+* [Number Insight API](#number-insight-api)
+* [Number Management API](#number-management-api)
+* [Managing Secrets](#managing-secrets)
+* [Application API](#application-api)
+* [Overriding API Attributes](#overriding-api-attributes)
+* [License](#license)
+
 
 ## Installation
 
@@ -90,14 +91,6 @@ import nexmo #then tou can use nexmo.Sms() to create an instance
 - Create an instance
 
 ```python
-response = client.submit_sms_conversion(message_id)
-```
-
-### Signing a Message
-
-_You may also like to read the [documentation about message signing](https://developer.nexmo.com/concepts/guides/signing-messages)._
-
-```python
 #Option 1 - pass key and secret to the constructor
 sms = Sms(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
 
@@ -136,12 +129,6 @@ Support link: [Send sms](https://gitlab.com/codeonrocks/client/nexmo-python/uplo
 
 ### Send SMS with unicode
 
-_You may also like to read the [documentation about message signing](https://developer.nexmo.com/concepts/guides/signing-messages)_.
-
-If you have message signing enabled for incoming messages, the SMS webhook will include the fields sig, nonce and timestamp.
-
-To verify the signature is from Nexmo, you create a Signature object using the incoming data, your signature secret and the signature method.
-
 ```python
 responseData = client.send_message({
     'from': NEXMO_BRAND_NAME,
@@ -154,7 +141,6 @@ responseData = client.send_message({
 Reference: [Send sms with unicode](https://developer.nexmo.com/messaging/sms/code-snippets/send-an-sms-with-unicode)
 
 **Using Sms Class**
-
 
 ```python
 sms.send_message({
@@ -410,145 +396,53 @@ response = client.get_recording(RECORDING_URL)
 
 ## Verify API
 
-### Create an instance of the class
-
-To create an instance of the Verify class, Just follow the following steps:
-
-- **Import the class from module** (3 different ways)
+### Start a verification
 
 ```python
-#First way
-from nexmo import Verify
+response = client.start_verification(number='441632960960', brand='MyApp')
 
-#Second way
-from nexmo.verify import Verify
-
-#Third valid way
-import nexmo #then tou can use nexmo.Verify() to create an instance
-```
-
-- **Create the instance**
-
-```python
-#First way - pass key and secret to the constructor
-verify = Verify(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
-
-#Second way - Create a client instance and then pass the client to the Verify constructor
-client = Client(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
-verify = Verify(client)
-```
-
-### Search for a Verification request
-
-```python
-client = Client(key='API_KEY', secret='API_SECRET')
-
-verify = Verify(client)
-response = verify.search('69e2626cbc23451fbbc02f627a959677')
-
-if response is not None:
-    print(response['status'])
-```
-
-### Send verification code
-
-```python
-client = Client(key='API_KEY', secret='API_SECRET')
-
-verify = Verify(client)
-response = verify.request(number=RECIPIENT_NUMBER, brand='AcmeInc')
-
-if response["status"] == "0":
-    print("Started verification request_id is %s" % (response["request_id"]))
+if response['status'] == '0':
+  print('Started verification request_id={request_id}'.format(request_id=response['request_id']))
 else:
-    print("Error: %s" % response["error_text"])
+  print('Error:', response['error_text'])
 ```
 
-### Send verification code with workflow
+Docs: [https://developer.nexmo.com/api/verify#verify-request](https://developer.nexmo.com/api/verify?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#verify-request)
+
+The response contains a verification request id which you will need to
+store temporarily (in the session, database, url, etc).
+
+### Check a verification
 
 ```python
-client = Client(key='API_KEY', secret='API_SECRET')
+response = client.check_verification('00e6c3377e5348cdaf567e1417c707a5', code='1234')
 
-verify = Verify(client)
-response = verify.request(number=RECIPIENT_NUMBER, brand='AcmeInc', workflow_id=1)
-
-if response["status"] == "0":
-    print("Started verification request_id is %s" % (response["request_id"]))
+if response['status'] == '0':
+  print('Verification complete, event_id={event_id}'.format(event_id=response['event_id']))
 else:
-    print("Error: %s" % response["error_text"])
+  print('Error:', response['error_text'])
 ```
 
-### Check verification code
+Docs: [https://developer.nexmo.com/api/verify#verify-check](https://developer.nexmo.com/api/verify?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#verify-check)
+
+The verification request id comes from the call to the start_verification method.
+The PIN code is entered into your application by the user.
+
+### Cancel a verification
 
 ```python
-client = Client(key='API_KEY', secret='API_SECRET')
-
-verify = Verify(client)
-response = verify.check(REQUEST_ID, code=CODE)
-
-if response["status"] == "0":
-    print("Verification successful, event_id is %s" % (response["event_id"]))
-else:
-    print("Error: %s" % response["error_text"])
+client.cancel_verification('00e6c3377e5348cdaf567e1417c707a5')
 ```
 
-### Cancel Verification Request
+Docs: [https://developer.nexmo.com/api/verify#verify-control](https://developer.nexmo.com/api/verify?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#verify-control)
+
+### Trigger next verification step
 
 ```python
-client = Client(key='API_KEY', secret='API_SECRET')
-
-verify = Verify(client)
-response = verify.cancel(REQUEST_ID)
-
-if response["status"] == "0":
-    print("Cancellation successful")
-else:
-    print("Error: %s" % response["error_text"])
+client.trigger_next_verification_event('00e6c3377e5348cdaf567e1417c707a5')
 ```
 
-### Trigger next verification proccess
-
-```python
-client = Client(key='API_KEY', secret='API_SECRET')
-
-verify = Verify(client)
-response = verify.trigger_next_event(REQUEST_ID)
-
-if response["status"] == "0":
-    print("Next verification stage triggered")
-else:
-    print("Error: %s" % response["error_text"])
-```
-
-### Send payment authentication code
-
-```python
-client = Client(key='API_KEY', secret='API_SECRET')
-
-verify = Verify(client)
-response = verify.psd2(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT)
-
-if response["status"] == "0":
-    print("Started PSD2 verification request_id is %s" % (response["request_id"]))
-else:
-    print("Error: %s" % response["error_text"])
-```
-
-### Send payment authentication code with workflow
-
-```python
-client = Client(key='API_KEY', secret='API_SECRET')
-
-verify = Verify(client)
-verify.psd2(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT, workflow_id: WORKFLOW_ID)
-
-if response["status"] == "0":
-    print("Started PSD2 verification request_id is %s" % (response["request_id"]))
-else:
-    print("Error: %s" % response["error_text"])
-```
-
-Docs: [https://developer.nexmo.com/api/verify](https://developer.nexmo.com/api/verify?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/api/verify#verify-control](https://developer.nexmo.com/api/verify?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#verify-control)
 
 ## Number Insight API
 
@@ -678,15 +572,6 @@ In order to rewrite/get the value of variables used across all the Nexmo classes
 An example using setters/getters with `Object references`:
 
 ```python
-import nexmo
-client = nexmo.Client()
-client.host = 'new.host.url'
-client.api_host = 'new.api.host'
-```
-
-- Creating a new class that extends from client class and overrides these values in the constructor:
-
-```python
 from nexmo import Client, Sms
 
 #Defines the client
@@ -715,9 +600,6 @@ client.host('mio.nexmo.com') # rewrites the host value to mio.nexmo.com
 print(client.api_host()) # returns api.nexmo.com
 client.api_host('myapi.nexmo.com') # rewrite the value of api_host
 ```
-
-Then proceed to create your personalised instance of the class.
-
 
 ## Contributing
 

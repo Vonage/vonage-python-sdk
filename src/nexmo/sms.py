@@ -30,7 +30,7 @@ class Sms:
         Requires a client initialized with `key` and either `secret` or `signature_secret`.
         :param dict params: A dict of values described at `Send an SMS <https://developer.nexmo.com/api/sms#send-an-sms>`_
         """
-        return self._client.post(self._client.host, "/sms/json", params, supports_signature_auth=True)
+        return self._client.post(self._client.host(), "/sms/json", params, supports_signature_auth=True)
     
     def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
         """
@@ -48,4 +48,4 @@ class Sms:
         }
         # Ensure timestamp is a string:
         _format_date_param(params, "timestamp")
-        return self._client.post(self._client.api_host, "/conversions/sms", params)
+        return self._client.post(self._client.api_host(), "/conversions/sms", params)

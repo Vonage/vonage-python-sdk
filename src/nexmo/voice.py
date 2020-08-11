@@ -64,54 +64,54 @@ class Voice():
     # Deprecated section
     # This methods are deprecated, to use them a definition of client with key and secret parameters is mandatory
     def initiate_call(self, params=None, **kwargs):
-        return self._client.post(self._client.host, "/call/json", params or kwargs)
+        return self._client.post(self._client.host(), "/call/json", params or kwargs)
 
     def initiate_tts_call(self, params=None, **kwargs):
-        return self._client.post(self._client.api_host, "/tts/json", params or kwargs)
+        return self._client.post(self._client.api_host(), "/tts/json", params or kwargs)
 
     def initiate_tts_prompt_call(self, params=None, **kwargs):
-        return self._client.post(self._client.api_host, "/tts-prompt/json", params or kwargs)
+        return self._client.post(self._client.api_host(), "/tts-prompt/json", params or kwargs)
     # End deprecated section
     
     # Utils methods
     # _jwt_signed_post private method that Allows developer perform signed post request
     def _jwt_signed_post(self, request_uri, params):
         uri = "https://{api_host}{request_uri}".format(
-            api_host=self._client.api_host, request_uri=request_uri
+            api_host=self._client.api_host(), request_uri=request_uri
         )
 
         # Uses the client session to perform the call action with api
         return self._client.parse(
-            self._client.api_host, self._client.session.post(uri, json=params, headers=self._client._headers())
+            self._client.api_host(), self._client.session.post(uri, json=params, headers=self._client._headers())
         )
     
     # _jwt_signed_post private method that Allows developer perform signed get request
     def _jwt_signed_get(self, request_uri, params=None):
         uri = "https://{api_host}{request_uri}".format(
-            api_host=self._client.api_host, request_uri=request_uri
+            api_host=self._client.api_host(), request_uri=request_uri
         )
 
         return self._client.parse(
-            self._client.api_host,
+            self._client.api_host(),
             self._client.session.get(uri, params=params or {}, headers=self._client._headers()),
         )
     
     # _jwt_signed_put private method that Allows developer perform signed put request
     def _jwt_signed_put(self, request_uri, params):
         uri = "https://{api_host}{request_uri}".format(
-            api_host=self._client.api_host, request_uri=request_uri
+            api_host=self._client.api_host(), request_uri=request_uri
         )
 
         return self._client.parse(
-            self._client.api_host, self._client.session.put(uri, json=params, headers=self._client._headers())
+            self._client.api_host(), self._client.session.put(uri, json=params, headers=self._client._headers())
         )
     
     # _jwt_signed_put private method that Allows developer perform signed put request
     def _jwt_signed_delete(self, request_uri):
         uri = "https://{api_host}{request_uri}".format(
-            api_host=self._client.api_host, request_uri=request_uri
+            api_host=self._client.api_host(), request_uri=request_uri
         )
 
         return self._client.parse(
-            self._client.api_host, self._client.session.delete(uri, headers=self._client._headers())
+            self._client.api_host(), self._client.session.delete(uri, headers=self._client._headers())
         )

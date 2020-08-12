@@ -20,6 +20,7 @@ need a Nexmo account. Sign up [for free at nexmo.com][signup].
 * [Managing Secrets](#managing-secrets)
 * [Application API](#application-api)
 * [Overriding API Attributes](#overriding-api-attributes)
+* [Frequently Asked Questions](#frecuently-asked-questions)
 * [License](#license)
 
 
@@ -69,9 +70,9 @@ environment variable).
 
 ## SMS API
 
-## SMS Class
+### SMS Class
 
-### Creating an instance of the SMS class
+#### Creating an instance of the SMS class
 
 To create an instance of the SMS class follow these steps:
 
@@ -102,20 +103,6 @@ sms = Sms(client)
 ### Send an SMS
 
 ```python
-    responseData = client.send_message(
-        {
-            "from": NEXMO_BRAND_NAME,
-            "to": TO_NUMBER,
-            "text": "A text message sent using the Nexmo SMS API",
-        }
-    )
-```
-
-Reference: [Send sms](https://developer.nexmo.com/messaging/sms/code-snippets/send-an-sms)
-
-**Using the Sms class**
-
-```python
 from nexmo import Sms
 sms = Sms(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
 sms.send_message({
@@ -137,6 +124,7 @@ responseData = client.send_message({
 })
 ```
 
+Reference: [Send sms with unicode](https://developer.nexmo.com/messaging/sms/code-snippets/send-an-sms-with-unicode)
 
 **Using Sms Class**
 
@@ -173,17 +161,6 @@ sms.submit_sms_conversion(response['message-id'])
 
 ### Make a call
 
-```python
-response = client.create_call({
-  'to': [{'type': 'phone', 'number': '14843331234'}],
-  'from': {'type': 'phone', 'number': '14843335555'},
-  'answer_url': ['https://example.com/answer']
-})
-```
-
-Docs: [https://developer.nexmo.com/api/voice#createCall](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#createCall)
-
-**with voice class**
 
 ```python
 from nexmo import Client, Voice
@@ -196,16 +173,9 @@ voice.create_all({
 })
 ```
 
+Testing screenshots:[create call](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/fc104415f55a4ad22ecf8defd90b926b/NexmoVoiceUsage.PNG)
 
 ### Retrieve a list of calls
-
-```python
-response = client.get_calls()
-```
-
-Docs: [https://developer.nexmo.com/api/voice#getCalls](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getCalls)
-
-**with voice class**
 
 ```python
 from nexmo import Client, Voice
@@ -214,15 +184,9 @@ voice = Voice(client)
 voice.get_calls()
 ```
 
+
 ### Retrieve a single call
 
-```python
-response = client.get_call(uuid)
-```
-
-Docs: [https://developer.nexmo.com/api/voice#getCall](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getCall)
-
-**with voice class**
 
 ```python
 from nexmo import Client, Voice
@@ -231,15 +195,8 @@ voice = Voice(client)
 voice.get_call(uuid)
 ```
 
+
 ### Update a call
-
-```python
-response = client.update_call(uuid, action='hangup')
-```
-
-Docs: [https://developer.nexmo.com/api/voice#updateCall](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#updateCall)
-
-**with voice class**
 
 ```python
 from nexmo import Client, Voice
@@ -253,17 +210,8 @@ response = voice.create_all({
 voice.update_call(response['uuid'], action='hangup')
 ```
 
+
 ### Stream audio to a call
-
-```python
-stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
-
-response = client.send_audio(uuid, stream_url=[stream_url])
-```
-
-Docs: [https://developer.nexmo.com/api/voice#startStream](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#startStream)
-
-**with voice class**
 
 ```python
 from nexmo import Client, Voice
@@ -278,15 +226,8 @@ response = voice.create_call({
 voice.send_audio(response['uuid'],stream_url=[stream_url])
 ```
 
+
 ### Stop streaming audio to a call
-
-```python
-response = client.stop_audio(uuid)
-```
-
-Docs: [https://developer.nexmo.com/api/voice#stopStream](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#stopStream)
-
-**Using voice class**
 
 ```python
 from nexmo import Client, Voice
@@ -302,15 +243,8 @@ voice.send_audio(response['uuid'],stream_url=[stream_url])
 voice.stop_audio(response['uuid'])
 ```
 
+
 ### Send a synthesized speech message to a call
-
-```python
-response = client.send_speech(uuid, text='Hello')
-```
-
-Docs: [https://developer.nexmo.com/api/voice#startTalk](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#startTalk)
-
-**Using voice class**
 
 ```python
 from nexmo import Client, Voice
@@ -324,16 +258,7 @@ response = voice.create_call({
 voice.send_speech(response['uuid'], text='Hello from nexmo')
 ```
 
-
 ### Stop sending a synthesized speech message to a call
-
-```python
-response = client.stop_speech(uuid)
-```
-
-Docs: [https://developer.nexmo.com/api/voice#stopTalk](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#stopTalk)
-
-**Using voice class**
 
 ```python
 >>> from nexmo import Client, Voice
@@ -350,13 +275,6 @@ Docs: [https://developer.nexmo.com/api/voice#stopTalk](https://developer.nexmo.c
 
 ### Send DTMF tones to a call
 
-```python
-response = client.send_dtmf(uuid, digits='1234')
-```
-
-Docs: [https://developer.nexmo.com/api/voice#startDTMF](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#startDTMF)
-
-**Using voice class**
 
 ```python
 from nexmo import Client, Voice
@@ -369,7 +287,6 @@ response = voice.create_call({
 })
 voice.send_dtmf(response['uuid'], digits='1234')
 ```
-
 
 ### Get recording
 
@@ -583,6 +500,32 @@ client.host('mio.nexmo.com') # rewrites the host value to mio.nexmo.com
 print(client.api_host()) # returns api.nexmo.com
 client.api_host('myapi.nexmo.com') # rewrite the value of api_host
 ```
+
+## Frequently Asked Questions
+
+### Supported APIs
+
+The following is a list of Vonage APIs and whether the Python SDK provides support for them:
+
+| API   | API Release Status |  Supported?
+|----------|:---------:|:-------------:|
+| Account API | General Availability |✅|
+| Alerts API | General Availability |✅|
+| Application API | General Availability |✅|
+| Audit API | Beta |❌|
+| Conversation API | Beta |❌|
+| Dispatch API | Beta |❌|
+| External Accounts API | Beta |❌|
+| Media API | Beta | ❌|
+| Messages API | Beta |❌|
+| Number Insight API | General Availability |✅|
+| Number Management API | General Availability |✅|
+| Pricing API | General Availability |✅|
+| Redact API | General Availability |✅|
+| Reports API | Beta |❌|
+| SMS API | General Availability |✅|
+| Verify API | General Availability |✅|
+| Voice API | General Availability |✅|
 
 ## Contributing
 

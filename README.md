@@ -20,7 +20,7 @@ need a Nexmo account. Sign up [for free at nexmo.com][signup].
 * [Managing Secrets](#managing-secrets)
 * [Application API](#application-api)
 * [Overriding API Attributes](#overriding-api-attributes)
-* [Frequently Asked Questions](#frecuently-asked-questions)
+* [Frequently Asked Questions](#frequently-asked-questions)
 * [License](#license)
 
 

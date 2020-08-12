@@ -64,3 +64,12 @@ def sms(client, dummy_data):
     return nexmo.Sms(
         client
     )
+
+#Represents an instance of the Verify class for testing
+@pytest.fixture
+def verify(client, dummy_data):
+    import nexmo
+
+    return nexmo.Verify(
+        client
+    )

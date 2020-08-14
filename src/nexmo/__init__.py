@@ -65,6 +65,9 @@ class Client:
         provided by this library and can be used by Nexmo to track your app statistics.
     """
 
+    #Call exception handler - as private for internal usage
+    __error_handler = ExceptionHandler()
+
     def __init__(
         self,
         key=None,
@@ -504,7 +507,14 @@ class Client:
             # Strip off any encoding from the content-type header:
             content_mime = response.headers.get("content-type").split(";", 1)[0]
             if content_mime == "application/json":
-                return response.json()
+                #Check for exceptions before retrieve data
+                data = response.json()
+                if "messages" in data and self.__error_handler.validate_code(data["messages"][0]["status"]):
+                    exception_code = data["messages"][0]["status"]
+                    exception_text = data["messages"][0]["error-text"]
+                    #raise exception
+                    self.__error_handler.trigger(exception_code, exception_text)
+                return data
             else:
                 return response.content
         elif 400 <= response.status_code < 500:
@@ -530,7 +540,10 @@ class Client:
                     )
             except JSONDecodeError:
                 pass
-            raise ClientError(message)
+            if self.__error_handler.validate_code(str(response.status_code)):
+                self.__error_handler.trigger(str(response.status_code), response.content or message)
+            else:
+                raise ClientError(message)
         elif 500 <= response.status_code < 600:
             logger.warning(
                 "Server error: %s %r", response.status_code, response.content

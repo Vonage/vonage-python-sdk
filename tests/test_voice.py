@@ -5,6 +5,7 @@ import jwt
 
 import nexmo
 from util import *
+import json
 
 
 @responses.activate
@@ -151,3 +152,43 @@ def test_authorization_with_private_key_object(voice, dummy_data):
         request_authorization().split()[1], dummy_data.public_key, algorithm="RS256"
     )
     assert token["application_id"] == dummy_data.application_id
+
+
+#Error scenarios for voice API
+@responses.activate
+def test_bad_request_error(voice):
+    responses.add(
+        responses.POST,
+        "https://api.nexmo.com/v1/calls",
+        status=400,
+        body=json.dumps(
+            {
+                'type': 400,
+                'title': 'Bad Request',
+                'invalid_parameters': 
+                    [
+                        {
+                            'reason': 'can contain up to 15 digits prefixed with +',
+                            'name': 'number'
+                        }
+                    ]
+            }
+        ),
+        content_type='application/json'
+    )
+    with pytest.raises(nexmo.BadRequestError) as excinfo:
+        voice.create_call(
+            {
+                'to': [
+                    {'type': 'phone', 'number': '50588804403aaa'}
+                ],
+                'from': {
+                    'type': 'phone',
+                    'number': '19899846327'
+                },
+                'ncco':[
+                    {"action": "talk","text": "Please wait while we connect you."}
+                ]
+            }
+        )
+    excinfo.match(r"Invalid parameters, reason: can contain up to 15 digits prefixed with \+, param hint: number")

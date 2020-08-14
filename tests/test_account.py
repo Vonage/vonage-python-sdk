@@ -136,7 +136,7 @@ def test_list_secrets_missing(client):
         client.list_secrets("meaccountid")
     assert_basic_auth()
     assert (
-        """ClientError: Invalid API Key: API key 'ABC123' does not exist, or you do not have access (https://developer.nexmo.com/api-errors#invalid-api-key)"""
+        """NotFoundError: Invalid API Key: API key 'ABC123' does not exist, or you do not have access (https://developer.nexmo.com/api-errors#invalid-api-key)"""
         in str(ce)
     )
 
@@ -225,6 +225,6 @@ def test_create_secret_validation(client):
         client.create_secret("meaccountid", "mahsecret")
     assert_basic_auth()
     assert (
-        """ClientError: Bad Request: The request failed due to validation errors (https://developer.nexmo.com/api-errors/account/secret-management#validation)"""
+        """Bad Request: The request failed due to validation errors (https://developer.nexmo.com/api-errors/account/secret-management#validation)"""
         in str(ce)
     )

@@ -11,7 +11,7 @@ with io.open(
 
 setup(
     name="nexmo",
-    version="2.4.0",
+    version="2.5.0",
     description="Nexmo Client Library for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",

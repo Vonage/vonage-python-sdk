@@ -1,4 +1,4 @@
-Nexmo Client Library for Python
+Vonage Client Library for Python
 ===============================
 
 [![PyPI version](https://badge.fury.io/py/nexmo.svg)](https://badge.fury.io/py/nexmo)

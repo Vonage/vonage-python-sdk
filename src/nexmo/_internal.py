@@ -13,7 +13,7 @@ logger = logging.getLogger("nexmo")
 
 
 class BasicAuthenticatedServer(object):
-    def __init__(self, host, user_agent, api_key, api_secret):
+    def __init__(self, host, user_agent, api_key, api_secret, timeout=None):
         self._host = host
         self._session = session = Session()
         session.auth = (api_key, api_secret)  # Basic authentication.

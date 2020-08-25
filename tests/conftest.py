@@ -27,6 +27,7 @@ class DummyData(object):
         self.user_agent = "nexmo-python/{} python/{}".format(
             nexmo.__version__, platform.python_version()
         )
+        self.host = "rest.nexmo.com"
 
 
 @pytest.fixture(scope="session")

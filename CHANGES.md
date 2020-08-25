@@ -1,92 +1,106 @@
+# 2.5.x
+
+- Support for Independent SMS, Voice and Verify APIs with tests as well as current client methods
+- Getters/Setters to extract/rewrite custom attributes
+- PSD2 Verification support
+- Dropping support for Python 2.7
+- Roadmap to better error handling
+- Supporting Python 3.8
+
 # 2.4.0
-* Application V2 API added under `Client.application_v2`
-* Existing application methods under `Client` are now deprecated.
+
+- Application V2 API added under `Client.application_v2`
+- Existing application methods under `Client` are now deprecated.
 
 # 2.3.0
-* Explicit parameter list for the `nexmo.Client` constructor. **This may cause errors in code passing incorrect or spurious arguments to the Client constructor.**
-* Secret Management
-* Support for Authorization header authentication.
+
+- Explicit parameter list for the `nexmo.Client` constructor. **This may cause errors in code passing incorrect or spurious arguments to the Client constructor.**
+- Secret Management
+- Support for Authorization header authentication.
 
 # 2.2.0
-* Add support for `redact_transaction`.
+
+- Add support for `redact_transaction`.
 
 # 2.1.0
-* Add support for `get_recording`
-* Add support for SMS conversion
-* Add debug logging for most calls, under the 'nexmo' logger.
-* Internal refactoring (affects only private methods.)
+
+- Add support for `get_recording`
+- Add support for SMS conversion
+- Add debug logging for most calls, under the 'nexmo' logger.
+- Internal refactoring (affects only private methods.)
 
 # 2.0.0
-* Drop support for Python 3.3 (in line with the cryptography library we depend upon)
-* Ensure timestamp is added the params list if signing requests
-* Avoid value injection in signature auth.
-* Add support for different hashes for signature generation (thanks @trancee!)
-* Tests ported to pytest
+
+- Drop support for Python 3.3 (in line with the cryptography library we depend upon)
+- Ensure timestamp is added the params list if signing requests
+- Avoid value injection in signature auth.
+- Add support for different hashes for signature generation (thanks @trancee!)
+- Tests ported to pytest
 
 # 1.5.0
 
-* Add ability to provide a file path as private_key param no the nexmo.Client constructor
+- Add ability to provide a file path as private_key param no the nexmo.Client constructor
 
-* Add send/stop endpoints for audio/speech/dtmf
+- Add send/stop endpoints for audio/speech/dtmf
 
-* Add new number insight endpoints
+- Add new number insight endpoints
 
 # 1.4.0
 
-* Add new Voice API call methods
+- Add new Voice API call methods
 
-* Add Application API methods
+- Add Application API methods
 
-* Add check_signature method for checking callback signatures
+- Add check_signature method for checking callback signatures
 
-* Deprecate old Verify API methods
+- Deprecate old Verify API methods
 
 # 1.3.0
 
-* Add get_sms_pricing method
+- Add get_sms_pricing method
 
-* Add get_voice_pricing method
+- Add get_voice_pricing method
 
-* Add get_event_alert_numbers method to get opt-in/opt-out numbers
+- Add get_event_alert_numbers method to get opt-in/opt-out numbers
 
-* Add resubscribe_event_alert_number method to opt-in a number
+- Add resubscribe_event_alert_number method to opt-in a number
 
-* Add more clearly named methods for Verify API
+- Add more clearly named methods for Verify API
 
-* Add app_name and app_version options
+- Add app_name and app_version options
 
 # 1.2.0
 
-* Add topup method
+- Add topup method
 
-* Add update_settings method
+- Add update_settings method
 
-* Add api_host attribute
+- Add api_host attribute
 
-* Add ClientError and ServerError classes
+- Add ClientError and ServerError classes
 
 # 1.1.0
 
-* Move repository to https://github.com/Nexmo/nexmo-python
+- Move repository to https://github.com/Nexmo/nexmo-python
 
-* Add get_basic_number_insight method for Number Insight Basic API
+- Add get_basic_number_insight method for Number Insight Basic API
 
-* Add get_number_insight method for Number Insight Standard API
+- Add get_number_insight method for Number Insight Standard API
 
-* Add User-Agent header to requests
+- Add User-Agent header to requests
 
 # 1.0.3
 
-* Change license from LGPL-3.0 to MIT
+- Change license from LGPL-3.0 to MIT
 
 # 1.0.2
 
-* Remove merge helper function
+- Remove merge helper function
 
 # 1.0.1
 
-* Python 3.x fixes
+- Python 3.x fixes
 
 # 1.0.0
 
-* First version!
+- First version!

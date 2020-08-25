@@ -19,6 +19,7 @@ import time
 from uuid import uuid4
 import warnings
 import re
+from deprecated import deprecated
 
 
 string_types = (str, bytes)
@@ -149,6 +150,7 @@ class Client:
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
 
+    @deprecated(reason="nexmo.Client#send_message is deprecated. Use Sms#send_message instead")
     def send_message(self, params):
         """
         Send an SMS message.
@@ -266,18 +268,20 @@ class Client:
     def initiate_tts_prompt_call(self, params=None, **kwargs):
         return self.post(self.api_host(), "/tts-prompt/json", params or kwargs)
 
+    @deprecated(reason="nexmo.Client#start_verification is deprecated. Use Verify#start_verification instead")
     def start_verification(self, params=None, **kwargs):
         return self.post(self.api_host(), "/verify/json", params or kwargs)
 
     def send_verification_request(self, params=None, **kwargs):
         warnings.warn(
-            "nexmo.Client#send_verification_request is deprecated (use #start_verification instead)",
+            "nexmo.Client#send_verification_request is deprecated (use Verify#start_verification instead)",
             DeprecationWarning,
             stacklevel=2,
         )
 
         return self.post(self.api_host(), "/verify/json", params or kwargs)
 
+    @deprecated(reason="nexmo.Client#check_verification is deprecated. Use Verify#check instead")
     def check_verification(self, request_id, params=None, **kwargs):
         return self.post(
             self.api_host(),
@@ -287,16 +291,18 @@ class Client:
 
     def check_verification_request(self, params=None, **kwargs):
         warnings.warn(
-            "nexmo.Client#check_verification_request is deprecated (use #check_verification instead)",
+            "nexmo.Client#check_verification_request is deprecated (use Verify#check instead)",
             DeprecationWarning,
             stacklevel=2,
         )
 
         return self.post(self.api_host(), "/verify/check/json", params or kwargs)
     
+    @deprecated(reason="nexmo.Client#start_psd2_verification_request is deprecated. Use Verify#psd2 instead")
     def start_psd2_verification_request(self, params=None, **kwargs):
         return self.post(self.api_host(), "/verify/psd2/json", params or kwargs)
 
+    @deprecated(reason="nexmo.Client#get_verification is deprecated. Use Verify#search instead")
     def get_verification(self, request_id):
         return self.get(
             self.api_host(), "/verify/search/json", {"request_id": request_id}
@@ -304,7 +310,7 @@ class Client:
 
     def get_verification_request(self, request_id):
         warnings.warn(
-            "nexmo.Client#get_verification_request is deprecated (use #get_verification instead)",
+            "nexmo.Client#get_verification_request is deprecated (use Verify#search instead)",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -313,6 +319,7 @@ class Client:
             self.api_host(), "/verify/search/json", {"request_id": request_id}
         )
 
+    @deprecated(reason="nexmo.Client#cancel_verification is deprecated. Use Verify#cancel instead")
     def cancel_verification(self, request_id):
         return self.post(
             self.api_host(),
@@ -320,6 +327,7 @@ class Client:
             {"request_id": request_id, "cmd": "cancel"},
         )
 
+    @deprecated(reason="nexmo.Client#trigger_next_verification_event is deprecated. Use Verify#trigger_next_event instead")
     def trigger_next_verification_event(self, request_id):
         return self.post(
             self.api_host(),
@@ -414,36 +422,45 @@ class Client:
             "/v1/applications/{application_id}".format(application_id=application_id),
         )
 
+    @deprecated(reason="nexmo.Client#create_call is deprecated. Use Voice#create_call instead")
     def create_call(self, params=None, **kwargs):
         return self._jwt_signed_post("/v1/calls", params or kwargs)
 
+    @deprecated(reason="nexmo.Client#get_calls is deprecated. Use Voice#get_calls instead")
     def get_calls(self, params=None, **kwargs):
         return self._jwt_signed_get("/v1/calls", params or kwargs)
 
+    @deprecated(reason="nexmo.Client#get_call is deprecated. Use Voice#get_call instead")
     def get_call(self, uuid):
         return self._jwt_signed_get("/v1/calls/{uuid}".format(uuid=uuid))
 
+    @deprecated(reason="nexmo.Client#update_call is deprecated. Use Voice#update_call instead")
     def update_call(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
             "/v1/calls/{uuid}".format(uuid=uuid), params or kwargs
         )
 
+    @deprecated(reason="nexmo.Client#send_audio is deprecated. Use Voice#send_audio instead")
     def send_audio(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
             "/v1/calls/{uuid}/stream".format(uuid=uuid), params or kwargs
         )
 
+    @deprecated(reason="nexmo.Client#stop_audio is deprecated. Use Voice#stop_audio instead")
     def stop_audio(self, uuid):
         return self._jwt_signed_delete("/v1/calls/{uuid}/stream".format(uuid=uuid))
 
+    @deprecated(reason="nexmo.Client#send_speech is deprecated. Use Voice#send_speech instead")
     def send_speech(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
             "/v1/calls/{uuid}/talk".format(uuid=uuid), params or kwargs
         )
 
+    @deprecated(reason="nexmo.Client#stop_speech is deprecated. Use Voice#stop_speech instead")
     def stop_speech(self, uuid):
         return self._jwt_signed_delete("/v1/calls/{uuid}/talk".format(uuid=uuid))
 
+    @deprecated(reason="nexmo.Client#send_dtmf is deprecated. Use Voice#send_dtmf instead")
     def send_dtmf(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
             "/v1/calls/{uuid}/dtmf".format(uuid=uuid), params or kwargs

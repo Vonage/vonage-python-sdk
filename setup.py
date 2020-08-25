@@ -11,7 +11,7 @@ with io.open(
 
 setup(
     name="nexmo",
-    version="2.5.1",
+    version="2.5.2",
     description="Nexmo Client Library for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -22,7 +22,12 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     platforms=["any"],
-    install_requires=["requests>=2.4.2", "PyJWT[crypto]>=1.6.4", "pytz>=2018.5"],
+    install_requires=[
+        "requests>=2.4.2",
+        "PyJWT[crypto]>=1.6.4",
+        "pytz>=2018.5",
+        "Deprecated",
+    ],
     python_requires=">=3, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     tests_require=["cryptography>=2.3.1"],
     classifiers=[

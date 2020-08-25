@@ -68,9 +68,9 @@ environment variable).
 
 ## SMS API
 
-## SMS Class
+### SMS Class
 
-### Creating an instance of the SMS class
+#### Creating an instance of the SMS class
 
 To create an instance of the SMS class follow these steps:
 

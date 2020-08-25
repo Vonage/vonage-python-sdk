@@ -21,6 +21,7 @@ need a Nexmo account. Sign up [for free at nexmo.com][signup].
 - [Managing Secrets](#managing-secrets)
 - [Application API](#application-api)
 - [Overriding API url's](#overriding-api-urls)
+- [Frequently Asked Questions](#frequently-asked-questions)
 - [License](#license)
 
 ## Installation
@@ -623,6 +624,38 @@ class NexmoClient(nexmo.Client):
 ```
 
 Then proceed to create your personalised instance of the class.
+
+## Frequently Asked Questions
+
+### Dropping support for Python 2.7
+
+Back in 2014 when Guido van Rossum, Python's creator and principal author, made the announcement, January 1, 2020 seemed pretty far away. Python 2.7’s sunset has happened, after which there’ll be absolutely no more support from the core Python team. Many utilized projects pledge to drop Python 2 support in or before 2020. [(Official statement here)](https://www.python.org/doc/sunset-python-2/).
+
+Just because 2.7 isn’t going to be maintained past 2020 doesn’t mean your applications or libraries suddenly stop working but as of this moment we won't give official support for upcoming releases. Please read the official ["Porting Python 2 Code to Python 3" guide](https://docs.python.org/3/howto/pyporting.html). Please also read the [Python 3 Statement Practicalities](https://python3statement.org/practicalities/) for advice on sunsetting your Python 2 code.
+
+### Supported APIs
+
+The following is a list of Vonage APIs and whether the Python SDK provides support for them:
+
+| API                   |  API Release Status  | Supported? |
+| --------------------- | :------------------: | :--------: |
+| Account API           | General Availability |     ✅     |
+| Alerts API            | General Availability |     ✅     |
+| Application API       | General Availability |     ✅     |
+| Audit API             |         Beta         |     ❌     |
+| Conversation API      |         Beta         |     ❌     |
+| Dispatch API          |         Beta         |     ❌     |
+| External Accounts API |         Beta         |     ❌     |
+| Media API             |         Beta         |     ❌     |
+| Messages API          |         Beta         |     ❌     |
+| Number Insight API    | General Availability |     ✅     |
+| Number Management API | General Availability |     ✅     |
+| Pricing API           | General Availability |     ✅     |
+| Redact API            | General Availability |     ✅     |
+| Reports API           |         Beta         |     ❌     |
+| SMS API               | General Availability |     ✅     |
+| Verify API            | General Availability |     ✅     |
+| Voice API             | General Availability |     ✅     |
 
 ## Contributing
 

@@ -190,8 +190,7 @@ def test_client_can_make_application_requests_without_api_key(dummy_data):
     stub(responses.POST, "https://api.nexmo.com/v1/calls")
 
     client = nexmo.Client(application_id="myid", private_key=dummy_data.private_key)
-    voice = nexmo.Voice(client)
-    voice.create_call("123455")
+    client.create_call("123455")
 
 
 @responses.activate

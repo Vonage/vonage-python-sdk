@@ -11,11 +11,11 @@ with io.open(
 
 setup(
     name="nexmo",
-    version="2.4.0",
-    description="Nexmo Client Library for Python",
+    version="2.5.1",
+    description="Vonage Client Library for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/Nexmo/nexmo-python",
+    url="https://github.com/vonage/vonage-python-sdk",
     author="Nexmo",
     author_email="devrel@nexmo.com",
     license="MIT",

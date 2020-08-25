@@ -9,19 +9,17 @@
 This is the Python client library for Nexmo's API. To use it you'll
 need a Nexmo account. Sign up [for free at nexmo.com][signup].
 
-
-* [Installation](#installation)
-* [Usage](#usage)
-* [SMS API](#sms-api)
-* [Voice API](#voice-api)
-* [Verify API](#verify-api)
-* [Number Insight API](#number-insight-api)
-* [Number Management API](#number-management-api)
-* [Managing Secrets](#managing-secrets)
-* [Application API](#application-api)
-* [Overriding API Attributes](#overriding-api-attributes)
-* [License](#license)
-
+- [Installation](#installation)
+- [Usage](#usage)
+- [SMS API](#sms-api)
+- [Voice API](#voice-api)
+- [Verify API](#verify-api)
+- [Number Insight API](#number-insight-api)
+- [Number Management API](#number-management-api)
+- [Managing Secrets](#managing-secrets)
+- [Application API](#application-api)
+- [Overriding API Attributes](#overriding-api-attributes)
+- [License](#license)
 
 ## Installation
 
@@ -125,8 +123,6 @@ sms.send_message({
 })
 ```
 
-Support link: [Send sms](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/17e17c6f05f6d28c53596f2412c627c2/SMSSendMessage.PNG)
-
 ### Send SMS with unicode
 
 ```python
@@ -198,8 +194,6 @@ voice.create_all({
 })
 ```
 
-Testing screenshots:[create call](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/fc104415f55a4ad22ecf8defd90b926b/NexmoVoiceUsage.PNG)
-
 ### Retrieve a list of calls
 
 ```python
@@ -217,8 +211,6 @@ voice = Voice(client)
 voice.get_calls()
 ```
 
-Testing screenshots: [get calls](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/a5cc162f255dc83b8cdd1d2f80531925/NexmoVoiceGetCalls.PNG)
-
 ### Retrieve a single call
 
 ```python
@@ -235,8 +227,6 @@ client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
 voice.get_call(uuid)
 ```
-
-Testing Screenshots: [get single call](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/5cef34880afdc6a4c3cd3dee0e84aae2/NexmoVoiceGetSingleCall.PNG)
 
 ### Update a call
 
@@ -259,8 +249,6 @@ response = voice.create_all({
 })
 voice.update_call(response['uuid'], action='hangup')
 ```
-
-Support Link: [update call](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/bdf7c0990b6d4019a2758a7148fdf1e4/VoiceUpdateCall.PNG)
 
 ### Stream audio to a call
 
@@ -287,8 +275,6 @@ response = voice.create_call({
 voice.send_audio(response['uuid'],stream_url=[stream_url])
 ```
 
-Support link: [Send audio stream](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/fdc22d76f6bb5c8abf625311f222512a/VoiceSendAudioStream.PNG)
-
 ### Stop streaming audio to a call
 
 ```python
@@ -313,8 +299,6 @@ voice.send_audio(response['uuid'],stream_url=[stream_url])
 voice.stop_audio(response['uuid'])
 ```
 
-Support Link: [Stop audio stream](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/589be23c5a31694e310aacf0fa6a2314/VoiceSendStopAudioStream.PNG)
-
 ### Send a synthesized speech message to a call
 
 ```python
@@ -336,8 +320,6 @@ response = voice.create_call({
 })
 voice.send_speech(response['uuid'], text='Hello from nexmo')
 ```
-
-Support link: [Send speech](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/d608bfe3b1fb288c9f4854d76fba37af/VoiceSendSpeech.PNG)
 
 ### Stop sending a synthesized speech message to a call
 
@@ -362,8 +344,6 @@ Docs: [https://developer.nexmo.com/api/voice#stopTalk](https://developer.nexmo.c
 >>> voice.stop_speech(response['uuid'])
 ```
 
-Support link: [Stop speech](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/246801f2e34d147955ac3531e4e7b65d/VoiceSendStopSpeech.PNG)
-
 ### Send DTMF tones to a call
 
 ```python
@@ -385,8 +365,6 @@ response = voice.create_call({
 })
 voice.send_dtmf(response['uuid'], digits='1234')
 ```
-
-Support link: [Send DTMF](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/7c4b25014d6c94eb886cbaa9a55d2ae3/VoiceSendDTMF.PNG)
 
 ### Get recording
 
@@ -589,7 +567,6 @@ client.host('mio.nexmo.com') #Change host to mio.nexmo.com - this change will be
 ### Overriding API Host / Host Attributes
 
 These attributes are private in the client class and the only way to access them is using the getters/setters we provide.
-
 
 ```python
 from nexmo import Client

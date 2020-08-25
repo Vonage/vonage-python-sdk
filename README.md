@@ -19,6 +19,7 @@ need a Nexmo account. Sign up [for free at nexmo.com][signup].
 - [Managing Secrets](#managing-secrets)
 - [Application API](#application-api)
 - [Overriding API Attributes](#overriding-api-attributes)
+- [Frequently Asked Questions](#frequently-asked-questions)
 - [License](#license)
 
 ## Installation
@@ -83,7 +84,7 @@ from nexmo import Sms
 from nexmo.sms import Sms
 
 #Option 3
-import nexmo #then tou can use nexmo.Sms() to create an instance
+import nexmo #then you can use nexmo.Sms() to create an instance
 ```
 
 - Create an instance
@@ -100,20 +101,6 @@ sms = Sms(client)
 ### Send an SMS
 
 ```python
-    responseData = client.send_message(
-        {
-            "from": NEXMO_BRAND_NAME,
-            "to": TO_NUMBER,
-            "text": "A text message sent using the Nexmo SMS API",
-        }
-    )
-```
-
-Reference: [Send sms](https://developer.nexmo.com/messaging/sms/code-snippets/send-an-sms)
-
-**Using the Sms class**
-
-```python
 from nexmo import Sms
 sms = Sms(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
 sms.send_message({
@@ -126,19 +113,6 @@ sms.send_message({
 ### Send SMS with unicode
 
 ```python
-responseData = client.send_message({
-    'from': NEXMO_BRAND_NAME,
-    'to': TO_NUMBER,
-    'text': 'こんにちは世界',
-    'type': 'unicode',
-})
-```
-
-Reference: [Send sms with unicode](https://developer.nexmo.com/messaging/sms/code-snippets/send-an-sms-with-unicode)
-
-**Using Sms Class**
-
-```python
 sms.send_message({
     'from': NEXMO_BRAND_NAME,
     'to': TO_NUMBER,
@@ -148,12 +122,6 @@ sms.send_message({
 ```
 
 ### Submit SMS Conversion
-
-```python
-client.submit_sms_conversion("a-message-id")
-```
-
-**With the SMS Class**
 
 ```python
 from nexmo import Client, Sms
@@ -172,18 +140,6 @@ sms.submit_sms_conversion(response['message-id'])
 ### Make a call
 
 ```python
-response = client.create_call({
-  'to': [{'type': 'phone', 'number': '14843331234'}],
-  'from': {'type': 'phone', 'number': '14843335555'},
-  'answer_url': ['https://example.com/answer']
-})
-```
-
-Docs: [https://developer.nexmo.com/api/voice#createCall](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#createCall)
-
-**with voice class**
-
-```python
 from nexmo import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
@@ -197,14 +153,6 @@ voice.create_all({
 ### Retrieve a list of calls
 
 ```python
-response = client.get_calls()
-```
-
-Docs: [https://developer.nexmo.com/api/voice#getCalls](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getCalls)
-
-**with voice class**
-
-```python
 from nexmo import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
@@ -214,14 +162,6 @@ voice.get_calls()
 ### Retrieve a single call
 
 ```python
-response = client.get_call(uuid)
-```
-
-Docs: [https://developer.nexmo.com/api/voice#getCall](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getCall)
-
-**with voice class**
-
-```python
 from nexmo import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
@@ -229,14 +169,6 @@ voice.get_call(uuid)
 ```
 
 ### Update a call
-
-```python
-response = client.update_call(uuid, action='hangup')
-```
-
-Docs: [https://developer.nexmo.com/api/voice#updateCall](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#updateCall)
-
-**with voice class**
 
 ```python
 from nexmo import Client, Voice
@@ -253,16 +185,6 @@ voice.update_call(response['uuid'], action='hangup')
 ### Stream audio to a call
 
 ```python
-stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
-
-response = client.send_audio(uuid, stream_url=[stream_url])
-```
-
-Docs: [https://developer.nexmo.com/api/voice#startStream](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#startStream)
-
-**with voice class**
-
-```python
 from nexmo import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
@@ -276,14 +198,6 @@ voice.send_audio(response['uuid'],stream_url=[stream_url])
 ```
 
 ### Stop streaming audio to a call
-
-```python
-response = client.stop_audio(uuid)
-```
-
-Docs: [https://developer.nexmo.com/api/voice#stopStream](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#stopStream)
-
-**Using voice class**
 
 ```python
 from nexmo import Client, Voice
@@ -302,14 +216,6 @@ voice.stop_audio(response['uuid'])
 ### Send a synthesized speech message to a call
 
 ```python
-response = client.send_speech(uuid, text='Hello')
-```
-
-Docs: [https://developer.nexmo.com/api/voice#startTalk](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#startTalk)
-
-**Using voice class**
-
-```python
 from nexmo import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
@@ -322,14 +228,6 @@ voice.send_speech(response['uuid'], text='Hello from nexmo')
 ```
 
 ### Stop sending a synthesized speech message to a call
-
-```python
-response = client.stop_speech(uuid)
-```
-
-Docs: [https://developer.nexmo.com/api/voice#stopTalk](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#stopTalk)
-
-**Using voice class**
 
 ```python
 >>> from nexmo import Client, Voice
@@ -345,14 +243,6 @@ Docs: [https://developer.nexmo.com/api/voice#stopTalk](https://developer.nexmo.c
 ```
 
 ### Send DTMF tones to a call
-
-```python
-response = client.send_dtmf(uuid, digits='1234')
-```
-
-Docs: [https://developer.nexmo.com/api/voice#startDTMF](https://developer.nexmo.com/api/voice?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#startDTMF)
-
-**Using voice class**
 
 ```python
 from nexmo import Client, Voice
@@ -376,16 +266,12 @@ response = client.get_recording(RECORDING_URL)
 
 ### Verify Class
 
-​
+#### Creating an instance of the class
 
-#### How to create an instance of the class
-
-​
 To create an instance of the Verify class, Just follow the next steps:
 ​
 
 - **Import the class from module** (3 different ways)
-  ​
 
 ```python
 #First way
@@ -398,8 +284,6 @@ from nexmo.verify import Verify
 import nexmo #then tou can use nexmo.Verify() to create an instance
 ```
 
-​
-
 - **Create the instance**
   ​
 
@@ -410,245 +294,6 @@ verify = Verify(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
 #Second way - Create a client instance and then pass the client to the Verify contructor
 client = Client(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
 verify = Verify(client)
-```
-
-​
-
-## Code snippets
-
-​
-
-### Search for a Verification request
-
-- Previous
-
-```python
-#Check the verification status, searching by request_id
-response = client.get_verification(REQUEST_ID)
-if response is not None:
-    print(response['status'])
-```
-
-[Reference](https://developer.nexmo.com/verify/code-snippets/search-verify-request)
-
-- New
-
-```python
-client = Client(key='API_KEY', secret='API_SECRET')
-​
-verify = Verify(client)
-response = verify.search('69e2626cbc23451fbbc02f627a959677')
-​
-if response is not None:
-    print(response['status'])
-```
-
-### Send verification code
-
-- Previous
-
-```python
-response = client.start_verification(number=RECIPIENT_NUMBER, brand="AcmeInc")
-
-if response["status"] == "0":
-    print("Started verification request_id is %s" % (response["request_id"]))
-else:
-    print("Error: %s" % response["error_text"])
-
-```
-
-[Reference](https://developer.nexmo.com/verify/code-snippets/send-verify-request)
-
-- New
-
-```python
-client = Client(key='API_KEY', secret='API_SECRET')
-verify = Verify(client)
-response = verify.request(number=RECIPIENT_NUMBER, brand='AcmeInc')
-
-if response["status"] == "0":
-    print("Started verification request_id is %s" % (response["request_id"]))
-else:
-    print("Error: %s" % response["error_text"])
-```
-
-### Send verification code with workflow
-
-- Previous
-
-```python
-response = client.start_verification(number=RECIPIENT_NUMBER, brand="AcmeInc", workflow_id=1)
-
-if response["status"] == "0":
-    print("Started verification request_id is %s" % (response["request_id"]))
-else:
-    print("Error: %s" % response["error_text"])
-
-```
-
-[Reference](https://developer.nexmo.com/verify/code-snippets/send-verify-request-with-workflow)
-
-- New
-
-```python
-client = Client(key='API_KEY', secret='API_SECRET')
-verify = Verify(client)
-response = verify.request(number=RECIPIENT_NUMBER, brand='AcmeInc', workflow_id=1)
-
-if response["status"] == "0":
-    print("Started verification request_id is %s" % (response["request_id"]))
-else:
-    print("Error: %s" % response["error_text"])
-```
-
-
-### Check verification code
-
-
-- Previous
-
-```python
-response = client.check_verification(REQUEST_ID, code=CODE)
-
-if response["status"] == "0":
-    print("Verification successful, event_id is %s" % (response["event_id"]))
-else:
-    print("Error: %s" % response["error_text"])
-```
-
-[Reference](https://developer.nexmo.com/verify/code-snippets/check-verify-request)
-
-
-- New
-
-```python
-client = Client(key='API_KEY', secret='API_SECRET')
-
-verify = Verify(client)
-response = verify.check(REQUEST_ID, code=CODE)
-
-if response["status"] == "0":
-    print("Verification successful, event_id is %s" % (response["event_id"]))
-else:
-    print("Error: %s" % response["error_text"])
-```
-
-### Cancel Verification Request
-
-- Previous
-
-```python
-response = client.cancel_verification(REQUEST_ID)
-
-if response["status"] == "0":
-    print("Cancellation successful")
-else:
-    print("Error: %s" % response["error_text"])
-```
-
-[Reference](https://developer.nexmo.com/verify/code-snippets/cancel-verify-request)
-
-
-- New
-
-```python
-client = Client(key='API_KEY', secret='API_SECRET')
-verify = Verify(client)
-response = verify.cancel(REQUEST_ID)
-
-if response["status"] == "0":
-    print("Cancellation successful")
-else:
-    print("Error: %s" % response["error_text"])
-```
-
-
-### Trigger next verification proccess
-
-- Previous
-
-```python
-response = client.trigger_next_verification_event(REQUEST_ID)
-
-if response["status"] == "0":
-    print("Next verification stage triggered")
-else:
-    print("Error: %s" % response["error_text"])
-```
-
-[Reference](https://developer.nexmo.com/verify/code-snippets/trigger-next-verification-process)
-
-- New
-
-```python
-client = Client(key='API_KEY', secret='API_SECRET')
-
-verify = Verify(client)
-response = verify.trigger_next_event(REQUEST_ID)
-
-if response["status"] == "0":
-    print("Next verification stage triggered")
-else:
-    print("Error: %s" % response["error_text"])
-```
-
-
-### Send payment authentication code
-
-
-- Previous
-
-```python
-response = client.start_psd2_verification_request(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT)
-
-if response["status"] == "0":
-    print("Started PSD2 verification request_id is %s" % (response["request_id"]))
-else:
-    print("Error: %s" % response["error_text"])
-```
-
-[Reference](https://gitlab.com/codeonrocks/client/nexmo-python-code-snippets/-/blob/psd2-request-snippet/verify/psd2_request.py)
-
-- New
-
-```python
-client = Client(key='API_KEY', secret='API_SECRET')
-
-verify = Verify(client)
-response = verify.psd2(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT)
-
-if response["status"] == "0":
-    print("Started PSD2 verification request_id is %s" % (response["request_id"]))
-else:
-    print("Error: %s" % response["error_text"])
-```
-
-### Send payment authentication code with workflow
-
-- Previous
-
-```python
-response = client.start_psd2_verification_request(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT, workflow_id: WORKFLOW_ID)
-
-if response["status"] == "0":
-    print("Started PSD2 verification request_id is %s" % (response["request_id"]))
-else:
-    print("Error: %s" % response["error_text"])
-```
-
-- New
-
-
-```python
-client = Client(key='API_KEY', secret='API_SECRET')
-
-verify = Verify(client)
-verify.psd2(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT, workflow_id: WORKFLOW_ID)
-
-if response["status"] == "0":
-    print("Started PSD2 verification request_id is %s" % (response["request_id"]))
-else:
-    print("Error: %s" % response["error_text"])
 ```
 
 ## Number Insight API
@@ -806,6 +451,38 @@ client.host('mio.nexmo.com') # rewrites the host value to mio.nexmo.com
 print(client.api_host()) # returns api.nexmo.com
 client.api_host('myapi.nexmo.com') # rewrite the value of api_host
 ```
+
+## Frequently Asked Questions
+
+### Dropping support for Python 2.7
+
+Back in 2014 when Guido van Rossum, Python's creator and principal author, made the announcement, January 1, 2020 seemed pretty far away. Python 2.7’s sunset has happened, after which there’ll be absolutely no more support from the core Python team. Many utilized projects pledge to drop Python 2 support in or before 2020. [(Official statement here)](https://www.python.org/doc/sunset-python-2/).
+
+Just because 2.7 isn’t going to be maintained past 2020 doesn’t mean your applications or libraries suddenly stop working but as of this moment we won't give official support for upcoming releases. Please read the official ["Porting Python 2 Code to Python 3" guide](https://docs.python.org/3/howto/pyporting.html). Please also read the [Python 3 Statement Practicalities](https://python3statement.org/practicalities/) for advice on sunsetting your Python 2 code.
+
+### Supported APIs
+
+The following is a list of Vonage APIs and whether the Python SDK provides support for them:
+
+| API                   |  API Release Status  | Supported? |
+| --------------------- | :------------------: | :--------: |
+| Account API           | General Availability |     ✅     |
+| Alerts API            | General Availability |     ✅     |
+| Application API       | General Availability |     ✅     |
+| Audit API             |         Beta         |     ❌     |
+| Conversation API      |         Beta         |     ❌     |
+| Dispatch API          |         Beta         |     ❌     |
+| External Accounts API |         Beta         |     ❌     |
+| Media API             |         Beta         |     ❌     |
+| Messages API          |         Beta         |     ❌     |
+| Number Insight API    | General Availability |     ✅     |
+| Number Management API | General Availability |     ✅     |
+| Pricing API           | General Availability |     ✅     |
+| Redact API            | General Availability |     ✅     |
+| Reports API           |         Beta         |     ❌     |
+| SMS API               | General Availability |     ✅     |
+| Verify API            | General Availability |     ✅     |
+| Voice API             | General Availability |     ✅     |
 
 ## Contributing
 

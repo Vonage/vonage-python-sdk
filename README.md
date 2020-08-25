@@ -197,8 +197,6 @@ voice.create_all({
 })
 ```
 
-Testing screenshots:[create call](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/fc104415f55a4ad22ecf8defd90b926b/NexmoVoiceUsage.PNG)
-
 ### Retrieve a list of calls
 
 ```python
@@ -216,8 +214,6 @@ voice = Voice(client)
 voice.get_calls()
 ```
 
-Testing screenshots: [get calls](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/a5cc162f255dc83b8cdd1d2f80531925/NexmoVoiceGetCalls.PNG)
-
 ### Retrieve a single call
 
 ```python
@@ -234,8 +230,6 @@ client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
 voice.get_call(uuid)
 ```
-
-Testing Screenshots: [get single call](https://gitlab.com/codeonrocks/client/nexmo-python/uploads/5cef34880afdc6a4c3cd3dee0e84aae2/NexmoVoiceGetSingleCall.PNG)
 
 ### Update a call
 
@@ -377,53 +371,284 @@ voice.send_dtmf(response['uuid'], digits='1234')
 
 ## Verify API
 
-### Start a verification
+### Verify Class
+
+#### How to create an instance of the class
+
+To create an instance of the Verify class, Just follow the next steps:
+​
+
+- **Import the class from module** (3 different ways)
+  ​
 
 ```python
-response = client.start_verification(number='441632960960', brand='MyApp')
+#First way
+from nexmo import Verify
+​
+#Second way
+from nexmo.verify import Verify
+​
+#Third valid way
+import nexmo #then you can use nexmo.Verify() to create an instance
+```
 
-if response['status'] == '0':
-  print('Started verification request_id={request_id}'.format(request_id=response['request_id']))
+- **Create the instance**
+
+```python
+#First way - pass key and secret to the constructor
+verify = Verify(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
+​
+#Second way - Create a client instance and then pass the client to the Verify constructor
+client = Client(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
+verify = Verify(client)
+```
+
+### Search for a Verification request
+
+- Previous
+
+````python
+#Check the verification status, searching by request_id
+response = client.get_verification(REQUEST_ID)
+​
+if response is not None:
+    print(response['status'])
+​
+```​
+[Reference](https://developer.nexmo.com/verify/code-snippets/search-verify-request)
+​
+- New
+
+```python
+client = Client(key='API_KEY', secret='API_SECRET')
+​
+verify = Verify(client)
+response = verify.search('69e2626cbc23451fbbc02f627a959677')
+​
+if response is not None:
+    print(response['status'])
+```​
+
+### Send verification code
+
+- Previous
+  ​
+```python
+response = client.start_verification(number=RECIPIENT_NUMBER, brand="AcmeInc")
+​
+if response["status"] == "0":
+    print("Started verification request_id is %s" % (response["request_id"]))
 else:
-  print('Error:', response['error_text'])
-```
+    print("Error: %s" % response["error_text"])
+​
+````
 
-Docs: [https://developer.nexmo.com/api/verify#verify-request](https://developer.nexmo.com/api/verify?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#verify-request)
+[Reference](https://developer.nexmo.com/verify/code-snippets/send-verify-request)
+​
 
-The response contains a verification request id which you will need to
-store temporarily (in the session, database, url, etc).
-
-### Check a verification
+- New
+  ​
 
 ```python
-response = client.check_verification('00e6c3377e5348cdaf567e1417c707a5', code='1234')
-
-if response['status'] == '0':
-  print('Verification complete, event_id={event_id}'.format(event_id=response['event_id']))
+client = Client(key='API_KEY', secret='API_SECRET')
+​
+verify = Verify(client)
+response = verify.request(number=RECIPIENT_NUMBER, brand='AcmeInc')
+​
+if response["status"] == "0":
+    print("Started verification request_id is %s" % (response["request_id"]))
 else:
-  print('Error:', response['error_text'])
+    print("Error: %s" % response["error_text"])
 ```
 
-Docs: [https://developer.nexmo.com/api/verify#verify-check](https://developer.nexmo.com/api/verify?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#verify-check)
+### Send verification code with workflow
 
-The verification request id comes from the call to the start_verification method.
-The PIN code is entered into your application by the user.
-
-### Cancel a verification
+- Previous
+  ​
 
 ```python
-client.cancel_verification('00e6c3377e5348cdaf567e1417c707a5')
+response = client.start_verification(number=RECIPIENT_NUMBER, brand="AcmeInc", workflow_id=1)
+​
+if response["status"] == "0":
+    print("Started verification request_id is %s" % (response["request_id"]))
+else:
+    print("Error: %s" % response["error_text"])
+​
 ```
 
-Docs: [https://developer.nexmo.com/api/verify#verify-control](https://developer.nexmo.com/api/verify?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#verify-control)
+​
+[Reference](https://developer.nexmo.com/verify/code-snippets/send-verify-request-with-workflow)
+​
 
-### Trigger next verification step
+- New
+  ​
 
 ```python
-client.trigger_next_verification_event('00e6c3377e5348cdaf567e1417c707a5')
+client = Client(key='API_KEY', secret='API_SECRET')
+​
+verify = Verify(client)
+response = verify.request(number=RECIPIENT_NUMBER, brand='AcmeInc', workflow_id=1)
+​
+if response["status"] == "0":
+    print("Started verification request_id is %s" % (response["request_id"]))
+else:
+    print("Error: %s" % response["error_text"])
 ```
 
-Docs: [https://developer.nexmo.com/api/verify#verify-control](https://developer.nexmo.com/api/verify?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#verify-control)
+### Check verification code
+
+- Previous
+  ​
+
+```python
+response = client.check_verification(REQUEST_ID, code=CODE)
+​
+if response["status"] == "0":
+    print("Verification successful, event_id is %s" % (response["event_id"]))
+else:
+    print("Error: %s" % response["error_text"])
+```
+
+​
+[Reference](https://developer.nexmo.com/verify/code-snippets/check-verify-request)
+​
+
+- New
+  ​
+
+```python
+client = Client(key='API_KEY', secret='API_SECRET')
+​
+verify = Verify(client)
+response = verify.check(REQUEST_ID, code=CODE)
+​
+if response["status"] == "0":
+    print("Verification successful, event_id is %s" % (response["event_id"]))
+else:
+    print("Error: %s" % response["error_text"])
+```
+
+### Cancel Verification Request
+
+- Previous
+  ​
+
+```python
+response = client.cancel_verification(REQUEST_ID)
+​
+if response["status"] == "0":
+    print("Cancellation successful")
+else:
+    print("Error: %s" % response["error_text"])
+```
+
+[Reference](https://developer.nexmo.com/verify/code-snippets/cancel-verify-request)
+
+- New
+
+```python
+client = Client(key='API_KEY', secret='API_SECRET')
+​
+verify = Verify(client)
+response = verify.cancel(REQUEST_ID)
+​
+if response["status"] == "0":
+    print("Cancellation successful")
+else:
+    print("Error: %s" % response["error_text"])
+```
+
+### Trigger next verification proccess
+
+- Previous
+  ​
+
+```python
+response = client.trigger_next_verification_event(REQUEST_ID)
+​
+if response["status"] == "0":
+    print("Next verification stage triggered")
+else:
+    print("Error: %s" % response["error_text"])
+```
+
+[Reference](https://developer.nexmo.com/verify/code-snippets/trigger-next-verification-process)
+​
+
+- New
+  ​
+
+```python
+client = Client(key='API_KEY', secret='API_SECRET')
+​
+verify = Verify(client)
+response = verify.trigger_next_event(REQUEST_ID)
+​
+if response["status"] == "0":
+    print("Next verification stage triggered")
+else:
+    print("Error: %s" % response["error_text"])
+```
+
+### Send payment authentication code
+
+- Previous
+  ​
+
+```python
+response = client.start_psd2_verification_request(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT)
+​
+if response["status"] == "0":
+    print("Started PSD2 verification request_id is %s" % (response["request_id"]))
+else:
+    print("Error: %s" % response["error_text"])
+```
+
+​
+
+- New
+  ​
+
+```python
+client = Client(key='API_KEY', secret='API_SECRET')
+​
+verify = Verify(client)
+response = verify.psd2(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT)
+​
+if response["status"] == "0":
+    print("Started PSD2 verification request_id is %s" % (response["request_id"]))
+else:
+    print("Error: %s" % response["error_text"])
+```
+
+### Send payment authentication code with workflow
+
+- Previous
+  ​
+
+```python
+response = client.start_psd2_verification_request(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT, workflow_id: WORKFLOW_ID)
+​
+if response["status"] == "0":
+    print("Started PSD2 verification request_id is %s" % (response["request_id"]))
+else:
+    print("Error: %s" % response["error_text"])
+```
+
+- New
+  ​
+
+```python
+client = Client(key='API_KEY', secret='API_SECRET')
+​
+verify = Verify(client)
+verify.psd2(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT, workflow_id: WORKFLOW_ID)
+​
+if response["status"] == "0":
+    print("Started PSD2 verification request_id is %s" % (response["request_id"]))
+else:
+    print("Error: %s" % response["error_text"])
+```
 
 ## Number Insight API
 

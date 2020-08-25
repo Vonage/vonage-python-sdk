@@ -300,8 +300,10 @@ verify = Verify(client)
 
 ```python
 client = Client(key='API_KEY', secret='API_SECRET')
+
 verify = Verify(client)
 response = verify.search('69e2626cbc23451fbbc02f627a959677')
+
 if response is not None:
     print(response['status'])
 ```
@@ -310,8 +312,10 @@ if response is not None:
 
 ```python
 client = Client(key='API_KEY', secret='API_SECRET')
+
 verify = Verify(client)
 response = verify.request(number=RECIPIENT_NUMBER, brand='AcmeInc')
+
 if response["status"] == "0":
     print("Started verification request_id is %s" % (response["request_id"]))
 else:
@@ -322,8 +326,10 @@ else:
 
 ```python
 client = Client(key='API_KEY', secret='API_SECRET')
+
 verify = Verify(client)
 response = verify.request(number=RECIPIENT_NUMBER, brand='AcmeInc', workflow_id=1)
+
 if response["status"] == "0":
     print("Started verification request_id is %s" % (response["request_id"]))
 else:
@@ -334,8 +340,10 @@ else:
 
 ```python
 client = Client(key='API_KEY', secret='API_SECRET')
+
 verify = Verify(client)
 response = verify.check(REQUEST_ID, code=CODE)
+
 if response["status"] == "0":
     print("Verification successful, event_id is %s" % (response["event_id"]))
 else:
@@ -346,8 +354,10 @@ else:
 
 ```python
 client = Client(key='API_KEY', secret='API_SECRET')
+
 verify = Verify(client)
 response = verify.cancel(REQUEST_ID)
+
 if response["status"] == "0":
     print("Cancellation successful")
 else:
@@ -358,8 +368,10 @@ else:
 
 ```python
 client = Client(key='API_KEY', secret='API_SECRET')
+
 verify = Verify(client)
 response = verify.trigger_next_event(REQUEST_ID)
+
 if response["status"] == "0":
     print("Next verification stage triggered")
 else:
@@ -370,8 +382,10 @@ else:
 
 ```python
 client = Client(key='API_KEY', secret='API_SECRET')
+
 verify = Verify(client)
 response = verify.psd2(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT)
+
 if response["status"] == "0":
     print("Started PSD2 verification request_id is %s" % (response["request_id"]))
 else:
@@ -382,8 +396,10 @@ else:
 
 ```python
 client = Client(key='API_KEY', secret='API_SECRET')
+
 verify = Verify(client)
 verify.psd2(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT, workflow_id: WORKFLOW_ID)
+
 if response["status"] == "0":
     print("Started PSD2 verification request_id is %s" % (response["request_id"]))
 else:

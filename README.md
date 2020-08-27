@@ -9,7 +9,6 @@
 This is the Python client library for Nexmo's API. To use it you'll
 need a Nexmo account. Sign up [for free at nexmo.com][signup].
 
-
 * [Installation](#installation)
 * [Usage](#usage)
 * [SMS API](#sms-api)
@@ -22,7 +21,6 @@ need a Nexmo account. Sign up [for free at nexmo.com][signup].
 * [Overriding API Attributes](#overriding-api-attributes)
 * [Frequently Asked Questions](#frequently-asked-questions)
 * [License](#license)
-
 
 ## Installation
 
@@ -86,7 +84,7 @@ from nexmo import Sms
 from nexmo.sms import Sms
 
 #Option 3
-import nexmo #then tou can use nexmo.Sms() to create an instance
+import nexmo #then you can use nexmo.Sms() to create an instance
 ```
 
 - Create an instance
@@ -141,7 +139,6 @@ sms.submit_sms_conversion(response['message-id'])
 
 ### Make a call
 
-
 ```python
 from nexmo import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
@@ -162,9 +159,7 @@ voice = Voice(client)
 voice.get_calls()
 ```
 
-
 ### Retrieve a single call
-
 
 ```python
 from nexmo import Client, Voice
@@ -172,7 +167,6 @@ client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
 voice.get_call(uuid)
 ```
-
 
 ### Update a call
 
@@ -187,7 +181,6 @@ response = voice.create_all({
 })
 voice.update_call(response['uuid'], action='hangup')
 ```
-
 
 ### Stream audio to a call
 
@@ -204,7 +197,6 @@ response = voice.create_call({
 voice.send_audio(response['uuid'],stream_url=[stream_url])
 ```
 
-
 ### Stop streaming audio to a call
 
 ```python
@@ -220,7 +212,6 @@ response = voice.create_call({
 voice.send_audio(response['uuid'],stream_url=[stream_url])
 voice.stop_audio(response['uuid'])
 ```
-
 
 ### Send a synthesized speech message to a call
 
@@ -253,7 +244,6 @@ voice.send_speech(response['uuid'], text='Hello from nexmo')
 
 ### Send DTMF tones to a call
 
-
 ```python
 from nexmo import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
@@ -272,26 +262,30 @@ voice.send_dtmf(response['uuid'], digits='1234')
 response = client.get_recording(RECORDING_URL)
 ```
 
-# Verify Class
+## Verify API
 
-## Creating an instance of the class
+### Verify Class
 
-To create an instance of the Verify class, Just follow these steps:
+#### Creating an instance of the class
+
+To create an instance of the Verify class, Just follow the next steps:
+​
 
 - **Import the class from module** (3 different ways)
 
 ```python
 #First way
 from nexmo import Verify
-
+​
 #Second way
 from nexmo.verify import Verify
-
+​
 #Third valid way
-import nexmo #then use nexmo.Verify() to create an instance 
+import nexmo #then you can use nexmo.Verify() to create an instance
 ```
 
 - **Create the instance**
+  ​
 
 ```python
 #First way - pass key and secret to the constructor
@@ -411,7 +405,6 @@ if response["status"] == "0":
 else:
     print("Error: %s" % response["error_text"])
 ```
-
 
 ## Number Insight API
 
@@ -559,7 +552,6 @@ client.host('mio.nexmo.com') #Change host to mio.nexmo.com - this change will be
 
 These attributes are private in the client class and the only way to access them is using the getters/setters we provide.
 
-
 ```python
 from nexmo import Client
 
@@ -571,7 +563,9 @@ client.api_host('myapi.nexmo.com') # rewrite the value of api_host
 ```
 
 ## Frequently Asked Questions
+
 ### Dropping support for Python 2.7
+
 Back in 2014 when Guido van Rossum, Python's creator and principal author, made the announcement, January 1, 2020 seemed pretty far away. Python 2.7’s sunset has happened, after which there’ll be absolutely no more support from the core Python team. Many utilized projects pledge to drop Python 2 support in or before 2020. [(Official statement here)](https://www.python.org/doc/sunset-python-2/).
 
 Just because 2.7 isn’t going to be maintained past 2020 doesn’t mean your applications or libraries suddenly stop working but as of this moment we won't give official support for upcoming releases. Please read the official ["Porting Python 2 Code to Python 3" guide](https://docs.python.org/3/howto/pyporting.html). Please also read the [Python 3 Statement Practicalities](https://python3statement.org/practicalities/) for advice on sunsetting your Python 2 code.
@@ -580,25 +574,25 @@ Just because 2.7 isn’t going to be maintained past 2020 doesn’t mean your ap
 
 The following is a list of Vonage APIs and whether the Python SDK provides support for them:
 
-| API   | API Release Status |  Supported?
-|----------|:---------:|:-------------:|
-| Account API | General Availability |✅|
-| Alerts API | General Availability |✅|
-| Application API | General Availability |✅|
-| Audit API | Beta |❌|
-| Conversation API | Beta |❌|
-| Dispatch API | Beta |❌|
-| External Accounts API | Beta |❌|
-| Media API | Beta | ❌|
-| Messages API | Beta |❌|
-| Number Insight API | General Availability |✅|
-| Number Management API | General Availability |✅|
-| Pricing API | General Availability |✅|
-| Redact API | General Availability |✅|
-| Reports API | Beta |❌|
-| SMS API | General Availability |✅|
-| Verify API | General Availability |✅|
-| Voice API | General Availability |✅|
+| API                   |  API Release Status  | Supported? |
+| --------------------- | :------------------: | :--------: |
+| Account API           | General Availability |     ✅     |
+| Alerts API            | General Availability |     ✅     |
+| Application API       | General Availability |     ✅     |
+| Audit API             |         Beta         |     ❌     |
+| Conversation API      |         Beta         |     ❌     |
+| Dispatch API          |         Beta         |     ❌     |
+| External Accounts API |         Beta         |     ❌     |
+| Media API             |         Beta         |     ❌     |
+| Messages API          |         Beta         |     ❌     |
+| Number Insight API    | General Availability |     ✅     |
+| Number Management API | General Availability |     ✅     |
+| Pricing API           | General Availability |     ✅     |
+| Redact API            | General Availability |     ✅     |
+| Reports API           |         Beta         |     ❌     |
+| SMS API               | General Availability |     ✅     |
+| Verify API            | General Availability |     ✅     |
+| Voice API             | General Availability |     ✅     |
 
 ## Contributing
 

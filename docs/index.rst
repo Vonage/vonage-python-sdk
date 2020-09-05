@@ -1,5 +1,5 @@
 
-Welcome to Nexmo's documentation!
+Welcome to Vonage's documentation!
 =================================
 
 .. toctree::

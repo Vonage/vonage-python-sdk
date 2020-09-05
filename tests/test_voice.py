@@ -3,7 +3,7 @@ import time
 
 import jwt
 
-import nexmo
+import vonage
 from util import *
 
 
@@ -108,7 +108,7 @@ def test_user_provided_authorization(client, dummy_data):
     exp = nbf + 3600
 
     client.auth(application_id=application_id, nbf=nbf, exp=exp)
-    voice = nexmo.Voice(client)
+    voice = vonage.Voice(client)
     voice.get_call("xx-xx-xx-xx")
 
     token = request_authorization().split()[1]
@@ -126,13 +126,13 @@ def test_authorization_with_private_key_path(dummy_data):
 
     private_key = os.path.join(os.path.dirname(__file__), "data/private_key.txt")
 
-    client = nexmo.Client(
+    client = vonage.Client(
         key=dummy_data.api_key,
         secret=dummy_data.api_secret,
         application_id=dummy_data.application_id,
         private_key=private_key,
     )
-    voice = nexmo.Voice(client)
+    voice = vonage.Voice(client)
     voice.get_call("xx-xx-xx-xx")
 
     token = jwt.decode(
@@ -271,7 +271,7 @@ def test_deprecated_authorization_with_private_key_path(dummy_data):
 
     private_key = os.path.join(os.path.dirname(__file__), "data/private_key.txt")
 
-    client = nexmo.Client(
+    client = vonage.Client(
         key=dummy_data.api_key,
         secret=dummy_data.api_secret,
         application_id=dummy_data.application_id,

@@ -1,7 +1,7 @@
 import json
 from util import *
 
-import nexmo
+import vonage
 
 
 @responses.activate
@@ -93,7 +93,7 @@ def test_authentication_error(client):
         "https://api.nexmo.com/v2/applications/xx-xx-xx-xx",
         status=401,
     )
-    with pytest.raises(nexmo.AuthenticationError):
+    with pytest.raises(vonage.AuthenticationError):
         client.application_v2.delete_application("xx-xx-xx-xx")
 
 
@@ -111,7 +111,7 @@ def test_client_error(client):
             }
         ),
     )
-    with pytest.raises(nexmo.ClientError) as exc_info:
+    with pytest.raises(vonage.ClientError) as exc_info:
         client.application_v2.delete_application("xx-xx-xx-xx")
     assert (
         str(exc_info.value) == "Nope: You really shouldn't have done that (nope_error)"
@@ -126,7 +126,7 @@ def test_client_error_no_decode(client):
         status=430,
         body="{this: isnot_json",
     )
-    with pytest.raises(nexmo.ClientError) as exc_info:
+    with pytest.raises(vonage.ClientError) as exc_info:
         client.application_v2.delete_application("xx-xx-xx-xx")
     assert str(exc_info.value) == "430 response"
 
@@ -138,16 +138,5 @@ def test_server_error(client):
         "https://api.nexmo.com/v2/applications/xx-xx-xx-xx",
         status=500,
     )
-    with pytest.raises(nexmo.ServerError):
-        client.application_v2.delete_application("xx-xx-xx-xx")
-
-
-@responses.activate
-def test_server_error(client):
-    responses.add(
-        responses.DELETE,
-        "https://api.nexmo.com/v2/applications/xx-xx-xx-xx",
-        status=500,
-    )
-    with pytest.raises(nexmo.ServerError):
+    with pytest.raises(vonage.ServerError):
         client.application_v2.delete_application("xx-xx-xx-xx")

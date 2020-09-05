@@ -84,7 +84,7 @@ class ApplicationV2(object):
     """
     Provides Application API v2 functionality.
 
-    Don't instantiate this class yourself, access it via :py:attr:`nexmo.Client.application_v2`
+    Don't instantiate this class yourself, access it via :py:attr:`vonage.Client.application_v2`
     """
 
     def __init__(self, api_server):

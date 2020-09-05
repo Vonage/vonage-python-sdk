@@ -1,4 +1,4 @@
-import nexmo, pytz
+import vonage, pytz
 from datetime import datetime
 from ._internal import _format_date_param
 
@@ -15,7 +15,7 @@ class Sms:
         try:
             self._client = client
             if self._client is None:
-                self._client = nexmo.Client(
+                self._client = vonage.Client(
                     key=key,
                     secret=secret,
                     signature_secret=signature_secret,

@@ -7,10 +7,10 @@ jobs:
     name: Add Changelog
     runs-on: ubuntu-latest
     steps:
-    - name: Add Changelog
-      uses: nexmo/github-actions/nexmo-changelog@master
-      env:
-        CHANGELOG_AUTH_TOKEN: ${{ secrets.CHANGELOG_AUTH_TOKEN }}
-        CHANGELOG_CATEGORY: Server SDK
-        CHANGELOG_RELEASE_TITLE: nexmo-python
-        CHANGELOG_SUBCATEGORY: python
+      - name: Add Changelog
+        uses: vonage/github-actions/vonage-changelog@master
+        env:
+          CHANGELOG_AUTH_TOKEN: ${{ secrets.CHANGELOG_AUTH_TOKEN }}
+          CHANGELOG_CATEGORY: Server SDK
+          CHANGELOG_RELEASE_TITLE: vonage-python
+          CHANGELOG_SUBCATEGORY: python

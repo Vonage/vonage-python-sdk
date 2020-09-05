@@ -1,55 +1,55 @@
-# Nexmo Client Library for Python
+# Vonage Client Library for Python
 
-[![PyPI version](https://badge.fury.io/py/nexmo.svg)](https://badge.fury.io/py/nexmo)
-[![Build Status](https://api.travis-ci.org/Nexmo/nexmo-python.svg?branch=master)](https://travis-ci.org/Nexmo/nexmo-python)
-[![Coverage Status](https://coveralls.io/repos/github/Nexmo/nexmo-python/badge.svg?branch=master)](https://coveralls.io/github/Nexmo/nexmo-python?branch=master)
-[![Python versions supported](https://img.shields.io/pypi/pyversions/nexmo.svg)](https://pypi.python.org/pypi/nexmo)
+[![PyPI version](https://badge.fury.io/py/vonage.svg)](https://badge.fury.io/py/vonage)
+[![Build Status](https://api.travis-ci.org/Vonage/vonage-python.svg?branch=master)](https://travis-ci.org/Vonage/vonage-python)
+[![Coverage Status](https://coveralls.io/repos/github/Vonage/vonage-python/badge.svg?branch=master)](https://coveralls.io/github/Vonage/vonage-python?branch=master)
+[![Python versions supported](https://img.shields.io/pypi/pyversions/vonage.svg)](https://pypi.python.org/pypi/vonage)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-This is the Python client library for Nexmo's API. To use it you'll
-need a Nexmo account. Sign up [for free at nexmo.com][signup].
+This is the Python client library for Vonage's API. To use it you'll
+need a Vonage account. Sign up [for free at vonage.com][signup].
 
-* [Installation](#installation)
-* [Usage](#usage)
-* [SMS API](#sms-api)
-* [Voice API](#voice-api)
-* [Verify API](#verify-api)
-* [Number Insight API](#number-insight-api)
-* [Number Management API](#number-management-api)
-* [Managing Secrets](#managing-secrets)
-* [Application API](#application-api)
-* [Overriding API Attributes](#overriding-api-attributes)
-* [Frequently Asked Questions](#frequently-asked-questions)
-* [License](#license)
+- [Installation](#installation)
+- [Usage](#usage)
+- [SMS API](#sms-api)
+- [Voice API](#voice-api)
+- [Verify API](#verify-api)
+- [Number Insight API](#number-insight-api)
+- [Number Management API](#number-management-api)
+- [Managing Secrets](#managing-secrets)
+- [Application API](#application-api)
+- [Overriding API Attributes](#overriding-api-attributes)
+- [Frequently Asked Questions](#frequently-asked-questions)
+- [License](#license)
 
 ## Installation
 
 To install the Python client library using pip:
 
-    pip install nexmo
+    pip install vonage
 
 To upgrade your installed client library using pip:
 
-    pip install nexmo --upgrade
+    pip install vonage --upgrade
 
 Alternatively, you can clone the repository via the command line:
 
-    git clone git@github.com:Nexmo/nexmo-python.git
+    git clone git@github.com:Vonage/vonage-python.git
 
 or by opening it on GitHub desktop.
 
 ## Usage
 
-Begin by importing the `nexmo` module:
+Begin by importing the `vonage` module:
 
 ```python
-import nexmo
+import vonage
 ```
 
 Then construct a client object with your key and secret:
 
 ```python
-client = nexmo.Client(key=api_key, secret=api_secret)
+client = vonage.Client(key=api_key, secret=api_secret)
 ```
 
 For production, you can specify the `NEXMO_API_KEY` and `NEXMO_API_SECRET`
@@ -59,7 +59,7 @@ For newer endpoints that support JWT authentication such as the Voice API,
 you can also specify the `application_id` and `private_key` arguments:
 
 ```python
-client = nexmo.Client(application_id=application_id, private_key=private_key)
+client = vonage.Client(application_id=application_id, private_key=private_key)
 ```
 
 To check signatures for incoming webhook requests, you'll also need
@@ -78,13 +78,13 @@ To create an instance of the SMS class follow these steps:
 
 ```python
 #Option 1
-from nexmo import Sms
+from vonage import Sms
 
 #Option 2
-from nexmo.sms import Sms
+from vonage.sms import Sms
 
 #Option 3
-import nexmo #then you can use nexmo.Sms() to create an instance
+import vonage #then you can use vonage.Sms() to create an instance
 ```
 
 - Create an instance
@@ -101,12 +101,12 @@ sms = Sms(client)
 ### Send an SMS
 
 ```python
-from nexmo import Sms
+from vonage import Sms
 sms = Sms(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
 sms.send_message({
             "from": NEXMO_BRAND_NAME,
             "to": TO_NUMBER,
-            "text": "A text message sent using the Nexmo SMS API",
+            "text": "A text message sent using the Vonage SMS API",
 })
 ```
 
@@ -124,7 +124,7 @@ sms.send_message({
 ### Submit SMS Conversion
 
 ```python
-from nexmo import Client, Sms
+from vonage import Client, Sms
 client = Client(key=NEXMO_API_KEY, secret=NEXMO_SECRET)
 sms = Sms(client)
 response = sms.send_message({
@@ -140,7 +140,7 @@ sms.submit_sms_conversion(response['message-id'])
 ### Make a call
 
 ```python
-from nexmo import Client, Voice
+from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
 voice.create_all({
@@ -153,7 +153,7 @@ voice.create_all({
 ### Retrieve a list of calls
 
 ```python
-from nexmo import Client, Voice
+from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
 voice.get_calls()
@@ -162,7 +162,7 @@ voice.get_calls()
 ### Retrieve a single call
 
 ```python
-from nexmo import Client, Voice
+from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
 voice.get_call(uuid)
@@ -171,7 +171,7 @@ voice.get_call(uuid)
 ### Update a call
 
 ```python
-from nexmo import Client, Voice
+from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
 response = voice.create_all({
@@ -185,10 +185,10 @@ voice.update_call(response['uuid'], action='hangup')
 ### Stream audio to a call
 
 ```python
-from nexmo import Client, Voice
+from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
-stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
+stream_url = 'https://vonage-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
 response = voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
@@ -200,10 +200,10 @@ voice.send_audio(response['uuid'],stream_url=[stream_url])
 ### Stop streaming audio to a call
 
 ```python
-from nexmo import Client, Voice
+from vonage import Client, Voice
 client = Client(application_id='0d4884d1-eae8-4f18-a46a-6fb14d5fdaa6', private_key='./private.key')
 voice = Voice(client)
-stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
+stream_url = 'https://vonage-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
 response = voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
@@ -216,7 +216,7 @@ voice.stop_audio(response['uuid'])
 ### Send a synthesized speech message to a call
 
 ```python
-from nexmo import Client, Voice
+from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
 response = voice.create_call({
@@ -224,13 +224,13 @@ response = voice.create_call({
   'from': {'type': 'phone', 'number': '14843335555'},
   'answer_url': ['https://example.com/answer']
 })
-voice.send_speech(response['uuid'], text='Hello from nexmo')
+voice.send_speech(response['uuid'], text='Hello from vonage')
 ```
 
 ### Stop sending a synthesized speech message to a call
 
 ```python
->>> from nexmo import Client, Voice
+>>> from vonage import Client, Voice
 >>> client = Client(application_id=APPLICATION_ID, private_key=APPLICATION_ID)
 >>> voice = Voice(client)
 >>> response = voice.create_call({
@@ -238,14 +238,14 @@ voice.send_speech(response['uuid'], text='Hello from nexmo')
   'from': {'type': 'phone', 'number': '14843335555'},
   'answer_url': ['https://example.com/answer']
 })
->>> voice.send_speech(response['uuid'], text='Hello from nexmo')
+>>> voice.send_speech(response['uuid'], text='Hello from vonage')
 >>> voice.stop_speech(response['uuid'])
 ```
 
 ### Send DTMF tones to a call
 
 ```python
-from nexmo import Client, Voice
+from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
 response = voice.create_call({
@@ -275,13 +275,13 @@ To create an instance of the Verify class, Just follow the next steps:
 
 ```python
 #First way
-from nexmo import Verify
+from vonage import Verify
 ​
 #Second way
-from nexmo.verify import Verify
+from vonage.verify import Verify
 ​
 #Third valid way
-import nexmo #then you can use nexmo.Verify() to create an instance
+import vonage #then you can use vonage.Verify() to create an instance
 ```
 
 - **Create the instance**
@@ -414,7 +414,7 @@ else:
 client.get_basic_number_insight(number='447700900000')
 ```
 
-Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightBasic](https://developer.nexmo.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightBasic)
+Docs: [https://developer.vonage.com/api/number-insight#getNumberInsightBasic](https://developer.vonage.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightBasic)
 
 ### Standard Number Insight
 
@@ -422,7 +422,7 @@ Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightBasic](htt
 client.get_standard_number_insight(number='447700900000')
 ```
 
-Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightStandard](https://developer.nexmo.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightStandard)
+Docs: [https://developer.vonage.com/api/number-insight#getNumberInsightStandard](https://developer.vonage.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightStandard)
 
 ### Advanced Number Insight
 
@@ -430,7 +430,7 @@ Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightStandard](
 client.get_advanced_number_insight(number='447700900000')
 ```
 
-Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightAdvanced](https://developer.nexmo.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightAdvanced)
+Docs: [https://developer.vonage.com/api/number-insight#getNumberInsightAdvanced](https://developer.vonage.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightAdvanced)
 
 ## Managing Secrets
 
@@ -466,7 +466,7 @@ client.delete_secret(API_KEY, 'my-secret-id')
 response = client.application_v2.create_application({name='Example App', type='voice'})
 ```
 
-Docs: [https://developer.nexmo.com/api/application.v2#createApplication](https://developer.nexmo.com/api/application.v2#createApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#create-an-application)
+Docs: [https://developer.vonage.com/api/application.v2#createApplication](https://developer.vonage.com/api/application.v2#createApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#create-an-application)
 
 ### Retrieve a list of applications
 
@@ -474,7 +474,7 @@ Docs: [https://developer.nexmo.com/api/application.v2#createApplication](https:/
 response = client.application_v2.list_applications()
 ```
 
-Docs: [https://developer.nexmo.com/api/application.v2#listApplication](https://developer.nexmo.com/api/application.v2#listApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-your-applications)
+Docs: [https://developer.vonage.com/api/application.v2#listApplication](https://developer.vonage.com/api/application.v2#listApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-your-applications)
 
 ### Retrieve a single application
 
@@ -482,7 +482,7 @@ Docs: [https://developer.nexmo.com/api/application.v2#listApplication](https://d
 response = client.application_v2.get_application(uuid)
 ```
 
-Docs: [https://developer.nexmo.com/api/application.v2#getApplication](https://developer.nexmo.com/api/application.v2#getApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-an-application)
+Docs: [https://developer.vonage.com/api/application.v2#getApplication](https://developer.vonage.com/api/application.v2#getApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-an-application)
 
 ### Update an application
 
@@ -490,7 +490,7 @@ Docs: [https://developer.nexmo.com/api/application.v2#getApplication](https://de
 response = client.application_v2.update_application(uuid, answer_method='POST')
 ```
 
-Docs: [https://developer.nexmo.com/api/application.v2#updateApplication](https://developer.nexmo.com/api/application.v2#updateApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#update-an-application)
+Docs: [https://developer.vonage.com/api/application.v2#updateApplication](https://developer.vonage.com/api/application.v2#updateApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#update-an-application)
 
 ### Delete an application
 
@@ -498,12 +498,12 @@ Docs: [https://developer.nexmo.com/api/application.v2#updateApplication](https:/
 response = client.application_v2.delete_application(uuid)
 ```
 
-Docs: [https://developer.nexmo.com/api/application.v2#deleteApplication](https://developer.nexmo.com/api/application.v2#deleteApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#destroy-an-application)
+Docs: [https://developer.vonage.com/api/application.v2#deleteApplication](https://developer.vonage.com/api/application.v2#deleteApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#destroy-an-application)
 
 ## Validate webhook signatures
 
 ```python
-client = nexmo.Client(signature_secret='secret')
+client = vonage.Client(signature_secret='secret')
 
 if client.check_signature(request.query):
   # valid signature
@@ -511,9 +511,9 @@ else:
   # invalid signature
 ```
 
-Docs: [https://developer.nexmo.com/concepts/guides/signing-messages](https://developer.nexmo.com/concepts/guides/signing-messages?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.vonage.com/concepts/guides/signing-messages](https://developer.vonage.com/concepts/guides/signing-messages?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
-Note: you'll need to contact support@nexmo.com to enable message signing on
+Note: you'll need to contact support@vonage.com to enable message signing on
 your account before you can validate webhook signatures.
 
 ## JWT parameters
@@ -529,22 +529,22 @@ client.auth(nbf=nbf, exp=exp, jti=jti)
 
 ## Overriding API Attributes
 
-In order to rewrite/get the value of variables used across all the Nexmo classes Python uses `Call by Object Reference` that allows you to create a single client for Sms/Voice Classes. This means that if you make a change on a client instance this will be available for the Sms class.
+In order to rewrite/get the value of variables used across all the Vonage classes Python uses `Call by Object Reference` that allows you to create a single client for Sms/Voice Classes. This means that if you make a change on a client instance this will be available for the Sms class.
 
 An example using setters/getters with `Object references`:
 
 ```python
-from nexmo import Client, Sms
+from vonage import Client, Sms
 
 #Defines the client
 client = Client(key='YOUR_API_KEY', secret='YOUR_API_SECRET')
-print(client.host()) # using getter for host -- value returned: rest.nexmo.com
+print(client.host()) # using getter for host -- value returned: rest.vonage.com
 
 #Define the sms instance
 sms = Sms(client)
 
 #Change the value in client
-client.host('mio.nexmo.com') #Change host to mio.nexmo.com - this change will be available for sms
+client.host('mio.vonage.com') #Change host to mio.vonage.com - this change will be available for sms
 
 ```
 
@@ -553,13 +553,13 @@ client.host('mio.nexmo.com') #Change host to mio.nexmo.com - this change will be
 These attributes are private in the client class and the only way to access them is using the getters/setters we provide.
 
 ```python
-from nexmo import Client
+from vonage import Client
 
 client = Client(key='YOUR_API_KEY', secret='YOUR_API_SECRET')
-print(client.host()) # return rest.nexmo.com
-client.host('mio.nexmo.com') # rewrites the host value to mio.nexmo.com
-print(client.api_host()) # returns api.nexmo.com
-client.api_host('myapi.nexmo.com') # rewrite the value of api_host
+print(client.host()) # return rest.vonage.com
+client.host('mio.vonage.com') # rewrites the host value to mio.vonage.com
+print(client.api_host()) # returns api.vonage.com
+client.api_host('myapi.vonage.com') # rewrite the value of api_host
 ```
 
 ## Frequently Asked Questions
@@ -596,9 +596,9 @@ The following is a list of Vonage APIs and whether the Python SDK provides suppo
 
 ## Contributing
 
-We :heart: contributions! But if you plan to work on something big or controversial, please [contact us](mailto:devrel@nexmo.com) first!
+We :heart: contributions! But if you plan to work on something big or controversial, please [contact us](mailto:devrel@vonage.com) first!
 
-We recommend working on `nexmo-python` with a [virtualenv][virtualenv]. The following command will install all the Python dependencies you need to run the tests:
+We recommend working on `vonage-python` with a [virtualenv][virtualenv]. The following command will install all the Python dependencies you need to run the tests:
 
 ```bash
 make install
@@ -612,10 +612,10 @@ make test
 
 ## License
 
-This library is released under the [MIT License][license].
+This library is released under the [Apache License][license].
 
 [virtualenv]: https://virtualenv.pypa.io/en/stable/
-[report-a-bug]: https://github.com/Nexmo/nexmo-python/issues/new
-[pull-request]: https://github.com/Nexmo/nexmo-python/pulls
+[report-a-bug]: https://github.com/Vonage/vonage-python-sdk/issues/new
+[pull-request]: https://github.com/Vonage/vonage-python-sdk/pulls
 [signup]: https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
 [license]: LICENSE.txt

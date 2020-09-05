@@ -4,7 +4,7 @@ from glom import glom
 
 from util import *
 
-import nexmo
+import vonage
 
 
 @responses.activate
@@ -21,14 +21,14 @@ def test_application_info_options(dummy_data):
 
     stub(responses.GET, "https://rest.nexmo.com/account/get-balance")
 
-    client = nexmo.Client(
+    client = vonage.Client(
         key=dummy_data.api_key,
         secret=dummy_data.api_secret,
         app_name=app_name,
         app_version=app_version,
     )
     user_agent = "nexmo-python/{} python/{} {}/{}".format(
-            nexmo.__version__,
+            vonage.__version__,
             platform.python_version(),
             app_name,
             app_version,
@@ -132,7 +132,7 @@ def test_list_secrets_missing(client):
         fixture_path="account/secret_management/missing.json",
     )
 
-    with pytest.raises(nexmo.ClientError) as ce:
+    with pytest.raises(vonage.ClientError) as ce:
         client.list_secrets("meaccountid")
     assert_basic_auth()
     assert (
@@ -172,7 +172,7 @@ def test_delete_secret_last_secret(client):
         status_code=403,
         fixture_path="account/secret_management/last-secret.json",
     )
-    with pytest.raises(nexmo.ClientError) as ce:
+    with pytest.raises(vonage.ClientError) as ce:
         client.delete_secret("meaccountid", "mahsecret")
     assert_basic_auth()
     assert (
@@ -203,7 +203,7 @@ def test_create_secret_max_secrets(client):
         fixture_path="account/secret_management/max-secrets.json",
     )
 
-    with pytest.raises(nexmo.ClientError) as ce:
+    with pytest.raises(vonage.ClientError) as ce:
         client.create_secret("meaccountid", "mahsecret")
     assert_basic_auth()
     assert (
@@ -221,7 +221,7 @@ def test_create_secret_validation(client):
         fixture_path="account/secret_management/create-validation.json",
     )
 
-    with pytest.raises(nexmo.ClientError) as ce:
+    with pytest.raises(vonage.ClientError) as ce:
         client.create_secret("meaccountid", "mahsecret")
     assert_basic_auth()
     assert (

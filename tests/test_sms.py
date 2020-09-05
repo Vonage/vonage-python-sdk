@@ -1,4 +1,4 @@
-import nexmo
+import vonage
 from util import *
 
 
@@ -19,7 +19,7 @@ def test_send_message(sms, dummy_data):
 def test_authentication_error(sms):
     responses.add(responses.POST, "https://rest.nexmo.com/sms/json", status=401)
 
-    with pytest.raises(nexmo.AuthenticationError):
+    with pytest.raises(vonage.AuthenticationError):
         sms.send_message({})
 
 
@@ -27,7 +27,7 @@ def test_authentication_error(sms):
 def test_client_error(sms):
     responses.add(responses.POST, "https://rest.nexmo.com/sms/json", status=400)
 
-    with pytest.raises(nexmo.ClientError) as excinfo:
+    with pytest.raises(vonage.ClientError) as excinfo:
         sms.send_message({})
     excinfo.match(r"400 response from rest.nexmo.com")
 
@@ -36,7 +36,7 @@ def test_client_error(sms):
 def test_server_error(sms):
     responses.add(responses.POST, "https://rest.nexmo.com/sms/json", status=500)
 
-    with pytest.raises(nexmo.ServerError) as excinfo:
+    with pytest.raises(vonage.ServerError) as excinfo:
         sms.send_message({})
     excinfo.match(r"500 response from rest.nexmo.com")
 
@@ -68,7 +68,7 @@ def test_deprecated_send_message(client, dummy_data):
 def test_deprecated_authentication_error(client):
     responses.add(responses.POST, "https://rest.nexmo.com/sms/json", status=401)
 
-    with pytest.raises(nexmo.AuthenticationError):
+    with pytest.raises(vonage.AuthenticationError):
         client.send_message({})
 
 
@@ -76,7 +76,7 @@ def test_deprecated_authentication_error(client):
 def test_deprecated_client_error(client):
     responses.add(responses.POST, "https://rest.nexmo.com/sms/json", status=400)
 
-    with pytest.raises(nexmo.ClientError) as excinfo:
+    with pytest.raises(vonage.ClientError) as excinfo:
         client.send_message({})
     excinfo.match(r"400 response from rest.nexmo.com")
 
@@ -85,7 +85,7 @@ def test_deprecated_client_error(client):
 def test_deprecated_server_error(client):
     responses.add(responses.POST, "https://rest.nexmo.com/sms/json", status=500)
 
-    with pytest.raises(nexmo.ServerError) as excinfo:
+    with pytest.raises(vonage.ServerError) as excinfo:
         client.send_message({})
     excinfo.match(r"500 response from rest.nexmo.com")
 

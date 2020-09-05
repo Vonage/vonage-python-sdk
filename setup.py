@@ -10,15 +10,15 @@ with io.open(
     long_description = f.read()
 
 setup(
-    name="nexmo",
+    name="vonage",
     version="2.5.2",
-    description="Nexmo Client Library for Python",
+    description="Vonage Server SDK for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/Nexmo/nexmo-python",
-    author="Nexmo",
-    author_email="devrel@nexmo.com",
-    license="MIT",
+    url="https://github.com/Vonage/vonage-python-sdk",
+    author="Vonage",
+    author_email="devrel@vonage.com",
+    license="Apache",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     platforms=["any"],

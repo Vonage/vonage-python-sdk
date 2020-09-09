@@ -352,7 +352,7 @@ This library is released under the `MIT License <LICENSE.txt>`__
 
 .. |PyPI version| image:: https://badge.fury.io/py/vonage.svg
    :target: https://badge.fury.io/py/vonage
-.. |Build Status| image:: https://github.com/Vonage/vonage-python-sdk/workflows/CI/badge.svg
+.. |Build Status| image:: https://github.com/Vonage/vonage-python-sdk/workflows/build/badge.svg
    :target: https://github.com/Vonage/vonage-python-sdk/actions
 
 

@@ -1,7 +1,7 @@
 # Vonage Server SDK for Python
 
 [![PyPI version](https://badge.fury.io/py/vonage.svg)](https://badge.fury.io/py/vonage)
-[![Actions Status](https://github.com/Vonage/vonage-python-sdk-sdk/workflows/CI/badge.svg)](https://github.com/Vonage/vonage-python-sdk-sdk/actions)
+[![Actions Status](https://github.com/Vonage/vonage-python-sdk-sdk/workflows/build/badge.svg)](https://github.com/Vonage/vonage-python-sdk-sdk/actions)
 [![Coverage Status](https://coveralls.io/repos/github/Vonage/vonage-python-sdk-sdk/badge.svg?branch=master)](https://coveralls.io/github/Vonage/vonage-python-sdk-sdk?branch=master)
 [![Python versions supported](https://img.shields.io/pypi/pyversions/vonage.svg)](https://pypi.python.org/pypi/vonage)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)

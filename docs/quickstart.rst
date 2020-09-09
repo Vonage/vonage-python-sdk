@@ -5,7 +5,7 @@ Vonage Client Library for Python
 
 This is the Python client library for Vonage's API. To use it you'll need
 a Vonage account. Sign up `for free at
-vonage.com <https://dashboard.vonage.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__.
+vonage.com <https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__.
 
 -  `Installation <#installation>`__
 -  `Usage <#usage>`__
@@ -19,7 +19,7 @@ vonage.com <https://dashboard.vonage.com/sign-up?utm_source=DEV_REL&utm_medium=g
 Installation
 ------------
 
-To install the Python client library using pip:
+To install the Python SDK using pip:
 
 ::
 
@@ -29,7 +29,7 @@ Alternatively, you can clone the repository:
 
 ::
 
-    git clone git@github.com:Vonage/vonage-python.git
+    git clone git@github.com:Vonage/vonage-python-sdk.git
 
 Usage
 -----
@@ -86,7 +86,7 @@ Send a text message
       print('Error:', response['error-text'])
 
 Docs:
-`https://docs.vonage.com/messaging/sms-api/api-reference#request <https://docs.vonage.com/messaging/sms-api/api-reference#request?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/messaging/sms-api/api-reference#request <https://docs.nexmo.com/messaging/sms-api/api-reference#request?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
 
 Voice API
 ---------
@@ -103,7 +103,7 @@ Make a call
     })
 
 Docs:
-`https://docs.vonage.com/voice/voice-api/api-reference#call\_create <https://docs.vonage.com/voice/voice-api/api-reference#call_create?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/voice/voice-api/api-reference#call\_create <https://docs.nexmo.com/voice/voice-api/api-reference#call_create?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
 
 Retrieve a list of calls
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,7 +113,7 @@ Retrieve a list of calls
     response = client.get_calls()
 
 Docs:
-`https://docs.vonage.com/voice/voice-api/api-reference#call\_retrieve <https://docs.vonage.com/voice/voice-api/api-reference#call_retrieve?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/voice/voice-api/api-reference#call\_retrieve <https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
 
 Retrieve a single call
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -123,7 +123,7 @@ Retrieve a single call
     response = client.get_call(uuid)
 
 Docs:
-`https://docs.vonage.com/voice/voice-api/api-reference#call\_retrieve\_single <https://docs.vonage.com/voice/voice-api/api-reference#call_retrieve_single?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/voice/voice-api/api-reference#call\_retrieve\_single <https://docs.nexmo.com/voice/voice-api/api-reference#call_retrieve_single?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
 
 Update a call
 ~~~~~~~~~~~~~
@@ -133,7 +133,7 @@ Update a call
     response = client.update_call(uuid, action='hangup')
 
 Docs:
-`https://docs.vonage.com/voice/voice-api/api-reference#call\_modify\_single <https://docs.vonage.com/voice/voice-api/api-reference#call_modify_single?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/voice/voice-api/api-reference#call\_modify\_single <https://docs.nexmo.com/voice/voice-api/api-reference#call_modify_single?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
 
 Verify API
 ----------
@@ -151,7 +151,7 @@ Start a verification
       print('Error:', response['error_text'])
 
 Docs:
-`https://docs.vonage.com/verify/api-reference/api-reference#vrequest <https://docs.vonage.com/verify/api-reference/api-reference#vrequest?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/verify/api-reference/api-reference#vrequest <https://docs.nexmo.com/verify/api-reference/api-reference#vrequest?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
 
 The response contains a verification request id which you will need to
 store temporarily (in the session, database, url etc).
@@ -169,7 +169,7 @@ Check a verification
       print('Error:', response['error_text'])
 
 Docs:
-`https://docs.vonage.com/verify/api-reference/api-reference#check <https://docs.vonage.com/verify/api-reference/api-reference#check?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/verify/api-reference/api-reference#check <https://docs.nexmo.com/verify/api-reference/api-reference#check?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
 
 The verification request id comes from the call to the
 start\_verification method. The PIN code is entered into your
@@ -183,7 +183,7 @@ Cancel a verification
     client.cancel_verification('00e6c3377e5348cdaf567e1417c707a5')
 
 Docs:
-`https://docs.vonage.com/verify/api-reference/api-reference#control <https://docs.vonage.com/verify/api-reference/api-reference#control?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/verify/api-reference/api-reference#control <https://docs.nexmo.com/verify/api-reference/api-reference#control?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
 
 Trigger next verification step
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -193,7 +193,7 @@ Trigger next verification step
     client.trigger_next_verification_event('00e6c3377e5348cdaf567e1417c707a5')
 
 Docs:
-`https://docs.vonage.com/verify/api-reference/api-reference#control <https://docs.vonage.com/verify/api-reference/api-reference#control?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/verify/api-reference/api-reference#control <https://docs.nexmo.com/verify/api-reference/api-reference#control?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
 
 Application API
 ---------------
@@ -206,7 +206,7 @@ Create an application
     response = client.create_application(name='Example App', type='voice', answer_url=answer_url)
 
 Docs:
-`https://docs.vonage.com/tools/application-api/api-reference#create <https://docs.vonage.com/tools/application-api/api-reference#create?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/tools/application-api/api-reference#create <https://docs.nexmo.com/tools/application-api/api-reference#create?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
 
 Retrieve a list of applications
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -216,7 +216,7 @@ Retrieve a list of applications
     response = client.get_applications()
 
 Docs:
-`https://docs.vonage.com/tools/application-api/api-reference#list <https://docs.vonage.com/tools/application-api/api-reference#list?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/tools/application-api/api-reference#list <https://docs.nexmo.com/tools/application-api/api-reference#list?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
 
 Retrieve a single application
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -226,7 +226,7 @@ Retrieve a single application
     response = client.get_application(uuid)
 
 Docs:
-`https://developer.vonage.com/api/application#retrieve-an-application <https://developer.vonage.com/api/application#retrieve-an-application>`__
+`https://developer.nexmo.com/api/application#retrieve-an-application <https://developer.nexmo.com/api/application#retrieve-an-application>`__
 
 Update an application
 ~~~~~~~~~~~~~~~~~~~~~
@@ -236,7 +236,7 @@ Update an application
     response = client.update_application(uuid, answer_method='POST')
 
 Docs:
-`https://docs.vonage.com/tools/application-api/api-reference#update <https://docs.vonage.com/tools/application-api/api-reference#update?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/tools/application-api/api-reference#update <https://docs.nexmo.com/tools/application-api/api-reference#update?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
 
 Delete an application
 ~~~~~~~~~~~~~~~~~~~~~
@@ -246,7 +246,7 @@ Delete an application
     response = client.delete_application(uuid)
 
 Docs:
-`https://docs.vonage.com/tools/application-api/api-reference#delete <https://docs.vonage.com/tools/application-api/api-reference#delete?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/tools/application-api/api-reference#delete <https://docs.nexmo.com/tools/application-api/api-reference#delete?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
 
 Validate webhook signatures
 ---------------------------
@@ -271,9 +271,9 @@ Validate webhook signatures
       # invalid signature
 
 Docs:
-`https://docs.vonage.com/messaging/signing-messages <https://docs.vonage.com/messaging/signing-messages?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
+`https://docs.nexmo.com/messaging/signing-messages <https://docs.nexmo.com/messaging/signing-messages?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__
 
-Note: you'll need to contact support@vonage.com to enable message signing
+Note: you'll need to contact support@nexmo.com to enable message signing
 on your account before you can validate webhook signatures.
 
 JWT parameters
@@ -352,5 +352,7 @@ This library is released under the `MIT License <LICENSE.txt>`__
 
 .. |PyPI version| image:: https://badge.fury.io/py/vonage.svg
    :target: https://badge.fury.io/py/vonage
-.. |Build Status| image:: https://api.travis-ci.org/Vonage/vonage-python.svg?branch=master
-   :target: https://travis-ci.org/Vonage/vonage-python
+.. |Build Status| image:: https://github.com/Vonage/vonage-python-sdk/workflows/CI/badge.svg
+   :target: https://github.com/Vonage/vonage-python-sdk/actions
+
+

@@ -1,12 +1,12 @@
-# Vonage Client Library for Python
+# Vonage Server SDK for Python
 
 [![PyPI version](https://badge.fury.io/py/vonage.svg)](https://badge.fury.io/py/vonage)
-[![Build Status](https://api.travis-ci.org/Vonage/vonage-python.svg?branch=master)](https://travis-ci.org/Vonage/vonage-python)
-[![Coverage Status](https://coveralls.io/repos/github/Vonage/vonage-python/badge.svg?branch=master)](https://coveralls.io/github/Vonage/vonage-python?branch=master)
+[![Actions Status](https://github.com/Vonage/vonage-python-sdk-sdk/workflows/CI/badge.svg)](https://github.com/Vonage/vonage-python-sdk-sdk/actions)
+[![Coverage Status](https://coveralls.io/repos/github/Vonage/vonage-python-sdk-sdk/badge.svg?branch=master)](https://coveralls.io/github/Vonage/vonage-python-sdk-sdk?branch=master)
 [![Python versions supported](https://img.shields.io/pypi/pyversions/vonage.svg)](https://pypi.python.org/pypi/vonage)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-This is the Python client library for Vonage's API. To use it you'll
+This is the Python server SDK for Vonage's API. To use it you'll
 need a Vonage account. Sign up [for free at vonage.com][signup].
 
 - [Installation](#installation)
@@ -34,7 +34,7 @@ To upgrade your installed client library using pip:
 
 Alternatively, you can clone the repository via the command line:
 
-    git clone git@github.com:Vonage/vonage-python.git
+    git clone git@github.com:Vonage/vonage-python-sdk-sdk.git
 
 or by opening it on GitHub desktop.
 
@@ -188,7 +188,7 @@ voice.update_call(response['uuid'], action='hangup')
 from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
-stream_url = 'https://vonage-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
+stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
 response = voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
@@ -203,7 +203,7 @@ voice.send_audio(response['uuid'],stream_url=[stream_url])
 from vonage import Client, Voice
 client = Client(application_id='0d4884d1-eae8-4f18-a46a-6fb14d5fdaa6', private_key='./private.key')
 voice = Voice(client)
-stream_url = 'https://vonage-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
+stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
 response = voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
@@ -414,7 +414,7 @@ else:
 client.get_basic_number_insight(number='447700900000')
 ```
 
-Docs: [https://developer.vonage.com/api/number-insight#getNumberInsightBasic](https://developer.vonage.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightBasic)
+Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightBasic](https://developer.nexmo.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightBasic)
 
 ### Standard Number Insight
 
@@ -422,7 +422,7 @@ Docs: [https://developer.vonage.com/api/number-insight#getNumberInsightBasic](ht
 client.get_standard_number_insight(number='447700900000')
 ```
 
-Docs: [https://developer.vonage.com/api/number-insight#getNumberInsightStandard](https://developer.vonage.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightStandard)
+Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightStandard](https://developer.nexmo.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightStandard)
 
 ### Advanced Number Insight
 
@@ -430,7 +430,7 @@ Docs: [https://developer.vonage.com/api/number-insight#getNumberInsightStandard]
 client.get_advanced_number_insight(number='447700900000')
 ```
 
-Docs: [https://developer.vonage.com/api/number-insight#getNumberInsightAdvanced](https://developer.vonage.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightAdvanced)
+Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightAdvanced](https://developer.nexmo.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightAdvanced)
 
 ## Managing Secrets
 
@@ -466,7 +466,7 @@ client.delete_secret(API_KEY, 'my-secret-id')
 response = client.application_v2.create_application({name='Example App', type='voice'})
 ```
 
-Docs: [https://developer.vonage.com/api/application.v2#createApplication](https://developer.vonage.com/api/application.v2#createApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#create-an-application)
+Docs: [https://developer.nexmo.com/api/application.v2#createApplication](https://developer.nexmo.com/api/application.v2#createApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#create-an-application)
 
 ### Retrieve a list of applications
 
@@ -474,7 +474,7 @@ Docs: [https://developer.vonage.com/api/application.v2#createApplication](https:
 response = client.application_v2.list_applications()
 ```
 
-Docs: [https://developer.vonage.com/api/application.v2#listApplication](https://developer.vonage.com/api/application.v2#listApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-your-applications)
+Docs: [https://developer.nexmo.com/api/application.v2#listApplication](https://developer.nexmo.com/api/application.v2#listApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-your-applications)
 
 ### Retrieve a single application
 
@@ -482,7 +482,7 @@ Docs: [https://developer.vonage.com/api/application.v2#listApplication](https://
 response = client.application_v2.get_application(uuid)
 ```
 
-Docs: [https://developer.vonage.com/api/application.v2#getApplication](https://developer.vonage.com/api/application.v2#getApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-an-application)
+Docs: [https://developer.nexmo.com/api/application.v2#getApplication](https://developer.nexmo.com/api/application.v2#getApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-an-application)
 
 ### Update an application
 
@@ -490,7 +490,7 @@ Docs: [https://developer.vonage.com/api/application.v2#getApplication](https://d
 response = client.application_v2.update_application(uuid, answer_method='POST')
 ```
 
-Docs: [https://developer.vonage.com/api/application.v2#updateApplication](https://developer.vonage.com/api/application.v2#updateApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#update-an-application)
+Docs: [https://developer.nexmo.com/api/application.v2#updateApplication](https://developer.nexmo.com/api/application.v2#updateApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#update-an-application)
 
 ### Delete an application
 
@@ -498,7 +498,7 @@ Docs: [https://developer.vonage.com/api/application.v2#updateApplication](https:
 response = client.application_v2.delete_application(uuid)
 ```
 
-Docs: [https://developer.vonage.com/api/application.v2#deleteApplication](https://developer.vonage.com/api/application.v2#deleteApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#destroy-an-application)
+Docs: [https://developer.nexmo.com/api/application.v2#deleteApplication](https://developer.nexmo.com/api/application.v2#deleteApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#destroy-an-application)
 
 ## Validate webhook signatures
 
@@ -511,9 +511,9 @@ else:
   # invalid signature
 ```
 
-Docs: [https://developer.vonage.com/concepts/guides/signing-messages](https://developer.vonage.com/concepts/guides/signing-messages?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
+Docs: [https://developer.nexmo.com/concepts/guides/signing-messages](https://developer.nexmo.com/concepts/guides/signing-messages?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library)
 
-Note: you'll need to contact support@vonage.com to enable message signing on
+Note: you'll need to contact support@nexmo.com to enable message signing on
 your account before you can validate webhook signatures.
 
 ## JWT parameters
@@ -538,13 +538,13 @@ from vonage import Client, Sms
 
 #Defines the client
 client = Client(key='YOUR_API_KEY', secret='YOUR_API_SECRET')
-print(client.host()) # using getter for host -- value returned: rest.vonage.com
+print(client.host()) # using getter for host -- value returned: rest.nexmo.com
 
 #Define the sms instance
 sms = Sms(client)
 
 #Change the value in client
-client.host('mio.vonage.com') #Change host to mio.vonage.com - this change will be available for sms
+client.host('mio.nexmo.com') #Change host to mio.nexmo.com - this change will be available for sms
 
 ```
 
@@ -556,8 +556,8 @@ These attributes are private in the client class and the only way to access them
 from vonage import Client
 
 client = Client(key='YOUR_API_KEY', secret='YOUR_API_SECRET')
-print(client.host()) # return rest.vonage.com
-client.host('mio.vonage.com') # rewrites the host value to mio.vonage.com
+print(client.host()) # return rest.nexmo.com
+client.host('mio.nexmo.com') # rewrites the host value to mio.nexmo.com
 print(client.api_host()) # returns api.vonage.com
 client.api_host('myapi.vonage.com') # rewrite the value of api_host
 ```
@@ -598,7 +598,7 @@ The following is a list of Vonage APIs and whether the Python SDK provides suppo
 
 We :heart: contributions! But if you plan to work on something big or controversial, please [contact us](mailto:devrel@vonage.com) first!
 
-We recommend working on `vonage-python` with a [virtualenv][virtualenv]. The following command will install all the Python dependencies you need to run the tests:
+We recommend working on `vonage-python-sdk` with a [virtualenv][virtualenv]. The following command will install all the Python dependencies you need to run the tests:
 
 ```bash
 make install
@@ -615,7 +615,7 @@ make test
 This library is released under the [Apache License][license].
 
 [virtualenv]: https://virtualenv.pypa.io/en/stable/
-[report-a-bug]: https://github.com/Vonage/vonage-python-sdk/issues/new
-[pull-request]: https://github.com/Vonage/vonage-python-sdk/pulls
+[report-a-bug]: https://github.com/Vonage/vonage-python-sdk-sdk/issues/new
+[pull-request]: https://github.com/Vonage/vonage-python-sdk-sdk/pulls
 [signup]: https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
 [license]: LICENSE.txt

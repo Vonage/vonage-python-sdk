@@ -14,7 +14,7 @@
 
 # 2.3.0
 
-- Explicit parameter list for the `vonage.Client` constructor. **This may cause errors in code passing incorrect or spurious arguments to the Client constructor.**
+- Explicit parameter list for the `nexmo.Client` constructor. **This may cause errors in code passing incorrect or spurious arguments to the Client constructor.**
 - Secret Management
 - Support for Authorization header authentication.
 
@@ -26,7 +26,7 @@
 
 - Add support for `get_recording`
 - Add support for SMS conversion
-- Add debug logging for most calls, under the 'vonage' logger.
+- Add debug logging for most calls, under the 'nexmo' logger.
 - Internal refactoring (affects only private methods.)
 
 # 2.0.0
@@ -39,7 +39,7 @@
 
 # 1.5.0
 
-- Add ability to provide a file path as private_key param no the vonage.Client constructor
+- Add ability to provide a file path as private_key param no the nexmo.Client constructor
 
 - Add send/stop endpoints for audio/speech/dtmf
 
@@ -81,7 +81,7 @@
 
 # 1.1.0
 
-- Move repository to https://github.com/Vonage/vonage-python
+- Move repository to https://github.com/Vonage/nexmo-python
 
 - Add get_basic_number_insight method for Number Insight Basic API
 

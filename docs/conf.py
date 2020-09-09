@@ -58,8 +58,8 @@ master_doc = "index"
 
 # General information about the project.
 project = u"Vonage"
-copyright = u"{0}, Tim Craft".format(datetime.datetime.now().year)
-author = u"Tim Craft"
+copyright = u"{0}, Vonage".format(datetime.datetime.now().year)
+author = u"Vonage"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

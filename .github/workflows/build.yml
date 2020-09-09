@@ -1,4 +1,4 @@
-name: CI
+name: Build
 on:
   push:
     branches:
@@ -17,6 +17,8 @@ jobs:
         exclude:
           - os: "windows-latest"
             python: "3.4"
+          - os: "windows-latest"
+            python: "3.8"
           - os: "macos-latest"
             python: "3.4"
     steps:

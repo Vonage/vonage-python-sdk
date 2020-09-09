@@ -77,16 +77,16 @@ class Client:
         app_name=None,
         app_version=None,
     ):
-        self.api_key = key or os.environ.get("NEXMO_API_KEY", None)
+        self.api_key = key or os.environ.get("VONAGE_API_KEY", None)
 
-        self.api_secret = secret or os.environ.get("NEXMO_API_SECRET", None)
+        self.api_secret = secret or os.environ.get("VONAGE_API_SECRET", None)
 
         self.signature_secret = signature_secret or os.environ.get(
-            "NEXMO_SIGNATURE_SECRET", None
+            "VONAGE_SIGNATURE_SECRET", None
         )
 
         self.signature_method = signature_method or os.environ.get(
-            "NEXMO_SIGNATURE_METHOD", None
+            "VONAGE_SIGNATURE_METHOD", None
         )
 
         if self.signature_method in {"md5", "sha1", "sha256", "sha512"}:
@@ -99,8 +99,8 @@ class Client:
         if isinstance(self.private_key, string_types) and "\n" not in self.private_key:
             with open(self.private_key, "rb") as key_file:
                 self.private_key = key_file.read()
-        
-        self.__host_pattern = '^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$'
+
+        self.__host_pattern = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$"
 
         self.__host = "rest.nexmo.com"
 
@@ -128,29 +128,31 @@ class Client:
         self.application_v2 = ApplicationV2(api_server)
 
         self.session = requests.Session()
-    
+
     # Get and Set __host attribute
     def host(self, value=None):
         if value is None:
             return self.__host
-        elif not re.match(self.__host_pattern,value):
-            raise Exception('Error: Invalid format for host')
+        elif not re.match(self.__host_pattern, value):
+            raise Exception("Error: Invalid format for host")
         else:
             self.__host = value
-    
+
     # Gets And sets __api_host attribute
     def api_host(self, value=None):
         if value is None:
             return self.__api_host
-        elif not re.match(self.__host_pattern,value):
-            raise Exception('Error: Invalid format for api_host')
+        elif not re.match(self.__host_pattern, value):
+            raise Exception("Error: Invalid format for api_host")
         else:
             self.__api_host = value
 
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
 
-    @deprecated(reason="vonage.Client#send_message is deprecated. Use Sms#send_message instead")
+    @deprecated(
+        reason="vonage.Client#send_message is deprecated. Use Sms#send_message instead"
+    )
     def send_message(self, params):
         """
         Send an SMS message.
@@ -158,7 +160,7 @@ class Client:
         ::
             client.send_message({
                 "to": MY_CELLPHONE,
-                "from": MY_NEXMO_NUMBER,
+                "from": MY_VONAGE_NUMBER,
                 "text": "Hello From Nexmo!",
             })
         :param dict params: A dict of values described at `Send an SMS <https://developer.nexmo.com/api/sms#send-an-sms>`_
@@ -257,7 +259,9 @@ class Client:
         return self.get(self.host(), "/sc/us/alert/opt-in/query/json")
 
     def resubscribe_event_alert_number(self, params=None, **kwargs):
-        return self.post(self.host(), "/sc/us/alert/opt-in/manage/json", params or kwargs)
+        return self.post(
+            self.host(), "/sc/us/alert/opt-in/manage/json", params or kwargs
+        )
 
     def initiate_call(self, params=None, **kwargs):
         return self.post(self.host(), "/call/json", params or kwargs)
@@ -268,7 +272,9 @@ class Client:
     def initiate_tts_prompt_call(self, params=None, **kwargs):
         return self.post(self.api_host(), "/tts-prompt/json", params or kwargs)
 
-    @deprecated(reason="vonage.Client#start_verification is deprecated. Use Verify#start_verification instead")
+    @deprecated(
+        reason="vonage.Client#start_verification is deprecated. Use Verify#start_verification instead"
+    )
     def start_verification(self, params=None, **kwargs):
         return self.post(self.api_host(), "/verify/json", params or kwargs)
 
@@ -281,7 +287,9 @@ class Client:
 
         return self.post(self.api_host(), "/verify/json", params or kwargs)
 
-    @deprecated(reason="vonage.Client#check_verification is deprecated. Use Verify#check instead")
+    @deprecated(
+        reason="vonage.Client#check_verification is deprecated. Use Verify#check instead"
+    )
     def check_verification(self, request_id, params=None, **kwargs):
         return self.post(
             self.api_host(),
@@ -297,12 +305,16 @@ class Client:
         )
 
         return self.post(self.api_host(), "/verify/check/json", params or kwargs)
-    
-    @deprecated(reason="vonage.Client#start_psd2_verification_request is deprecated. Use Verify#psd2 instead")
+
+    @deprecated(
+        reason="vonage.Client#start_psd2_verification_request is deprecated. Use Verify#psd2 instead"
+    )
     def start_psd2_verification_request(self, params=None, **kwargs):
         return self.post(self.api_host(), "/verify/psd2/json", params or kwargs)
 
-    @deprecated(reason="vonage.Client#get_verification is deprecated. Use Verify#search instead")
+    @deprecated(
+        reason="vonage.Client#get_verification is deprecated. Use Verify#search instead"
+    )
     def get_verification(self, request_id):
         return self.get(
             self.api_host(), "/verify/search/json", {"request_id": request_id}
@@ -319,7 +331,9 @@ class Client:
             self.api_host(), "/verify/search/json", {"request_id": request_id}
         )
 
-    @deprecated(reason="vonage.Client#cancel_verification is deprecated. Use Verify#cancel instead")
+    @deprecated(
+        reason="vonage.Client#cancel_verification is deprecated. Use Verify#cancel instead"
+    )
     def cancel_verification(self, request_id):
         return self.post(
             self.api_host(),
@@ -327,7 +341,9 @@ class Client:
             {"request_id": request_id, "cmd": "cancel"},
         )
 
-    @deprecated(reason="vonage.Client#trigger_next_verification_event is deprecated. Use Verify#trigger_next_event instead")
+    @deprecated(
+        reason="vonage.Client#trigger_next_verification_event is deprecated. Use Verify#trigger_next_event instead"
+    )
     def trigger_next_verification_event(self, request_id):
         return self.post(
             self.api_host(),
@@ -362,9 +378,13 @@ class Client:
     def get_async_advanced_number_insight(self, params=None, **kwargs):
         argoparams = params or kwargs
         if "callback" in argoparams:
-            return self.get(self.api_host(), "/ni/advanced/async/json", params or kwargs)
+            return self.get(
+                self.api_host(), "/ni/advanced/async/json", params or kwargs
+            )
         else:
-            raise ClientError("Error: Callback needed for async advanced number insight")
+            raise ClientError(
+                "Error: Callback needed for async advanced number insight"
+            )
 
     def get_advanced_number_insight(self, params=None, **kwargs):
         return self.get(self.api_host(), "/ni/advanced/json", params or kwargs)
@@ -422,45 +442,63 @@ class Client:
             "/v1/applications/{application_id}".format(application_id=application_id),
         )
 
-    @deprecated(reason="vonage.Client#create_call is deprecated. Use Voice#create_call instead")
+    @deprecated(
+        reason="vonage.Client#create_call is deprecated. Use Voice#create_call instead"
+    )
     def create_call(self, params=None, **kwargs):
         return self._jwt_signed_post("/v1/calls", params or kwargs)
 
-    @deprecated(reason="vonage.Client#get_calls is deprecated. Use Voice#get_calls instead")
+    @deprecated(
+        reason="vonage.Client#get_calls is deprecated. Use Voice#get_calls instead"
+    )
     def get_calls(self, params=None, **kwargs):
         return self._jwt_signed_get("/v1/calls", params or kwargs)
 
-    @deprecated(reason="vonage.Client#get_call is deprecated. Use Voice#get_call instead")
+    @deprecated(
+        reason="vonage.Client#get_call is deprecated. Use Voice#get_call instead"
+    )
     def get_call(self, uuid):
         return self._jwt_signed_get("/v1/calls/{uuid}".format(uuid=uuid))
 
-    @deprecated(reason="vonage.Client#update_call is deprecated. Use Voice#update_call instead")
+    @deprecated(
+        reason="vonage.Client#update_call is deprecated. Use Voice#update_call instead"
+    )
     def update_call(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
             "/v1/calls/{uuid}".format(uuid=uuid), params or kwargs
         )
 
-    @deprecated(reason="vonage.Client#send_audio is deprecated. Use Voice#send_audio instead")
+    @deprecated(
+        reason="vonage.Client#send_audio is deprecated. Use Voice#send_audio instead"
+    )
     def send_audio(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
             "/v1/calls/{uuid}/stream".format(uuid=uuid), params or kwargs
         )
 
-    @deprecated(reason="vonage.Client#stop_audio is deprecated. Use Voice#stop_audio instead")
+    @deprecated(
+        reason="vonage.Client#stop_audio is deprecated. Use Voice#stop_audio instead"
+    )
     def stop_audio(self, uuid):
         return self._jwt_signed_delete("/v1/calls/{uuid}/stream".format(uuid=uuid))
 
-    @deprecated(reason="vonage.Client#send_speech is deprecated. Use Voice#send_speech instead")
+    @deprecated(
+        reason="vonage.Client#send_speech is deprecated. Use Voice#send_speech instead"
+    )
     def send_speech(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
             "/v1/calls/{uuid}/talk".format(uuid=uuid), params or kwargs
         )
 
-    @deprecated(reason="vonage.Client#stop_speech is deprecated. Use Voice#stop_speech instead")
+    @deprecated(
+        reason="vonage.Client#stop_speech is deprecated. Use Voice#stop_speech instead"
+    )
     def stop_speech(self, uuid):
         return self._jwt_signed_delete("/v1/calls/{uuid}/talk".format(uuid=uuid))
 
-    @deprecated(reason="vonage.Client#send_dtmf is deprecated. Use Voice#send_dtmf instead")
+    @deprecated(
+        reason="vonage.Client#send_dtmf is deprecated. Use Voice#send_dtmf instead"
+    )
     def send_dtmf(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
             "/v1/calls/{uuid}/dtmf".format(uuid=uuid), params or kwargs
@@ -716,7 +754,8 @@ class Client:
         )
 
         return self.parse(
-            self.api_host(), self.session.post(uri, json=params, headers=self._headers())
+            self.api_host(),
+            self.session.post(uri, json=params, headers=self._headers()),
         )
 
     def _jwt_signed_put(self, request_uri, params):

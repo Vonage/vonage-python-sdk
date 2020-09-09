@@ -52,7 +52,7 @@ Then construct a client object with your key and secret:
 client = vonage.Client(key=api_key, secret=api_secret)
 ```
 
-For production, you can specify the `NEXMO_API_KEY` and `NEXMO_API_SECRET`
+For production, you can specify the `VONAGE_API_KEY` and `VONAGE_API_SECRET`
 environment variables instead of specifying the key and secret explicitly.
 
 For newer endpoints that support JWT authentication such as the Voice API,
@@ -63,7 +63,7 @@ client = vonage.Client(application_id=application_id, private_key=private_key)
 ```
 
 To check signatures for incoming webhook requests, you'll also need
-to specify the `signature_secret` argument (or the `NEXMO_SIGNATURE_SECRET`
+to specify the `signature_secret` argument (or the `VONAGE_SIGNATURE_SECRET`
 environment variable).
 
 ## SMS API
@@ -91,10 +91,10 @@ import vonage #then you can use vonage.Sms() to create an instance
 
 ```python
 #Option 1 - pass key and secret to the constructor
-sms = Sms(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
+sms = Sms(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
 
 #Option 2 - Create a client instance and then pass the client to the Sms instance
-client = Client(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
+client = Client(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
 sms = Sms(client)
 ```
 
@@ -102,9 +102,9 @@ sms = Sms(client)
 
 ```python
 from vonage import Sms
-sms = Sms(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
+sms = Sms(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
 sms.send_message({
-            "from": NEXMO_BRAND_NAME,
+            "from": VONAGE_BRAND_NAME,
             "to": TO_NUMBER,
             "text": "A text message sent using the Vonage SMS API",
 })
@@ -114,7 +114,7 @@ sms.send_message({
 
 ```python
 sms.send_message({
-    'from': NEXMO_BRAND_NAME,
+    'from': VONAGE_BRAND_NAME,
     'to': TO_NUMBER,
     'text': 'こんにちは世界',
     'type': 'unicode',
@@ -125,10 +125,10 @@ sms.send_message({
 
 ```python
 from vonage import Client, Sms
-client = Client(key=NEXMO_API_KEY, secret=NEXMO_SECRET)
+client = Client(key=VONAGE_API_KEY, secret=VONAGE_SECRET)
 sms = Sms(client)
 response = sms.send_message({
-    'from': NEXMO_BRAND_NAME,
+    'from': VONAGE_BRAND_NAME,
     'to': TO_NUMBER,
     'text': 'Hi from Vonage'
 })
@@ -289,10 +289,10 @@ import vonage #then you can use vonage.Verify() to create an instance
 
 ```python
 #First way - pass key and secret to the constructor
-verify = Verify(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
+verify = Verify(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
 ​
 #Second way - Create a client instance and then pass the client to the Verify contructor
-client = Client(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
+client = Client(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
 verify = Verify(client)
 ```
 

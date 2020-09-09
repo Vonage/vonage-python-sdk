@@ -46,8 +46,8 @@ Then construct a client object with your key and secret:
 
     client = vonage.Client(key=api_key, secret=api_secret)
 
-For production, you can specify the ``NEXMO_API_KEY`` and
-``NEXMO_API_SECRET`` environment variables instead of specifying the key
+For production, you can specify the ``VONAGE_API_KEY`` and
+``VONAGE_API_SECRET`` environment variables instead of specifying the key
 and secret explicitly.
 
 For newer endpoints that support JWT authentication such as the Voice
@@ -60,7 +60,7 @@ arguments:
 
 In order to check signatures for incoming webhook requests, you'll also
 need to specify the ``signature_secret`` argument (or the
-``NEXMO_SIGNATURE_SECRET`` environment variable).
+``VONAGE_SIGNATURE_SECRET`` environment variable).
 
 If the argument ``signature_method`` is omitted, it will default to the md5 hash
 algorithm. Otherwise, it will use the selected method as in md5, sha1, sha256 or

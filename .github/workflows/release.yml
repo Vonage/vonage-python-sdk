@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Add Changelog
-        uses: vonage/github-actions/vonage-changelog@master
+        uses: nexmo/github-actions/nexmo-changelog@master
         env:
           CHANGELOG_AUTH_TOKEN: ${{ secrets.CHANGELOG_AUTH_TOKEN }}
           CHANGELOG_CATEGORY: Server SDK
-          CHANGELOG_RELEASE_TITLE: vonage-python
+          CHANGELOG_RELEASE_TITLE: vonage-python-sdk
           CHANGELOG_SUBCATEGORY: python

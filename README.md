@@ -1,8 +1,8 @@
 # Vonage Server SDK for Python
 
 [![PyPI version](https://badge.fury.io/py/vonage.svg)](https://badge.fury.io/py/vonage)
-[![Actions Status](https://github.com/Vonage/vonage-python-sdk-sdk/workflows/build/badge.svg)](https://github.com/Vonage/vonage-python-sdk-sdk/actions)
-[![Coverage Status](https://coveralls.io/repos/github/Vonage/vonage-python-sdk-sdk/badge.svg?branch=master)](https://coveralls.io/github/Vonage/vonage-python-sdk-sdk?branch=master)
+[![Actions Status](https://github.com/Vonage/vonage-python-sdk/workflows/build/badge.svg)](https://github.com/Vonage/vonage-python-sdk/actions)
+[![Coverage Status](https://coveralls.io/repos/github/Vonage/vonage-python-sdk/badge.svg?branch=master)](https://coveralls.io/github/Vonage/vonage-python-sdk?branch=master)
 [![Python versions supported](https://img.shields.io/pypi/pyversions/vonage.svg)](https://pypi.python.org/pypi/vonage)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
@@ -34,7 +34,7 @@ To upgrade your installed client library using pip:
 
 Alternatively, you can clone the repository via the command line:
 
-    git clone git@github.com:Vonage/vonage-python-sdk-sdk.git
+    git clone git@github.com:Vonage/vonage-python-sdk.git
 
 or by opening it on GitHub desktop.
 
@@ -615,7 +615,7 @@ make test
 This library is released under the [Apache License][license].
 
 [virtualenv]: https://virtualenv.pypa.io/en/stable/
-[report-a-bug]: https://github.com/Vonage/vonage-python-sdk-sdk/issues/new
-[pull-request]: https://github.com/Vonage/vonage-python-sdk-sdk/pulls
+[report-a-bug]: https://github.com/Vonage/vonage-python-sdk/issues/new
+[pull-request]: https://github.com/Vonage/vonage-python-sdk/pulls
 [signup]: https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
 [license]: LICENSE.txt

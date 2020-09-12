@@ -51,6 +51,7 @@ def test_submit_sms_conversion(sms):
     assert "message-id=a-message-id" in request_body()
     assert "timestamp" in request_body()
 
+
 @responses.activate
 def test_deprecated_send_message(client, dummy_data):
     stub(responses.POST, "https://rest.nexmo.com/sms/json")

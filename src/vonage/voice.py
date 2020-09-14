@@ -1,4 +1,4 @@
-import nexmo
+import vonage
 
 class Voice():
     #application_id and private_key are needed for the calling methods
@@ -13,7 +13,7 @@ class Voice():
             # Client is protected
             self._client = client
             if self._client is None:
-                self._client = nexmo.Client(application_id=application_id, private_key=private_key)
+                self._client = vonage.Client(application_id=application_id, private_key=private_key)
         except Exception as e:
             print('Error: {error_message}'.format(error_message=str(e)))
 

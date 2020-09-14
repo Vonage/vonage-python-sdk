@@ -1,11 +1,11 @@
-Nexmo Client Library for Python
+Vonage Client Library for Python
 ===============================
 
 |PyPI version| |Build Status|
 
-This is the Python client library for Nexmo's API. To use it you'll need
-a Nexmo account. Sign up `for free at
-nexmo.com <https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__.
+This is the Python client library for Vonage's API. To use it you'll need
+a Vonage account. Sign up `for free at
+vonage.com <https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library>`__.
 
 -  `Installation <#installation>`__
 -  `Usage <#usage>`__
@@ -19,35 +19,35 @@ nexmo.com <https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=git
 Installation
 ------------
 
-To install the Python client library using pip:
+To install the Python SDK using pip:
 
 ::
 
-    pip install nexmo
+    pip install vonage
 
 Alternatively, you can clone the repository:
 
 ::
 
-    git clone git@github.com:Nexmo/nexmo-python.git
+    git clone git@github.com:Vonage/vonage-python-sdk.git
 
 Usage
 -----
 
-Begin by importing the nexmo module:
+Begin by importing the vonage module:
 
 .. code:: python
 
-    import nexmo
+    import vonage
 
 Then construct a client object with your key and secret:
 
 .. code:: python
 
-    client = nexmo.Client(key=api_key, secret=api_secret)
+    client = vonage.Client(key=api_key, secret=api_secret)
 
-For production, you can specify the ``NEXMO_API_KEY`` and
-``NEXMO_API_SECRET`` environment variables instead of specifying the key
+For production, you can specify the ``VONAGE_API_KEY`` and
+``VONAGE_API_SECRET`` environment variables instead of specifying the key
 and secret explicitly.
 
 For newer endpoints that support JWT authentication such as the Voice
@@ -56,11 +56,11 @@ arguments:
 
 .. code:: python
 
-    client = nexmo.Client(application_id=application_id, private_key=private_key)
+    client = vonage.Client(application_id=application_id, private_key=private_key)
 
 In order to check signatures for incoming webhook requests, you'll also
 need to specify the ``signature_secret`` argument (or the
-``NEXMO_SIGNATURE_SECRET`` environment variable).
+``VONAGE_SIGNATURE_SECRET`` environment variable).
 
 If the argument ``signature_method`` is omitted, it will default to the md5 hash
 algorithm. Otherwise, it will use the selected method as in md5, sha1, sha256 or
@@ -253,7 +253,7 @@ Validate webhook signatures
 
 .. code:: python
 
-    client = nexmo.Client(signature_secret='secret')
+    client = vonage.Client(signature_secret='secret')
 
     if client.check_signature(request.query):
       # valid signature
@@ -263,7 +263,7 @@ Validate webhook signatures
 
     or by using signature method via POST:
 
-    client = nexmo.Client(signature_secret='secret', signature_method='sha256')
+    client = vonage.Client(signature_secret='secret', signature_method='sha256')
 
     if client.check_signature(request.body.decode()):
       # valid signature
@@ -350,7 +350,9 @@ License
 
 This library is released under the `MIT License <LICENSE.txt>`__
 
-.. |PyPI version| image:: https://badge.fury.io/py/nexmo.svg
-   :target: https://badge.fury.io/py/nexmo
-.. |Build Status| image:: https://api.travis-ci.org/Nexmo/nexmo-python.svg?branch=master
-   :target: https://travis-ci.org/Nexmo/nexmo-python
+.. |PyPI version| image:: https://badge.fury.io/py/vonage.svg
+   :target: https://badge.fury.io/py/vonage
+.. |Build Status| image:: (https://github.com/Vonage/vonage-python-sdk/workflows/Build/badge.svg)
+   :target: https://github.com/Vonage/vonage-python-sdk/actions
+
+

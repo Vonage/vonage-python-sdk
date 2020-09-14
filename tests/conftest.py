@@ -16,7 +16,7 @@ def read_file(path):
 
 class DummyData(object):
     def __init__(self):
-        import nexmo
+        import vonage
 
         self.api_key = "nexmo-api-key"
         self.api_secret = "nexmo-api-secret"
@@ -25,7 +25,7 @@ class DummyData(object):
         self.private_key = read_file("data/private_key.txt")
         self.public_key = read_file("data/public_key.txt")
         self.user_agent = "nexmo-python/{} python/{}".format(
-            nexmo.__version__, platform.python_version()
+            vonage.__version__, platform.python_version()
         )
         self.host = "rest.nexmo.com"
         self.api_host = "api.nexmo.com"
@@ -38,38 +38,35 @@ def dummy_data():
 
 @pytest.fixture
 def client(dummy_data):
-    import nexmo
+    import vonage
 
-    return nexmo.Client(
+    return vonage.Client(
         key=dummy_data.api_key,
         secret=dummy_data.api_secret,
         application_id=dummy_data.application_id,
         private_key=dummy_data.private_key,
     )
 
-#Represents an instance of the Voice class for testing
+
+# Represents an instance of the Voice class for testing
 @pytest.fixture
 def voice(client, dummy_data):
-    import nexmo
+    import vonage
 
-    return nexmo.Voice(
-        client
-    )
+    return vonage.Voice(client)
 
-#Represents an instance of the Sms class for testing
+
+# Represents an instance of the Sms class for testing
 @pytest.fixture
 def sms(client, dummy_data):
-    import nexmo
+    import vonage
 
-    return nexmo.Sms(
-        client
-    )
+    return vonage.Sms(client)
 
-#Represents an instance of the Verify class for testing
+
+# Represents an instance of the Verify class for testing
 @pytest.fixture
 def verify(client, dummy_data):
-    import nexmo
+    import vonage
 
-    return nexmo.Verify(
-        client
-    )
+    return vonage.Verify(client)

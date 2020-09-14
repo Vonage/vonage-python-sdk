@@ -1,4 +1,4 @@
-import nexmo
+import vonage
 from util import *
 
 import sys
@@ -102,7 +102,7 @@ def test_check_signature(dummy_data):
         "sig": "6af838ef94998832dbfc29020b564830",
     }
 
-    client = nexmo.Client(
+    client = vonage.Client(
         key=dummy_data.api_key, secret=dummy_data.api_secret, signature_secret="secret"
     )
 
@@ -111,7 +111,7 @@ def test_check_signature(dummy_data):
 
 def test_signature(client, dummy_data):
     params = {"a": "1", "b": "2", "timestamp": "1461605396"}
-    client = nexmo.Client(
+    client = vonage.Client(
         key=dummy_data.api_key, secret=dummy_data.api_secret, signature_secret="secret"
     )
     assert client.signature(params) == "6af838ef94998832dbfc29020b564830"
@@ -120,7 +120,7 @@ def test_signature(client, dummy_data):
 def test_signature_adds_timestamp(dummy_data):
     params = {"a=7": "1", "b": "2 & 5"}
 
-    client = nexmo.Client(
+    client = vonage.Client(
         key=dummy_data.api_key, secret=dummy_data.api_secret, signature_secret="secret"
     )
 
@@ -130,7 +130,7 @@ def test_signature_adds_timestamp(dummy_data):
 
 def test_signature_md5(dummy_data):
     params = {"a": "1", "b": "2", "timestamp": "1461605396"}
-    client = nexmo.Client(
+    client = vonage.Client(
         key=dummy_data.api_key,
         secret=dummy_data.api_secret,
         signature_secret=dummy_data.signature_secret,
@@ -141,7 +141,7 @@ def test_signature_md5(dummy_data):
 
 def test_signature_sha1(dummy_data):
     params = {"a": "1", "b": "2", "timestamp": "1461605396"}
-    client = nexmo.Client(
+    client = vonage.Client(
         key=dummy_data.api_key,
         secret=dummy_data.api_secret,
         signature_secret=dummy_data.signature_secret,
@@ -152,7 +152,7 @@ def test_signature_sha1(dummy_data):
 
 def test_signature_sha256(dummy_data):
     params = {"a": "1", "b": "2", "timestamp": "1461605396"}
-    client = nexmo.Client(
+    client = vonage.Client(
         key=dummy_data.api_key,
         secret=dummy_data.api_secret,
         signature_secret=dummy_data.signature_secret,
@@ -166,7 +166,7 @@ def test_signature_sha256(dummy_data):
 
 def test_signature_sha512(dummy_data):
     params = {"a": "1", "b": "2", "timestamp": "1461605396"}
-    client = nexmo.Client(
+    client = vonage.Client(
         key=dummy_data.api_key,
         secret=dummy_data.api_secret,
         signature_secret=dummy_data.signature_secret,
@@ -179,7 +179,7 @@ def test_signature_sha512(dummy_data):
 
 
 def test_client_doesnt_require_api_key():
-    client = nexmo.Client(application_id="myid", private_key="abc\nde")
+    client = vonage.Client(application_id="myid", private_key="abc\nde")
     assert client is not None
     assert client.api_key is None
     assert client.api_secret is None
@@ -189,8 +189,8 @@ def test_client_doesnt_require_api_key():
 def test_client_can_make_application_requests_without_api_key(dummy_data):
     stub(responses.POST, "https://api.nexmo.com/v1/calls")
 
-    client = nexmo.Client(application_id="myid", private_key=dummy_data.private_key)
-    voice = nexmo.Voice(client)
+    client = vonage.Client(application_id="myid", private_key=dummy_data.private_key)
+    voice = vonage.Voice(client)
     voice.create_call("123455")
 
 

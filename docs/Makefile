@@ -94,9 +94,9 @@ qthelp:
 	@echo
 	@echo "Build finished; now you can run "qcollectiongenerator" with the" \
 	      ".qhcp project file in $(BUILDDIR)/qthelp, like this:"
-	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/Nexmo.qhcp"
+	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/Vonage.qhcp"
 	@echo "To view the help file:"
-	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/Nexmo.qhc"
+	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/Vonage.qhc"
 
 .PHONY: applehelp
 applehelp:
@@ -113,8 +113,8 @@ devhelp:
 	@echo
 	@echo "Build finished."
 	@echo "To view the help file:"
-	@echo "# mkdir -p $$HOME/.local/share/devhelp/Nexmo"
-	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/Nexmo"
+	@echo "# mkdir -p $$HOME/.local/share/devhelp/Vonage"
+	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/Vonage"
 	@echo "# devhelp"
 
 .PHONY: epub

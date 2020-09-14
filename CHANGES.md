@@ -81,7 +81,7 @@
 
 # 1.1.0
 
-- Move repository to https://github.com/Vonage/nexmo-python
+- Move repository to https://github.com/nexmo/nexmo-python
 
 - Add get_basic_number_insight method for Number Insight Basic API
 

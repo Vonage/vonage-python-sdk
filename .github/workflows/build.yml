@@ -32,4 +32,4 @@ jobs:
       - name: Run tests
         run: make coverage
       - name: Run codecov
-              uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v1

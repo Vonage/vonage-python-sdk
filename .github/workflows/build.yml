@@ -31,9 +31,10 @@ jobs:
         run: make install
       - name: Run tests
         run: make coverage
-      - name: Coveralls	      
-        run: coveralls	             
-        env: COVERALLS_REPO_TOKEN:${{ secrets.COVERALLS_TOKEN }}
+      - name: Coveralls
+        run: coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
       - name: PyAction:One-stop Python linter
         uses: rahul-deepsource/pyaction@1.4.1
         with:

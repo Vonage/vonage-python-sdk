@@ -41,3 +41,6 @@ jobs:
           strict: medium
           pylint-options: true
           black-options: true
+          mypy-options: false
+          isort-options: false
+          django: false

@@ -31,10 +31,11 @@ jobs:
         run: make install
       - name: Run tests
         run: make coverage
-      - name: Lint
-        uses: psf/black@stable
       - name: Coveralls
         run: coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
+      - name: Lint
+        uses: psf/black@stable
+      
       

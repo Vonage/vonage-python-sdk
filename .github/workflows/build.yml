@@ -31,16 +31,10 @@ jobs:
         run: make install
       - name: Run tests
         run: make coverage
+      - name: Lint
+        uses: psf/black@stable
       - name: Coveralls
         run: coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
-      - name: Python Linter
-        uses: sunnysid3up/python-linter@v0.1-beta.7
-        with:
-          strict: medium
-          pylint-options: true
-          black-options: true
-          mypy-options: "--ignore-missing-imports --show-error-codes"
-          isort-options: false
-          django: false
+      

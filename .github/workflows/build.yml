@@ -35,11 +35,9 @@ jobs:
         run: coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
-      - name: PyAction:One-stop Python linter
-        uses: rahul-deepsource/pyaction@1.4.1
+      - name: Python Linter
+        uses: sunnysid3up/python-linter@v0.1-beta.7
         with:
-          use-pylint: true
-          use-black: true
-          use-pycodestyle: false
-          use-mypy: false
-          use-vulture: false
+          strict: medium
+          pylint-options: true
+          black-options: true

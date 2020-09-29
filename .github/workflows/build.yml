@@ -41,6 +41,6 @@ jobs:
           strict: medium
           pylint-options: true
           black-options: true
-          mypy-options: false
+          mypy-options: "--ignore-missing-imports --show-error-codes"
           isort-options: false
           django: false

@@ -38,4 +38,8 @@ jobs:
       - name: PyAction:One-stop Python linter
         uses: rahul-deepsource/pyaction@1.4.1
         with:
+          use-pylint: true
           use-black: true
+          use-pycodestyle: false
+          use-mypy: false
+          use-vulture: false

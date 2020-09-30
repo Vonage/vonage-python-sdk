@@ -1,13 +1,8 @@
 import os.path
 import re
+from urllib.parse import urlparse, parse_qs
 
 import pytest
-
-
-try:
-    from urllib.parse import urlparse, parse_qs
-except ImportError:
-    from urlparse import urlparse, parse_qs
 
 import responses
 

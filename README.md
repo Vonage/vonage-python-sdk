@@ -36,7 +36,7 @@ Alternatively, you can clone the repository via the command line:
 
     git clone git@github.com:Vonage/vonage-python-sdk.git
 
-or by opening it on GitHub desktop.
+or by opening it on GitHub desktop or by downloading the zip and extracting it.
 
 ## Usage
 
@@ -268,7 +268,7 @@ response = client.get_recording(RECORDING_URL)
 
 #### Creating an instance of the class
 
-To create an instance of the Verify class, Just follow the next steps:
+To create an instance of the Verify class, Just follow the below mentioned steps:
 ​
 
 - **Import the class from module** (3 different ways)

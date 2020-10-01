@@ -7,7 +7,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 This is the Python server SDK for Vonage's API. To use it you'll
-need a Vonage account. Sign up [for free at vonage.com][signup].
+need a Vonage account. Sign up for *free* at [vonage.com][signup].
 
 - [Installation](#installation)
 - [Usage](#usage)

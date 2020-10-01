@@ -15,7 +15,7 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [Voice API](#voice-api)
 - [Verify API](#verify-api)
 - [Number Insight API](#number-insight-api)
-- [Number Management API](#number-management-api)
+- [Number Management API](#number-management-api) !
 - [Managing Secrets](#managing-secrets)
 - [Application API](#application-api)
 - [Overriding API Attributes](#overriding-api-attributes)

@@ -24,6 +24,8 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 
 ## Installation
 
+Installation is quite easy,
+
 To install the Python client library using pip:
 
     pip install vonage
@@ -40,13 +42,13 @@ or by opening it on GitHub desktop.
 
 ## Usage
 
-Begin by importing the `vonage` module:
+To start the usage, begin by importing the `vonage` module:
 
 ```python
 import vonage
 ```
 
-Then construct a client object with your key and secret:
+Continuing forward, construct a client object with your key and secret:
 
 ```python
 client = vonage.Client(key=api_key, secret=api_secret)
@@ -72,7 +74,7 @@ environment variable).
 
 #### Creating an instance of the SMS class
 
-To create an instance of the SMS class follow these steps:
+To create an instance of the SMS class follow these easy steps:
 
 - Import the class
 
@@ -596,7 +598,7 @@ The following is a list of Vonage APIs and whether the Python SDK provides suppo
 
 ## Contributing
 
-We :heart: contributions! But if you plan to work on something big or controversial, please [contact us](mailto:devrel@vonage.com) first!
+We :heart: contributions! But if you plan to work on something big or controversial, please do [contact us](mailto:devrel@vonage.com) first!
 
 We recommend working on `vonage-python-sdk` with a [virtualenv][virtualenv]. The following command will install all the Python dependencies you need to run the tests:
 
@@ -604,7 +606,7 @@ We recommend working on `vonage-python-sdk` with a [virtualenv][virtualenv]. The
 make install
 ```
 
-The tests are all written with pytest. You run them with:
+The tests are all written with pytest. You will run them with:
 
 ```bash
 make test

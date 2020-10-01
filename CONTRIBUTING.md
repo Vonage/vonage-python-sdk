@@ -3,7 +3,7 @@
 Thanks for your interest in the project, we'd love to have you involved! Check out the sections below to find out more about what to do next...
 
 ## Documentation
-Check out our [Documentaion](https://developer.nexmo.com/documentation) to get familiar with concepts common to Vonage's APIs and products.
+Check out our [Documentaion](https://developer.nexmo.com/documentation) 
 
 ## Opening an Issue
  

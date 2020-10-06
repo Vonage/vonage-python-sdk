@@ -596,6 +596,12 @@ The following is a list of Vonage APIs and whether the Python SDK provides suppo
 | Verify API            | General Availability |     ✅     |
 | Voice API             | General Availability |     ✅     |
 
+## asyncio Support
+
+[asyncio](https://docs.python.org/3/library/asyncio.html) is a library to write **concurrent** code using the **async/await** syntax.
+
+We don't currently support asyncio in the Python SDK but we are planning to do so in upcoming releases.
+
 ## Contributing
 
 We :heart: contributions! But if you plan to work on something big or controversial, please [contact us](mailto:devrel@vonage.com) first!

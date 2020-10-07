@@ -8,8 +8,8 @@
 [![Python versions supported](https://img.shields.io/pypi/pyversions/vonage.svg)](https://pypi.python.org/pypi/vonage)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-This is the Python server SDK for Vonage's API. To use it you'll
-need a Vonage account. Sign up [for free at vonage.com][signup].
+This is the Python server SDK for Vonage's API. To use this API you'll
+need a Vonage account. You can sign up [for free at vonage.com][signup].
 
 - [Installation](#installation)
 - [Usage](#usage)
@@ -26,11 +26,11 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 
 ## Installation
 
-To install the Python client library using pip:
+To install the Vonage Python client library using pip:
 
     pip install vonage
 
-To upgrade your installed client library using pip:
+To upgrade your installed Vonage client library using pip:
 
     pip install vonage --upgrade
 
@@ -48,7 +48,7 @@ Begin by importing the `vonage` module:
 import vonage
 ```
 
-Then construct a client object with your key and secret:
+Then construct a client object with your API key and API secret:
 
 ```python
 client = vonage.Client(key=api_key, secret=api_secret)
@@ -64,9 +64,9 @@ you can also specify the `application_id` and `private_key` arguments:
 client = vonage.Client(application_id=application_id, private_key=private_key)
 ```
 
-To check signatures for incoming webhook requests, you'll also need
-to specify the `signature_secret` argument (or the `VONAGE_SIGNATURE_SECRET`
-environment variable).
+To check the signatures for incoming webhook requests, you'll also need
+to specify the `signature_secret` argument or the `VONAGE_SIGNATURE_SECRET`
+environment variable.
 
 ## SMS API
 
@@ -74,7 +74,7 @@ environment variable).
 
 #### Creating an instance of the SMS class
 
-To create an instance of the SMS class follow these steps:
+To create an instance of the SMS class follow one of these steps:
 
 - Import the class
 

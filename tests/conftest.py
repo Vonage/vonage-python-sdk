@@ -14,7 +14,7 @@ def read_file(path):
         return input_file.read()
 
 
-class DummyData(object):
+class DummyData:
     def __init__(self):
         import nexmo
 

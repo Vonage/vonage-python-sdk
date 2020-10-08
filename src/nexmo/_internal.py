@@ -12,7 +12,7 @@ except ImportError:
 logger = logging.getLogger("nexmo")
 
 
-class BasicAuthenticatedServer(object):
+class BasicAuthenticatedServer:
     def __init__(self, host, user_agent, api_key, api_secret, timeout=None):
         self._host = host
         self._session = session = Session()
@@ -80,7 +80,7 @@ class BasicAuthenticatedServer(object):
             raise ServerError(message)
 
 
-class ApplicationV2(object):
+class ApplicationV2:
     """
     Provides Application API v2 functionality.
 

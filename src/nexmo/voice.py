@@ -27,39 +27,39 @@ class Voice():
     
     # Get a single call record by identifier
     def get_call(self, uuid):
-        return self._jwt_signed_get("/v1/calls/{uuid}".format(uuid=uuid))
+        return self._jwt_signed_get(f"/v1/calls/{uuid}")
     
     # Update call data using custom ncco
     def update_call(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
-            "/v1/calls/{uuid}".format(uuid=uuid), params or kwargs
+            f"/v1/calls/{uuid}", params or kwargs
         )
     
     # Plays audio streaming into call in progress - stream_url parameter is required
     def send_audio(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
-            "/v1/calls/{uuid}/stream".format(uuid=uuid), params or kwargs
+            f"/v1/calls/{uuid}/stream", params or kwargs
         )
     
     # Play an speech into specified call - text parameter (text to speech) is required
     def send_speech(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
-            "/v1/calls/{uuid}/talk".format(uuid=uuid), params or kwargs
+            f"/v1/calls/{uuid}/talk", params or kwargs
         )
     
     # plays DTMF tones into the specified call
     def send_dtmf(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
-            "/v1/calls/{uuid}/dtmf".format(uuid=uuid), params or kwargs
+            f"/v1/calls/{uuid}/dtmf", params or kwargs
         )
     
     # Stops audio recently played into specified call
     def stop_audio(self, uuid):
-        return self._jwt_signed_delete("/v1/calls/{uuid}/stream".format(uuid=uuid))
+        return self._jwt_signed_delete(f"/v1/calls/{uuid}/stream")
     
     # Stop a speech recently played into specified call
     def stop_speech(self, uuid):
-        return self._jwt_signed_delete("/v1/calls/{uuid}/talk".format(uuid=uuid))
+        return self._jwt_signed_delete(f"/v1/calls/{uuid}/talk")
     
     # Deprecated section
     # This methods are deprecated, to use them a definition of client with key and secret parameters is mandatory

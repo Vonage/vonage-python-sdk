@@ -57,7 +57,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "Nexmo"
-copyright = "{}, Tim Craft".format(datetime.datetime.now().year)
+copyright = f"{datetime.datetime.now().year}, Tim Craft"
 author = "Tim Craft"
 
 # The version info for the project you're documenting, acts as replacement for

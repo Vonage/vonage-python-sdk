@@ -232,16 +232,16 @@ voice.send_speech(response['uuid'], text='Hello from vonage')
 ### Stop sending a synthesized speech message to a call
 
 ```python
->>> from vonage import Client, Voice
->>> client = Client(application_id=APPLICATION_ID, private_key=APPLICATION_ID)
->>> voice = Voice(client)
->>> response = voice.create_call({
+from vonage import Client, Voice
+client = Client(application_id=APPLICATION_ID, private_key=APPLICATION_ID)
+voice = Voice(client)
+response = voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
   'answer_url': ['https://example.com/answer']
 })
->>> voice.send_speech(response['uuid'], text='Hello from vonage')
->>> voice.stop_speech(response['uuid'])
+voice.send_speech(response['uuid'], text='Hello from vonage')
+voice.stop_speech(response['uuid'])
 ```
 
 ### Send DTMF tones to a call

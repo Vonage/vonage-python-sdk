@@ -17,9 +17,7 @@ def test_start_verification(verify, dummy_data):
 def test_check_verification(verify, dummy_data):
     stub(responses.POST, "https://api.nexmo.com/verify/check/json")
 
-    assert isinstance(
-        verify.check("8g88g88eg8g8gg9g90", code="123445"), dict
-    )
+    assert isinstance(verify.check("8g88g88eg8g8gg9g90", code="123445"), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "code=123445" in request_body()
     assert "request_id=8g88g88eg8g8gg9g90" in request_body()
@@ -48,12 +46,11 @@ def test_cancel_verification(verify, dummy_data):
 def test_trigger_next_verification_event(verify, dummy_data):
     stub(responses.POST, "https://api.nexmo.com/verify/control/json")
 
-    assert isinstance(
-        verify.trigger_next_event("8g88g88eg8g8gg9g90"), dict
-    )
+    assert isinstance(verify.trigger_next_event("8g88g88eg8g8gg9g90"), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "cmd=trigger_next_event" in request_body()
     assert "request_id=8g88g88eg8g8gg9g90" in request_body()
+
 
 @responses.activate
 def test_start_psd2_verification(verify, dummy_data):

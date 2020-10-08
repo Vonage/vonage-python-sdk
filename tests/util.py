@@ -1,13 +1,8 @@
 import os.path
 import re
+from urllib.parse import urlparse, parse_qs
 
 import pytest
-
-
-try:
-    from urllib.parse import urlparse, parse_qs
-except ImportError:
-    from urlparse import urlparse, parse_qs
 
 import responses
 
@@ -55,7 +50,7 @@ def stub_bytes(method, url):
 def assert_re(pattern, string):
     __tracebackhide__ = True
     if not re.search(pattern, string):
-        pytest.fail("Cannot find pattern {!r} in {!r}".format(pattern, string))
+        pytest.fail(f"Cannot find pattern {pattern!r} in {string!r}")
 
 
 def assert_basic_auth():

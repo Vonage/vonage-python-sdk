@@ -12,7 +12,7 @@ except ImportError:
 logger = logging.getLogger("nexmo")
 
 
-class BasicAuthenticatedServer(object):
+class BasicAuthenticatedServer:
     def __init__(self, host, user_agent, api_key, api_secret, timeout=None):
         self._host = host
         self._session = session = Session()
@@ -21,26 +21,34 @@ class BasicAuthenticatedServer(object):
         session.headers.update({"User-Agent": user_agent})
 
     def _uri(self, path):
-        return "{host}{path}".format(host=self._host, path=path)
+        return f"{self._host}{path}"
 
     def get(self, path, params=None, headers=None):
         return self._parse(
-            self._session.get(self._uri(path), params=params, headers=headers, timeout=self.timeout)
+            self._session.get(
+                self._uri(path), params=params, headers=headers, timeout=self.timeout
+            )
         )
 
     def post(self, path, body=None, headers=None):
         return self._parse(
-            self._session.post(self._uri(path), json=body, headers=headers, timeout=self.timeout)
+            self._session.post(
+                self._uri(path), json=body, headers=headers, timeout=self.timeout
+            )
         )
 
     def put(self, path, body=None, headers=None):
         return self._parse(
-            self._session.put(self._uri(path), json=body, headers=headers, timeout=self.timeout)
+            self._session.put(
+                self._uri(path), json=body, headers=headers, timeout=self.timeout
+            )
         )
 
     def delete(self, path, body=None, headers=None):
         return self._parse(
-            self._session.delete(self._uri(path), json=body, headers=headers, timeout=self.timeout)
+            self._session.delete(
+                self._uri(path), json=body, headers=headers, timeout=self.timeout
+            )
         )
 
     def _parse(self, response):
@@ -55,7 +63,7 @@ class BasicAuthenticatedServer(object):
             logger.warning(
                 "Client error: %s %r", response.status_code, response.content
             )
-            message = "{code} response".format(code=response.status_code)
+            message = f"{response.status_code} response"
             # Test for standard error format:
             try:
                 error_data = response.json()
@@ -76,11 +84,11 @@ class BasicAuthenticatedServer(object):
             logger.warning(
                 "Server error: %s %r", response.status_code, response.content
             )
-            message = "{code} response".format(code=response.status_code)
+            message = f"{response.status_code} response"
             raise ServerError(message)
 
 
-class ApplicationV2(object):
+class ApplicationV2:
     """
     Provides Application API v2 functionality.
 
@@ -113,7 +121,7 @@ class ApplicationV2(object):
         """
 
         return self._api_server.get(
-            "/v2/applications/{application_id}".format(application_id=application_id),
+            f"/v2/applications/{application_id}",
             headers={"content-type": "application/json"},
         )
 
@@ -124,7 +132,7 @@ class ApplicationV2(object):
 
         """
         return self._api_server.put(
-            "/v2/applications/{application_id}".format(application_id=application_id),
+            f"/v2/applications/{application_id}",
             params,
         )
 
@@ -134,7 +142,7 @@ class ApplicationV2(object):
         """
 
         self._api_server.delete(
-            "/v2/applications/{application_id}".format(application_id=application_id),
+            f"/v2/applications/{application_id}",
             headers={"content-type": "application/json"},
         )
 

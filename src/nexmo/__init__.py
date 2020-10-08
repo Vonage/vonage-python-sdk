@@ -98,8 +98,8 @@ class Client:
         if isinstance(self.private_key, string_types) and "\n" not in self.private_key:
             with open(self.private_key, "rb") as key_file:
                 self.private_key = key_file.read()
-        
-        self.__host_pattern = '^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$'
+
+        self.__host_pattern = r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$"
 
         self.__host = "rest.nexmo.com"
 
@@ -130,22 +130,22 @@ class Client:
 
         # Internal Verify Object - a method that return a verify instance, just for cool definitions
         self.Verify = Verify(self)
-    
+
     # Get and Set __host attribute
     def host(self, value=None):
         if value is None:
             return self.__host
-        elif not re.match(self.__host_pattern,value):
-            raise Exception('Error: Invalid format for host')
+        elif not re.match(self.__host_pattern, value):
+            raise Exception("Error: Invalid format for host")
         else:
             self.__host = value
-    
+
     # Gets And sets __api_host attribute
     def api_host(self, value=None):
         if value is None:
             return self.__api_host
-        elif not re.match(self.__host_pattern,value):
-            raise Exception('Error: Invalid format for api_host')
+        elif not re.match(self.__host_pattern, value):
+            raise Exception("Error: Invalid format for api_host")
         else:
             self.__api_host = value
 
@@ -226,7 +226,9 @@ class Client:
         return self.get(self.host(), "/sc/us/alert/opt-in/query/json")
 
     def resubscribe_event_alert_number(self, params=None, **kwargs):
-        return self.post(self.host(), "/sc/us/alert/opt-in/manage/json", params or kwargs)
+        return self.post(
+            self.host(), "/sc/us/alert/opt-in/manage/json", params or kwargs
+        )
 
     def get_basic_number_insight(self, params=None, **kwargs):
         return self.get(self.api_host(), "/ni/basic/json", params or kwargs)
@@ -246,9 +248,13 @@ class Client:
     def get_async_advanced_number_insight(self, params=None, **kwargs):
         argoparams = params or kwargs
         if "callback" in argoparams:
-            return self.get(self.api_host(), "/ni/advanced/async/json", params or kwargs)
+            return self.get(
+                self.api_host(), "/ni/advanced/async/json", params or kwargs
+            )
         else:
-            raise ClientError("Error: Callback needed for async advanced number insight")
+            raise ClientError(
+                "Error: Callback needed for async advanced number insight"
+            )
 
     def get_advanced_number_insight(self, params=None, **kwargs):
         return self.get(self.api_host(), "/ni/advanced/json", params or kwargs)
@@ -272,7 +278,7 @@ class Client:
         )
         return self.get(
             self.api_host(),
-            "/v1/applications/{application_id}".format(application_id=application_id),
+            f"/v1/applications/{application_id}",
         )
 
     def create_application(self, params=None, **kwargs):
@@ -291,7 +297,7 @@ class Client:
         )
         return self.put(
             self.api_host(),
-            "/v1/applications/{application_id}".format(application_id=application_id),
+            f"/v1/applications/{application_id}",
             params or kwargs,
         )
 
@@ -303,7 +309,7 @@ class Client:
         )
         return self.delete(
             self.api_host(),
-            "/v1/applications/{application_id}".format(application_id=application_id),
+            f"/v1/applications/{application_id}",
         )
 
     def get_recording(self, url):
@@ -319,7 +325,7 @@ class Client:
     def list_secrets(self, api_key):
         return self.get(
             self.api_host(),
-            "/accounts/{api_key}/secrets".format(api_key=api_key),
+            f"/accounts/{api_key}/secrets",
             header_auth=True,
         )
 
@@ -334,9 +340,7 @@ class Client:
 
     def create_secret(self, api_key, secret):
         body = {"secret": secret}
-        return self._post_json(
-            self.api_host(), "/accounts/{api_key}/secrets".format(api_key=api_key), body
-        )
+        return self._post_json(self.api_host(), f"/accounts/{api_key}/secrets", body)
 
     def delete_secret(self, api_key, secret_id):
         return self.delete(
@@ -370,7 +374,7 @@ class Client:
             if isinstance(value, str):
                 value = value.replace("&", "_").replace("=", "_")
 
-            hasher.update("&{key}={value}".format(key=key, value=value).encode("utf-8"))
+            hasher.update(f"&{key}={value}".encode("utf-8"))
 
         if self.signature_method is None:
             hasher.update(self.signature_secret.encode())
@@ -378,17 +382,15 @@ class Client:
         return hasher.hexdigest()
 
     def get(self, host, request_uri, params=None, header_auth=False):
-        uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
+        uri = f"https://{host}{request_uri}"
         headers = self.headers
         if header_auth:
             h = base64.b64encode(
-                (
-                    "{api_key}:{api_secret}".format(
-                        api_key=self.api_key, api_secret=self.api_secret
-                    ).encode("utf-8")
-                )
+                "{api_key}:{api_secret}".format(
+                    api_key=self.api_key, api_secret=self.api_secret
+                ).encode("utf-8")
             ).decode("ascii")
-            headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
+            headers = dict(headers or {}, Authorization=f"Basic {h}")
         else:
             params = dict(
                 params or {}, api_key=self.api_key, api_secret=self.api_secret
@@ -413,20 +415,18 @@ class Client:
         :param bool supports_signature_auth: Preferentially use signature authentication if a signature_secret was provided when initializing this client.
         :param bool header_auth: Use basic authentication instead of adding api_key and api_secret to the request params.
         """
-        uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
+        uri = f"https://{host}{request_uri}"
         headers = self.headers
         if supports_signature_auth and self.signature_secret:
             params["api_key"] = self.api_key
             params["sig"] = self.signature(params)
         elif header_auth:
             h = base64.b64encode(
-                (
-                    "{api_key}:{api_secret}".format(
-                        api_key=self.api_key, api_secret=self.api_secret
-                    ).encode("utf-8")
-                )
+                "{api_key}:{api_secret}".format(
+                    api_key=self.api_key, api_secret=self.api_secret
+                ).encode("utf-8")
             ).decode("ascii")
-            headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
+            headers = dict(headers or {}, Authorization=f"Basic {h}")
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
         logger.debug("POST to %r with params %r, headers %r", uri, params, headers)
@@ -436,56 +436,48 @@ class Client:
         """
         Post json to `request_uri`, using basic auth.
         """
-        uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
+        uri = f"https://{host}{request_uri}"
         auth = base64.b64encode(
-            (
-                "{api_key}:{api_secret}".format(
-                    api_key=self.api_key, api_secret=self.api_secret
-                ).encode("utf-8")
-            )
+            "{api_key}:{api_secret}".format(
+                api_key=self.api_key, api_secret=self.api_secret
+            ).encode("utf-8")
         ).decode("ascii")
-        headers = dict(
-            self.headers or {}, Authorization="Basic {hash}".format(hash=auth)
-        )
+        headers = dict(self.headers or {}, Authorization=f"Basic {auth}")
         logger.debug(
             "POST to %r with body: %r, headers: %r", request_uri, json, headers
         )
         return self.parse(host, self.session.post(uri, headers=headers, json=json))
 
     def put(self, host, request_uri, params, header_auth=False):
-        uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
+        uri = f"https://{host}{request_uri}"
 
         headers = self.headers
         if header_auth:
             h = base64.b64encode(
-                (
-                    "{api_key}:{api_secret}".format(
-                        api_key=self.api_key, api_secret=self.api_secret
-                    ).encode("utf-8")
-                )
+                "{api_key}:{api_secret}".format(
+                    api_key=self.api_key, api_secret=self.api_secret
+                ).encode("utf-8")
             ).decode("ascii")
             # Must create a new headers dict here, otherwise we'd be mutating `self.headers`:
-            headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
+            headers = dict(headers or {}, Authorization=f"Basic {h}")
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
         logger.debug("PUT to %r with params %r, headers %r", uri, params, headers)
         return self.parse(host, self.session.put(uri, json=params, headers=headers))
 
     def delete(self, host, request_uri, header_auth=False):
-        uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
+        uri = f"https://{host}{request_uri}"
 
         params = None
         headers = self.headers
         if header_auth:
             h = base64.b64encode(
-                (
-                    "{api_key}:{api_secret}".format(
-                        api_key=self.api_key, api_secret=self.api_secret
-                    ).encode("utf-8")
-                )
+                "{api_key}:{api_secret}".format(
+                    api_key=self.api_key, api_secret=self.api_secret
+                ).encode("utf-8")
             ).decode("ascii")
             # Must create a new headers dict here, otherwise we'd be mutating `self.headers`:
-            headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
+            headers = dict(headers or {}, Authorization=f"Basic {h}")
         else:
             params = {"api_key": self.api_key, "api_secret": self.api_secret}
         logger.debug("DELETE to %r with params %r, headers %r", uri, params, headers)

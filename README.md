@@ -288,7 +288,7 @@ from nexmo import Verify
 from nexmo.verify import Verify
 
 #Third valid way
-import nexmo #then use nexmo.Verify() to create an instance 
+import nexmo #then use nexmo.Verify() to create an instance
 ```
 
 - **Create the instance**

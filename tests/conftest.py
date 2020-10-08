@@ -14,7 +14,7 @@ def read_file(path):
         return input_file.read()
 
 
-class DummyData(object):
+class DummyData:
     def __init__(self):
         import nexmo
 
@@ -47,29 +47,26 @@ def client(dummy_data):
         private_key=dummy_data.private_key,
     )
 
-#Represents an instance of the Voice class for testing
+
+# Represents an instance of the Voice class for testing
 @pytest.fixture
 def voice(client, dummy_data):
     import nexmo
 
-    return nexmo.Voice(
-        client
-    )
+    return nexmo.Voice(client)
 
-#Represents an instance of the Sms class for testing
+
+# Represents an instance of the Sms class for testing
 @pytest.fixture
 def sms(client, dummy_data):
     import nexmo
 
-    return nexmo.Sms(
-        client
-    )
+    return nexmo.Sms(client)
 
-#Represents an instance of the Verify class for testing
+
+# Represents an instance of the Verify class for testing
 @pytest.fixture
 def verify(client, dummy_data):
     import nexmo
 
-    return nexmo.Verify(
-        client
-    )
+    return nexmo.Verify(client)

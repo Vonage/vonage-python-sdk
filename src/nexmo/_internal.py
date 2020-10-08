@@ -25,22 +25,30 @@ class BasicAuthenticatedServer:
 
     def get(self, path, params=None, headers=None):
         return self._parse(
-            self._session.get(self._uri(path), params=params, headers=headers, timeout=self.timeout)
+            self._session.get(
+                self._uri(path), params=params, headers=headers, timeout=self.timeout
+            )
         )
 
     def post(self, path, body=None, headers=None):
         return self._parse(
-            self._session.post(self._uri(path), json=body, headers=headers, timeout=self.timeout)
+            self._session.post(
+                self._uri(path), json=body, headers=headers, timeout=self.timeout
+            )
         )
 
     def put(self, path, body=None, headers=None):
         return self._parse(
-            self._session.put(self._uri(path), json=body, headers=headers, timeout=self.timeout)
+            self._session.put(
+                self._uri(path), json=body, headers=headers, timeout=self.timeout
+            )
         )
 
     def delete(self, path, body=None, headers=None):
         return self._parse(
-            self._session.delete(self._uri(path), json=body, headers=headers, timeout=self.timeout)
+            self._session.delete(
+                self._uri(path), json=body, headers=headers, timeout=self.timeout
+            )
         )
 
     def _parse(self, response):

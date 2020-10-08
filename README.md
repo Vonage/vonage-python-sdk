@@ -2,11 +2,19 @@
 
 <img src="https://developer.nexmo.com/assets/images/Vonage_Nexmo.svg" height="48px" alt="Nexmo is now known as Vonage" />
 
+![Author](https://img.shields.io/badge/author-Vonage-orange)
+![License](http://img.shields.io/github/license/Vonage/vonage-python-sdk)
+![Last Commit](https://img.shields.io/github/last-commit/Vonage/vonage-python-sdk)
+![Stars](https://img.shields.io/github/stars/Vonage/vonage-python-sdk)
+![Forks](https://img.shields.io/github/forks/Vonage/vonage-python-sdk)
+![Issues](https://img.shields.io/github/issues/Vonage/vonage-python-sdk)
+![Maintained](https://img.shields.io/maintenance/yes/2020)
 [![PyPI version](https://badge.fury.io/py/vonage.svg)](https://badge.fury.io/py/vonage)
 [![Build Status](https://github.com/Vonage/vonage-python-sdk/workflows/Build/badge.svg)](https://github.com/Vonage/vonage-python-sdk/actions)
 [![codecov](https://codecov.io/gh/Vonage/vonage-python-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/Vonage/vonage-python-sdk)
 [![Python versions supported](https://img.shields.io/pypi/pyversions/vonage.svg)](https://pypi.python.org/pypi/vonage)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+
 
 This is the Python server SDK for Vonage's API. To use it you'll
 need a Vonage account. Sign up [for free at vonage.com][signup].

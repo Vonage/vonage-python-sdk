@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://developer.nexmo.com/assets/images/Vonage_Nexmo.svg" width="500" alt="Nexmo is now known as Vonage" />
+<img src="https://developer.nexmo.com/assets/images/Vonage_Nexmo.svg" width="500" height="50" alt="Nexmo is now known as Vonage" />
 <br>
 <h1 align="center">Vonage Server SDK for Python</h1>
 </p>

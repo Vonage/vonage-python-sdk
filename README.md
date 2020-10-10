@@ -129,6 +129,8 @@ sms.send_message({
 })
 ```
 
+Docs - [https://developer.nexmo.com/api/sms#send-an-sms](https://developer.nexmo.com/api/sms#send-an-sms)
+
 ### Send SMS with unicode
 
 ```python
@@ -139,6 +141,8 @@ sms.send_message({
     'type': 'unicode',
 })
 ```
+
+Docs - [https://developer.nexmo.com/api/sms#send-an-sms](https://developer.nexmo.com/api/sms#send-an-sms)
 
 ### Submit SMS Conversion
 
@@ -169,6 +173,8 @@ voice.create_all({
 })
 ```
 
+Docs - [https://developer.nexmo.com/api/voice#createCall](https://developer.nexmo.com/api/voice#createCall)
+
 ### Retrieve a list of calls
 
 ```python
@@ -177,6 +183,7 @@ client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
 voice.get_calls()
 ```
+Docs - [https://developer.nexmo.com/api/voice#getCalls](https://developer.nexmo.com/api/voice#getCalls)
 
 ### Retrieve a single call
 
@@ -186,6 +193,8 @@ client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
 voice.get_call(uuid)
 ```
+
+Docs - [https://developer.nexmo.com/api/voice#getCall](https://developer.nexmo.com/api/voice#getCall)
 
 ### Update a call
 
@@ -201,6 +210,8 @@ response = voice.create_all({
 voice.update_call(response['uuid'], action='hangup')
 ```
 
+Docs - [https://developer.nexmo.com/api/voice#updateCall](https://developer.nexmo.com/api/voice#updateCall)
+
 ### Stream audio to a call
 
 ```python
@@ -215,6 +226,8 @@ response = voice.create_call({
 })
 voice.send_audio(response['uuid'],stream_url=[stream_url])
 ```
+
+Docs - [https://developer.nexmo.com/api/voice#startStream](https://developer.nexmo.com/api/voice#startStream)
 
 ### Stop streaming audio to a call
 
@@ -232,6 +245,8 @@ voice.send_audio(response['uuid'],stream_url=[stream_url])
 voice.stop_audio(response['uuid'])
 ```
 
+Docs - [https://developer.nexmo.com/api/voice#stopStream](https://developer.nexmo.com/api/voice#stopStream)
+
 ### Send a synthesized speech message to a call
 
 ```python
@@ -245,6 +260,8 @@ response = voice.create_call({
 })
 voice.send_speech(response['uuid'], text='Hello from vonage')
 ```
+
+Docs - [https://developer.nexmo.com/api/voice#startTalk](https://developer.nexmo.com/api/voice#startTalk)
 
 ### Stop sending a synthesized speech message to a call
 
@@ -261,6 +278,8 @@ voice.send_speech(response['uuid'], text='Hello from vonage')
 voice.stop_speech(response['uuid'])
 ```
 
+Docs - [https://developer.nexmo.com/api/voice#stopTalk](https://developer.nexmo.com/api/voice#stopTalk)
+
 ### Send DTMF tones to a call
 
 ```python
@@ -274,6 +293,8 @@ response = voice.create_call({
 })
 voice.send_dtmf(response['uuid'], digits='1234')
 ```
+
+Docs - [https://developer.nexmo.com/api/voice#startDTMF](https://developer.nexmo.com/api/voice#startDTMF)
 
 ### Get recording
 
@@ -327,6 +348,8 @@ if response is not None:
     print(response['status'])
 ```
 
+Docs - [https://developer.nexmo.com/api/verify#verifySearch](https://developer.nexmo.com/api/verify#verifySearch)
+
 ### Send verification code
 
 ```python
@@ -340,6 +363,8 @@ if response["status"] == "0":
 else:
     print("Error: %s" % response["error_text"])
 ```
+
+Docs - [https://developer.nexmo.com/api/verify#verifyRequest](https://developer.nexmo.com/api/verify#verifyRequest)
 
 ### Send verification code with workflow
 
@@ -355,6 +380,8 @@ else:
     print("Error: %s" % response["error_text"])
 ```
 
+Docs - [https://developer.nexmo.com/api/verify#verifyRequest](https://developer.nexmo.com/api/verify#verifyRequest)
+
 ### Check verification code
 
 ```python
@@ -368,6 +395,8 @@ if response["status"] == "0":
 else:
     print("Error: %s" % response["error_text"])
 ```
+
+Docs - [https://developer.nexmo.com/api/verify#verifyCheck](https://developer.nexmo.com/api/verify#verifyCheck)
 
 ### Cancel Verification Request
 
@@ -383,6 +412,8 @@ else:
     print("Error: %s" % response["error_text"])
 ```
 
+Docs - [https://developer.nexmo.com/api/verify#verifyControl](https://developer.nexmo.com/api/verify#verifyControl)
+
 ### Trigger next verification proccess
 
 ```python
@@ -396,6 +427,8 @@ if response["status"] == "0":
 else:
     print("Error: %s" % response["error_text"])
 ```
+
+Docs - [https://developer.nexmo.com/api/verify#verifyControl](https://developer.nexmo.com/api/verify#verifyControl)
 
 ### Send payment authentication code
 
@@ -411,6 +444,8 @@ else:
     print("Error: %s" % response["error_text"])
 ```
 
+Docs - [https://developer.nexmo.com/api/verify#verifyRequestWithPSD2](https://developer.nexmo.com/api/verify#verifyRequestWithPSD2)
+
 ### Send payment authentication code with workflow
 
 ```python
@@ -424,6 +459,8 @@ if response["status"] == "0":
 else:
     print("Error: %s" % response["error_text"])
 ```
+
+Docs - [https://developer.nexmo.com/api/verify#verifyRequestWithPSD2](https://developer.nexmo.com/api/verify#verifyRequestWithPSD2)
 
 ## Number Insight API
 
@@ -461,6 +498,8 @@ An API is provided to allow you to rotate your API secrets. You can create a new
 secrets = client.list_secrets(API_KEY)
 ```
 
+Docs - [https://developer.nexmo.com/api/account#retrieveAPISecrets](https://developer.nexmo.com/api/account#retrieveAPISecrets)
+
 ### Create A New Secret
 
 Create a new secret (the created dates will help you know which is which):
@@ -469,6 +508,8 @@ Create a new secret (the created dates will help you know which is which):
 client.create_secret(API_KEY, 'awes0meNewSekret!!;');
 ```
 
+Docs - [https://developer.nexmo.com/api/account#createAPISecret](https://developer.nexmo.com/api/account#createAPISecret)
+
 ### Delete A Secret
 
 Delete the old secret (any application still using these credentials will stop working):
@@ -476,6 +517,8 @@ Delete the old secret (any application still using these credentials will stop w
 ```python
 client.delete_secret(API_KEY, 'my-secret-id')
 ```
+
+Docs - [https://developer.nexmo.com/api/account#revokeAPISecret](https://developer.nexmo.com/api/account#revokeAPISecret)
 
 ## Application API
 

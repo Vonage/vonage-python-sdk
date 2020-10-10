@@ -3,12 +3,27 @@
 <br>
 <h1 align="center">Vonage Server SDK for Python</h1>
 </p>
+<p align="center">
+  <a href="https://badge.fury.io/py/vonage">
+    <img src="https://badge.fury.io/py/vonage.svg" alt="PyPI version" />
+  </a>
+  <a href="https://github.com/Vonage/vonage-python-sdk/actions">
+    <img src="https://github.com/Vonage/vonage-python-sdk/workflows/Build/badge.svg" alt="Build Status" />
+  </a>
+  <a href="https://codecov.io/gh/Vonage/vonage-python-sdk">
+    <img src="https://codecov.io/gh/Vonage/vonage-python-sdk/branch/master/graph/badge.svg" alt="codecov" />
+  </a>
+  <a href="https://pypi.python.org/pypi/vonage">
+    <img src="https://img.shields.io/pypi/pyversions/vonage.svg" alt="Python versions supported" />
+  </a>
+  <a href="https://github.com/ambv/black">
+    <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" />
+  </a>
+  <br>
+  <a href="https://developer.nexmo.com/">developer.nexmo.com</a> | <a href="https://twitter.com/vonage">@vonage</a> | <a href="https://developer.nexmo.com/slack">Slack</a>
+</p>
 
-[![PyPI version](https://badge.fury.io/py/vonage.svg)](https://badge.fury.io/py/vonage)
-[![Build Status](https://github.com/Vonage/vonage-python-sdk/workflows/Build/badge.svg)](https://github.com/Vonage/vonage-python-sdk/actions)
-[![codecov](https://codecov.io/gh/Vonage/vonage-python-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/Vonage/vonage-python-sdk)
-[![Python versions supported](https://img.shields.io/pypi/pyversions/vonage.svg)](https://pypi.python.org/pypi/vonage)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+--------------------------
 
 This is the Python server SDK for Vonage's API. To use it you'll
 need a Vonage account. Sign up [for free at vonage.com][signup].

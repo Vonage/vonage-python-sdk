@@ -145,7 +145,7 @@ sms.submit_sms_conversion(response['message-id'])
 from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
-voice.create_all({
+voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
   'answer_url': ['https://example.com/answer']

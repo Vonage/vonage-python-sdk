@@ -1,6 +1,8 @@
-# Vonage Server SDK for Python
-
-<img src="https://developer.nexmo.com/assets/images/Vonage_Nexmo.svg" height="48px" alt="Nexmo is now known as Vonage" />
+<p align="center">
+<img src="https://developer.nexmo.com/assets/images/Vonage_Nexmo.svg" alt="Nexmo is now known as Vonage" />
+<br>
+<h1 align="center">Vonage Server SDK for Python</h1>
+</p>
 
 [![PyPI version](https://badge.fury.io/py/vonage.svg)](https://badge.fury.io/py/vonage)
 [![Build Status](https://github.com/Vonage/vonage-python-sdk/workflows/Build/badge.svg)](https://github.com/Vonage/vonage-python-sdk/actions)

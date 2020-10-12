@@ -35,7 +35,3 @@ jobs:
         run: coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
-      - name: Lint
-        uses: psf/black@stable
-      
-      

@@ -1,4 +1,5 @@
 import vonage, pytz
+import logging
 from datetime import datetime
 from ._internal import _format_date_param
 
@@ -22,7 +23,7 @@ class Sms:
                     signature_method=signature_method
                 )
         except Exception as e:
-            print('Error: {error_message}'.format(error_message=str(e)))
+            logging.warning('{0}'.format(str(e)))
     
     def send_message(self, params):
         """

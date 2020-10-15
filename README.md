@@ -34,15 +34,15 @@ To upgrade your installed client library using pip:
 
     pip install vonage --upgrade
 
-Alternatively, you can clone the repository via the command line:
+Alternatively, you can also clone the repository via the command line:
 
     git clone git@github.com:Vonage/vonage-python-sdk.git
 
-or by opening it on GitHub desktop.
+or by opening it on GitHub desktop version.
 
 ## Usage
 
-Begin by importing the `vonage` module:
+Start by importing the `vonage` module:
 
 ```python
 import vonage

@@ -43,9 +43,7 @@ def request_content_type():
 
 def stub(method, url, fixture_path=None, status_code=200):
     body = load_fixture(fixture_path) if fixture_path else '{"key":"value"}'
-    responses.add(
-        method, url, body=body, status=status_code, content_type="application/json"
-    )
+    responses.add(method, url, body=body, status=status_code, content_type="application/json")
 
 
 def stub_bytes(method, url):
@@ -62,10 +60,7 @@ def assert_basic_auth():
     params = request_params()
     assert "api_key" not in params
     assert "api_secret" not in params
-    assert (
-        request_headers()["Authorization"]
-        == "Basic bmV4bW8tYXBpLWtleTpuZXhtby1hcGktc2VjcmV0"
-    )
+    assert request_headers()["Authorization"] == "Basic bmV4bW8tYXBpLWtleTpuZXhtby1hcGktc2VjcmV0"
 
 
 def load_fixture(fixture_path):

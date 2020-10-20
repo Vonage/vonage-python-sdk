@@ -33,9 +33,7 @@ def test_search_messages(client, dummy_data):
 def test_search_messages_by_ids(client, dummy_data):
     stub(responses.GET, "https://rest.nexmo.com/search/messages")
 
-    assert isinstance(
-        client.search_messages(ids=["00A0B0C0", "00A0B0C1", "00A0B0C2"]), dict
-    )
+    assert isinstance(client.search_messages(ids=["00A0B0C0", "00A0B0C1", "00A0B0C2"]), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "ids=00A0B0C0" in request_query()
     assert "ids=00A0B0C1" in request_query()

@@ -12,9 +12,7 @@ class Verify:
             print("Error: {error_message}".format(error_message=str(e)))
 
     def start_verification(self, params=None, **kwargs):
-        return self._client.post(
-            self._client.api_host(), "/verify/json", params or kwargs
-        )
+        return self._client.post(self._client.api_host(), "/verify/json", params or kwargs)
 
     def check(self, request_id, params=None, **kwargs):
         return self._client.post(
@@ -24,9 +22,7 @@ class Verify:
         )
 
     def search(self, request_id):
-        return self._client.get(
-            self._client.api_host(), "/verify/search/json", {"request_id": request_id}
-        )
+        return self._client.get(self._client.api_host(), "/verify/search/json", {"request_id": request_id})
 
     def cancel(self, request_id):
         return self._client.post(
@@ -43,7 +39,4 @@ class Verify:
         )
 
     def psd2(self, params=None, **kwargs):
-        return self._client.post(
-            self._client.api_host(), "/verify/psd2/json", params or kwargs
-        )
-
+        return self._client.post(self._client.api_host(), "/verify/psd2/json", params or kwargs)

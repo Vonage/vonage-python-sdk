@@ -5,6 +5,7 @@ import sys
 
 bytes_type = bytes
 
+
 @responses.activate
 def test_send_ussd_push_message(client, dummy_data):
     stub(responses.POST, "https://rest.nexmo.com/ussd/json")
@@ -102,27 +103,21 @@ def test_check_signature(dummy_data):
         "sig": "6af838ef94998832dbfc29020b564830",
     }
 
-    client = vonage.Client(
-        key=dummy_data.api_key, secret=dummy_data.api_secret, signature_secret="secret"
-    )
+    client = vonage.Client(key=dummy_data.api_key, secret=dummy_data.api_secret, signature_secret="secret")
 
     assert client.check_signature(params)
 
 
 def test_signature(client, dummy_data):
     params = {"a": "1", "b": "2", "timestamp": "1461605396"}
-    client = vonage.Client(
-        key=dummy_data.api_key, secret=dummy_data.api_secret, signature_secret="secret"
-    )
+    client = vonage.Client(key=dummy_data.api_key, secret=dummy_data.api_secret, signature_secret="secret")
     assert client.signature(params) == "6af838ef94998832dbfc29020b564830"
 
 
 def test_signature_adds_timestamp(dummy_data):
     params = {"a=7": "1", "b": "2 & 5"}
 
-    client = vonage.Client(
-        key=dummy_data.api_key, secret=dummy_data.api_secret, signature_secret="secret"
-    )
+    client = vonage.Client(key=dummy_data.api_key, secret=dummy_data.api_secret, signature_secret="secret")
 
     client.signature(params)
     assert params["timestamp"] is not None
@@ -158,10 +153,7 @@ def test_signature_sha256(dummy_data):
         signature_secret=dummy_data.signature_secret,
         signature_method="sha256",
     )
-    assert (
-        client.signature(params)
-        == "a321e824b9b816be7c3f28859a31749a098713d39f613c80d455bbaffae1cd24"
-    )
+    assert client.signature(params) == "a321e824b9b816be7c3f28859a31749a098713d39f613c80d455bbaffae1cd24"
 
 
 def test_signature_sha512(dummy_data):
@@ -202,9 +194,7 @@ def test_get_recording(client, dummy_data):
     )
 
     assert isinstance(
-        client.get_recording(
-            "https://api.nexmo.com/v1/files/d6e47a2e-3414-11e8-8c2c-2f8b643ed957"
-        ),
+        client.get_recording("https://api.nexmo.com/v1/files/d6e47a2e-3414-11e8-8c2c-2f8b643ed957"),
         bytes_type,
     )
     assert request_user_agent() == dummy_data.user_agent

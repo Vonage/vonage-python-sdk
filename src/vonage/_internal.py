@@ -24,24 +24,16 @@ class BasicAuthenticatedServer(object):
         return "{host}{path}".format(host=self._host, path=path)
 
     def get(self, path, params=None, headers=None):
-        return self._parse(
-            self._session.get(self._uri(path), params=params, headers=headers, timeout=self.timeout)
-        )
+        return self._parse(self._session.get(self._uri(path), params=params, headers=headers, timeout=self.timeout))
 
     def post(self, path, body=None, headers=None):
-        return self._parse(
-            self._session.post(self._uri(path), json=body, headers=headers, timeout=self.timeout)
-        )
+        return self._parse(self._session.post(self._uri(path), json=body, headers=headers, timeout=self.timeout))
 
     def put(self, path, body=None, headers=None):
-        return self._parse(
-            self._session.put(self._uri(path), json=body, headers=headers, timeout=self.timeout)
-        )
+        return self._parse(self._session.put(self._uri(path), json=body, headers=headers, timeout=self.timeout))
 
     def delete(self, path, body=None, headers=None):
-        return self._parse(
-            self._session.delete(self._uri(path), json=body, headers=headers, timeout=self.timeout)
-        )
+        return self._parse(self._session.delete(self._uri(path), json=body, headers=headers, timeout=self.timeout))
 
     def _parse(self, response):
         logger.debug("Response headers %r", response.headers)
@@ -52,18 +44,12 @@ class BasicAuthenticatedServer(object):
         elif 200 <= response.status_code < 300:
             return response.json()
         elif 400 <= response.status_code < 500:
-            logger.warning(
-                "Client error: %s %r", response.status_code, response.content
-            )
+            logger.warning("Client error: %s %r", response.status_code, response.content)
             message = "{code} response".format(code=response.status_code)
             # Test for standard error format:
             try:
                 error_data = response.json()
-                if (
-                    "type" in error_data
-                    and "title" in error_data
-                    and "detail" in error_data
-                ):
+                if "type" in error_data and "title" in error_data and "detail" in error_data:
                     message = "{title}: {detail} ({type})".format(
                         title=error_data["title"],
                         detail=error_data["detail"],
@@ -73,9 +59,7 @@ class BasicAuthenticatedServer(object):
                 pass
             raise ClientError(message)
         elif 500 <= response.status_code < 600:
-            logger.warning(
-                "Server error: %s %r", response.status_code, response.content
-            )
+            logger.warning("Server error: %s %r", response.status_code, response.content)
             message = "{code} response".format(code=response.status_code)
             raise ServerError(message)
 

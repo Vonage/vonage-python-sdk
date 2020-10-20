@@ -3,6 +3,9 @@
 clean:
 	rm -rf dist build
 
+lint:
+	black --check -l 120 --diff --color .
+
 coverage:
 	pytest -v --cov
 	coverage html

@@ -24,9 +24,7 @@ class DummyData(object):
         self.application_id = "nexmo-application-id"
         self.private_key = read_file("data/private_key.txt")
         self.public_key = read_file("data/public_key.txt")
-        self.user_agent = "nexmo-python/{} python/{}".format(
-            vonage.__version__, platform.python_version()
-        )
+        self.user_agent = "nexmo-python/{} python/{}".format(vonage.__version__, platform.python_version())
         self.host = "rest.nexmo.com"
         self.api_host = "api.nexmo.com"
 

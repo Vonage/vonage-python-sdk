@@ -113,9 +113,7 @@ def test_client_error(client):
     )
     with pytest.raises(vonage.ClientError) as exc_info:
         client.application_v2.delete_application("xx-xx-xx-xx")
-    assert (
-        str(exc_info.value) == "Nope: You really shouldn't have done that (nope_error)"
-    )
+    assert str(exc_info.value) == "Nope: You really shouldn't have done that (nope_error)"
 
 
 @responses.activate

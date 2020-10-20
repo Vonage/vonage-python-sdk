@@ -28,7 +28,10 @@ def test_application_info_options(dummy_data):
         app_version=app_version,
     )
     user_agent = "nexmo-python/{} python/{} {}/{}".format(
-        vonage.__version__, platform.python_version(), app_name, app_version,
+        vonage.__version__,
+        platform.python_version(),
+        app_name,
+        app_version,
     )
 
     assert isinstance(client.get_balance(), dict)
@@ -64,9 +67,7 @@ def test_get_sms_pricing(client, dummy_data):
 
 @responses.activate
 def test_get_voice_pricing(client, dummy_data):
-    stub(
-        responses.GET, "https://rest.nexmo.com/account/get-phone-pricing/outbound/voice"
-    )
+    stub(responses.GET, "https://rest.nexmo.com/account/get-phone-pricing/outbound/voice")
 
     assert isinstance(client.get_voice_pricing("447525856424"), dict)
     assert request_user_agent() == dummy_data.user_agent
@@ -114,10 +115,7 @@ def test_list_secrets(client):
 
     secrets = client.list_secrets("meaccountid")
     assert_basic_auth()
-    assert (
-        glom(secrets, "_embedded.secrets.0.id")
-        == "ad6dc56f-07b5-46e1-a527-85530e625800"
-    )
+    assert glom(secrets, "_embedded.secrets.0.id") == "ad6dc56f-07b5-46e1-a527-85530e625800"
 
 
 @responses.activate
@@ -153,9 +151,7 @@ def test_get_secret(client):
 
 @responses.activate
 def test_delete_secret(client):
-    stub(
-        responses.DELETE, "https://api.nexmo.com/accounts/meaccountid/secrets/mahsecret"
-    )
+    stub(responses.DELETE, "https://api.nexmo.com/accounts/meaccountid/secrets/mahsecret")
 
     client.delete_secret("meaccountid", "mahsecret")
     assert_basic_auth()

@@ -29,6 +29,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Install dependencies
         run: make install
+      - name: Lint
+        run: make lint
       - name: Run tests
         run: make coverage
       - name: Run codecov

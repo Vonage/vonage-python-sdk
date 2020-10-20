@@ -92,9 +92,7 @@ def test_deprecated_send_verification_request(client, dummy_data):
 def test_deprecated_check_verification(client, dummy_data):
     stub(responses.POST, "https://api.nexmo.com/verify/check/json")
 
-    assert isinstance(
-        client.check_verification("8g88g88eg8g8gg9g90", code="123445"), dict
-    )
+    assert isinstance(client.check_verification("8g88g88eg8g8gg9g90", code="123445"), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "code=123445" in request_body()
     assert "request_id=8g88g88eg8g8gg9g90" in request_body()
@@ -144,9 +142,7 @@ def test_deprecated_cancel_verification(client, dummy_data):
 def test_deprecated_trigger_next_verification_event(client, dummy_data):
     stub(responses.POST, "https://api.nexmo.com/verify/control/json")
 
-    assert isinstance(
-        client.trigger_next_verification_event("8g88g88eg8g8gg9g90"), dict
-    )
+    assert isinstance(client.trigger_next_verification_event("8g88g88eg8g8gg9g90"), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "cmd=trigger_next_event" in request_body()
     assert "request_id=8g88g88eg8g8gg9g90" in request_body()

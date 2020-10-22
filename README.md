@@ -103,8 +103,11 @@ sms = Sms(client)
 ### Send an SMS
 
 ```python
+
+#import files
 from vonage import Sms
 sms = Sms(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
+#use jason format 
 sms.send_message({
             "from": VONAGE_BRAND_NAME,
             "to": TO_NUMBER,
@@ -115,6 +118,7 @@ sms.send_message({
 ### Send SMS with unicode
 
 ```python
+#use jason format
 sms.send_message({
     'from': VONAGE_BRAND_NAME,
     'to': TO_NUMBER,
@@ -126,9 +130,11 @@ sms.send_message({
 ### Submit SMS Conversion
 
 ```python
+#import files
 from vonage import Client, Sms
 client = Client(key=VONAGE_API_KEY, secret=VONAGE_SECRET)
 sms = Sms(client)
+#use jason format
 response = sms.send_message({
     'from': VONAGE_BRAND_NAME,
     'to': TO_NUMBER,
@@ -142,9 +148,11 @@ sms.submit_sms_conversion(response['message-id'])
 ### Make a call
 
 ```python
+#import files
 from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
+#use jason format
 voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
@@ -155,6 +163,7 @@ voice.create_call({
 ### Retrieve a list of calls
 
 ```python
+#import files
 from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
@@ -164,6 +173,7 @@ voice.get_calls()
 ### Retrieve a single call
 
 ```python
+#import files
 from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
@@ -173,9 +183,11 @@ voice.get_call(uuid)
 ### Update a call
 
 ```python
+#import files
 from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
+#use jason format
 response = voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
@@ -187,10 +199,12 @@ voice.update_call(response['uuid'], action='hangup')
 ### Stream audio to a call
 
 ```python
+#import files
 from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
 stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
+#use jason format
 response = voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
@@ -202,10 +216,12 @@ voice.send_audio(response['uuid'],stream_url=[stream_url])
 ### Stop streaming audio to a call
 
 ```python
+#import files
 from vonage import Client, Voice
 client = Client(application_id='0d4884d1-eae8-4f18-a46a-6fb14d5fdaa6', private_key='./private.key')
 voice = Voice(client)
 stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
+#use jason format
 response = voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
@@ -218,9 +234,11 @@ voice.stop_audio(response['uuid'])
 ### Send a synthesized speech message to a call
 
 ```python
+#import files
 from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
+#use jason format
 response = voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
@@ -232,9 +250,11 @@ voice.send_speech(response['uuid'], text='Hello from vonage')
 ### Stop sending a synthesized speech message to a call
 
 ```python
+#import files
 from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=APPLICATION_ID)
 voice = Voice(client)
+#use jason format
 response = voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
@@ -247,9 +267,11 @@ voice.stop_speech(response['uuid'])
 ### Send DTMF tones to a call
 
 ```python
+#import files
 from vonage import Client, Voice
 client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 voice = Voice(client)
+#use jason format
 response = voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},

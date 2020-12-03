@@ -106,7 +106,7 @@ class Client:
 
         self.__api_host = "api.nexmo.com"
 
-        user_agent = "nexmo-python/{version} python/{python_version}".format(
+        user_agent = "vonage-python/{version} python/{python_version}".format(
             version=__version__, python_version=python_version()
         )
 

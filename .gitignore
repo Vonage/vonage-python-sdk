@@ -103,3 +103,7 @@ ENV*
 
 .requirements.txt
 *_quickstart*
+
+.DS_Store
+.vscode
+.idea

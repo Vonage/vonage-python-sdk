@@ -113,7 +113,7 @@ def test_user_provided_authorization(client, dummy_data):
 
     token = request_authorization().split()[1]
 
-    token = jwt.decode(token, dummy_data.public_key, algorithm="RS256")
+    token = jwt.decode(token, dummy_data.public_key, algorithms="RS256")
 
     assert token["application_id"] == application_id
     assert token["nbf"] == nbf
@@ -136,7 +136,7 @@ def test_authorization_with_private_key_path(dummy_data):
     voice.get_call("xx-xx-xx-xx")
 
     token = jwt.decode(
-        request_authorization().split()[1], dummy_data.public_key, algorithm="RS256"
+        request_authorization().split()[1], dummy_data.public_key, algorithms="RS256"
     )
     assert token["application_id"] == dummy_data.application_id
 
@@ -148,7 +148,7 @@ def test_authorization_with_private_key_object(voice, dummy_data):
     voice.get_call("xx-xx-xx-xx")
 
     token = jwt.decode(
-        request_authorization().split()[1], dummy_data.public_key, algorithm="RS256"
+        request_authorization().split()[1], dummy_data.public_key, algorithms="RS256"
     )
     assert token["application_id"] == dummy_data.application_id
 
@@ -258,7 +258,7 @@ def test_deprecated_user_provided_authorization(client, dummy_data):
 
     token = request_authorization().split()[1]
 
-    token = jwt.decode(token, dummy_data.public_key, algorithm="RS256")
+    token = jwt.decode(token, dummy_data.public_key, algorithms="RS256")
 
     assert token["application_id"] == application_id
     assert token["nbf"] == nbf
@@ -280,7 +280,7 @@ def test_deprecated_authorization_with_private_key_path(dummy_data):
     client.get_call("xx-xx-xx-xx")
 
     token = jwt.decode(
-        request_authorization().split()[1], dummy_data.public_key, algorithm="RS256"
+        request_authorization().split()[1], dummy_data.public_key, algorithms="RS256"
     )
     assert token["application_id"] == dummy_data.application_id
 
@@ -292,6 +292,6 @@ def test_deprecated_authorization_with_private_key_object(client, dummy_data):
     client.get_call("xx-xx-xx-xx")
 
     token = jwt.decode(
-        request_authorization().split()[1], dummy_data.public_key, algorithm="RS256"
+        request_authorization().split()[1], dummy_data.public_key, algorithms="RS256"
     )
     assert token["application_id"] == dummy_data.application_id

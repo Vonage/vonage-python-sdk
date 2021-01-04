@@ -789,4 +789,10 @@ class Client:
         payload.setdefault("exp", iat + 60)
         payload.setdefault("jti", str(uuid4()))
 
-        return jwt.encode(payload, self.private_key, algorithm="RS256")
+        token = jwt.encode(payload, self.private_key, algorithm="RS256")
+
+        # If token is string transform it to byte type
+        if(type(token) is str):
+            token = bytes(token, 'utf-8')
+
+        return token

@@ -2,6 +2,7 @@ import os.path
 import time
 
 import jwt
+import requests
 
 import vonage
 from util import *
@@ -20,6 +21,29 @@ def test_create_call(voice, dummy_data):
     assert isinstance(voice.create_call(params), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert request_content_type() == "application/json"
+
+@responses.activate
+def test_params_with_random_number(voice):
+    url = "https://api.nexmo.com/v1/calls" 
+
+    params = {
+        "to": [{"type": "phone", "number": "14843331234"}],
+        "from": {"type": "phone"},
+        "random_from_number": True,
+        "answer_url": ["https://example.com/answer"],
+    }
+    
+    response_body = voice.create_call(params)
+
+    responses.add(
+        method=responses.POST,
+        url=url,
+        body=response_body,
+        content_type='application/json'
+    )
+
+    response = requests.post(url, params=params)
+    assert responses.calls[0].request.params == params
 
 
 @responses.activate

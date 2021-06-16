@@ -18,7 +18,29 @@ class Voice():
             print('Error: {error_message}'.format(error_message=str(e)))
 
     # Creates a new call session
-    def create_call(self, params=None, **kwargs):
+    def create_call(self, number, random_from_number=False, params=None, **kwargs):
+        """
+            Adding Random From Number Feature for the Voice API, 
+            if set to `True`, the from number will be randomly selected 
+            from the pool of numbers available to the application making 
+            the call.
+
+            :param params is a dictionry that holds the 'from' and 'random_from_number'
+            :param **kwargs is a dictionary of keyword arguments
+            :param number is the 'from' number
+            :param random_from_number is a Boolean that gets turned to True
+            if there is no 'from' number. 
+           
+        """
+
+        params = {
+            'from':{'type': 'phone', 'number':number},
+            'random_from_number': random_from_number
+        }
+ 
+        if not params['from']['number']:
+            params['random_from_number'] = True
+
         return self._jwt_signed_post("/v1/calls", params or kwargs)
     
     # Get call history paginated. Pass start and end dates to filter the retrieved information

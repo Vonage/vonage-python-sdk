@@ -23,27 +23,19 @@ def test_create_call(voice, dummy_data):
     assert request_content_type() == "application/json"
 
 @responses.activate
-def test_params_with_random_number(voice):
-    url = "https://api.nexmo.com/v1/calls" 
+def test_params_with_random_number(voice, dummy_data):
+    stub(responses.POST, "https://api.nexmo.com/v1/calls")
 
     params = {
-        "to": [{"type": "phone", "number": "14843331234"}],
-        "from": {"type": "phone"},
-        "random_from_number": True,
-        "answer_url": ["https://example.com/answer"],
+        "from": {"type": "phone", "number": ""},
+        "random_from_number": True
     }
     
-    response_body = voice.create_call(params)
 
-    responses.add(
-        method=responses.POST,
-        url=url,
-        body=response_body,
-        content_type='application/json'
-    )
-
-    response = requests.post(url, params=params)
-    assert responses.calls[0].request.params == params
+    assert isinstance(voice.create_call(params,random_from_number=False), dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert request_content_type() == "application/json"
+    assert request_body() == b'{"from": {"type": "phone", "number": ""}, "random_from_number": true}'
 
 
 @responses.activate

@@ -15,7 +15,7 @@ def test_create_call(voice, dummy_data):
     params = {
         "to": [{"type": "phone", "number": "14843331234"}],
         "from": {"type": "phone", "number": "14843335555"},
-        "answer_url": ["https://example.com/answer"],
+        "answer_url": ["https://example.com/answer"]
     }
 
     assert isinstance(voice.create_call(params), dict)
@@ -27,15 +27,14 @@ def test_params_with_random_number(voice, dummy_data):
     stub(responses.POST, "https://api.nexmo.com/v1/calls")
 
     params = {
-        "from": {"type": "phone", "number": ""},
-        "random_from_number": True
+        "to": [{"type": "phone", "number": "14843331234"}],
+        "random_from_number":True,
+        "answer_url": ["https://example.com/answer"]
     }
-    
 
-    assert isinstance(voice.create_call(params,random_from_number=False), dict)
+    assert isinstance(voice.create_call(params), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert request_content_type() == "application/json"
-    assert request_body() == b'{"from": {"type": "phone", "number": ""}, "random_from_number": true}'
 
 
 @responses.activate

@@ -1,4 +1,4 @@
-.PHONY: clean test dist coverage install requirements release release-test
+.PHONY: clean test dist coverage install requirements release
 
 clean:
 	rm -rf dist build

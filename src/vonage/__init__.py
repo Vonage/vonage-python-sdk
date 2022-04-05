@@ -31,7 +31,7 @@ except ImportError:
     JSONDecodeError = ValueError
 
 
-__version__ = "2.4.0"
+__version__ = "2.5.5"
 
 logger = logging.getLogger("nexmo")
 

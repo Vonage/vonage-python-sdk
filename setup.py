@@ -19,8 +19,8 @@ setup(
     author="Vonage",
     author_email="devrel@vonage.com",
     license="Apache",
-    packages=find_packages(where="src"),
-    package_dir={"": "src"},
+    packages=find_packages(where="vonage"),
+    package_dir={"": "."},
     platforms=["any"],
     install_requires=[
         "requests>=2.4.2",

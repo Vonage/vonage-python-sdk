@@ -9,7 +9,7 @@ try:
 except ImportError:
     JSONDecodeError = ValueError
 
-logger = logging.getLogger("nexmo")
+logger = logging.getLogger("vonage")
 
 
 class BasicAuthenticatedServer(object):
@@ -98,7 +98,7 @@ class ApplicationV2(object):
 
         >>> client.application_v2.create_application({ 'name': 'My Cool App!' })
 
-        Details of the `application_data` dict are described at https://developer.nexmo.com/api/application.v2#createApplication
+        Details of the `application_data` dict are described at https://developer.vonage.com/api/application.v2#createApplication
         """
         return self._api_server.post("/v2/applications", application_data)
 
@@ -106,7 +106,7 @@ class ApplicationV2(object):
         """
         Get application details for the application with `application_id`.
 
-        The format of the returned dict is described at https://developer.nexmo.com/api/application.v2#getApplication
+        The format of the returned dict is described at https://developer.vonage.com/api/application.v2#getApplication
 
         :param str application_id: The application ID.
         :rtype: dict

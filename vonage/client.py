@@ -29,36 +29,36 @@ try:
 except ImportError:
     JSONDecodeError = ValueError
 
-logger = logging.getLogger("nexmo")
+logger = logging.getLogger("vonage")
 
 class Client:
     """
-    Create a Client object to start making calls to Nexmo APIs.
+    Create a Client object to start making calls to Vonage/Nexmo APIs.
 
-    Most methods corresponding to Nexmo API calls are on this class itself,
+    Most methods corresponding to Vonage API calls are on this class itself,
     although newer APIs are under namespaces like :attr:`Client.application_v2`.
 
     The credentials you provide when instantiating a Client determine which
-    methods can be called. Consult the `Nexmo API docs <https://developer.nexmo.com/api/>`_ for details of the
+    methods can be called. Consult the `Vonage API docs <https://developer.vonage.com/api/>`_ for details of the
     authentication used by the APIs you wish to use, and instantiate your
     Client with the appropriate credentials.
 
-    :param str key: Your Nexmo API key
-    :param str secret: Your Nexmo API secret.
-    :param str signature_secret: Your Nexmo API signature secret.
-        You may need to have this enabled by Nexmo support. It is only used for SMS authentication.
+    :param str key: Your Vonage API key
+    :param str secret: Your Vonage API secret.
+    :param str signature_secret: Your Vonage API signature secret.
+        You may need to have this enabled by Vonage support. It is only used for SMS authentication.
     :param str signature_method:
         The encryption method used for signature encryption. This must match the method
-        configured in the Nexmo Dashboard. We recommend `sha256` or `sha512`.
+        configured in the Vonage Dashboard. We recommend `sha256` or `sha512`.
         This should be one of `md5`, `sha1`, `sha256`, or `sha512` if using HMAC digests.
         If you want to use a simple MD5 hash, leave this as `None`.
     :param str application_id: Your application ID if calling methods which use JWT authentication.
     :param str private_key: Your private key if calling methods which use JWT authentication.
         This should either be a str containing the key in its PEM form, or a path to a private key file.
     :param str app_name: This optional value is added to the user-agent header
-        provided by this library and can be used by Nexmo to track your app statistics.
+        provided by this library and can be used by Vonage to track your app statistics.
     :param str app_version: This optional value is added to the user-agent header
-        provided by this library and can be used by Nexmo to track your app statistics.
+        provided by this library and can be used by Vonage to track your app statistics.
     """
 
     def __init__(
@@ -156,9 +156,9 @@ class Client:
             client.send_message({
                 "to": MY_CELLPHONE,
                 "from": MY_VONAGE_NUMBER,
-                "text": "Hello From Nexmo!",
+                "text": "Hello From Vonage!",
             })
-        :param dict params: A dict of values described at `Send an SMS <https://developer.nexmo.com/api/sms#send-an-sms>`_
+        :param dict params: A dict of values described at `Send an SMS <https://developer.vonage.com/api/sms#send-an-sms>`_
         """
         return self.post(self.host(), "/sms/json", params, supports_signature_auth=True)
 
@@ -228,7 +228,7 @@ class Client:
 
     def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
         """
-        Notify Nexmo that an SMS was successfully received.
+        Notify Vonage that an SMS was successfully received.
 
         :param message_id: The `message-id` str returned by the send_message call.
         :param delivered: A `bool` indicating that the message was or was not successfully delivered.
@@ -598,7 +598,7 @@ class Client:
         header_auth=False,
     ):
         """
-        Low-level method to make a post request to a Nexmo API server.
+        Low-level method to make a post request to a Vonage API server, which may have a Nexmo url.
         This method automatically adds authentication, picking the first applicable authentication method from the following:
         - If the supports_signature_auth param is True, and the client was instantiated with a signature_secret, then signature authentication will be used.
         - If the header_auth param is True, then basic authentication will be used, with the client's key and secret.

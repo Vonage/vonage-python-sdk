@@ -28,13 +28,13 @@ class Sms:
         """
         Send an SMS message.
         Requires a client initialized with `key` and either `secret` or `signature_secret`.
-        :param dict params: A dict of values described at `Send an SMS <https://developer.nexmo.com/api/sms#send-an-sms>`_
+        :param dict params: A dict of values described at `Send an SMS <https://developer.vonage.com/api/sms#send-an-sms>`_
         """
         return self._client.post(self._client.host(), "/sms/json", params, supports_signature_auth=True)
     
     def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
         """
-        Notify Nexmo that an SMS was successfully received.
+        Notify Vonage that an SMS was successfully received.
 
         :param message_id: The `message-id` str returned by the send_message call.
         :param delivered: A `bool` indicating that the message was or was not successfully delivered.

@@ -35,8 +35,12 @@ class Client:
     """
     Create a Client object to start making calls to Vonage/Nexmo APIs.
 
-    Most methods corresponding to Vonage API calls are on this class itself,
-    although newer APIs are under namespaces like :attr:`Client.application_v2`.
+    Note on deprecations: most public-facing APIs that are called directly from this class (e.g. voice, 
+    sms, number insight) have been deprecated and will instead be called from modules that house 
+    the relevant classes (e.g. `voice.py`, `sms.py`). Change your code to call these classes directly
+    as they will be removed in a later release!
+
+    Newer APIs are under namespaces like :attr:`Client.application_v2`.
 
     The credentials you provide when instantiating a Client determine which
     methods can be called. Consult the `Vonage API docs <https://developer.vonage.com/api/>`_ for details of the

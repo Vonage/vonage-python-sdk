@@ -578,7 +578,7 @@ class Client:
             params = dict(
                 params or {}, api_key=self.api_key, api_secret=self.api_secret
             )
-        logger.debug("GET to %r with params %r, headers %r", uri, params, headers)
+        logger.debug(f"GET to {repr(uri)} with params {repr(params)}, headers {repr(headers)}")
         return self.parse(host, self.session.get(uri, params=params, headers=headers))
 
     def post(
@@ -610,7 +610,9 @@ class Client:
             headers = dict(headers or {}, Authorization=f"Basic {hash}")
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
-        logger.debug("POST to %r with params %r, headers %r", uri, params, headers)
+        logger.debug(
+            f"POST to {repr(uri)} with params {repr(params)}, headers {repr(headers)}"
+        )
         return self.parse(host, self.session.post(uri, data=params, headers=headers))
 
     def _post_json(self, host, request_uri, json):
@@ -625,7 +627,7 @@ class Client:
             self.headers or {}, Authorization=f"Basic {auth}"
         )
         logger.debug(
-            "POST to %r with body: %r, headers: %r", request_uri, json, headers
+            f"POST to %{repr(request_uri)} with body: {repr(json)}, headers: {repr(headers)}"
         )
         return self.parse(host, self.session.post(uri, headers=headers, json=json))
 
@@ -641,7 +643,7 @@ class Client:
             headers = dict(headers or {}, Authorization=f"Basic {hash}")
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
-        logger.debug("PUT to %r with params %r, headers %r", uri, params, headers)
+        logger.debug(f"PUT to {repr(uri)} with params {repr(params)}, headers {repr(headers)}")
         return self.parse(host, self.session.put(uri, json=params, headers=headers))
 
     def delete(self, host, request_uri, header_auth=False):
@@ -657,13 +659,13 @@ class Client:
             headers = dict(headers or {}, Authorization=f"Basic {hash}")
         else:
             params = {"api_key": self.api_key, "api_secret": self.api_secret}
-        logger.debug("DELETE to %r with params %r, headers %r", uri, params, headers)
+        logger.debug(f"DELETE to {repr(uri)} with params {repr(params)}, headers {repr(headers)}")
         return self.parse(
             host, self.session.delete(uri, params=params, headers=headers)
         )
 
     def parse(self, host, response):
-        logger.debug("Response headers %r", response.headers)
+        logger.debug(f"Response headers {repr(response.headers)}")
         if response.status_code == 401:
             raise AuthenticationError
         elif response.status_code == 204:

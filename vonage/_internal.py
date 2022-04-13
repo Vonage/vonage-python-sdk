@@ -44,7 +44,7 @@ class BasicAuthenticatedServer(object):
         )
 
     def _parse(self, response):
-        logger.debug("Response headers %r", response.headers)
+        logger.debug(f"Response headers {repr(response.headers)}") 
         if response.status_code == 401:
             raise AuthenticationError()
         elif response.status_code == 204:

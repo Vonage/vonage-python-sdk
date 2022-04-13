@@ -51,7 +51,7 @@ def stub_bytes(method, url):
 def assert_re(pattern, string):
     __tracebackhide__ = True
     if not re.search(pattern, string):
-        pytest.fail("Cannot find pattern {!r} in {!r}".format(pattern, string))
+        pytest.fail(f"Cannot find pattern {repr(pattern)} in {repr(string)}")
 
 
 def assert_basic_auth():

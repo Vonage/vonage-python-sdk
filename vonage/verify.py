@@ -9,7 +9,7 @@ class Verify:
             if self._client is None:
                 self._client = vonage.Client(key=key, secret=secret)
         except Exception as e:
-            print("Error: {error_message}".format(error_message=str(e)))
+            print(f"Error: {str(e)}")
 
     def start_verification(self, params=None, **kwargs):
         return self._client.post(

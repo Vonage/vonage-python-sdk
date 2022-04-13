@@ -22,7 +22,7 @@ class Sms:
                     signature_method=signature_method
                 )
         except Exception as e:
-            print('Error: {error_message}'.format(error_message=str(e)))
+            print(f'Error: {str(e)}')
     
     def send_message(self, params):
         """

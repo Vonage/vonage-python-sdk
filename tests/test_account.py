@@ -27,9 +27,7 @@ def test_application_info_options(dummy_data):
         app_name=app_name,
         app_version=app_version,
     )
-    user_agent = "vonage-python/{} python/{} {}/{}".format(
-        vonage.__version__, platform.python_version(), app_name, app_version,
-    )
+    user_agent = f"vonage-python/{vonage.__version__} python/{platform.python_version()} {app_name}/{app_version}"
 
     assert isinstance(client.get_balance(), dict)
     assert request_user_agent() == user_agent

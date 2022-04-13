@@ -21,7 +21,7 @@ class BasicAuthenticatedServer(object):
         session.headers.update({"User-Agent": user_agent})
 
     def _uri(self, path):
-        return "{host}{path}".format(host=self._host, path=path)
+        return f"{self._host}{path}"
 
     def get(self, path, params=None, headers=None):
         return self._parse(
@@ -53,9 +53,9 @@ class BasicAuthenticatedServer(object):
             return response.json()
         elif 400 <= response.status_code < 500:
             logger.warning(
-                "Client error: %s %r", response.status_code, response.content
+                f"Client error: {response.status_code} {repr(response.content)}"
             )
-            message = "{code} response".format(code=response.status_code)
+            message = f"{response.status_code} response"
             # Test for standard error format:
             try:
                 error_data = response.json()
@@ -64,19 +64,18 @@ class BasicAuthenticatedServer(object):
                     and "title" in error_data
                     and "detail" in error_data
                 ):
-                    message = "{title}: {detail} ({type})".format(
-                        title=error_data["title"],
-                        detail=error_data["detail"],
-                        type=error_data["type"],
-                    )
+                    title=error_data["title"]
+                    detail=error_data["detail"]
+                    type=error_data["type"]
+                    message = f"{title}: {detail} ({type})"
             except JSONDecodeError:
                 pass
             raise ClientError(message)
         elif 500 <= response.status_code < 600:
             logger.warning(
-                "Server error: %s %r", response.status_code, response.content
+                f"Server error: {response.status_code} {repr(response.content)}"
             )
-            message = "{code} response".format(code=response.status_code)
+            message = f"{response.status_code} response"
             raise ServerError(message)
 
 
@@ -113,7 +112,7 @@ class ApplicationV2(object):
         """
 
         return self._api_server.get(
-            "/v2/applications/{application_id}".format(application_id=application_id),
+            f"/v2/applications/{application_id}",
             headers={"content-type": "application/json"},
         )
 
@@ -124,7 +123,7 @@ class ApplicationV2(object):
 
         """
         return self._api_server.put(
-            "/v2/applications/{application_id}".format(application_id=application_id),
+            f"/v2/applications/{application_id}",
             params,
         )
 
@@ -134,7 +133,7 @@ class ApplicationV2(object):
         """
 
         self._api_server.delete(
-            "/v2/applications/{application_id}".format(application_id=application_id),
+            f"/v2/applications/{application_id}",
             headers={"content-type": "application/json"},
         )
 

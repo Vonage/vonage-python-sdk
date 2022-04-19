@@ -14,7 +14,6 @@ import jwt
 import os
 import pytz
 import requests
-import sys
 import time
 from uuid import uuid4
 import warnings
@@ -30,40 +29,40 @@ try:
 except ImportError:
     JSONDecodeError = ValueError
 
-
-__version__ = "2.5.5"
-
-logger = logging.getLogger("nexmo")
-
+logger = logging.getLogger("vonage")
 
 class Client:
     """
-    Create a Client object to start making calls to Nexmo APIs.
+    Create a Client object to start making calls to Vonage/Nexmo APIs.
 
-    Most methods corresponding to Nexmo API calls are on this class itself,
-    although newer APIs are under namespaces like :attr:`Client.application_v2`.
+    Note on deprecations: most public-facing APIs that are called directly from this class (e.g. voice, 
+    sms, number insight) have been deprecated and will instead be called from modules that house 
+    the relevant classes (e.g. `voice.py`, `sms.py`). Change your code to call these classes directly
+    as they will be removed in a later release!
+
+    Newer APIs are under namespaces like :attr:`Client.application_v2`.
 
     The credentials you provide when instantiating a Client determine which
-    methods can be called. Consult the `Nexmo API docs <https://developer.nexmo.com/api/>`_ for details of the
+    methods can be called. Consult the `Vonage API docs <https://developer.vonage.com/api/>`_ for details of the
     authentication used by the APIs you wish to use, and instantiate your
     Client with the appropriate credentials.
 
-    :param str key: Your Nexmo API key
-    :param str secret: Your Nexmo API secret.
-    :param str signature_secret: Your Nexmo API signature secret.
-        You may need to have this enabled by Nexmo support. It is only used for SMS authentication.
+    :param str key: Your Vonage API key
+    :param str secret: Your Vonage API secret.
+    :param str signature_secret: Your Vonage API signature secret.
+        You may need to have this enabled by Vonage support. It is only used for SMS authentication.
     :param str signature_method:
         The encryption method used for signature encryption. This must match the method
-        configured in the Nexmo Dashboard. We recommend `sha256` or `sha512`.
+        configured in the Vonage Dashboard. We recommend `sha256` or `sha512`.
         This should be one of `md5`, `sha1`, `sha256`, or `sha512` if using HMAC digests.
         If you want to use a simple MD5 hash, leave this as `None`.
     :param str application_id: Your application ID if calling methods which use JWT authentication.
     :param str private_key: Your private key if calling methods which use JWT authentication.
         This should either be a str containing the key in its PEM form, or a path to a private key file.
     :param str app_name: This optional value is added to the user-agent header
-        provided by this library and can be used by Nexmo to track your app statistics.
+        provided by this library and can be used by Vonage to track your app statistics.
     :param str app_version: This optional value is added to the user-agent header
-        provided by this library and can be used by Nexmo to track your app statistics.
+        provided by this library and can be used by Vonage to track your app statistics.
     """
 
     def __init__(
@@ -100,22 +99,18 @@ class Client:
             with open(self.private_key, "rb") as key_file:
                 self.private_key = key_file.read()
 
-        self.__host_pattern = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$"
+        self.__host_pattern = r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$"
 
         self.__host = "rest.nexmo.com"
 
         self.__api_host = "api.nexmo.com"
 
-        user_agent = "vonage-python/{version} python/{python_version}".format(
-            version=__version__, python_version=python_version()
-        )
+        user_agent = f"vonage-python/{vonage.__version__} python/{python_version()}"
 
         if app_name and app_version:
-            user_agent += " {app_name}/{app_version}".format(
-                app_name=app_name, app_version=app_version
-            )
+            user_agent += f" {app_name}/{app_version}"
 
-        self.headers = {"User-Agent": user_agent}
+        self.headers = {"User-Agent": user_agent, "Content-Type": "application/json"}
 
         self.auth_params = {}
 
@@ -161,9 +156,9 @@ class Client:
             client.send_message({
                 "to": MY_CELLPHONE,
                 "from": MY_VONAGE_NUMBER,
-                "text": "Hello From Nexmo!",
+                "text": "Hello From Vonage!",
             })
-        :param dict params: A dict of values described at `Send an SMS <https://developer.nexmo.com/api/sms#send-an-sms>`_
+        :param dict params: A dict of values described at `Send an SMS <https://developer.vonage.com/api/sms#send-an-sms>`_
         """
         return self.post(self.host(), "/sms/json", params, supports_signature_auth=True)
 
@@ -233,7 +228,7 @@ class Client:
 
     def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
         """
-        Notify Nexmo that an SMS was successfully received.
+        Notify Vonage that an SMS was successfully received.
 
         :param message_id: The `message-id` str returned by the send_message call.
         :param delivered: A `bool` indicating that the message was or was not successfully delivered.
@@ -408,7 +403,7 @@ class Client:
         )
         return self.get(
             self.api_host(),
-            "/v1/applications/{application_id}".format(application_id=application_id),
+            f"/v1/applications/{application_id}",
         )
 
     def create_application(self, params=None, **kwargs):
@@ -427,7 +422,7 @@ class Client:
         )
         return self.put(
             self.api_host(),
-            "/v1/applications/{application_id}".format(application_id=application_id),
+            f"/v1/applications/{application_id}",
             params or kwargs,
         )
 
@@ -439,7 +434,7 @@ class Client:
         )
         return self.delete(
             self.api_host(),
-            "/v1/applications/{application_id}".format(application_id=application_id),
+            f"/v1/applications/{application_id}"
         )
 
     @deprecated(
@@ -458,14 +453,14 @@ class Client:
         reason="vonage.Client#get_call is deprecated. Use Voice#get_call instead"
     )
     def get_call(self, uuid):
-        return self._jwt_signed_get("/v1/calls/{uuid}".format(uuid=uuid))
+        return self._jwt_signed_get(f"/v1/calls/{uuid}")
 
     @deprecated(
         reason="vonage.Client#update_call is deprecated. Use Voice#update_call instead"
     )
     def update_call(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
-            "/v1/calls/{uuid}".format(uuid=uuid), params or kwargs
+            f"/v1/calls/{uuid}", params or kwargs
         )
 
     @deprecated(
@@ -473,35 +468,35 @@ class Client:
     )
     def send_audio(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
-            "/v1/calls/{uuid}/stream".format(uuid=uuid), params or kwargs
+            f"/v1/calls/{uuid}/stream", params or kwargs
         )
 
     @deprecated(
         reason="vonage.Client#stop_audio is deprecated. Use Voice#stop_audio instead"
     )
     def stop_audio(self, uuid):
-        return self._jwt_signed_delete("/v1/calls/{uuid}/stream".format(uuid=uuid))
+        return self._jwt_signed_delete(f"/v1/calls/{uuid}/stream")
 
     @deprecated(
         reason="vonage.Client#send_speech is deprecated. Use Voice#send_speech instead"
     )
     def send_speech(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
-            "/v1/calls/{uuid}/talk".format(uuid=uuid), params or kwargs
+            f"/v1/calls/{uuid}/talk", params or kwargs
         )
 
     @deprecated(
         reason="vonage.Client#stop_speech is deprecated. Use Voice#stop_speech instead"
     )
     def stop_speech(self, uuid):
-        return self._jwt_signed_delete("/v1/calls/{uuid}/talk".format(uuid=uuid))
+        return self._jwt_signed_delete(f"/v1/calls/{uuid}/talk")
 
     @deprecated(
         reason="vonage.Client#send_dtmf is deprecated. Use Voice#send_dtmf instead"
     )
     def send_dtmf(self, uuid, params=None, **kwargs):
         return self._jwt_signed_put(
-            "/v1/calls/{uuid}/dtmf".format(uuid=uuid), params or kwargs
+            f"/v1/calls/{uuid}/dtmf", params or kwargs
         )
 
     def get_recording(self, url):
@@ -517,31 +512,27 @@ class Client:
     def list_secrets(self, api_key):
         return self.get(
             self.api_host(),
-            "/accounts/{api_key}/secrets".format(api_key=api_key),
+            f"/accounts/{api_key}/secrets",
             header_auth=True,
         )
 
     def get_secret(self, api_key, secret_id):
         return self.get(
             self.api_host(),
-            "/accounts/{api_key}/secrets/{secret_id}".format(
-                api_key=api_key, secret_id=secret_id
-            ),
+            f"/accounts/{api_key}/secrets/{secret_id}",
             header_auth=True,
         )
 
     def create_secret(self, api_key, secret):
         body = {"secret": secret}
         return self._post_json(
-            self.api_host(), "/accounts/{api_key}/secrets".format(api_key=api_key), body
+            self.api_host(), f"/accounts/{api_key}/secrets", body
         )
 
     def delete_secret(self, api_key, secret_id):
         return self.delete(
             self.api_host(),
-            "/accounts/{api_key}/secrets/{secret_id}".format(
-                api_key=api_key, secret_id=secret_id
-            ),
+            f"/accounts/{api_key}/secrets/{secret_id}",
             header_auth=True,
         )
 
@@ -568,7 +559,7 @@ class Client:
             if isinstance(value, str):
                 value = value.replace("&", "_").replace("=", "_")
 
-            hasher.update("&{key}={value}".format(key=key, value=value).encode("utf-8"))
+            hasher.update(f"&{key}={value}".encode("utf-8"))
 
         if self.signature_method is None:
             hasher.update(self.signature_secret.encode())
@@ -576,22 +567,18 @@ class Client:
         return hasher.hexdigest()
 
     def get(self, host, request_uri, params=None, header_auth=False):
-        uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
+        uri = f"https://{host}{request_uri}"
         headers = self.headers
         if header_auth:
-            h = base64.b64encode(
-                (
-                    "{api_key}:{api_secret}".format(
-                        api_key=self.api_key, api_secret=self.api_secret
-                    ).encode("utf-8")
-                )
+            hash = base64.b64encode(
+                f"{self.api_key}:{self.api_secret}".encode("utf-8")
             ).decode("ascii")
-            headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
+            headers = dict(headers or {}, Authorization=f"Basic {hash}")
         else:
             params = dict(
                 params or {}, api_key=self.api_key, api_secret=self.api_secret
             )
-        logger.debug("GET to %r with params %r, headers %r", uri, params, headers)
+        logger.debug(f"GET to {repr(uri)} with params {repr(params)}, headers {repr(headers)}")
         return self.parse(host, self.session.get(uri, params=params, headers=headers))
 
     def post(
@@ -603,7 +590,7 @@ class Client:
         header_auth=False,
     ):
         """
-        Low-level method to make a post request to a Nexmo API server.
+        Low-level method to make a post request to a Vonage API server, which may have a Nexmo url.
         This method automatically adds authentication, picking the first applicable authentication method from the following:
         - If the supports_signature_auth param is True, and the client was instantiated with a signature_secret, then signature authentication will be used.
         - If the header_auth param is True, then basic authentication will be used, with the client's key and secret.
@@ -611,88 +598,74 @@ class Client:
         :param bool supports_signature_auth: Preferentially use signature authentication if a signature_secret was provided when initializing this client.
         :param bool header_auth: Use basic authentication instead of adding api_key and api_secret to the request params.
         """
-        uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
+        uri = f"https://{host}{request_uri}"
         headers = self.headers
         if supports_signature_auth and self.signature_secret:
             params["api_key"] = self.api_key
             params["sig"] = self.signature(params)
         elif header_auth:
-            h = base64.b64encode(
-                (
-                    "{api_key}:{api_secret}".format(
-                        api_key=self.api_key, api_secret=self.api_secret
-                    ).encode("utf-8")
-                )
+            hash = base64.b64encode(
+                f"{self.api_key}:{self.api_secret}".encode("utf-8")
             ).decode("ascii")
-            headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
+            headers = dict(headers or {}, Authorization=f"Basic {hash}")
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
-        logger.debug("POST to %r with params %r, headers %r", uri, params, headers)
+        logger.debug(
+            f"POST to {repr(uri)} with params {repr(params)}, headers {repr(headers)}"
+        )
         return self.parse(host, self.session.post(uri, data=params, headers=headers))
 
     def _post_json(self, host, request_uri, json):
         """
         Post json to `request_uri`, using basic auth.
         """
-        uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
+        uri = f"https://{host}{request_uri}"
         auth = base64.b64encode(
-            (
-                "{api_key}:{api_secret}".format(
-                    api_key=self.api_key, api_secret=self.api_secret
-                ).encode("utf-8")
-            )
+            f"{self.api_key}:{self.api_secret}".encode("utf-8")
         ).decode("ascii")
         headers = dict(
-            self.headers or {}, Authorization="Basic {hash}".format(hash=auth)
+            self.headers or {}, Authorization=f"Basic {auth}"
         )
         logger.debug(
-            "POST to %r with body: %r, headers: %r", request_uri, json, headers
+            f"POST to %{repr(request_uri)} with body: {repr(json)}, headers: {repr(headers)}"
         )
         return self.parse(host, self.session.post(uri, headers=headers, json=json))
 
     def put(self, host, request_uri, params, header_auth=False):
-        uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
+        uri = f"https://{host}{request_uri}"
 
         headers = self.headers
         if header_auth:
-            h = base64.b64encode(
-                (
-                    "{api_key}:{api_secret}".format(
-                        api_key=self.api_key, api_secret=self.api_secret
-                    ).encode("utf-8")
-                )
+            hash = base64.b64encode(
+                f"{self.api_key}:{self.api_secret}".encode("utf-8")
             ).decode("ascii")
             # Must create a new headers dict here, otherwise we'd be mutating `self.headers`:
-            headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
+            headers = dict(headers or {}, Authorization=f"Basic {hash}")
         else:
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
-        logger.debug("PUT to %r with params %r, headers %r", uri, params, headers)
+        logger.debug(f"PUT to {repr(uri)} with params {repr(params)}, headers {repr(headers)}")
         return self.parse(host, self.session.put(uri, json=params, headers=headers))
 
     def delete(self, host, request_uri, header_auth=False):
-        uri = "https://{host}{request_uri}".format(host=host, request_uri=request_uri)
+        uri = f"https://{host}{request_uri}"
 
         params = None
         headers = self.headers
         if header_auth:
-            h = base64.b64encode(
-                (
-                    "{api_key}:{api_secret}".format(
-                        api_key=self.api_key, api_secret=self.api_secret
-                    ).encode("utf-8")
-                )
+            hash = base64.b64encode(
+                f"{self.api_key}:{self.api_secret}".encode("utf-8")
             ).decode("ascii")
             # Must create a new headers dict here, otherwise we'd be mutating `self.headers`:
-            headers = dict(headers or {}, Authorization="Basic {hash}".format(hash=h))
+            headers = dict(headers or {}, Authorization=f"Basic {hash}")
         else:
             params = {"api_key": self.api_key, "api_secret": self.api_secret}
-        logger.debug("DELETE to %r with params %r, headers %r", uri, params, headers)
+        logger.debug(f"DELETE to {repr(uri)} with params {repr(params)}, headers {repr(headers)}")
         return self.parse(
             host, self.session.delete(uri, params=params, headers=headers)
         )
 
     def parse(self, host, response):
-        logger.debug("Response headers %r", response.headers)
+        logger.debug(f"Response headers {repr(response.headers)}")
         if response.status_code == 401:
             raise AuthenticationError
         elif response.status_code == 204:
@@ -707,11 +680,9 @@ class Client:
                 return response.content
         elif 400 <= response.status_code < 500:
             logger.warning(
-                "Client error: %s %r", response.status_code, response.content
+                f"Client error: {response.status_code} {repr(response.content)}"
             )
-            message = "{code} response from {host}".format(
-                code=response.status_code, host=host
-            )
+            message = f"{response.status_code} response from {host}"
 
             # Test for standard error format:
             try:
@@ -721,27 +692,21 @@ class Client:
                     and "title" in error_data
                     and "detail" in error_data
                 ):
-                    message = "{title}: {detail} ({type})".format(
-                        title=error_data["title"],
-                        detail=error_data["detail"],
-                        type=error_data["type"],
-                    )
+                    title=error_data["title"]
+                    detail=error_data["detail"]
+                    type=error_data["type"]
+                    message = f"{title}: {detail} ({type})"
+
             except JSONDecodeError:
                 pass
             raise ClientError(message)
         elif 500 <= response.status_code < 600:
-            logger.warning(
-                "Server error: %s %r", response.status_code, response.content
-            )
-            message = "{code} response from {host}".format(
-                code=response.status_code, host=host
-            )
+            logger.warning(f"Server error: {response.status_code} {repr(response.content)}")
+            message = f"{response.status_code} response from {host}"
             raise ServerError(message)
 
     def _jwt_signed_get(self, request_uri, params=None):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host(), request_uri=request_uri
-        )
+        uri = f"https://{self.api_host()}{request_uri}"
 
         return self.parse(
             self.api_host(),
@@ -749,9 +714,7 @@ class Client:
         )
 
     def _jwt_signed_post(self, request_uri, params):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host(), request_uri=request_uri
-        )
+        uri = f"https://{self.api_host()}{request_uri}"
 
         return self.parse(
             self.api_host(),
@@ -759,18 +722,14 @@ class Client:
         )
 
     def _jwt_signed_put(self, request_uri, params):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host(), request_uri=request_uri
-        )
+        uri = f"https://{self.api_host()}{request_uri}"
 
         return self.parse(
             self.api_host(), self.session.put(uri, json=params, headers=self._headers())
         )
 
     def _jwt_signed_delete(self, request_uri):
-        uri = "https://{api_host}{request_uri}".format(
-            api_host=self.api_host(), request_uri=request_uri
-        )
+        uri = f"https://{self.api_host()}{request_uri}"
 
         return self.parse(
             self.api_host(), self.session.delete(uri, headers=self._headers())

@@ -108,3 +108,4 @@ ENV*
 .vscode
 .idea
 .pypirc
+.pytest_cache

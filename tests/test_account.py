@@ -27,9 +27,7 @@ def test_application_info_options(dummy_data):
         app_name=app_name,
         app_version=app_version,
     )
-    user_agent = "vonage-python/{} python/{} {}/{}".format(
-        vonage.__version__, platform.python_version(), app_name, app_version,
-    )
+    user_agent = f"vonage-python/{vonage.__version__} python/{platform.python_version()} {app_name}/{app_version}"
 
     assert isinstance(client.get_balance(), dict)
     assert request_user_agent() == user_agent
@@ -133,8 +131,7 @@ def test_list_secrets_missing(client):
         client.list_secrets("meaccountid")
     assert_basic_auth()
     assert (
-        """ClientError: Invalid API Key: API key 'ABC123' does not exist, or you do not have access (https://developer.nexmo.com/api-errors#invalid-api-key)"""
-        in str(ce)
+        str(ce.value) == """Invalid API Key: API key 'ABC123' does not exist, or you do not have access (https://developer.nexmo.com/api-errors#invalid-api-key)"""
     )
 
 
@@ -173,8 +170,7 @@ def test_delete_secret_last_secret(client):
         client.delete_secret("meaccountid", "mahsecret")
     assert_basic_auth()
     assert (
-        """ClientError: Secret Deletion Forbidden: Can not delete the last secret. The account must always have at least 1 secret active at any time (https://developer.nexmo.com/api-errors/account/secret-management#delete-last-secret)"""
-        in str(ce)
+        str(ce.value) == """Secret Deletion Forbidden: Can not delete the last secret. The account must always have at least 1 secret active at any time (https://developer.nexmo.com/api-errors/account/secret-management#delete-last-secret)"""
     )
 
 
@@ -204,8 +200,7 @@ def test_create_secret_max_secrets(client):
         client.create_secret("meaccountid", "mahsecret")
     assert_basic_auth()
     assert (
-        """ClientError: Maxmimum number of secrets already met: This account has reached maximum number of '2' allowed secrets (https://developer.nexmo.com/api-errors/account/secret-management#maximum-secrets-allowed)"""
-        in str(ce)
+        str(ce.value) == """Maxmimum number of secrets already met: This account has reached maximum number of '2' allowed secrets (https://developer.nexmo.com/api-errors/account/secret-management#maximum-secrets-allowed)"""
     )
 
 
@@ -222,6 +217,5 @@ def test_create_secret_validation(client):
         client.create_secret("meaccountid", "mahsecret")
     assert_basic_auth()
     assert (
-        """ClientError: Bad Request: The request failed due to validation errors (https://developer.nexmo.com/api-errors/account/secret-management#validation)"""
-        in str(ce)
+        str(ce.value) == """Bad Request: The request failed due to validation errors (https://developer.nexmo.com/api-errors/account/secret-management#validation)"""
     )

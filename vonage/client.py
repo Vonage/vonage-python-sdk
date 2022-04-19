@@ -110,7 +110,7 @@ class Client:
         if app_name and app_version:
             user_agent += f" {app_name}/{app_version}"
 
-        self.headers = {"User-Agent": user_agent}
+        self.headers = {"User-Agent": user_agent, "Content-Type": "application/json"}
 
         self.auth_params = {}
 

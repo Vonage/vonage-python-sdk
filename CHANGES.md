@@ -1,10 +1,10 @@
-# 2.6.0
+# 2.6.x
 
 - Dropped support for Python 3.6 and below
 - Now supporting currently supported stable versions of Python, i.e. Python 3.7-3.10
 - Internal refactoring and enhancements
 
-# 2.5.x
+# 2.5.5
 
 - Support for Independent SMS, Voice and Verify APIs with tests as well as current client methods
 - Getters/Setters to extract/rewrite custom attributes

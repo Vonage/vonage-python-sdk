@@ -11,7 +11,7 @@ with io.open(
 
 setup(
     name="vonage",
-    version="2.6.0",
+    version="2.6.3",
     description="Vonage Server SDK for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -19,8 +19,8 @@ setup(
     author="Vonage",
     author_email="devrel@vonage.com",
     license="Apache",
-    packages=find_packages(where="vonage"),
-    package_dir={"": "."},
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     platforms=["any"],
     install_requires=[
         "requests>=2.4.2",

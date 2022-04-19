@@ -1,4 +1,4 @@
-.PHONY: clean test dist coverage install requirements release
+.PHONY: clean test build coverage install requirements release
 
 clean:
 	rm -rf dist build
@@ -10,11 +10,11 @@ coverage:
 test:
 	pytest -v
 
-dist:
-	python setup.py sdist --formats zip,gztar bdist_wheel
+build:
+	python -m build
 
 release:
-	twine upload dist/*
+	python -m twine upload dist/*
 
 install: requirements
 

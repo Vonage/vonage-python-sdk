@@ -113,7 +113,7 @@ class ApplicationV2(object):
 
         return self._api_server.get(
             f"/v2/applications/{application_id}",
-            headers={"content-type": "application/json"},
+            headers={"Content-Type": "application/json"},
         )
 
     def update_application(self, application_id, params):
@@ -134,7 +134,7 @@ class ApplicationV2(object):
 
         self._api_server.delete(
             f"/v2/applications/{application_id}",
-            headers={"content-type": "application/json"},
+            headers={"Content-Type": "application/json"},
         )
 
     def list_applications(self, page_size=None, page=None):
@@ -151,7 +151,7 @@ class ApplicationV2(object):
         return self._api_server.get(
             "/v2/applications",
             params=params,
-            headers={"content-type": "application/json"},
+            headers={"Content-Type": "application/json"},
         )
 
 

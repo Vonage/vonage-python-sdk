@@ -316,7 +316,7 @@ if response is not None:
 client = Client(key='API_KEY', secret='API_SECRET')
 
 verify = Verify(client)
-response = verify.request(number=RECIPIENT_NUMBER, brand='AcmeInc')
+response = verify.start_verification(number=RECIPIENT_NUMBER, brand='AcmeInc')
 
 if response["status"] == "0":
     print("Started verification request_id is %s" % (response["request_id"]))
@@ -330,7 +330,7 @@ else:
 client = Client(key='API_KEY', secret='API_SECRET')
 
 verify = Verify(client)
-response = verify.request(number=RECIPIENT_NUMBER, brand='AcmeInc', workflow_id=1)
+response = verify.start_verification(number=RECIPIENT_NUMBER, brand='AcmeInc', workflow_id=1)
 
 if response["status"] == "0":
     print("Started verification request_id is %s" % (response["request_id"]))

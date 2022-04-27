@@ -3,6 +3,7 @@
 - Dropped support for Python 3.6 and below
 - Now supporting currently supported stable versions of Python, i.e. Python 3.7-3.10
 - Internal refactoring and enhancements
+- Adding default `max_retries` option to the `BasicAuthenticationServer` constructor, specifying optional parameters
 
 # 2.5.5
 

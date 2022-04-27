@@ -17,7 +17,7 @@ class BasicAuthenticatedServer(object):
     def __init__(self, host, user_agent, api_key, api_secret, timeout=None, pool_connections=10, pool_maxsize=10, max_retries=3):
         self._host = host
         self._session = session = Session()
-        self.timeout = None
+        self.timeout = timeout
         adapter = HTTPAdapter(pool_connections=pool_connections, pool_maxsize=pool_maxsize, max_retries=max_retries)
         self._session.mount("https://", adapter)
         self._session.mount("http://", adapter)

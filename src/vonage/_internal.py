@@ -1,5 +1,6 @@
 import logging
 
+from requests.adapters import HTTPAdapter
 from requests.sessions import Session
 
 from .errors import AuthenticationError, ClientError, ServerError
@@ -13,10 +14,13 @@ logger = logging.getLogger("vonage")
 
 
 class BasicAuthenticatedServer(object):
-    def __init__(self, host, user_agent, api_key, api_secret, timeout=None):
+    def __init__(self, host, user_agent, api_key, api_secret, timeout=None, pool_connections=10, pool_maxsize=10, max_retries=3):
         self._host = host
         self._session = session = Session()
         self.timeout = None
+        adapter = HTTPAdapter(pool_connections=pool_connections, pool_maxsize=pool_maxsize, max_retries=max_retries)
+        self._session.mount("https://", adapter)
+        self._session.mount("http://", adapter)
         session.auth = (api_key, api_secret)  # Basic authentication.
         session.headers.update({"User-Agent": user_agent})
 

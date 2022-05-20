@@ -74,3 +74,9 @@ def number_insight(client):
     import vonage
 
     return vonage.NumberInsight(client)
+
+@pytest.fixture
+def account(client):
+    import vonage
+
+    return vonage.Account(client)

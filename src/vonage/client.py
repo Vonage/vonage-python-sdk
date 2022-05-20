@@ -1,4 +1,5 @@
 from ._internal import _format_date_param
+from .account import *
 from .application import Application, BasicAuthenticatedServer
 from .errors import *
 from .number_insight import *
@@ -148,14 +149,24 @@ class Client:
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
 
+
+    @deprecated(
+        reason="vonage.Client#get_balance is deprecated. Use Account#get_balance instead"
+    )
     def get_balance(self):
         return self.get(self.host(), "/account/get-balance")
 
+    @deprecated(
+        reason="vonage.Client#get_country_pricing is deprecated. Use Account#get_country_pricing instead"
+    )
     def get_country_pricing(self, country_code):
         return self.get(
             self.host(), "/account/get-pricing/outbound", {"country": country_code}
         )
 
+    @deprecated(
+        reason="vonage.Client#get_prefix_pricing is deprecated. Use Account#get_prefix_pricing instead"
+    )
     def get_prefix_pricing(self, prefix):
         return self.get(
             self.host(), "/account/get-prefix-pricing/outbound", {"prefix": prefix}

@@ -8,12 +8,18 @@ import vonage
 
 
 @responses.activate
-def test_get_balance(client, dummy_data):
+def test_deprecated_get_balance(client, dummy_data):
     stub(responses.GET, "https://rest.nexmo.com/account/get-balance")
 
     assert isinstance(client.get_balance(), dict)
     assert request_user_agent() == dummy_data.user_agent
 
+@responses.activate
+def test_get_balance(account, dummy_data):
+    stub(responses.GET, "https://rest.nexmo.com/account/get-balance")
+
+    assert isinstance(account.get_balance(), dict)
+    assert request_user_agent() == dummy_data.user_agent
 
 @responses.activate
 def test_application_info_options(dummy_data):
@@ -34,22 +40,36 @@ def test_application_info_options(dummy_data):
 
 
 @responses.activate
-def test_get_country_pricing(client, dummy_data):
+def test_deprecated_get_country_pricing(client, dummy_data):
     stub(responses.GET, "https://rest.nexmo.com/account/get-pricing/outbound")
 
     assert isinstance(client.get_country_pricing("GB"), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "country=GB" in request_query()
 
+@responses.activate
+def test_get_country_pricing(account, dummy_data):
+    stub(responses.GET, "https://rest.nexmo.com/account/get-pricing/outbound")
+
+    assert isinstance(account.get_country_pricing("GB"), dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert "country=GB" in request_query()
 
 @responses.activate
-def test_get_prefix_pricing(client, dummy_data):
+def test_deprecated_get_prefix_pricing(client, dummy_data):
     stub(responses.GET, "https://rest.nexmo.com/account/get-prefix-pricing/outbound")
 
     assert isinstance(client.get_prefix_pricing(44), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "prefix=44" in request_query()
 
+@responses.activate
+def test_get_prefix_pricing(account, dummy_data):
+    stub(responses.GET, "https://rest.nexmo.com/account/get-prefix-pricing/outbound")
+
+    assert isinstance(account.get_prefix_pricing(44), dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert "prefix=44" in request_query()
 
 @responses.activate
 def test_get_sms_pricing(client, dummy_data):

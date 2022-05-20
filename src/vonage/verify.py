@@ -1,6 +1,4 @@
 import vonage
-import warnings
-
 
 class Verify:
     def __init__(self, client=None, key=None, secret=None):

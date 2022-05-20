@@ -1,11 +1,13 @@
-from .application import Application, BasicAuthenticatedServer
 from ._internal import _format_date_param
+from .application import Application, BasicAuthenticatedServer
 from .errors import *
-from .voice import *
+from .number_insight import *
 from .sms import *
+from .voice import *
 from .verify import *
-from datetime import datetime
+
 import logging
+from datetime import datetime
 from platform import python_version
 
 import base64
@@ -146,23 +148,6 @@ class Client:
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
 
-    @deprecated(
-        reason="vonage.Client#send_message is deprecated. Use Sms#send_message instead"
-    )
-    def send_message(self, params):
-        """
-        Send an SMS message.
-        Requires a client initialized with `key` and either `secret` or `signature_secret`.
-        ::
-            client.send_message({
-                "to": MY_CELLPHONE,
-                "from": MY_VONAGE_NUMBER,
-                "text": "Hello From Vonage!",
-            })
-        :param dict params: A dict of values described at `Send an SMS <https://developer.vonage.com/api/sms#send-an-sms>`_
-        """
-        return self.post(self.host(), "/sms/json", params, supports_signature_auth=True)
-
     def get_balance(self):
         return self.get(self.host(), "/account/get-balance")
 
@@ -268,238 +253,7 @@ class Client:
     def initiate_tts_prompt_call(self, params=None, **kwargs):
         return self.post(self.api_host(), "/tts-prompt/json", params or kwargs)
 
-    @deprecated(
-        reason="vonage.Client#start_verification is deprecated. Use Verify#start_verification instead"
-    )
-    def start_verification(self, params=None, **kwargs):
-        return self.post(self.api_host(), "/verify/json", params or kwargs)
-
-    def send_verification_request(self, params=None, **kwargs):
-        warnings.warn(
-            "vonage.Client#send_verification_request is deprecated (use Verify#start_verification instead)",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-        return self.post(self.api_host(), "/verify/json", params or kwargs)
-
-    @deprecated(
-        reason="vonage.Client#check_verification is deprecated. Use Verify#check instead"
-    )
-    def check_verification(self, request_id, params=None, **kwargs):
-        return self.post(
-            self.api_host(),
-            "/verify/check/json",
-            dict(params or kwargs, request_id=request_id),
-        )
-
-    def check_verification_request(self, params=None, **kwargs):
-        warnings.warn(
-            "vonage.Client#check_verification_request is deprecated (use Verify#check instead)",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-        return self.post(self.api_host(), "/verify/check/json", params or kwargs)
-
-    @deprecated(
-        reason="vonage.Client#start_psd2_verification_request is deprecated. Use Verify#psd2 instead"
-    )
-    def start_psd2_verification_request(self, params=None, **kwargs):
-        return self.post(self.api_host(), "/verify/psd2/json", params or kwargs)
-
-    @deprecated(
-        reason="vonage.Client#get_verification is deprecated. Use Verify#search instead"
-    )
-    def get_verification(self, request_id):
-        return self.get(
-            self.api_host(), "/verify/search/json", {"request_id": request_id}
-        )
-
-    def get_verification_request(self, request_id):
-        warnings.warn(
-            "vonage.Client#get_verification_request is deprecated (use Verify#search instead)",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-        return self.get(
-            self.api_host(), "/verify/search/json", {"request_id": request_id}
-        )
-
-    @deprecated(
-        reason="vonage.Client#cancel_verification is deprecated. Use Verify#cancel instead"
-    )
-    def cancel_verification(self, request_id):
-        return self.post(
-            self.api_host(),
-            "/verify/control/json",
-            {"request_id": request_id, "cmd": "cancel"},
-        )
-
-    @deprecated(
-        reason="vonage.Client#trigger_next_verification_event is deprecated. Use Verify#trigger_next_event instead"
-    )
-    def trigger_next_verification_event(self, request_id):
-        return self.post(
-            self.api_host(),
-            "/verify/control/json",
-            {"request_id": request_id, "cmd": "trigger_next_event"},
-        )
-
-    def control_verification_request(self, params=None, **kwargs):
-        warnings.warn(
-            "vonage.Client#control_verification_request is deprecated",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-        return self.post(self.api_host(), "/verify/control/json", params or kwargs)
-
-    def get_basic_number_insight(self, params=None, **kwargs):
-        return self.get(self.api_host(), "/ni/basic/json", params or kwargs)
-
-    def get_standard_number_insight(self, params=None, **kwargs):
-        return self.get(self.api_host(), "/ni/standard/json", params or kwargs)
-
-    def get_number_insight(self, params=None, **kwargs):
-        warnings.warn(
-            "vonage.Client#get_number_insight is deprecated (use #get_standard_number_insight instead)",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-        return self.get(self.api_host(), "/number/lookup/json", params or kwargs)
-
-    def get_async_advanced_number_insight(self, params=None, **kwargs):
-        argoparams = params or kwargs
-        if "callback" in argoparams:
-            return self.get(
-                self.api_host(), "/ni/advanced/async/json", params or kwargs
-            )
-        else:
-            raise ClientError(
-                "Error: Callback needed for async advanced number insight"
-            )
-
-    def get_advanced_number_insight(self, params=None, **kwargs):
-        return self.get(self.api_host(), "/ni/advanced/json", params or kwargs)
-
-    def request_number_insight(self, params=None, **kwargs):
-        return self.post(self.host(), "/ni/json", params or kwargs)
-
-    def get_applications(self, params=None, **kwargs):
-        warnings.warn(
-            "vonage.Client#get_applications is deprecated (use methods from #application instead)",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get(self.api_host(), "/v1/applications", params or kwargs)
-
-    def get_application(self, application_id):
-        warnings.warn(
-            "vonage.Client#get_application is deprecated (use methods from #application instead)",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get(
-            self.api_host(),
-            f"/v1/applications/{application_id}",
-        )
-
-    def create_application(self, params=None, **kwargs):
-        warnings.warn(
-            "vonage.Client#create_application is deprecated (use methods from #application instead)",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.post(self.api_host(), "/v1/applications", params or kwargs)
-
-    def update_application(self, application_id, params=None, **kwargs):
-        warnings.warn(
-            "vonage.Client#update_application is deprecated (use methods from #application instead)",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.put(
-            self.api_host(),
-            f"/v1/applications/{application_id}",
-            params or kwargs,
-        )
-
-    def delete_application(self, application_id):
-        warnings.warn(
-            "vonage.Client#delete_application is deprecated (use methods from #application instead)",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.delete(
-            self.api_host(),
-            f"/v1/applications/{application_id}"
-        )
-
-    @deprecated(
-        reason="vonage.Client#create_call is deprecated. Use Voice#create_call instead"
-    )
-    def create_call(self, params=None, **kwargs):
-        return self._jwt_signed_post("/v1/calls", params or kwargs)
-
-    @deprecated(
-        reason="vonage.Client#get_calls is deprecated. Use Voice#get_calls instead"
-    )
-    def get_calls(self, params=None, **kwargs):
-        return self._jwt_signed_get("/v1/calls", params or kwargs)
-
-    @deprecated(
-        reason="vonage.Client#get_call is deprecated. Use Voice#get_call instead"
-    )
-    def get_call(self, uuid):
-        return self._jwt_signed_get(f"/v1/calls/{uuid}")
-
-    @deprecated(
-        reason="vonage.Client#update_call is deprecated. Use Voice#update_call instead"
-    )
-    def update_call(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put(
-            f"/v1/calls/{uuid}", params or kwargs
-        )
-
-    @deprecated(
-        reason="vonage.Client#send_audio is deprecated. Use Voice#send_audio instead"
-    )
-    def send_audio(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put(
-            f"/v1/calls/{uuid}/stream", params or kwargs
-        )
-
-    @deprecated(
-        reason="vonage.Client#stop_audio is deprecated. Use Voice#stop_audio instead"
-    )
-    def stop_audio(self, uuid):
-        return self._jwt_signed_delete(f"/v1/calls/{uuid}/stream")
-
-    @deprecated(
-        reason="vonage.Client#send_speech is deprecated. Use Voice#send_speech instead"
-    )
-    def send_speech(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put(
-            f"/v1/calls/{uuid}/talk", params or kwargs
-        )
-
-    @deprecated(
-        reason="vonage.Client#stop_speech is deprecated. Use Voice#stop_speech instead"
-    )
-    def stop_speech(self, uuid):
-        return self._jwt_signed_delete(f"/v1/calls/{uuid}/talk")
-
-    @deprecated(
-        reason="vonage.Client#send_dtmf is deprecated. Use Voice#send_dtmf instead"
-    )
-    def send_dtmf(self, uuid, params=None, **kwargs):
-        return self._jwt_signed_put(
-            f"/v1/calls/{uuid}/dtmf", params or kwargs
-        )
-
+    
     def get_recording(self, url):
         hostname = urlparse(url).hostname
         return self.parse(hostname, self.session.get(url, headers=self._headers()))
@@ -687,6 +441,7 @@ class Client:
 
             # Test for standard error format:
             try:
+    
                 error_data = response.json()
                 if (
                     "type" in error_data
@@ -756,3 +511,279 @@ class Client:
             token = bytes(token, 'utf-8')
 
         return token
+
+
+
+
+
+
+    # Deprecated methods that will be removed soon
+    #########################################################
+    #########################################################
+    #########################################################
+
+    @deprecated(
+        reason="vonage.Client#send_message is deprecated. Use Sms#send_message instead"
+    )
+    def send_message(self, params):
+        """
+        Send an SMS message.
+        Requires a client initialized with `key` and either `secret` or `signature_secret`.
+        ::
+        client.send_message({
+            "to": MY_CELLPHONE,
+            "from": MY_VONAGE_NUMBER,
+            "text": "Hello From Vonage!",
+        })
+        :param dict params: A dict of values described at `Send an SMS <https://developer.vonage.com/api/sms#send-an-sms>`_
+        """
+        return self.post(self.host(), "/sms/json", params, supports_signature_auth=True)
+
+
+    @deprecated(
+        reason="vonage.Client#start_verification is deprecated. Use Verify#start_verification instead"
+    )
+    def start_verification(self, params=None, **kwargs):
+        return self.post(self.api_host(), "/verify/json", params or kwargs)
+
+    def send_verification_request(self, params=None, **kwargs):
+        warnings.warn(
+            "vonage.Client#send_verification_request is deprecated (use Verify#start_verification instead)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.post(self.api_host(), "/verify/json", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#check_verification is deprecated. Use Verify#check instead"
+    )
+    def check_verification(self, request_id, params=None, **kwargs):
+        return self.post(
+            self.api_host(),
+            "/verify/check/json",
+            dict(params or kwargs, request_id=request_id),
+        )
+
+    def check_verification_request(self, params=None, **kwargs):
+        warnings.warn(
+            "vonage.Client#check_verification_request is deprecated (use Verify#check instead)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.post(self.api_host(), "/verify/check/json", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#start_psd2_verification_request is deprecated. Use Verify#psd2 instead"
+    )
+    def start_psd2_verification_request(self, params=None, **kwargs):
+        return self.post(self.api_host(), "/verify/psd2/json", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#get_verification is deprecated. Use Verify#search instead"
+    )
+    def get_verification(self, request_id):
+        return self.get(
+            self.api_host(), "/verify/search/json", {"request_id": request_id}
+        )
+
+    def get_verification_request(self, request_id):
+        warnings.warn(
+            "vonage.Client#get_verification_request is deprecated (use Verify#search instead)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.get(
+            self.api_host(), "/verify/search/json", {"request_id": request_id}
+        )
+
+    @deprecated(
+        reason="vonage.Client#cancel_verification is deprecated. Use Verify#cancel instead"
+    )
+    def cancel_verification(self, request_id):
+        return self.post(
+            self.api_host(),
+            "/verify/control/json",
+            {"request_id": request_id, "cmd": "cancel"},
+        )
+
+    @deprecated(
+        reason="vonage.Client#trigger_next_verification_event is deprecated. Use Verify#trigger_next_event instead"
+    )
+    def trigger_next_verification_event(self, request_id):
+        return self.post(
+            self.api_host(),
+            "/verify/control/json",
+            {"request_id": request_id, "cmd": "trigger_next_event"},
+        )
+
+    def control_verification_request(self, params=None, **kwargs):
+        warnings.warn(
+            "vonage.Client#control_verification_request is deprecated",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.post(self.api_host(), "/verify/control/json", params or kwargs)
+
+    def get_number_insight(self, params=None, **kwargs):
+        warnings.warn(
+            "vonage.Client#get_number_insight is deprecated (use #get_standard_number_insight instead)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.get(self.api_host(), "/number/lookup/json", params or kwargs)
+
+
+    def get_applications(self, params=None, **kwargs):
+        warnings.warn(
+            "vonage.Client#get_applications is deprecated (use methods from #application instead)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.get(self.api_host(), "/v1/applications", params or kwargs)
+
+    def get_application(self, application_id):
+        warnings.warn(
+            "vonage.Client#get_application is deprecated (use methods from #application instead)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.get(
+            self.api_host(),
+            f"/v1/applications/{application_id}",
+        )
+
+    def create_application(self, params=None, **kwargs):
+        warnings.warn(
+            "vonage.Client#create_application is deprecated (use methods from #application instead)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.post(self.api_host(), "/v1/applications", params or kwargs)
+
+    def update_application(self, application_id, params=None, **kwargs):
+        warnings.warn(
+            "vonage.Client#update_application is deprecated (use methods from #application instead)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.put(
+            self.api_host(),
+            f"/v1/applications/{application_id}",
+            params or kwargs,
+        )
+
+    def delete_application(self, application_id):
+        warnings.warn(
+            "vonage.Client#delete_application is deprecated (use methods from #application instead)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.delete(
+            self.api_host(),
+            f"/v1/applications/{application_id}"
+        )
+
+    @deprecated(
+        reason="vonage.Client#create_call is deprecated. Use Voice#create_call instead"
+    )
+    def create_call(self, params=None, **kwargs):
+        return self._jwt_signed_post("/v1/calls", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#get_calls is deprecated. Use Voice#get_calls instead"
+    )
+    def get_calls(self, params=None, **kwargs):
+        return self._jwt_signed_get("/v1/calls", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#get_call is deprecated. Use Voice#get_call instead"
+    )
+    def get_call(self, uuid):
+        return self._jwt_signed_get(f"/v1/calls/{uuid}")
+
+    @deprecated(
+        reason="vonage.Client#update_call is deprecated. Use Voice#update_call instead"
+    )
+    def update_call(self, uuid, params=None, **kwargs):
+        return self._jwt_signed_put(
+            f"/v1/calls/{uuid}", params or kwargs
+        )
+
+    @deprecated(
+        reason="vonage.Client#send_audio is deprecated. Use Voice#send_audio instead"
+    )
+    def send_audio(self, uuid, params=None, **kwargs):
+        return self._jwt_signed_put(
+            f"/v1/calls/{uuid}/stream", params or kwargs
+        )
+
+    @deprecated(
+        reason="vonage.Client#stop_audio is deprecated. Use Voice#stop_audio instead"
+    )
+    def stop_audio(self, uuid):
+        return self._jwt_signed_delete(f"/v1/calls/{uuid}/stream")
+
+    @deprecated(
+        reason="vonage.Client#send_speech is deprecated. Use Voice#send_speech instead"
+    )
+    def send_speech(self, uuid, params=None, **kwargs):
+        return self._jwt_signed_put(
+            f"/v1/calls/{uuid}/talk", params or kwargs
+        )
+
+    @deprecated(
+        reason="vonage.Client#stop_speech is deprecated. Use Voice#stop_speech instead"
+    )
+    def stop_speech(self, uuid):
+        return self._jwt_signed_delete(f"/v1/calls/{uuid}/talk")
+
+    @deprecated(
+        reason="vonage.Client#send_dtmf is deprecated. Use Voice#send_dtmf instead"
+    )
+    def send_dtmf(self, uuid, params=None, **kwargs):
+        return self._jwt_signed_put(
+            f"/v1/calls/{uuid}/dtmf", params or kwargs
+        )
+
+    @deprecated(
+        reason="vonage.Client#get_basic_number_insight is deprecated. Use NumberInsight#get_basic_number_insight instead"
+    )
+    def get_basic_number_insight(self, params=None, **kwargs):
+        return self.get(self.api_host(), "/ni/basic/json", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#get_standard_number_insight is deprecated. Use NumberInsight#get_standard_number_insight instead"
+    ) 
+    def get_standard_number_insight(self, params=None, **kwargs):
+        return self.get(self.api_host(), "/ni/standard/json", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#get_async_advanced_number_insight is deprecated. Use NumberInsight#get_async_advanced_number_insight instead"
+    ) 
+    def get_async_advanced_number_insight(self, params=None, **kwargs):
+        argoparams = params or kwargs
+        if "callback" in argoparams:
+            return self.get(
+                self.api_host(), "/ni/advanced/async/json", params or kwargs
+            )
+        else:
+            raise ClientError(
+                "Error: Callback needed for async advanced number insight"
+            )
+
+    @deprecated(
+        reason="vonage.Client#get_advanced_number_insight is deprecated. Use NumberInsight#get_advanced_number_insight instead"
+    )
+    def get_advanced_number_insight(self, params=None, **kwargs):
+        return self.get(self.api_host(), "/ni/advanced/json", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#request_number_insight is deprecated. Use NumberInsight#request_number_insight instead"
+    )
+    def request_number_insight(self, params=None, **kwargs):
+        return self.post(self.host(), "/ni/json", params or kwargs)

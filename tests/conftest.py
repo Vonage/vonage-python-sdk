@@ -48,7 +48,7 @@ def client(dummy_data):
 
 # Represents an instance of the Voice class for testing
 @pytest.fixture
-def voice(client, dummy_data):
+def voice(client):
     import vonage
 
     return vonage.Voice(client)
@@ -56,7 +56,7 @@ def voice(client, dummy_data):
 
 # Represents an instance of the Sms class for testing
 @pytest.fixture
-def sms(client, dummy_data):
+def sms(client):
     import vonage
 
     return vonage.Sms(client)
@@ -64,7 +64,13 @@ def sms(client, dummy_data):
 
 # Represents an instance of the Verify class for testing
 @pytest.fixture
-def verify(client, dummy_data):
+def verify(client):
     import vonage
 
     return vonage.Verify(client)
+
+@pytest.fixture
+def number_insight(client):
+    import vonage
+
+    return vonage.NumberInsight(client)

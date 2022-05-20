@@ -9,7 +9,7 @@ def test_list_applications(client, dummy_data):
     stub(
         responses.GET,
         "https://api.nexmo.com/v2/applications",
-        fixture_path="applications_v2/list_applications.json",
+        fixture_path="applications/list_applications.json",
     )
 
     apps = client.application.list_applications()
@@ -24,7 +24,7 @@ def test_get_application(client, dummy_data):
     stub(
         responses.GET,
         "https://api.nexmo.com/v2/applications/xx-xx-xx-xx",
-        fixture_path="applications_v2/get_application.json",
+        fixture_path="applications/get_application.json",
     )
 
     app = client.application.get_application("xx-xx-xx-xx")
@@ -39,7 +39,7 @@ def test_create_application(client, dummy_data):
     stub(
         responses.POST,
         "https://api.nexmo.com/v2/applications",
-        fixture_path="applications_v2/create_application.json",
+        fixture_path="applications/create_application.json",
     )
 
     params = {"name": "Example App", "type": "voice"}
@@ -58,7 +58,7 @@ def test_update_application(client, dummy_data):
     stub(
         responses.PUT,
         "https://api.nexmo.com/v2/applications/xx-xx-xx-xx",
-        fixture_path="applications_v2/update_application.json",
+        fixture_path="applications/update_application.json",
     )
 
     params = {"answer_url": "https://example.com/ncco"}

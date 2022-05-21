@@ -3,6 +3,7 @@ from .account import *
 from .application import Application, BasicAuthenticatedServer
 from .errors import *
 from .number_insight import *
+from .numbers import *
 from .sms import *
 from .voice import *
 from .verify import *
@@ -148,62 +149,6 @@ class Client:
 
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
-
-
-    @deprecated(
-        reason="vonage.Client#get_balance is deprecated. Use Account#get_balance instead"
-    )
-    def get_balance(self):
-        return self.get(self.host(), "/account/get-balance")
-
-    @deprecated(
-        reason="vonage.Client#get_country_pricing is deprecated. Use Account#get_country_pricing instead"
-    )
-    def get_country_pricing(self, country_code):
-        return self.get(
-            self.host(), "/account/get-pricing/outbound", {"country": country_code}
-        )
-
-    @deprecated(
-        reason="vonage.Client#get_prefix_pricing is deprecated. Use Account#get_prefix_pricing instead"
-    )
-    def get_prefix_pricing(self, prefix):
-        return self.get(
-            self.host(), "/account/get-prefix-pricing/outbound", {"prefix": prefix}
-        )
-
-    def get_sms_pricing(self, number):
-        return self.get(
-            self.host(), "/account/get-phone-pricing/outbound/sms", {"phone": number}
-        )
-
-    def get_voice_pricing(self, number):
-        return self.get(
-            self.host(), "/account/get-phone-pricing/outbound/voice", {"phone": number}
-        )
-
-    def update_settings(self, params=None, **kwargs):
-        return self.post(self.host(), "/account/settings", params or kwargs)
-
-    def topup(self, params=None, **kwargs):
-        return self.post(self.host(), "/account/top-up", params or kwargs)
-
-    def get_account_numbers(self, params=None, **kwargs):
-        return self.get(self.host(), "/account/numbers", params or kwargs)
-
-    def get_available_numbers(self, country_code, params=None, **kwargs):
-        return self.get(
-            self.host(), "/number/search", dict(params or kwargs, country=country_code)
-        )
-
-    def buy_number(self, params=None, **kwargs):
-        return self.post(self.host(), "/number/buy", params or kwargs)
-
-    def cancel_number(self, params=None, **kwargs):
-        return self.post(self.host(), "/number/cancel", params or kwargs)
-
-    def update_number(self, params=None, **kwargs):
-        return self.post(self.host(), "/number/update", params or kwargs)
 
     def get_message(self, message_id):
         return self.get(self.host(), "/search/message", {"id": message_id})
@@ -525,14 +470,12 @@ class Client:
 
 
 
-
-
-
     # Deprecated methods that will be removed soon
     #########################################################
     #########################################################
     #########################################################
 
+    # SMS API
     @deprecated(
         reason="vonage.Client#send_message is deprecated. Use Sms#send_message instead"
     )
@@ -551,6 +494,7 @@ class Client:
         return self.post(self.host(), "/sms/json", params, supports_signature_auth=True)
 
 
+    # Verfiy API
     @deprecated(
         reason="vonage.Client#start_verification is deprecated. Use Verify#start_verification instead"
     )
@@ -639,16 +583,7 @@ class Client:
 
         return self.post(self.api_host(), "/verify/control/json", params or kwargs)
 
-    def get_number_insight(self, params=None, **kwargs):
-        warnings.warn(
-            "vonage.Client#get_number_insight is deprecated (use #get_standard_number_insight instead)",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-        return self.get(self.api_host(), "/number/lookup/json", params or kwargs)
-
-
+    # Application API
     def get_applications(self, params=None, **kwargs):
         warnings.warn(
             "vonage.Client#get_applications is deprecated (use methods from #application instead)",
@@ -699,6 +634,7 @@ class Client:
             f"/v1/applications/{application_id}"
         )
 
+    # Voice API
     @deprecated(
         reason="vonage.Client#create_call is deprecated. Use Voice#create_call instead"
     )
@@ -761,6 +697,16 @@ class Client:
             f"/v1/calls/{uuid}/dtmf", params or kwargs
         )
 
+    # Number Insight API
+    def get_number_insight(self, params=None, **kwargs):
+        warnings.warn(
+            "vonage.Client#get_number_insight is deprecated (use #get_standard_number_insight instead)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.get(self.api_host(), "/number/lookup/json", params or kwargs)
+
     @deprecated(
         reason="vonage.Client#get_basic_number_insight is deprecated. Use NumberInsight#get_basic_number_insight instead"
     )
@@ -798,3 +744,88 @@ class Client:
     )
     def request_number_insight(self, params=None, **kwargs):
         return self.post(self.host(), "/ni/json", params or kwargs)
+    
+    # Account API
+    @deprecated(
+        reason="vonage.Client#get_balance is deprecated. Use Account#get_balance instead"
+    )
+    def get_balance(self):
+        return self.get(self.host(), "/account/get-balance")
+
+    @deprecated(
+        reason="vonage.Client#get_country_pricing is deprecated. Use Account#get_country_pricing instead"
+    )
+    def get_country_pricing(self, country_code):
+        return self.get(
+            self.host(), "/account/get-pricing/outbound", {"country": country_code}
+        )
+
+    @deprecated(
+        reason="vonage.Client#get_prefix_pricing is deprecated. Use Account#get_prefix_pricing instead"
+    )
+    def get_prefix_pricing(self, prefix):
+        return self.get(
+            self.host(), "/account/get-prefix-pricing/outbound", {"prefix": prefix}
+        )
+
+    @deprecated(
+        reason="vonage.Client#get_sms_pricing is deprecated. Use Account#get_sms_pricing instead"
+    )
+    def get_sms_pricing(self, number):
+        return self.get(
+            self.host(), "/account/get-phone-pricing/outbound/sms", {"phone": number}
+        )
+
+    @deprecated(
+        reason="vonage.Client#get_voice_pricing is deprecated. Use Account#get_voice_pricing instead"
+    )
+    def get_voice_pricing(self, number):
+        return self.get(
+            self.host(), "/account/get-phone-pricing/outbound/voice", {"phone": number}
+        )
+
+    @deprecated(
+        reason="vonage.Client#update_settings is deprecated. Use Account#update_default_sms_webhook instead"
+    )
+    def update_settings(self, params=None, **kwargs):
+        return self.post(self.host(), "/account/settings", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#topup is deprecated. Use Account#topup instead"
+    )
+    def topup(self, params=None, **kwargs):
+        return self.post(self.host(), "/account/top-up", params or kwargs)
+
+    # Numbers API
+    @deprecated(
+        reason="vonage.Client#get_account_numbers is deprecated. Use Numbers#get_account_numbers instead"
+    )
+    def get_account_numbers(self, params=None, **kwargs):
+        return self.get(self.host(), "/account/numbers", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#get_available_numbers is deprecated. Use Numbers#get_available_numbers instead"
+    )
+    def get_available_numbers(self, country_code, params=None, **kwargs):
+        return self.get(
+            self.host(), "/number/search", dict(params or kwargs, country=country_code)
+        )
+
+    @deprecated(
+        reason="vonage.Client#buy_number is deprecated. Use Numbers#buy_number instead"
+    )
+    def buy_number(self, params=None, **kwargs):
+        return self.post(self.host(), "/number/buy", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#cancel_number is deprecated. Use Numbers#cancel_number instead"
+    )
+    def cancel_number(self, params=None, **kwargs):
+        return self.post(self.host(), "/number/cancel", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#update_number is deprecated. Use Numbers#update_number instead"
+    )
+    def update_number(self, params=None, **kwargs):
+        return self.post(self.host(), "/number/update", params or kwargs)
+        

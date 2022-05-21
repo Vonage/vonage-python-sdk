@@ -24,6 +24,9 @@ class Account:
     def get_balance(self):
         return self._client.get(self._client.host(), "/account/get-balance")
 
+    def topup(self, params=None, **kwargs):
+        return self._client.post(self._client.host(), "/account/top-up", params or kwargs)
+
     def get_country_pricing(self, country_code):
         return self._client.get(
             self._client.host(), "/account/get-pricing/outbound", {"country": country_code}
@@ -33,3 +36,16 @@ class Account:
         return self._client.get(
             self._client.host(), "/account/get-prefix-pricing/outbound", {"prefix": prefix}
         )
+
+    def get_sms_pricing(self, number):
+        return self._client.get(
+            self._client.host(), "/account/get-phone-pricing/outbound/sms", {"phone": number}
+        )
+
+    def get_voice_pricing(self, number):
+        return self._client.get(
+            self._client.host(), "/account/get-phone-pricing/outbound/voice", {"phone": number}
+        )
+
+    def update_default_sms_webhook(self, params=None, **kwargs):
+        return self._client.post(self._client.host(), "/account/settings", params or kwargs)

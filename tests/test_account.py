@@ -72,16 +72,23 @@ def test_get_prefix_pricing(account, dummy_data):
     assert "prefix=44" in request_query()
 
 @responses.activate
-def test_get_sms_pricing(client, dummy_data):
+def test_deprecated_get_sms_pricing(client, dummy_data):
     stub(responses.GET, "https://rest.nexmo.com/account/get-phone-pricing/outbound/sms")
 
     assert isinstance(client.get_sms_pricing("447525856424"), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "phone=447525856424" in request_query()
 
+@responses.activate
+def test_get_sms_pricing(account, dummy_data):
+    stub(responses.GET, "https://rest.nexmo.com/account/get-phone-pricing/outbound/sms")
+
+    assert isinstance(account.get_sms_pricing("447525856424"), dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert "phone=447525856424" in request_query()
 
 @responses.activate
-def test_get_voice_pricing(client, dummy_data):
+def test_deprecated_get_voice_pricing(client, dummy_data):
     stub(
         responses.GET, "https://rest.nexmo.com/account/get-phone-pricing/outbound/voice"
     )
@@ -90,9 +97,18 @@ def test_get_voice_pricing(client, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert "phone=447525856424" in request_query()
 
+@responses.activate
+def test_get_voice_pricing(account, dummy_data):
+    stub(
+        responses.GET, "https://rest.nexmo.com/account/get-phone-pricing/outbound/voice"
+    )
+
+    assert isinstance(account.get_voice_pricing("447525856424"), dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert "phone=447525856424" in request_query()
 
 @responses.activate
-def test_update_settings(client, dummy_data):
+def test_deprecated_update_settings(client, dummy_data):
     stub(responses.POST, "https://rest.nexmo.com/account/settings")
 
     params = {"moCallBackUrl": "http://example.com/callback"}
@@ -101,9 +117,18 @@ def test_update_settings(client, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert "moCallBackUrl=http%3A%2F%2Fexample.com%2Fcallback" in request_body()
 
+@responses.activate
+def test_update_default_sms_webhook(account, dummy_data):
+    stub(responses.POST, "https://rest.nexmo.com/account/settings")
+
+    params = {"moCallBackUrl": "http://example.com/callback"}
+
+    assert isinstance(account.update_default_sms_webhook(params), dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert "moCallBackUrl=http%3A%2F%2Fexample.com%2Fcallback" in request_body()
 
 @responses.activate
-def test_topup(client, dummy_data):
+def test_deprecated_topup(client, dummy_data):
     stub(responses.POST, "https://rest.nexmo.com/account/top-up")
 
     params = {"trx": "00X123456Y7890123Z"}
@@ -112,14 +137,15 @@ def test_topup(client, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert "trx=00X123456Y7890123Z" in request_body()
 
-
 @responses.activate
-def test_get_account_numbers(client, dummy_data):
-    stub(responses.GET, "https://rest.nexmo.com/account/numbers")
+def test_topup(account, dummy_data):
+    stub(responses.POST, "https://rest.nexmo.com/account/top-up")
 
-    assert isinstance(client.get_account_numbers(size=25), dict)
+    params = {"trx": "00X123456Y7890123Z"}
+
+    assert isinstance(account.topup(params), dict)
     assert request_user_agent() == dummy_data.user_agent
-    assert request_params()["size"] == ["25"]
+    assert "trx=00X123456Y7890123Z" in request_body()
 
 
 @responses.activate

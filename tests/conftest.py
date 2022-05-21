@@ -80,3 +80,9 @@ def account(client):
     import vonage
 
     return vonage.Account(client)
+
+@pytest.fixture
+def numbers(client):
+    import vonage
+    
+    return vonage.Numbers(client)

@@ -86,3 +86,9 @@ def numbers(client):
     import vonage
     
     return vonage.Numbers(client)
+
+@pytest.fixture
+def message_search(client):
+    import vonage
+    
+    return vonage.MessageSearch(client)

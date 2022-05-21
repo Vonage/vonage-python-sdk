@@ -2,6 +2,7 @@ from ._internal import _format_date_param
 from .account import *
 from .application import Application, BasicAuthenticatedServer
 from .errors import *
+from .message_search import *
 from .number_insight import *
 from .numbers import *
 from .sms import *
@@ -150,14 +151,6 @@ class Client:
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
 
-    def get_message(self, message_id):
-        return self.get(self.host(), "/search/message", {"id": message_id})
-
-    def get_message_rejections(self, params=None, **kwargs):
-        return self.get(self.host(), "/search/rejections", params or kwargs)
-
-    def search_messages(self, params=None, **kwargs):
-        return self.get(self.host(), "/search/messages", params or kwargs)
 
     def send_ussd_push_message(self, params=None, **kwargs):
         return self.post(self.host(), "/ussd/json", params or kwargs)
@@ -828,4 +821,22 @@ class Client:
     )
     def update_number(self, params=None, **kwargs):
         return self.post(self.host(), "/number/update", params or kwargs)
-        
+
+    # Message Search API
+    @deprecated(
+        reason="vonage.Client#get_message is deprecated. Use MessageSearch#get_message instead"
+    )
+    def get_message(self, message_id):
+        return self.get(self.host(), "/search/message", {"id": message_id})
+
+    @deprecated(
+        reason="vonage.Client#search_messages is deprecated. Use MessageSearch#search_messages instead"
+    )
+    def search_messages(self, params=None, **kwargs):
+        return self.get(self.host(), "/search/messages", params or kwargs)
+    
+    @deprecated(
+        reason="vonage.Client#get_message_rejections is deprecated. Use MessageSearch#get_message_rejections instead"
+    )
+    def get_message_rejections(self, params=None, **kwargs):
+        return self.get(self.host(), "/search/rejections", params or kwargs)

@@ -36,6 +36,9 @@ class Sms:
         """
         Notify Vonage that an SMS was successfully received.
 
+        If you are using the Verify API for 2FA, this information is sent to Vonage automatically
+        so you do not need to use this method to submit conversion data about 2FA messages.
+
         :param message_id: The `message-id` str returned by the send_message call.
         :param delivered: A `bool` indicating that the message was or was not successfully delivered.
         :param timestamp: A `datetime` object containing the time the SMS arrived.

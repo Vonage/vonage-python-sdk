@@ -1,12 +1,10 @@
 import vonage
 from util import *
 
-import sys
-
 bytes_type = bytes
 
 @responses.activate
-def test_send_ussd_push_message(client, dummy_data):
+def test_deprecated_send_ussd_push_message(client, dummy_data):
     stub(responses.POST, "https://rest.nexmo.com/ussd/json")
 
     params = {"from": "MyCompany20", "to": "447525856424", "text": "Hello"}
@@ -17,9 +15,8 @@ def test_send_ussd_push_message(client, dummy_data):
     assert "to=447525856424" in request_body()
     assert "text=Hello" in request_body()
 
-
 @responses.activate
-def test_send_ussd_prompt_message(client, dummy_data):
+def test_deprecated_send_ussd_prompt_message(client, dummy_data):
     stub(responses.POST, "https://rest.nexmo.com/ussd-prompt/json")
 
     params = {"from": "long-virtual-number", "to": "447525856424", "text": "Hello"}
@@ -32,7 +29,7 @@ def test_send_ussd_prompt_message(client, dummy_data):
 
 
 @responses.activate
-def test_send_2fa_message(client, dummy_data):
+def test_deprecated_send_2fa_message(client, dummy_data):
     stub(responses.POST, "https://rest.nexmo.com/sc/us/2fa/json")
 
     params = {"to": "16365553226", "pin": "1234"}
@@ -44,7 +41,7 @@ def test_send_2fa_message(client, dummy_data):
 
 
 @responses.activate
-def test_send_event_alert_message(client, dummy_data):
+def test_deprecated_send_event_alert_message(client, dummy_data):
     stub(responses.POST, "https://rest.nexmo.com/sc/us/alert/json")
 
     params = {"to": "16365553226", "server": "host", "link": "http://example.com/"}
@@ -57,7 +54,7 @@ def test_send_event_alert_message(client, dummy_data):
 
 
 @responses.activate
-def test_send_marketing_message(client, dummy_data):
+def test_deprecated_send_marketing_message(client, dummy_data):
     stub(responses.POST, "https://rest.nexmo.com/sc/us/marketing/json")
 
     params = {
@@ -76,7 +73,7 @@ def test_send_marketing_message(client, dummy_data):
 
 
 @responses.activate
-def test_get_event_alert_numbers(client, dummy_data):
+def test_deprecated_get_event_alert_numbers(client, dummy_data):
     stub(responses.GET, "https://rest.nexmo.com/sc/us/alert/opt-in/query/json")
 
     assert isinstance(client.get_event_alert_numbers(), dict)
@@ -84,7 +81,7 @@ def test_get_event_alert_numbers(client, dummy_data):
 
 
 @responses.activate
-def test_resubscribe_event_alert_number(client, dummy_data):
+def test_deprecated_resubscribe_event_alert_number(client, dummy_data):
     stub(responses.POST, "https://rest.nexmo.com/sc/us/alert/opt-in/manage/json")
 
     params = {"msisdn": "441632960960"}

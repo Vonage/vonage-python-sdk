@@ -5,7 +5,9 @@ from .errors import *
 from .message_search import *
 from .number_insight import *
 from .numbers import *
+from .short_codes import *
 from .sms import *
+from .ussd import *
 from .voice import *
 from .verify import *
 
@@ -151,48 +153,6 @@ class Client:
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
 
-
-    def send_ussd_push_message(self, params=None, **kwargs):
-        return self.post(self.host(), "/ussd/json", params or kwargs)
-
-    def send_ussd_prompt_message(self, params=None, **kwargs):
-        return self.post(self.host(), "/ussd-prompt/json", params or kwargs)
-
-    def send_2fa_message(self, params=None, **kwargs):
-        return self.post(self.host(), "/sc/us/2fa/json", params or kwargs)
-
-    def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
-        """
-        Notify Vonage that an SMS was successfully received.
-
-        :param message_id: The `message-id` str returned by the send_message call.
-        :param delivered: A `bool` indicating that the message was or was not successfully delivered.
-        :param timestamp: A `datetime` object containing the time the SMS arrived.
-        :return: The parsed response from the server. On success, the bytestring b'OK'
-        """
-        params = {
-            "message-id": message_id,
-            "delivered": delivered,
-            "timestamp": timestamp or datetime.now(pytz.utc),
-        }
-        # Ensure timestamp is a string:
-        _format_date_param(params, "timestamp")
-        return self.post(self.api_host(), "/conversions/sms", params)
-
-    def send_event_alert_message(self, params=None, **kwargs):
-        return self.post(self.host(), "/sc/us/alert/json", params or kwargs)
-
-    def send_marketing_message(self, params=None, **kwargs):
-        return self.post(self.host(), "/sc/us/marketing/json", params or kwargs)
-
-    def get_event_alert_numbers(self):
-        return self.get(self.host(), "/sc/us/alert/opt-in/query/json")
-
-    def resubscribe_event_alert_number(self, params=None, **kwargs):
-        return self.post(
-            self.host(), "/sc/us/alert/opt-in/manage/json", params or kwargs
-        )
-
     def initiate_call(self, params=None, **kwargs):
         return self.post(self.host(), "/call/json", params or kwargs)
 
@@ -202,7 +162,6 @@ class Client:
     def initiate_tts_prompt_call(self, params=None, **kwargs):
         return self.post(self.api_host(), "/tts-prompt/json", params or kwargs)
 
-    
     def get_recording(self, url):
         hostname = urlparse(url).hostname
         return self.parse(hostname, self.session.get(url, headers=self._headers()))
@@ -840,3 +799,75 @@ class Client:
     )
     def get_message_rejections(self, params=None, **kwargs):
         return self.get(self.host(), "/search/rejections", params or kwargs)
+
+    # SMS Conversion API
+    @deprecated(
+        reason="vonage.Client#submit_sms_conversion is deprecated. Use Sms#submit_sms_conversion instead"
+    )
+    def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
+        """
+        Notify Vonage that an SMS was successfully received.
+
+        If you are using the Verify API for 2FA, this information is sent to Vonage automatically
+        so you do not need to use this method to submit conversion data about 2FA messages.
+
+        :param message_id: The `message-id` str returned by the send_message call.
+        :param delivered: A `bool` indicating that the message was or was not successfully delivered.
+        :param timestamp: A `datetime` object containing the time the SMS arrived.
+        :return: The parsed response from the server. On success, the bytestring b'OK'
+        """
+        params = {
+            "message-id": message_id,
+            "delivered": delivered,
+            "timestamp": timestamp or datetime.now(pytz.utc),
+        }
+        # Ensure timestamp is a string:
+        _format_date_param(params, "timestamp")
+        return self.post(self.api_host(), "/conversions/sms", params)
+
+    # Ussd API
+    @deprecated(
+        reason="vonage.Client#send_ussd_push_message is deprecated. Use Ussd#send_ussd_push_message instead"
+    )
+    def send_ussd_push_message(self, params=None, **kwargs):
+        return self.post(self.host(), "/ussd/json", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#send_ussd_prompt_message is deprecated. Use Ussd#send_ussd_prompt_message instead"
+    )
+    def send_ussd_prompt_message(self, params=None, **kwargs):
+        return self.post(self.host(), "/ussd-prompt/json", params or kwargs)
+
+    # Short Codes API
+    @deprecated(
+        reason="vonage.Client#send_2fa_message is deprecated. Use ShortCodes#send_2fa_message instead"
+    )
+    def send_2fa_message(self, params=None, **kwargs):
+        return self.post(self.host(), "/sc/us/2fa/json", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#send_event_alert_message is deprecated. Use ShortCodes#send_event_alert_message instead"
+    )
+    def send_event_alert_message(self, params=None, **kwargs):
+        return self.post(self.host(), "/sc/us/alert/json", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#send_marketing_message is deprecated. Use ShortCodes#send_marketing_message instead"
+    )
+    def send_marketing_message(self, params=None, **kwargs):
+        return self.post(self.host(), "/sc/us/marketing/json", params or kwargs)
+
+    @deprecated(
+        reason="vonage.Client#get_event_alert_numbers is deprecated. Use ShortCodes#get_event_alert_numbers instead"
+    )
+    def get_event_alert_numbers(self):
+        return self.get(self.host(), "/sc/us/alert/opt-in/query/json")
+
+    @deprecated(
+        reason="vonage.Client#resubscribe_event_alert_number is deprecated. Use ShortCodes#resubscribe_event_alert_number instead"
+    )
+    def resubscribe_event_alert_number(self, params=None, **kwargs):
+        return self.post(
+            self.host(), "/sc/us/alert/opt-in/manage/json", params or kwargs
+        )
+        

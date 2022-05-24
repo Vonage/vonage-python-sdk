@@ -92,3 +92,15 @@ def message_search(client):
     import vonage
     
     return vonage.MessageSearch(client)
+
+@pytest.fixture
+def ussd(client):
+    import vonage
+    
+    return vonage.Ussd(client)
+
+@pytest.fixture
+def short_codes(client):
+    import vonage
+    
+    return vonage.ShortCodes(client)

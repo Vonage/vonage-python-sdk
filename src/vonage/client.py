@@ -47,7 +47,7 @@ class Client:
     sms, number insight) have been deprecated and will instead be called from modules that house 
     the relevant classes (e.g. `voice.py`, `sms.py`). Change your code to call these classes directly
     as they will be removed in a later release!
-
+    
     Newer APIs are under namespaces like :attr:`Client.application`.
 
     The credentials you provide when instantiating a Client determine which
@@ -171,33 +171,6 @@ class Client:
         if type is not None:
             params["type"] = type
         return self._post_json(self.api_host(), "/v1/redact/transaction", params)
-
-    def list_secrets(self, api_key):
-        return self.get(
-            self.api_host(),
-            f"/accounts/{api_key}/secrets",
-            header_auth=True,
-        )
-
-    def get_secret(self, api_key, secret_id):
-        return self.get(
-            self.api_host(),
-            f"/accounts/{api_key}/secrets/{secret_id}",
-            header_auth=True,
-        )
-
-    def create_secret(self, api_key, secret):
-        body = {"secret": secret}
-        return self._post_json(
-            self.api_host(), f"/accounts/{api_key}/secrets", body
-        )
-
-    def delete_secret(self, api_key, secret_id):
-        return self.delete(
-            self.api_host(),
-            f"/accounts/{api_key}/secrets/{secret_id}",
-            header_auth=True,
-        )
 
     def check_signature(self, params):
         params = dict(params)
@@ -748,6 +721,45 @@ class Client:
     def topup(self, params=None, **kwargs):
         return self.post(self.host(), "/account/top-up", params or kwargs)
 
+    @deprecated(
+        reason="vonage.Client#list_secrets is deprecated. Use Account#list_secrets instead"
+    )
+    def list_secrets(self, api_key):
+        return self.get(
+            self.api_host(),
+            f"/accounts/{api_key}/secrets",
+            header_auth=True,
+        )
+
+    @deprecated(
+        reason="vonage.Client#get_secret is deprecated. Use Account#get_secret instead"
+    )
+    def get_secret(self, api_key, secret_id):
+        return self.get(
+            self.api_host(),
+            f"/accounts/{api_key}/secrets/{secret_id}",
+            header_auth=True,
+        )
+
+    @deprecated(
+        reason="vonage.Client#create_secret is deprecated. Use Account#create_secret instead"
+    )
+    def create_secret(self, api_key, secret):
+        body = {"secret": secret}
+        return self._post_json(
+            self.api_host(), f"/accounts/{api_key}/secrets", body
+        )
+
+    @deprecated(
+        reason="vonage.Client#delete_secret is deprecated. Use Account#revoke_secret instead"
+    )
+    def delete_secret(self, api_key, secret_id):
+        return self.delete(
+            self.api_host(),
+            f"/accounts/{api_key}/secrets/{secret_id}",
+            header_auth=True,
+        )
+
     # Numbers API
     @deprecated(
         reason="vonage.Client#get_account_numbers is deprecated. Use Numbers#get_account_numbers instead"
@@ -870,4 +882,3 @@ class Client:
         return self.post(
             self.host(), "/sc/us/alert/opt-in/manage/json", params or kwargs
         )
-        

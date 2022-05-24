@@ -49,3 +49,30 @@ class Account:
 
     def update_default_sms_webhook(self, params=None, **kwargs):
         return self._client.post(self._client.host(), "/account/settings", params or kwargs)
+
+    def list_secrets(self, api_key):
+        return self._client.get(
+            self._client.api_host(),
+            f"/accounts/{api_key}/secrets",
+            header_auth=True,
+        )
+
+    def get_secret(self, api_key, secret_id):
+        return self._client.get(
+            self._client.api_host(),
+            f"/accounts/{api_key}/secrets/{secret_id}",
+            header_auth=True,
+        )
+
+    def create_secret(self, api_key, secret):
+        body = {"secret": secret}
+        return self._client._post_json(
+            self._client.api_host(), f"/accounts/{api_key}/secrets", body
+        )
+
+    def revoke_secret(self, api_key, secret_id):
+        return self._client.delete(
+            self._client.api_host(),
+            f"/accounts/{api_key}/secrets/{secret_id}",
+            header_auth=True,
+        )

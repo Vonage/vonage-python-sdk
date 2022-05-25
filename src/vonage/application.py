@@ -85,7 +85,7 @@ class BasicAuthenticatedServer(object):
             raise ServerError(message)
 
 
-class Application(object):
+class ApplicationV2(object):
     """
     Provides Application API v2 functionality.
 

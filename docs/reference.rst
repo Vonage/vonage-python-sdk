@@ -5,9 +5,9 @@ API Reference
    :members:
    :undoc-members:
 
-   .. attribute:: application
+   .. attribute:: application_v2
 
-      An instance of :class:`vonage.Application` for accessing the Application API.
+      An instance of :class:`vonage.ApplicationV2` for accessing the Application API.
 
 .. autoclass:: vonage.ApplicationV2
     :members:

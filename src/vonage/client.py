@@ -1,6 +1,6 @@
 from ._internal import _format_date_param
 from .account import *
-from .application import Application, BasicAuthenticatedServer
+from .application import ApplicationV2, BasicAuthenticatedServer
 from .errors import *
 from .message_search import *
 from .number_insight import *
@@ -48,7 +48,7 @@ class Client:
     the relevant classes (e.g. `voice.py`, `sms.py`). Change your code to call these classes directly
     as they will be removed in a later release!
     
-    Newer APIs are under namespaces like :attr:`Client.application`.
+    Newer APIs are under namespaces like :attr:`Client.application_v2`.
 
     The credentials you provide when instantiating a Client determine which
     methods can be called. Consult the `Vonage API docs <https://developer.vonage.com/api/>`_ for details of the
@@ -128,7 +128,7 @@ class Client:
             api_key=self.api_key,
             api_secret=self.api_secret,
         )
-        self.application = Application(api_server)
+        self.application_v2 = ApplicationV2(api_server)
 
         self.session = requests.Session()
 
@@ -511,7 +511,7 @@ class Client:
     # Application API
     def get_applications(self, params=None, **kwargs):
         warnings.warn(
-            "vonage.Client#get_applications is deprecated (use methods from #application instead)",
+            "vonage.Client#get_applications is deprecated (use v2 methods from #application instead)",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -519,7 +519,7 @@ class Client:
 
     def get_application(self, application_id):
         warnings.warn(
-            "vonage.Client#get_application is deprecated (use methods from #application instead)",
+            "vonage.Client#get_application is deprecated (use v2 methods from #application instead)",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -530,7 +530,7 @@ class Client:
 
     def create_application(self, params=None, **kwargs):
         warnings.warn(
-            "vonage.Client#create_application is deprecated (use methods from #application instead)",
+            "vonage.Client#create_application is deprecated (use methods from v2 #application instead)",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -538,7 +538,7 @@ class Client:
 
     def update_application(self, application_id, params=None, **kwargs):
         warnings.warn(
-            "vonage.Client#update_application is deprecated (use methods from #application instead)",
+            "vonage.Client#update_application is deprecated (use methods from v2 #application instead)",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -550,7 +550,7 @@ class Client:
 
     def delete_application(self, application_id):
         warnings.warn(
-            "vonage.Client#delete_application is deprecated (use methods from #application instead)",
+            "vonage.Client#delete_application is deprecated (use methods from v2 #application instead)",
             DeprecationWarning,
             stacklevel=2,
         )

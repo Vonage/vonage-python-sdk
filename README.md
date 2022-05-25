@@ -465,7 +465,7 @@ client.delete_secret(API_KEY, 'my-secret-id')
 ### Create an application
 
 ```python
-response = client.application.create_application({name='Example App', type='voice'})
+response = client.application_v2.create_application({name='Example App', type='voice'})
 ```
 
 Docs: [https://developer.nexmo.com/api/application.v2#createApplication](https://developer.nexmo.com/api/application.v2#createApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#create-an-application)
@@ -473,7 +473,7 @@ Docs: [https://developer.nexmo.com/api/application.v2#createApplication](https:/
 ### Retrieve a list of applications
 
 ```python
-response = client.application.list_applications()
+response = client.application_v2.list_applications()
 ```
 
 Docs: [https://developer.nexmo.com/api/application.v2#listApplication](https://developer.nexmo.com/api/application.v2#listApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-your-applications)
@@ -481,7 +481,7 @@ Docs: [https://developer.nexmo.com/api/application.v2#listApplication](https://d
 ### Retrieve a single application
 
 ```python
-response = client.application.get_application(uuid)
+response = client.application_v2.get_application(uuid)
 ```
 
 Docs: [https://developer.nexmo.com/api/application.v2#getApplication](https://developer.nexmo.com/api/application.v2#getApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-an-application)
@@ -489,7 +489,7 @@ Docs: [https://developer.nexmo.com/api/application.v2#getApplication](https://de
 ### Update an application
 
 ```python
-response = client.application.update_application(uuid, answer_method='POST')
+response = client.application_v2.update_application(uuid, answer_method='POST')
 ```
 
 Docs: [https://developer.nexmo.com/api/application.v2#updateApplication](https://developer.nexmo.com/api/application.v2#updateApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#update-an-application)
@@ -497,7 +497,7 @@ Docs: [https://developer.nexmo.com/api/application.v2#updateApplication](https:/
 ### Delete an application
 
 ```python
-response = client.application.delete_application(uuid)
+response = client.application_v2.delete_application(uuid)
 ```
 
 Docs: [https://developer.nexmo.com/api/application.v2#deleteApplication](https://developer.nexmo.com/api/application.v2#deleteApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#destroy-an-application)

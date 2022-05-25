@@ -1,3 +1,8 @@
+# 2.7.0
+- Moved some client methods into their own classes: `account.py, application.py, 
+message_search.py, number_insight.py, numbers.py, short_codes.py, ussd.py`
+- Deprecated the corresponding client methods. These will be removed in a major release that's coming soon.
+
 # 2.6.x
 
 - Dropped support for Python 3.6 and below

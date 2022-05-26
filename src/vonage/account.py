@@ -1,25 +1,6 @@
-import vonage
-
 class Account:
-    def __init__(
-        self,
-        client=None,
-        key=None,
-        secret=None,
-        signature_secret=None,
-        signature_method=None
-    ):
-        try:
-            self._client = client
-            if self._client is None:
-                self._client = vonage.Client(
-                    key=key,
-                    secret=secret,
-                    signature_secret=signature_secret,
-                    signature_method=signature_method
-                )
-        except Exception as e:
-            print(f'Error: {str(e)}')
+    def __init__(self, client):
+        self._client = client
 
     def get_balance(self):
         return self._client.get(self._client.host(), "/account/get-balance")

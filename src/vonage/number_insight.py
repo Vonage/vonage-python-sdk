@@ -1,23 +1,8 @@
-import vonage
 from .errors import CallbackRequiredError
 
 class NumberInsight:
-    # To init NumberInsight class, pass a client reference or a key and secret
-    def __init__(
-        self,
-        client=None,
-        key=None,
-        secret=None,
-    ):
-        try:
-            self._client = client
-            if self._client is None:
-                self._client = vonage.Client(
-                    key=key,
-                    secret=secret
-                )
-        except Exception as e:
-            print(f'Error: {str(e)}')
+    def __init__(self, client):
+        self._client = client
 
     def get_basic_number_insight(self, params=None, **kwargs):
         return self._client.get(self._client.api_host(), "/ni/basic/json", params or kwargs)

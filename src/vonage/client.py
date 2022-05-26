@@ -3,7 +3,7 @@ from .account import *
 from .application import ApplicationV2, BasicAuthenticatedServer
 from .errors import *
 from .message_search import *
-from .number_insight import *
+from .number_insight import NumberInsight
 from .numbers import *
 from .short_codes import *
 from .sms import *
@@ -129,6 +129,16 @@ class Client:
             api_secret=self.api_secret,
         )
         self.application_v2 = ApplicationV2(api_server)
+
+        self.account = Account(self)
+        self.message_search = MessageSearch(self)
+        self.number_insight = NumberInsight(self)
+        self.numbers = Numbers(self)
+        self.short_codes = ShortCodes(self)
+        self.sms = Sms(self)
+        self.ussd = Ussd(self)
+        self.verify = Verify(self)
+        self.voice = Voice(self)
 
         self.session = requests.Session()
 

@@ -12,3 +12,9 @@ class ServerError(Error):
 
 class AuthenticationError(ClientError):
     pass
+
+
+class CallbackRequiredError(Error):
+    """
+    Indicates a callback is required but was not present.
+    """

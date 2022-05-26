@@ -11,7 +11,7 @@ with io.open(
 
 setup(
     name="vonage",
-    version="2.6.4",
+    version="2.7.0",
     description="Vonage Server SDK for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",

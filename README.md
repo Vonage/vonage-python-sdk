@@ -68,41 +68,43 @@ To check signatures for incoming webhook requests, you'll also need
 to specify the `signature_secret` argument (or the `VONAGE_SIGNATURE_SECRET`
 environment variable).
 
+## Simplified structure for calling API Methods
+
+The client now instantiates a class object for each API when it is created, e.g. `vonage.Client(key="mykey", secret="mysecret")`
+instantiates instances of `Account`, `Sms`, `NumberInsight` etc. These instances can now be called directly from `Client`, e.g.
+
+```python
+client = vonage.Client(key="mykey", secret="mysecret")
+
+print(f"Account balance is: {client.account.get_balance()}")
+
+print("Sending an SMS")
+client.sms.send_message(
+    "from": "Vonage",
+    "to": "SOME_PHONE_NUMBER",
+    "text": "Hello from Vonage's SMS API"
+)
+```
+
+This means you don't have to create a separate instance of each class to use its API methods. Instead, you can access class methods from the client instance with
+```python
+client.CLASS_NAME.CLASS_METHOD
+```
+
 ## SMS API
-
-### SMS Class
-
-#### Creating an instance of the SMS class
-
-To create an instance of the SMS class follow these steps:
-
-- Import the class
-
-```python
-#Option 1
-from vonage import Sms
-
-#Option 2
-from vonage.sms import Sms
-
-#Option 3
-import vonage #then you can use vonage.Sms() to create an instance
-```
-
-- Create an instance
-
-```python
-#Option 1 - pass key and secret to the constructor
-sms = Sms(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
-
-#Option 2 - Create a client instance and then pass the client to the Sms instance
-client = Client(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
-sms = Sms(client)
-```
 
 ### Send an SMS
 
 ```python
+# New way
+client = vonage.Client(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
+client.sms.send_message({
+    "from": VONAGE_BRAND_NAME,
+    "to": TO_NUMBER,
+    "text": "A text message sent using the Vonage SMS API",
+})
+
+# Old way
 from vonage import Sms
 sms = Sms(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
 sms.send_message({
@@ -115,7 +117,8 @@ sms.send_message({
 ### Send SMS with unicode
 
 ```python
-sms.send_message({
+client = vonage.Client(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
+client.sms.send_message({
     'from': VONAGE_BRAND_NAME,
     'to': TO_NUMBER,
     'text': 'こんにちは世界',
@@ -126,15 +129,13 @@ sms.send_message({
 ### Submit SMS Conversion
 
 ```python
-from vonage import Client, Sms
-client = Client(key=VONAGE_API_KEY, secret=VONAGE_SECRET)
-sms = Sms(client)
-response = sms.send_message({
+client = vonage.Client(key=VONAGE_API_KEY, secret=VONAGE_SECRET)
+response = client.sms.send_message({
     'from': VONAGE_BRAND_NAME,
     'to': TO_NUMBER,
     'text': 'Hi from Vonage'
 })
-sms.submit_sms_conversion(response['message-id'])
+client.sms.submit_sms_conversion(response['message-id'])
 ```
 
 ## Voice API
@@ -142,10 +143,8 @@ sms.submit_sms_conversion(response['message-id'])
 ### Make a call
 
 ```python
-from vonage import Client, Voice
-client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
-voice = Voice(client)
-voice.create_call({
+client = vonage.Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
+client.voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
   'answer_url': ['https://example.com/answer']
@@ -155,107 +154,91 @@ voice.create_call({
 ### Retrieve a list of calls
 
 ```python
-from vonage import Client, Voice
-client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
-voice = Voice(client)
-voice.get_calls()
+client = vonage.Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
+client.voice.get_calls()
 ```
 
 ### Retrieve a single call
 
 ```python
-from vonage import Client, Voice
-client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
-voice = Voice(client)
-voice.get_call(uuid)
+client = vonage.Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
+client.voice.get_call(uuid)
 ```
 
 ### Update a call
 
 ```python
-from vonage import Client, Voice
-client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
-voice = Voice(client)
-response = voice.create_call({
+client = vonage.Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
+response = client.voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
   'answer_url': ['https://example.com/answer']
 })
-voice.update_call(response['uuid'], action='hangup')
+client.voice.update_call(response['uuid'], action='hangup')
 ```
 
 ### Stream audio to a call
 
 ```python
-from vonage import Client, Voice
-client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
-voice = Voice(client)
+client = vonage.Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
 stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
-response = voice.create_call({
+response = client.voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
   'answer_url': ['https://example.com/answer']
 })
-voice.send_audio(response['uuid'],stream_url=[stream_url])
+client.voice.send_audio(response['uuid'],stream_url=[stream_url])
 ```
 
 ### Stop streaming audio to a call
 
 ```python
-from vonage import Client, Voice
-client = Client(application_id='0d4884d1-eae8-4f18-a46a-6fb14d5fdaa6', private_key='./private.key')
-voice = Voice(client)
+client = vonage.Client(application_id='0d4884d1-eae8-4f18-a46a-6fb14d5fdaa6', private_key='./private.key')
 stream_url = 'https://nexmo-community.github.io/ncco-examples/assets/voice_api_audio_streaming.mp3'
-response = voice.create_call({
+response = client.voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
   'answer_url': ['https://example.com/answer']
 })
-voice.send_audio(response['uuid'],stream_url=[stream_url])
-voice.stop_audio(response['uuid'])
+client.voice.send_audio(response['uuid'],stream_url=[stream_url])
+client.voice.stop_audio(response['uuid'])
 ```
 
 ### Send a synthesized speech message to a call
 
 ```python
-from vonage import Client, Voice
-client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
-voice = Voice(client)
-response = voice.create_call({
+client = vonage.Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
+response = client.voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
   'answer_url': ['https://example.com/answer']
 })
-voice.send_speech(response['uuid'], text='Hello from vonage')
+client.voice.send_speech(response['uuid'], text='Hello from vonage')
 ```
 
 ### Stop sending a synthesized speech message to a call
 
 ```python
-from vonage import Client, Voice
-client = Client(application_id=APPLICATION_ID, private_key=APPLICATION_ID)
-voice = Voice(client)
-response = voice.create_call({
+client = vonage.Client(application_id=APPLICATION_ID, private_key=APPLICATION_ID)
+response = client.voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
   'answer_url': ['https://example.com/answer']
 })
-voice.send_speech(response['uuid'], text='Hello from vonage')
-voice.stop_speech(response['uuid'])
+client.voice.send_speech(response['uuid'], text='Hello from vonage')
+client.voice.stop_speech(response['uuid'])
 ```
 
 ### Send DTMF tones to a call
 
 ```python
-from vonage import Client, Voice
-client = Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
-voice = Voice(client)
-response = voice.create_call({
+client = vonage.Client(application_id=APPLICATION_ID, private_key=PRIVATE_KEY)
+response = client.voice.create_call({
   'to': [{'type': 'phone', 'number': '14843331234'}],
   'from': {'type': 'phone', 'number': '14843335555'},
   'answer_url': ['https://example.com/answer']
 })
-voice.send_dtmf(response['uuid'], digits='1234')
+client.voice.send_dtmf(response['uuid'], digits='1234')
 ```
 
 ### Get recording
@@ -266,45 +249,12 @@ response = client.get_recording(RECORDING_URL)
 
 ## Verify API
 
-### Verify Class
-
-#### Creating an instance of the class
-
-To create an instance of the Verify class, Just follow the next steps:
-​
-
-- **Import the class from module** (3 different ways)
-
-```python
-#First way
-from vonage import Verify
-​
-#Second way
-from vonage.verify import Verify
-​
-#Third valid way
-import vonage #then you can use vonage.Verify() to create an instance
-```
-
-- **Create the instance**
-  ​
-
-```python
-#First way - pass key and secret to the constructor
-verify = Verify(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
-​
-#Second way - Create a client instance and then pass the client to the Verify contructor
-client = Client(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
-verify = Verify(client)
-```
-
 ### Search for a Verification request
 
 ```python
-client = Client(key='API_KEY', secret='API_SECRET')
+client = vonage.Client(key='API_KEY', secret='API_SECRET')
 
-verify = Verify(client)
-response = verify.search('69e2626cbc23451fbbc02f627a959677')
+response = client.verify.search('69e2626cbc23451fbbc02f627a959677')
 
 if response is not None:
     print(response['status'])
@@ -313,10 +263,9 @@ if response is not None:
 ### Send verification code
 
 ```python
-client = Client(key='API_KEY', secret='API_SECRET')
+client = vonage.Client(key='API_KEY', secret='API_SECRET')
 
-verify = Verify(client)
-response = verify.start_verification(number=RECIPIENT_NUMBER, brand='AcmeInc')
+response = client.verify.start_verification(number=RECIPIENT_NUMBER, brand='AcmeInc')
 
 if response["status"] == "0":
     print("Started verification request_id is %s" % (response["request_id"]))
@@ -327,10 +276,9 @@ else:
 ### Send verification code with workflow
 
 ```python
-client = Client(key='API_KEY', secret='API_SECRET')
+client = vonage.Client(key='API_KEY', secret='API_SECRET')
 
-verify = Verify(client)
-response = verify.start_verification(number=RECIPIENT_NUMBER, brand='AcmeInc', workflow_id=1)
+response = client.verify.start_verification(number=RECIPIENT_NUMBER, brand='AcmeInc', workflow_id=1)
 
 if response["status"] == "0":
     print("Started verification request_id is %s" % (response["request_id"]))
@@ -341,10 +289,9 @@ else:
 ### Check verification code
 
 ```python
-client = Client(key='API_KEY', secret='API_SECRET')
+client = vonage.Client(key='API_KEY', secret='API_SECRET')
 
-verify = Verify(client)
-response = verify.check(REQUEST_ID, code=CODE)
+response = client.verify.check(REQUEST_ID, code=CODE)
 
 if response["status"] == "0":
     print("Verification successful, event_id is %s" % (response["event_id"]))
@@ -355,10 +302,9 @@ else:
 ### Cancel Verification Request
 
 ```python
-client = Client(key='API_KEY', secret='API_SECRET')
+client = vonage.Client(key='API_KEY', secret='API_SECRET')
 
-verify = Verify(client)
-response = verify.cancel(REQUEST_ID)
+response = client.verify.cancel(REQUEST_ID)
 
 if response["status"] == "0":
     print("Cancellation successful")
@@ -369,10 +315,9 @@ else:
 ### Trigger next verification proccess
 
 ```python
-client = Client(key='API_KEY', secret='API_SECRET')
+client = vonage.Client(key='API_KEY', secret='API_SECRET')
 
-verify = Verify(client)
-response = verify.trigger_next_event(REQUEST_ID)
+response = client.verify.trigger_next_event(REQUEST_ID)
 
 if response["status"] == "0":
     print("Next verification stage triggered")
@@ -383,10 +328,9 @@ else:
 ### Send payment authentication code
 
 ```python
-client = Client(key='API_KEY', secret='API_SECRET')
+client = vonage.Client(key='API_KEY', secret='API_SECRET')
 
-verify = Verify(client)
-response = verify.psd2(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT)
+response = client.verify.psd2(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT)
 
 if response["status"] == "0":
     print("Started PSD2 verification request_id is %s" % (response["request_id"]))
@@ -397,10 +341,9 @@ else:
 ### Send payment authentication code with workflow
 
 ```python
-client = Client(key='API_KEY', secret='API_SECRET')
+client = vonage.Client(key='API_KEY', secret='API_SECRET')
 
-verify = Verify(client)
-verify.psd2(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT, workflow_id: WORKFLOW_ID)
+client.verify.psd2(number=RECIPIENT_NUMBER, payee=PAYEE, amount=AMOUNT, workflow_id: WORKFLOW_ID)
 
 if response["status"] == "0":
     print("Started PSD2 verification request_id is %s" % (response["request_id"]))
@@ -413,7 +356,7 @@ else:
 ### Basic Number Insight
 
 ```python
-client.get_basic_number_insight(number='447700900000')
+client.number_insight.get_basic_number_insight(number='447700900000')
 ```
 
 Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightBasic](https://developer.nexmo.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightBasic)
@@ -421,7 +364,7 @@ Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightBasic](htt
 ### Standard Number Insight
 
 ```python
-client.get_standard_number_insight(number='447700900000')
+client.number_insight.get_standard_number_insight(number='447700900000')
 ```
 
 Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightStandard](https://developer.nexmo.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightStandard)
@@ -429,7 +372,7 @@ Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightStandard](
 ### Advanced Number Insight
 
 ```python
-client.get_advanced_number_insight(number='447700900000')
+client.number_insight.get_advanced_number_insight(number='447700900000')
 ```
 
 Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightAdvanced](https://developer.nexmo.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightAdvanced)
@@ -441,7 +384,7 @@ An API is provided to allow you to rotate your API secrets. You can create a new
 ### List Secrets
 
 ```python
-secrets = client.list_secrets(API_KEY)
+secrets = client.account.list_secrets(API_KEY)
 ```
 
 ### Create A New Secret
@@ -449,7 +392,7 @@ secrets = client.list_secrets(API_KEY)
 Create a new secret (the created dates will help you know which is which):
 
 ```python
-client.create_secret(API_KEY, 'awes0meNewSekret!!;');
+client.account.create_secret(API_KEY, 'awes0meNewSekret!!;');
 ```
 
 ### Delete A Secret
@@ -457,7 +400,7 @@ client.create_secret(API_KEY, 'awes0meNewSekret!!;');
 Delete the old secret (any application still using these credentials will stop working):
 
 ```python
-client.delete_secret(API_KEY, 'my-secret-id')
+client.account.delete_secret(API_KEY, 'my-secret-id')
 ```
 
 ## Application API

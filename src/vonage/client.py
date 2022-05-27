@@ -1,15 +1,19 @@
+import vonage
+
 from ._internal import _format_date_param
-from .account import *
+from .account import Account
 from .application import ApplicationV2, BasicAuthenticatedServer
 from .errors import *
-from .message_search import *
+from .message_search import MessageSearch
+from .message_classes import *
+from .messages import Messages
 from .number_insight import NumberInsight
-from .numbers import *
-from .short_codes import *
-from .sms import *
-from .ussd import *
-from .voice import *
-from .verify import *
+from .numbers import Numbers
+from .short_codes import ShortCodes
+from .sms import Sms
+from .ussd import Ussd
+from .voice import Voice
+from .verify import Verify
 
 import logging
 from datetime import datetime
@@ -129,9 +133,10 @@ class Client:
             api_secret=self.api_secret,
         )
         self.application_v2 = ApplicationV2(api_server)
-
+        
         self.account = Account(self)
         self.message_search = MessageSearch(self)
+        self.messages = Messages(self)
         self.number_insight = NumberInsight(self)
         self.numbers = Numbers(self)
         self.short_codes = ShortCodes(self)

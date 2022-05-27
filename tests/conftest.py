@@ -104,3 +104,9 @@ def short_codes(client):
     import vonage
     
     return vonage.ShortCodes(client)
+
+@pytest.fixture
+def messages(client):
+    import vonage
+
+    return vonage.Messages(client)

@@ -1,6 +1,6 @@
 import vonage
 
-class Voice():
+class Voice:
     #application_id and private_key are needed for the calling methods
     #Passing a Vonage Client is also possible 
     def __init__(

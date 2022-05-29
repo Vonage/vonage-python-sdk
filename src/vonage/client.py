@@ -5,7 +5,6 @@ from .account import Account
 from .application import ApplicationV2, BasicAuthenticatedServer
 from .errors import *
 from .message_search import MessageSearch
-from .message_classes import *
 from .messages import Messages
 from .number_insight import NumberInsight
 from .numbers import Numbers

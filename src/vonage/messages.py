@@ -1,4 +1,3 @@
-import string
 from .errors import MessagesError, InvalidMessageTypeError
 
 import re
@@ -41,7 +40,7 @@ class Messages:
         self._check_valid_message_channel()
         self._check_valid_message_type()
         self._check_valid_recipient()
-        self._check_sender_string()
+        self._check_valid_sender()
 
     def _check_valid_message_channel(self):
         if self._channel not in Messages.valid_message_channels:
@@ -61,9 +60,9 @@ class Messages:
         if not re.search(r'^[1-9]\d{6,14}$', self._to):
             raise MessagesError(f'Message recipient ("to={self._to}") details not in a valid format.')
 
-    def _check_sender_string(self):
+    def _check_valid_sender(self):
         if not isinstance(self._frm, str) or self._frm == "":
-            raise MessagesError(f'Message sender ("frm={self._frm}") set incorrectly. Set a valid name for the sender.')
+            raise MessagesError(f'Message sender ("frm={self._frm}") set incorrectly. Set a valid name or number for the sender.')
 
     def _build_request_string(self):
         pass

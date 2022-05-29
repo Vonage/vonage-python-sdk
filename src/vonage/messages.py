@@ -21,14 +21,16 @@ class Messages:
         message_type=None, 
         to=None, 
         frm=None,
-        opts=None
+        client_ref=None,
+        message_contents=None
     ):
 
         self._channel = channel
         self._message_type = message_type
         self._to = to
         self._frm = frm
-        self._opts = opts
+        self._client_ref = client_ref
+        self._message_contents = message_contents
 
         self._validate_send_message_input()
 
@@ -57,12 +59,20 @@ class Messages:
             """)
 
     def _check_valid_recipient(self):
-        if not re.search(r'^[1-9]\d{6,14}$', self._to):
-            raise MessagesError(f'Message recipient ("to={self._to}") details not in a valid format.')
+        if not isinstance(self._frm, str):
+            raise MessagesError(f'Message recipient ("to={self._to}") not in a valid format.')
+        elif self._channel != 'messenger' and not re.search(r'^[1-9]\d{6,14}$', self._to):
+            raise MessagesError(f'Message recipient number ("to={self._to}") not in a valid format.')
+        elif not 0 < len(self._frm) < 50:
+            raise MessagesError(f'Message recipient ID ("to={self._to}") not in a valid format.')
 
     def _check_valid_sender(self):
         if not isinstance(self._frm, str) or self._frm == "":
             raise MessagesError(f'Message sender ("frm={self._frm}") set incorrectly. Set a valid name or number for the sender.')
+
+
+
+
 
     def _build_request_string(self):
         pass

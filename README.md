@@ -79,11 +79,11 @@ client = vonage.Client(key="mykey", secret="mysecret")
 print(f"Account balance is: {client.account.get_balance()}")
 
 print("Sending an SMS")
-client.sms.send_message(
+client.sms.send_message({
     "from": "Vonage",
     "to": "SOME_PHONE_NUMBER",
     "text": "Hello from Vonage's SMS API"
-)
+})
 ```
 
 This means you don't have to create a separate instance of each class to use its API methods. Instead, you can access class methods from the client instance with

@@ -23,9 +23,3 @@ class MessagesError(Error):
     """
     Indicates an error related to the Messages class, that calls the Vonage Messages API.
     """
-
-class InvalidMessageTypeError(Error):
-    """
-    Indicates that the supplied 'message_type' was invalid.
-    """
-

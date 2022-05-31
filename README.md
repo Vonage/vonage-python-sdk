@@ -68,6 +68,8 @@ To check signatures for incoming webhook requests, you'll also need
 to specify the `signature_secret` argument (or the `VONAGE_SIGNATURE_SECRET`
 environment variable).
 
+To use the SDK to call Vonage APIs, pass in dicts with the required options to methods like `Sms.send_message()`. Examples of this are given below.
+
 ## Simplified structure for calling API Methods
 
 The client now instantiates a class object for each API when it is created, e.g. `vonage.Client(key="mykey", secret="mysecret")`

@@ -21,5 +21,5 @@ class CallbackRequiredError(Error):
 
 class MessagesError(Error):
     """
-    Indicates an error related to the Messages class, that calls the Vonage Messages API.
+    Indicates an error related to the Messages class which calls the Vonage Messages API.
     """

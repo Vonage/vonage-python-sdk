@@ -1,0 +1,4 @@
+-r requirements.txt
+bump2version
+build
+twine

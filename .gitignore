@@ -102,6 +102,7 @@ ENV*
 /site
 
 .requirements.txt
+.requirements-dev.txt
 *_quickstart*
 
 .DS_Store

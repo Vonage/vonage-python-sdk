@@ -249,6 +249,13 @@ client.voice.send_dtmf(response['uuid'], digits='1234')
 response = client.get_recording(RECORDING_URL)
 ```
 
+## Messages API
+
+The Messages API is an API that allows you to send messages via SMS, MMS, WhatsApp, Messenger and Viber.
+
+
+
+
 ## Verify API
 
 ### Search for a Verification request

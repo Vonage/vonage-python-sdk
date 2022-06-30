@@ -28,7 +28,7 @@ def test_invalid_message_type(messages):
 def test_invalid_recipient_not_string(messages):
     with pytest.raises(MessagesError):
         messages.send_message({
-            'channel': 'sms', 
+            'channel': 'sms',
             'message_type': 'text',
             'to': 12345678, 
             'from': 'vonage',
@@ -66,7 +66,7 @@ def test_invalid_sender(messages):
         })
 
 def test_set_client_ref(messages):
-    messages._set_instance_attributes({
+    messages._check_valid_client_ref({
         'channel': 'sms', 
         'message_type': 'text',
         'to': '441234567890', 
@@ -78,7 +78,7 @@ def test_set_client_ref(messages):
 
 def test_invalid_client_ref(messages):
     with pytest.raises(MessagesError):
-        messages._set_instance_attributes({
+        messages._check_valid_client_ref({
         'channel': 'sms', 
         'message_type': 'text',
         'to': '441234567890', 
@@ -87,21 +87,18 @@ def test_invalid_client_ref(messages):
         'client_ref': 'my client reference that is far longer than the 40 character limit'
         })
 
-def test_set_whatsapp_template(messages):
-    messages._set_instance_attributes({
+def test_whatsapp_template(messages):
+    messages.validate_send_message_input({
             'channel': 'whatsapp', 
             'message_type': 'template',
-            'to': '', 
+            'to': '4412345678912', 
             'from': 'vonage',
             'template': {'name': 'namespace:mytemplate'},
             'whatsapp': {'policy': 'deterministic', 'locale': 'en-GB'}
         })
 
-    assert messages._channel == 'whatsapp'    
-    assert messages._whatsapp == {'policy': 'deterministic', 'locale': 'en-GB'}
-
 def test_set_messenger_optional_attribute(messages):
-    messages._set_instance_attributes({
+    messages.validate_send_message_input({
         'channel': 'messenger', 
         'message_type': 'text',
         'to': 'user_messenger_id', 
@@ -109,10 +106,9 @@ def test_set_messenger_optional_attribute(messages):
         'text': 'my important message',
         'messenger': {'category': 'response', 'tag': 'ACCOUNT_UPDATE'}
     })
-    assert messages._messenger == {'category': 'response', 'tag': 'ACCOUNT_UPDATE'}
 
 def test_set_viber_service_optional_attribute(messages):
-    messages._set_instance_attributes({
+    messages.validate_send_message_input({
         'channel': 'viber_service', 
         'message_type': 'text',
         'to': '44123456789', 
@@ -120,4 +116,13 @@ def test_set_viber_service_optional_attribute(messages):
         'text': 'my important message',
         'viber_service': {'category': 'transaction', 'ttl': 30, 'type': 'text'}
     })
-    assert messages._viber_service == {'category': 'transaction', 'ttl': 30, 'type': 'text'}
+
+def test_incomplete_input(messages):
+    with pytest.raises(MessagesError):
+            messages.validate_send_message_input({
+        'channel': 'viber_service', 
+        'message_type': 'text',
+        'to': '44123456789', 
+        'from': 'vonage',
+        'text': 'my important message'
+    })

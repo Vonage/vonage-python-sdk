@@ -238,6 +238,7 @@ class Client:
         params,
         supports_signature_auth=False,
         header_auth=False,
+        additional_headers=None
     ):
         """
         Low-level method to make a post request to a Vonage API server, which may have a Nexmo url.
@@ -249,7 +250,12 @@ class Client:
         :param bool header_auth: Use basic authentication instead of adding api_key and api_secret to the request params.
         """
         uri = f"https://{host}{request_uri}"
-        headers = self.headers
+        
+        if not additional_headers:
+            headers = {**self.headers}
+        else:
+            headers = {**self.headers, **additional_headers}
+
         if supports_signature_auth and self.signature_secret:
             params["api_key"] = self.api_key
             params["sig"] = self.signature(params)

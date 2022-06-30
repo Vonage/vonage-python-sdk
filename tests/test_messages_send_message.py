@@ -27,7 +27,7 @@ def test_send_whatsapp_image_with_messages_api(messages, dummy_data):
         'message_type': 'image', 
         'to': '447123456789', 
         'from': '440123456789',
-        'image': {'url': 'https://example.com/image', 'caption': 'fake test image'}
+        'image': {'url': 'https://example.com/image.jpg', 'caption': 'fake test image'}
     }
 
     assert isinstance(messages.send_message(params), dict)

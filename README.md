@@ -14,6 +14,7 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [Installation](#installation)
 - [Usage](#usage)
 - [SMS API](#sms-api)
+- [Messages API](#messages-api)
 - [Voice API](#voice-api)
 - [Verify API](#verify-api)
 - [Number Insight API](#number-insight-api)
@@ -95,6 +96,7 @@ client.CLASS_NAME.CLASS_METHOD
 
 ## SMS API
 
+Although the Messages API adds more messaging channels, the SMS API is still supported.
 ### Send an SMS
 
 ```python
@@ -138,6 +140,82 @@ response = client.sms.send_message({
     'text': 'Hi from Vonage'
 })
 client.sms.submit_sms_conversion(response['message-id'])
+```
+
+## Messages API
+
+The Messages API is an API that allows you to send messages via SMS, MMS, WhatsApp, Messenger and Viber. Call the API from your Python code by 
+passing a dict of parameters into the `client.messages.send_message()` method.
+
+It accepts JWT or API key/secret authentication.
+
+Some basic samples are below. For more detailed information and code snippets, please visit the [Vonage Developer Documentation](https://developer.vonage.com).
+
+### Send an SMS
+```python
+responseData = client.messages.send_message({
+        'channel': 'sms', 
+        'message_type': 'text', 
+        'to': '447123456789', 
+        'from': 'Vonage',
+        'text': 'Hello from Vonage'
+    })
+```
+
+### Send an MMS
+Note: only available in the US. You will need a 10DLC number to send an MMS message.
+
+```python
+client.messages.send_message({
+        'channel': 'mms', 
+        'message_type': 'image', 
+        'to': '11112223333', 
+        'from': '1223345567',
+        'image': {'url': 'https://example.com/image.jpg', 'caption': 'Test Image'}
+    })
+```
+
+### Send an audio file via WhatsApp
+
+You will need a WhatsApp Business Account to use WhatsApp messaging. WhatsApp restrictions mean that you
+must send a template message to a user if they have not previously messaged you, but you can send any message
+type to a user if they have messaged your business number in the last 24 hours.
+
+```python
+client.messages.send_message({
+        'channel': 'whatsapp', 
+        'message_type': 'audio', 
+        'to': '447123456789', 
+        'from': '440123456789',
+        'audio': {'url': 'https://example.com/audio.mp3'}
+    })
+```
+
+### Send a video file via Facebook Messenger
+
+You will need to link your Facebook business page to your Vonage account in the Vonage developer dashboard. (Click on the sidebar
+"External Accounts" option to do this.)
+
+```python
+client.messages.send_message({
+        'channel': 'messenger', 
+        'message_type': 'video', 
+        'to': '594123123123123', 
+        'from': '1012312312312',
+        'video': {'url': 'https://example.com/video.mp4'}
+    })
+```
+
+### Send a text message with Viber
+
+```python
+client.messages.send_message({
+    'channel': 'viber_service',
+    'message_type': 'text',
+    'to': '447123456789',
+    'from': '440123456789',
+    'text': 'Hello from Vonage!'
+})
 ```
 
 ## Voice API
@@ -248,12 +326,6 @@ client.voice.send_dtmf(response['uuid'], digits='1234')
 ```python
 response = client.get_recording(RECORDING_URL)
 ```
-
-## Messages API
-
-The Messages API is an API that allows you to send messages via SMS, MMS, WhatsApp, Messenger and Viber.
-
-
 
 
 ## Verify API
@@ -518,12 +590,6 @@ client.api_host('myapi.vonage.com') # rewrite the value of api_host
 
 ## Frequently Asked Questions
 
-### Dropping support for Python 2.7
-
-Back in 2014 when Guido van Rossum, Python's creator and principal author, made the announcement, January 1, 2020 seemed pretty far away. Python 2.7’s sunset has happened, after which there’ll be absolutely no more support from the core Python team. Many utilized projects pledge to drop Python 2 support in or before 2020. [(Official statement here)](https://www.python.org/doc/sunset-python-2/).
-
-Just because 2.7 isn’t going to be maintained past 2020 doesn’t mean your applications or libraries suddenly stop working but as of this moment we won't give official support for upcoming releases. Please read the official ["Porting Python 2 Code to Python 3" guide](https://docs.python.org/3/howto/pyporting.html). Please also read the [Python 3 Statement Practicalities](https://python3statement.org/practicalities/) for advice on sunsetting your Python 2 code.
-
 ### Supported APIs
 
 The following is a list of Vonage APIs and whether the Python SDK provides support for them:
@@ -538,7 +604,7 @@ The following is a list of Vonage APIs and whether the Python SDK provides suppo
 | Dispatch API          |         Beta         |     ❌     |
 | External Accounts API |         Beta         |     ❌     |
 | Media API             |         Beta         |     ❌     |
-| Messages API          |         Beta         |     ❌     |
+| Messages API          | General Availability |     ✅     |
 | Number Insight API    | General Availability |     ✅     |
 | Number Management API | General Availability |     ✅     |
 | Pricing API           | General Availability |     ✅     |

@@ -1,3 +1,6 @@
+# 2.8.0
+- Added Messages API v1.0 support. Messages API can now be used by calling the client.messages.send_message() method.
+
 # 2.7.0
 - Moved some client methods into their own classes: `account.py, application.py, 
 message_search.py, number_insight.py, numbers.py, short_codes.py, ussd.py`

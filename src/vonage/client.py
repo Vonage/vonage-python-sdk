@@ -1,15 +1,18 @@
+import vonage
+
 from ._internal import _format_date_param
-from .account import *
+from .account import Account
 from .application import ApplicationV2, BasicAuthenticatedServer
 from .errors import *
-from .message_search import *
+from .message_search import MessageSearch
+from .messages import Messages
 from .number_insight import NumberInsight
-from .numbers import *
-from .short_codes import *
-from .sms import *
-from .ussd import *
-from .voice import *
-from .verify import *
+from .numbers import Numbers
+from .short_codes import ShortCodes
+from .sms import Sms
+from .ussd import Ussd
+from .voice import Voice
+from .verify import Verify
 
 import logging
 from datetime import datetime
@@ -129,9 +132,10 @@ class Client:
             api_secret=self.api_secret,
         )
         self.application_v2 = ApplicationV2(api_server)
-
+        
         self.account = Account(self)
         self.message_search = MessageSearch(self)
+        self.messages = Messages(self)
         self.number_insight = NumberInsight(self)
         self.numbers = Numbers(self)
         self.short_codes = ShortCodes(self)
@@ -234,6 +238,7 @@ class Client:
         params,
         supports_signature_auth=False,
         header_auth=False,
+        additional_headers=None
     ):
         """
         Low-level method to make a post request to a Vonage API server, which may have a Nexmo url.
@@ -245,7 +250,12 @@ class Client:
         :param bool header_auth: Use basic authentication instead of adding api_key and api_secret to the request params.
         """
         uri = f"https://{host}{request_uri}"
-        headers = self.headers
+        
+        if not additional_headers:
+            headers = {**self.headers}
+        else:
+            headers = {**self.headers, **additional_headers}
+
         if supports_signature_auth and self.signature_secret:
             params["api_key"] = self.api_key
             params["sig"] = self.signature(params)

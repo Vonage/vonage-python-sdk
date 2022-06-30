@@ -18,3 +18,8 @@ class CallbackRequiredError(Error):
     """
     Indicates a callback is required but was not present.
     """
+
+class MessagesError(Error):
+    """
+    Indicates an error related to the Messages class which calls the Vonage Messages API.
+    """

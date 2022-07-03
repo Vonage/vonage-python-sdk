@@ -5,8 +5,6 @@ from requests.sessions import Session
 
 from .errors import AuthenticationError, ClientError, ServerError
 
-from deprecated import deprecated
-
 try:
     from json import JSONDecodeError
 except ImportError:

@@ -81,3 +81,14 @@ def test_request_number_insight(number_insight, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert "number=447525856424" in request_body()
     assert "callback=https%3A%2F%2Fexample.com" in request_body()
+
+@responses.activate
+def test_get_async_advanced_number_insight(number_insight, dummy_data):
+    stub(responses.GET, "https://api.nexmo.com/ni/advanced/async/json")
+
+    params = {"number": "447525856424", "callback": "https://example.com"}
+
+    assert isinstance(number_insight.get_async_advanced_number_insight(params), dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert "number=447525856424" in request_query()
+    assert "callback=https%3A%2F%2Fexample.com" in request_query()

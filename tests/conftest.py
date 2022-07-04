@@ -88,12 +88,6 @@ def numbers(client):
     return vonage.Numbers(client)
 
 @pytest.fixture
-def message_search(client):
-    import vonage
-    
-    return vonage.MessageSearch(client)
-
-@pytest.fixture
 def ussd(client):
     import vonage
     

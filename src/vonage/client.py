@@ -4,7 +4,6 @@ from ._internal import _format_date_param
 from .account import Account
 from .application import ApplicationV2, BasicAuthenticatedServer
 from .errors import *
-from .message_search import MessageSearch
 from .messages import Messages
 from .number_insight import NumberInsight
 from .numbers import Numbers
@@ -134,7 +133,6 @@ class Client:
         self.application_v2 = ApplicationV2(api_server)
         
         self.account = Account(self)
-        self.message_search = MessageSearch(self)
         self.messages = Messages(self)
         self.number_insight = NumberInsight(self)
         self.numbers = Numbers(self)

@@ -1,3 +1,7 @@
+# 3.0.0 (Unreleased, WIP)
+- Removed automatic client creation when instantiating an `sms`, `voice` or `verify` object
+- Removed methods to call the Message Search API, which has been retired by Vonage
+
 # 2.8.0
 - Added Messages API v1.0 support. Messages API can now be used by calling the `client.messages.send_message()` method.
 

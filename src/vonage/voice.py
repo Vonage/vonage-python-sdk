@@ -1,21 +1,8 @@
-import vonage
-
 class Voice:
     #application_id and private_key are needed for the calling methods
     #Passing a Vonage Client is also possible 
-    def __init__(
-        self,
-        client=None,
-        application_id=None,
-        private_key=None,
-    ):
-        try:
-            # Client is protected
-            self._client = client
-            if self._client is None:
-                self._client = vonage.Client(application_id=application_id, private_key=private_key)
-        except Exception as e:
-            print(f'Error: {str(e)}')
+    def __init__(self, client):
+        self._client = client
 
     # Creates a new call session
     def create_call(self, params, **kwargs):

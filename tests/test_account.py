@@ -9,18 +9,12 @@ from vonage.errors import PricingTypeError
 
 
 @responses.activate
-def test_deprecated_get_balance(client, dummy_data):
-    stub(responses.GET, "https://rest.nexmo.com/account/get-balance")
-
-    assert isinstance(client.get_balance(), dict)
-    assert request_user_agent() == dummy_data.user_agent
-
-@responses.activate
 def test_get_balance(account, dummy_data):
     stub(responses.GET, "https://rest.nexmo.com/account/get-balance")
 
     assert isinstance(account.get_balance(), dict)
     assert request_user_agent() == dummy_data.user_agent
+
 
 @responses.activate
 def test_application_info_options(dummy_data):
@@ -36,17 +30,10 @@ def test_application_info_options(dummy_data):
     )
     user_agent = f"vonage-python/{vonage.__version__} python/{platform.python_version()} {app_name}/{app_version}"
 
-    assert isinstance(client.get_balance(), dict)
+    account = client.account
+    assert isinstance(account.get_balance(), dict)
     assert request_user_agent() == user_agent
 
-
-@responses.activate
-def test_deprecated_get_country_pricing(client, dummy_data):
-    stub(responses.GET, "https://rest.nexmo.com/account/get-pricing/outbound")
-
-    assert isinstance(client.get_country_pricing("GB"), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "country=GB" in request_query()
 
 @responses.activate
 def test_get_country_pricing(account, dummy_data):
@@ -55,6 +42,7 @@ def test_get_country_pricing(account, dummy_data):
     assert isinstance(account.get_country_pricing("GB"), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "country=GB" in request_query()
+
 
 @responses.activate
 def test_get_all_countries_pricing(account, dummy_data):
@@ -65,14 +53,6 @@ def test_get_all_countries_pricing(account, dummy_data):
 
 
 @responses.activate
-def test_deprecated_get_prefix_pricing(client, dummy_data):
-    stub(responses.GET, "https://rest.nexmo.com/account/get-prefix-pricing/outbound")
-
-    assert isinstance(client.get_prefix_pricing(44), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "prefix=44" in request_query()
-
-@responses.activate
 def test_get_prefix_pricing(account, dummy_data):
     stub(responses.GET, "https://rest.nexmo.com/account/get-prefix-pricing/outbound/sms")
 
@@ -80,13 +60,6 @@ def test_get_prefix_pricing(account, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert "prefix=44" in request_query()
 
-@responses.activate
-def test_deprecated_get_sms_pricing(client, dummy_data):
-    stub(responses.GET, "https://rest.nexmo.com/account/get-phone-pricing/outbound/sms")
-
-    assert isinstance(client.get_sms_pricing("447525856424"), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "phone=447525856424" in request_query()
 
 @responses.activate
 def test_get_sms_pricing(account, dummy_data):
@@ -96,15 +69,6 @@ def test_get_sms_pricing(account, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert "phone=447525856424" in request_query()
 
-@responses.activate
-def test_deprecated_get_voice_pricing(client, dummy_data):
-    stub(
-        responses.GET, "https://rest.nexmo.com/account/get-phone-pricing/outbound/voice"
-    )
-
-    assert isinstance(client.get_voice_pricing("447525856424"), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "phone=447525856424" in request_query()
 
 @responses.activate
 def test_get_voice_pricing(account, dummy_data):
@@ -116,20 +80,12 @@ def test_get_voice_pricing(account, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert "phone=447525856424" in request_query()
 
+
 @responses.activate
 def test_invalid_pricing_type_throws_error(account, dummy_data):
     with pytest.raises(PricingTypeError):
         account.get_country_pricing('GB', 'not_a_valid_pricing_type')
 
-@responses.activate
-def test_deprecated_update_settings(client, dummy_data):
-    stub(responses.POST, "https://rest.nexmo.com/account/settings")
-
-    params = {"moCallBackUrl": "http://example.com/callback"}
-
-    assert isinstance(client.update_settings(params), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "moCallBackUrl=http%3A%2F%2Fexample.com%2Fcallback" in request_body()
 
 @responses.activate
 def test_update_default_sms_webhook(account, dummy_data):
@@ -141,15 +97,6 @@ def test_update_default_sms_webhook(account, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert "moCallBackUrl=http%3A%2F%2Fexample.com%2Fcallback" in request_body()
 
-@responses.activate
-def test_deprecated_topup(client, dummy_data):
-    stub(responses.POST, "https://rest.nexmo.com/account/top-up")
-
-    params = {"trx": "00X123456Y7890123Z"}
-
-    assert isinstance(client.topup(params), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "trx=00X123456Y7890123Z" in request_body()
 
 @responses.activate
 def test_topup(account, dummy_data):
@@ -161,21 +108,6 @@ def test_topup(account, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert "trx=00X123456Y7890123Z" in request_body()
 
-
-@responses.activate
-def test_deprecated_list_secrets(client):
-    stub(
-        responses.GET,
-        "https://api.nexmo.com/accounts/meaccountid/secrets",
-        fixture_path="account/secret_management/list.json",
-    )
-
-    secrets = client.list_secrets("meaccountid")
-    assert_basic_auth()
-    assert (
-        glom(secrets, "_embedded.secrets.0.id")
-        == "ad6dc56f-07b5-46e1-a527-85530e625800"
-    )
 
 @responses.activate
 def test_get_all_secrets(account):
@@ -192,49 +124,23 @@ def test_get_all_secrets(account):
         == "ad6dc56f-07b5-46e1-a527-85530e625800"
     )
 
-@responses.activate
-def test_deprecated_list_secrets_missing(client):
-    stub(
-        responses.GET,
-        "https://api.nexmo.com/accounts/meaccountid/secrets",
-        status_code=404,
-        fixture_path="account/secret_management/missing.json",
-    )
-
-    with pytest.raises(vonage.ClientError) as ce:
-        client.list_secrets("meaccountid")
-    assert_basic_auth()
-    assert (
-        str(ce.value) == """Invalid API Key: API key 'ABC123' does not exist, or you do not have access (https://developer.nexmo.com/api-errors#invalid-api-key)"""
-    )
 
 @responses.activate
 def test_get_all_secrets_missing(account):
     stub(
         responses.GET,
-        "https://api.nexmo.com/accounts/meaccountid/secrets",
+        "https://api.nexmo.com/accounts/myaccountid/secrets",
         status_code=404,
         fixture_path="account/secret_management/missing.json",
     )
 
     with pytest.raises(vonage.ClientError) as ce:
-        account.get_all_secrets("meaccountid")
+        account.get_all_secrets("myaccountid")
     assert_basic_auth()
     assert (
         str(ce.value) == """Invalid API Key: API key 'ABC123' does not exist, or you do not have access (https://developer.nexmo.com/api-errors#invalid-api-key)"""
     )
 
-@responses.activate
-def test_deprecated_get_secret(client):
-    stub(
-        responses.GET,
-        "https://api.nexmo.com/accounts/meaccountid/secrets/mahsecret",
-        fixture_path="account/secret_management/get.json",
-    )
-
-    secret = client.get_secret("meaccountid", "mahsecret")
-    assert_basic_auth()
-    assert secret["id"] == "ad6dc56f-07b5-46e1-a527-85530e625800"
 
 @responses.activate
 def test_get_secret(account):
@@ -248,51 +154,6 @@ def test_get_secret(account):
     assert_basic_auth()
     assert secret["id"] == "ad6dc56f-07b5-46e1-a527-85530e625800"
 
-
-@responses.activate
-def test_deprecated_create_secret(client):
-    stub(
-        responses.POST,
-        "https://api.nexmo.com/accounts/meaccountid/secrets",
-        fixture_path="account/secret_management/create.json",
-    )
-
-    secret = client.create_secret("meaccountid", "mahsecret")
-    assert_basic_auth()
-    assert secret["id"] == "ad6dc56f-07b5-46e1-a527-85530e625800"
-
-
-@responses.activate
-def test_deprecated_create_secret_max_secrets(client):
-    stub(
-        responses.POST,
-        "https://api.nexmo.com/accounts/meaccountid/secrets",
-        status_code=403,
-        fixture_path="account/secret_management/max-secrets.json",
-    )
-
-    with pytest.raises(vonage.ClientError) as ce:
-        client.create_secret("meaccountid", "mahsecret")
-    assert_basic_auth()
-    assert (
-        str(ce.value) == """Maxmimum number of secrets already met: This account has reached maximum number of '2' allowed secrets (https://developer.nexmo.com/api-errors/account/secret-management#maximum-secrets-allowed)"""
-    )
-
-@responses.activate
-def test_deprecated_create_secret_validation(client):
-    stub(
-        responses.POST,
-        "https://api.nexmo.com/accounts/meaccountid/secrets",
-        status_code=400,
-        fixture_path="account/secret_management/create-validation.json",
-    )
-
-    with pytest.raises(vonage.ClientError) as ce:
-        client.create_secret("meaccountid", "mahsecret")
-    assert_basic_auth()
-    assert (
-        str(ce.value) == """Bad Request: The request failed due to validation errors (https://developer.nexmo.com/api-errors/account/secret-management#validation)"""
-    )
 
 @responses.activate
 def test_create_secret(account):
@@ -323,6 +184,7 @@ def test_create_secret_max_secrets(account):
         str(ce.value) == """Maxmimum number of secrets already met: This account has reached maximum number of '2' allowed secrets (https://developer.nexmo.com/api-errors/account/secret-management#maximum-secrets-allowed)"""
     )
 
+
 @responses.activate
 def test_create_secret_validation(account):
     stub(
@@ -339,30 +201,6 @@ def test_create_secret_validation(account):
         str(ce.value) == """Bad Request: The request failed due to validation errors (https://developer.nexmo.com/api-errors/account/secret-management#validation)"""
     )
 
-@responses.activate
-def test_deprecated_delete_secret(client):
-    stub(
-        responses.DELETE, "https://api.nexmo.com/accounts/meaccountid/secrets/mahsecret"
-    )
-
-    client.delete_secret("meaccountid", "mahsecret")
-    assert_basic_auth()
-
-
-@responses.activate
-def test_deprecated_delete_secret_last_secret(client):
-    stub(
-        responses.DELETE,
-        "https://api.nexmo.com/accounts/meaccountid/secrets/mahsecret",
-        status_code=403,
-        fixture_path="account/secret_management/last-secret.json",
-    )
-    with pytest.raises(vonage.ClientError) as ce:
-        client.delete_secret("meaccountid", "mahsecret")
-    assert_basic_auth()
-    assert (
-        str(ce.value) == """Secret Deletion Forbidden: Can not delete the last secret. The account must always have at least 1 secret active at any time (https://developer.nexmo.com/api-errors/account/secret-management#delete-last-secret)"""
-    )
 
 @responses.activate
 def test_delete_secret(account):
@@ -388,4 +226,3 @@ def test_delete_secret_last_secret(account):
     assert (
         str(ce.value) == """Secret Deletion Forbidden: Can not delete the last secret. The account must always have at least 1 secret active at any time (https://developer.nexmo.com/api-errors/account/secret-management#delete-last-secret)"""
     )
-

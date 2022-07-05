@@ -5,6 +5,7 @@ from glom import glom
 from util import *
 
 import vonage
+from vonage.errors import PricingTypeError
 
 
 @responses.activate
@@ -49,11 +50,19 @@ def test_deprecated_get_country_pricing(client, dummy_data):
 
 @responses.activate
 def test_get_country_pricing(account, dummy_data):
-    stub(responses.GET, "https://rest.nexmo.com/account/get-pricing/outbound")
+    stub(responses.GET, "https://rest.nexmo.com/account/get-pricing/outbound/sms")
 
     assert isinstance(account.get_country_pricing("GB"), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "country=GB" in request_query()
+
+@responses.activate
+def test_get_all_countries_pricing(account, dummy_data):
+    stub(responses.GET, "https://rest.nexmo.com/account/get-full-pricing/outbound/sms")
+
+    assert isinstance(account.get_all_countries_pricing(), dict)
+    assert request_user_agent() == dummy_data.user_agent
+
 
 @responses.activate
 def test_deprecated_get_prefix_pricing(client, dummy_data):
@@ -65,7 +74,7 @@ def test_deprecated_get_prefix_pricing(client, dummy_data):
 
 @responses.activate
 def test_get_prefix_pricing(account, dummy_data):
-    stub(responses.GET, "https://rest.nexmo.com/account/get-prefix-pricing/outbound")
+    stub(responses.GET, "https://rest.nexmo.com/account/get-prefix-pricing/outbound/sms")
 
     assert isinstance(account.get_prefix_pricing(44), dict)
     assert request_user_agent() == dummy_data.user_agent
@@ -106,6 +115,11 @@ def test_get_voice_pricing(account, dummy_data):
     assert isinstance(account.get_voice_pricing("447525856424"), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "phone=447525856424" in request_query()
+
+@responses.activate
+def test_invalid_pricing_type_throws_error(account, dummy_data):
+    with pytest.raises(PricingTypeError):
+        account.get_country_pricing('GB', 'not_a_valid_pricing_type')
 
 @responses.activate
 def test_deprecated_update_settings(client, dummy_data):
@@ -164,14 +178,14 @@ def test_deprecated_list_secrets(client):
     )
 
 @responses.activate
-def test_list_secrets(account):
+def test_get_all_secrets(account):
     stub(
         responses.GET,
-        "https://api.nexmo.com/accounts/meaccountid/secrets",
+        "https://api.nexmo.com/accounts/myaccountid/secrets",
         fixture_path="account/secret_management/list.json",
     )
 
-    secrets = account.list_secrets("meaccountid")
+    secrets = account.get_all_secrets("myaccountid")
     assert_basic_auth()
     assert (
         glom(secrets, "_embedded.secrets.0.id")
@@ -195,7 +209,7 @@ def test_deprecated_list_secrets_missing(client):
     )
 
 @responses.activate
-def test_list_secrets_missing(account):
+def test_get_all_secrets_missing(account):
     stub(
         responses.GET,
         "https://api.nexmo.com/accounts/meaccountid/secrets",
@@ -204,7 +218,7 @@ def test_list_secrets_missing(account):
     )
 
     with pytest.raises(vonage.ClientError) as ce:
-        account.list_secrets("meaccountid")
+        account.get_all_secrets("meaccountid")
     assert_basic_auth()
     assert (
         str(ce.value) == """Invalid API Key: API key 'ABC123' does not exist, or you do not have access (https://developer.nexmo.com/api-errors#invalid-api-key)"""

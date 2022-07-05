@@ -3,6 +3,8 @@
 - Removed methods to call the Message Search API, which has been retired by Vonage
 - Added `get_all_countries_pricing` method to `Account` object
 - Added a `type` parameter for pricing calls, so `sms` or `voice` pricing can now be chosen
+- Removed deprecated voice and number insight methods from `voice.py` and `number_insight.py`
+- Removed deprecated methods from `client.py` that are now available in specific modules related to each of the available Vonage APIs
 
 # 2.8.0
 - Added Messages API v1.0 support. Messages API can now be used by calling the `client.messages.send_message()` method.

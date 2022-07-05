@@ -50,14 +50,3 @@ def test_submit_sms_conversion(sms):
     sms.submit_sms_conversion("a-message-id")
     assert "message-id=a-message-id" in request_body()
     assert "timestamp" in request_body()
-
-
-@responses.activate
-def test_deprecated_submit_sms_conversion(client):
-    responses.add(
-        responses.POST, "https://api.nexmo.com/conversions/sms", status=200, body=b"OK"
-    )
-
-    client.submit_sms_conversion("a-message-id")
-    assert "message-id=a-message-id" in request_body()
-    assert "timestamp" in request_body()

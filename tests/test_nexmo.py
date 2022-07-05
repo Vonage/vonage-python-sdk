@@ -1,7 +1,6 @@
 import vonage
 from util import *
 
-bytes_type = bytes
 
 @responses.activate
 def test_deprecated_send_ussd_push_message(client, dummy_data):
@@ -189,19 +188,3 @@ def test_client_can_make_application_requests_without_api_key(dummy_data):
     client = vonage.Client(application_id="myid", private_key=dummy_data.private_key)
     voice = vonage.Voice(client)
     voice.create_call("123455")
-
-
-@responses.activate
-def test_get_recording(client, dummy_data):
-    stub_bytes(
-        responses.GET,
-        "https://api.nexmo.com/v1/files/d6e47a2e-3414-11e8-8c2c-2f8b643ed957",
-    )
-
-    assert isinstance(
-        client.get_recording(
-            "https://api.nexmo.com/v1/files/d6e47a2e-3414-11e8-8c2c-2f8b643ed957"
-        ),
-        bytes_type,
-    )
-    assert request_user_agent() == dummy_data.user_agent

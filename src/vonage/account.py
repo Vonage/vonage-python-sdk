@@ -13,19 +13,19 @@ class Account:
         return self._client.post(self._client.host(), "/account/top-up", params or kwargs)
 
     def get_country_pricing(self, country_code: str, type: str = 'sms'):
-        self.check_allowed_pricing_type(type)
+        self._check_allowed_pricing_type(type)
         return self._client.get(
             self._client.host(), f"/account/get-pricing/outbound/{type}", {"country": country_code}
         )
 
     def get_all_countries_pricing(self, type: str = 'sms'):
-        self.check_allowed_pricing_type(type)
+        self._check_allowed_pricing_type(type)
         return self._client.get(
             self._client.host(), f"/account/get-full-pricing/outbound/{type}"
         )
 
     def get_prefix_pricing(self, prefix: str, type: str = 'sms'):
-        self.check_allowed_pricing_type(type)
+        self._check_allowed_pricing_type(type)
         return self._client.get(
             self._client.host(), f"/account/get-prefix-pricing/outbound/{type}", {"prefix": prefix}
         )
@@ -70,6 +70,6 @@ class Account:
             header_auth=True,
         )
 
-    def check_allowed_pricing_type(self, type):
+    def _check_allowed_pricing_type(self, type):
         if type not in self.allowed_pricing_types:
             raise PricingTypeError('Invalid pricing type specified.')

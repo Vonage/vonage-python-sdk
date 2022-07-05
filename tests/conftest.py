@@ -104,3 +104,9 @@ def messages(client):
     import vonage
 
     return vonage.Messages(client)
+
+@pytest.fixture
+def redact(client):
+    import vonage
+
+    return vonage.Redact(client)

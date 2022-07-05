@@ -5,6 +5,7 @@
 - Added a `type` parameter for pricing calls, so `sms` or `voice` pricing can now be chosen
 - Removed deprecated voice and number insight methods from `voice.py` and `number_insight.py`
 - Removed deprecated methods from `client.py` that are now available in specific modules related to each of the available Vonage APIs
+- Added new `redact.py` module and `Redact` class, moved `redact_transaction()` method from client into new redact class
 
 # 2.8.0
 - Added Messages API v1.0 support. Messages API can now be used by calling the `client.messages.send_message()` method.

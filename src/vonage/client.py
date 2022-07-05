@@ -1,12 +1,12 @@
 import vonage
 
-from ._internal import _format_date_param
 from .account import Account
 from .application import ApplicationV2, BasicAuthenticatedServer
 from .errors import *
 from .messages import Messages
 from .number_insight import NumberInsight
 from .numbers import Numbers
+from .redact import Redact
 from .short_codes import ShortCodes
 from .sms import Sms
 from .ussd import Ussd
@@ -14,7 +14,6 @@ from .voice import Voice
 from .verify import Verify
 
 import logging
-from datetime import datetime
 from platform import python_version
 
 import base64
@@ -22,14 +21,10 @@ import hashlib
 import hmac
 import jwt
 import os
-import pytz
 import requests
 import time
 from uuid import uuid4
-import warnings 
 import re
-from deprecated import deprecated
-
 
 string_types = (str, bytes)
 
@@ -135,6 +130,7 @@ class Client:
         self.messages = Messages(self)
         self.number_insight = NumberInsight(self)
         self.numbers = Numbers(self)
+        self.redact = Redact(self)
         self.short_codes = ShortCodes(self)
         self.sms = Sms(self)
         self.ussd = Ussd(self)
@@ -163,12 +159,6 @@ class Client:
 
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
-
-    def redact_transaction(self, id, product, type=None):
-        params = {"id": id, "product": product}
-        if type is not None:
-            params["type"] = type
-        return self._post_json(self.api_host(), "/v1/redact/transaction", params)
 
     def check_signature(self, params):
         params = dict(params)

@@ -81,8 +81,7 @@ def test_get_voice_pricing(account, dummy_data):
     assert "phone=447525856424" in request_query()
 
 
-@responses.activate
-def test_invalid_pricing_type_throws_error(account, dummy_data):
+def test_invalid_pricing_type_throws_error(account):
     with pytest.raises(PricingTypeError):
         account.get_country_pricing('GB', 'not_a_valid_pricing_type')
 

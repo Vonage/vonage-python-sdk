@@ -261,6 +261,14 @@ class Client:
         )
         return self.parse(host, self.session.post(uri, headers=headers, json=json))
 
+    def _jwt_signed_post(self, request_uri, params):
+        uri = f"https://{self.api_host()}{request_uri}"
+
+        return self.parse(
+            self.api_host(),
+            self.session.post(uri, json=params, headers=self._headers()),
+        )
+
     def put(self, host, request_uri, params, header_auth=False):
         uri = f"https://{host}{request_uri}"
 
@@ -335,36 +343,6 @@ class Client:
             logger.warning(f"Server error: {response.status_code} {repr(response.content)}")
             message = f"{response.status_code} response from {host}"
             raise ServerError(message)
-
-    def _jwt_signed_get(self, request_uri, params=None):
-        uri = f"https://{self.api_host()}{request_uri}"
-
-        return self.parse(
-            self.api_host(),
-            self.session.get(uri, params=params or {}, headers=self._headers()),
-        )
-
-    def _jwt_signed_post(self, request_uri, params):
-        uri = f"https://{self.api_host()}{request_uri}"
-
-        return self.parse(
-            self.api_host(),
-            self.session.post(uri, json=params, headers=self._headers()),
-        )
-
-    def _jwt_signed_put(self, request_uri, params):
-        uri = f"https://{self.api_host()}{request_uri}"
-
-        return self.parse(
-            self.api_host(), self.session.put(uri, json=params, headers=self._headers())
-        )
-
-    def _jwt_signed_delete(self, request_uri):
-        uri = f"https://{self.api_host()}{request_uri}"
-
-        return self.parse(
-            self.api_host(), self.session.delete(uri, headers=self._headers())
-        )
 
     def _headers(self):
         token = self.generate_application_jwt()

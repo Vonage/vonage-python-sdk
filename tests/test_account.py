@@ -109,14 +109,14 @@ def test_topup(account, dummy_data):
 
 
 @responses.activate
-def test_get_all_secrets(account):
+def test_list_secrets(account):
     stub(
         responses.GET,
         "https://api.nexmo.com/accounts/myaccountid/secrets",
         fixture_path="account/secret_management/list.json",
     )
 
-    secrets = account.get_all_secrets("myaccountid")
+    secrets = account.list_secrets("myaccountid")
     assert_basic_auth()
     assert (
         glom(secrets, "_embedded.secrets.0.id")
@@ -125,7 +125,7 @@ def test_get_all_secrets(account):
 
 
 @responses.activate
-def test_get_all_secrets_missing(account):
+def test_list_secrets_missing(account):
     stub(
         responses.GET,
         "https://api.nexmo.com/accounts/myaccountid/secrets",
@@ -134,7 +134,7 @@ def test_get_all_secrets_missing(account):
     )
 
     with pytest.raises(vonage.ClientError) as ce:
-        account.get_all_secrets("myaccountid")
+        account.list_secrets("myaccountid")
     assert_basic_auth()
     assert (
         str(ce.value) == """Invalid API Key: API key 'ABC123' does not exist, or you do not have access (https://developer.nexmo.com/api-errors#invalid-api-key)"""

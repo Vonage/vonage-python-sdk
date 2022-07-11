@@ -43,7 +43,7 @@ class Account:
     def update_default_sms_webhook(self, params=None, **kwargs):
         return self._client.post(self._client.host(), "/account/settings", params or kwargs)
 
-    def get_all_secrets(self, api_key):
+    def list_secrets(self, api_key):
         return self._client.get(
             self._client.api_host(),
             f"/accounts/{api_key}/secrets",

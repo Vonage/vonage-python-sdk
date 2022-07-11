@@ -15,9 +15,7 @@ class AuthenticationError(ClientError):
 
 
 class CallbackRequiredError(Error):
-    """
-    Indicates a callback is required but was not present.
-    """
+    """Indicates a callback is required but was not present."""
 
 
 class MessagesError(Error):
@@ -27,11 +25,7 @@ class MessagesError(Error):
 
 
 class PricingTypeError(Error):
-    """
-    A pricing type was specified that is not allowed.
-    """
+    """A pricing type was specified that is not allowed."""
 
 class RedactError(Error):
-    """
-    Error related to the Redact class or Redact API.
-    """
+    """Error related to the Redact class or Redact API."""

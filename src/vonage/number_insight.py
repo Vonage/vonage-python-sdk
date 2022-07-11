@@ -15,7 +15,7 @@ class NumberInsight:
 
     def get_async_advanced_number_insight(self, params=None, **kwargs):
         argoparams = params or kwargs
-        if "callback" in argoparams:
+        if "callback" in argoparams and type(argoparams["callback"]) == str and argoparams["callback"] != "":
             return self._client.get(
                 self._client.api_host(), "/ni/advanced/async/json", params or kwargs
             )

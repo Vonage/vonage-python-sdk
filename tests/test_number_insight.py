@@ -1,4 +1,5 @@
 from util import *
+from vonage.errors import CallbackRequiredError
 
 
 @responses.activate
@@ -38,3 +39,11 @@ def test_get_async_advanced_number_insight(number_insight, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert "number=447525856424" in request_query()
     assert "callback=https%3A%2F%2Fexample.com" in request_query()
+
+def test_callback_required_error_async_advanced_number_insight(number_insight, dummy_data):
+    stub(responses.GET, "https://api.nexmo.com/ni/advanced/async/json")
+
+    params = {"number": "447525856424", "callback": ""}
+
+    with pytest.raises(CallbackRequiredError):
+        number_insight.get_async_advanced_number_insight(params)

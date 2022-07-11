@@ -1,7 +1,7 @@
 import vonage
 
 from .account import Account
-from .application import ApplicationV2, BasicAuthenticatedServer
+from .application import Application
 from .errors import *
 from .messages import Messages
 from .number_insight import NumberInsight
@@ -21,10 +21,12 @@ import hashlib
 import hmac
 import jwt
 import os
-import requests
 import time
 from uuid import uuid4
 import re
+
+from requests.adapters import HTTPAdapter
+from requests.sessions import Session
 
 string_types = (str, bytes)
 
@@ -39,17 +41,10 @@ class Client:
     """
     Create a Client object to start making calls to Vonage/Nexmo APIs.
 
-    Note on deprecations: most public-facing APIs that are called directly from this class (e.g. voice, 
-    sms, number insight) have been deprecated and will instead be called from modules that house 
-    the relevant classes (e.g. `voice.py`, `sms.py`). Change your code to call these classes directly
-    as they will be removed in a later release!
-    
-    Newer APIs are under namespaces like :attr:`Client.application_v2`.
-
     The credentials you provide when instantiating a Client determine which
-    methods can be called. Consult the `Vonage API docs <https://developer.vonage.com/api/>`_ for details of the
-    authentication used by the APIs you wish to use, and instantiate your
-    Client with the appropriate credentials.
+    methods can be called. Consult the `Vonage API docs <https://developer.vonage.com/concepts/guides/authentication/>`
+    for details of the authentication used by the APIs you wish to use, and instantiate your
+    client with the appropriate credentials.
 
     :param str key: Your Vonage API key
     :param str secret: Your Vonage API secret.
@@ -61,12 +56,12 @@ class Client:
         This should be one of `md5`, `sha1`, `sha256`, or `sha512` if using HMAC digests.
         If you want to use a simple MD5 hash, leave this as `None`.
     :param str application_id: Your application ID if calling methods which use JWT authentication.
-    :param str private_key: Your private key if calling methods which use JWT authentication.
+    :param str private_key: Your private key, for calling methods which use JWT authentication.
         This should either be a str containing the key in its PEM form, or a path to a private key file.
     :param str app_name: This optional value is added to the user-agent header
-        provided by this library and can be used by Vonage to track your app statistics.
+        provided by this library and can be used to track your app statistics.
     :param str app_version: This optional value is added to the user-agent header
-        provided by this library and can be used by Vonage to track your app statistics.
+        provided by this library and can be used to track your app statistics.
     """
 
     def __init__(
@@ -79,35 +74,29 @@ class Client:
         private_key=None,
         app_name=None,
         app_version=None,
+        timeout=None, 
+        pool_connections=10, 
+        pool_maxsize=10, 
+        max_retries=3
     ):
         self.api_key = key or os.environ.get("VONAGE_API_KEY", None)
-
         self.api_secret = secret or os.environ.get("VONAGE_API_SECRET", None)
 
-        self.signature_secret = signature_secret or os.environ.get(
-            "VONAGE_SIGNATURE_SECRET", None
-        )
-
-        self.signature_method = signature_method or os.environ.get(
-            "VONAGE_SIGNATURE_METHOD", None
-        )
+        self.signature_secret = signature_secret or os.environ.get("VONAGE_SIGNATURE_SECRET", None)
+        self.signature_method = signature_method or os.environ.get("VONAGE_SIGNATURE_METHOD", None)
 
         if self.signature_method in {"md5", "sha1", "sha256", "sha512"}:
             self.signature_method = getattr(hashlib, signature_method)
 
         self.application_id = application_id
-
         self.private_key = private_key
 
         if isinstance(self.private_key, string_types) and "\n" not in self.private_key:
             with open(self.private_key, "rb") as key_file:
                 self.private_key = key_file.read()
 
-        self.__host_pattern = r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$"
-
-        self.__host = "rest.nexmo.com"
-
-        self.__api_host = "api.nexmo.com"
+        self._host = "rest.nexmo.com"
+        self._api_host = "api.nexmo.com"
 
         user_agent = f"vonage-python/{vonage.__version__} python/{python_version()}"
 
@@ -118,15 +107,8 @@ class Client:
 
         self.auth_params = {}
 
-        api_server = BasicAuthenticatedServer(
-            "https://api.nexmo.com",
-            user_agent=user_agent,
-            api_key=self.api_key,
-            api_secret=self.api_secret,
-        )
-        self.application_v2 = ApplicationV2(api_server)
-        
         self.account = Account(self)
+        self.application = Application(self)
         self.messages = Messages(self)
         self.number_insight = NumberInsight(self)
         self.numbers = Numbers(self)
@@ -137,25 +119,28 @@ class Client:
         self.verify = Verify(self)
         self.voice = Voice(self)
 
-        self.session = requests.Session()
+        self.timeout = timeout
+        self.session = Session()
+        self.adapter = HTTPAdapter(
+            pool_connections=pool_connections, 
+            pool_maxsize=pool_maxsize, 
+            max_retries=max_retries
+        )
+        self.session.mount("https://", self.adapter)
 
-    # Get and Set __host attribute
+    # Get and Set _host attribute
     def host(self, value=None):
         if value is None:
-            return self.__host
-        elif not re.match(self.__host_pattern, value):
-            raise Exception("Error: Invalid format for host")
+            return self._host
         else:
-            self.__host = value
+            self._host = value
 
-    # Gets And sets __api_host attribute
+    # Gets And Set _api_host attribute
     def api_host(self, value=None):
         if value is None:
-            return self.__api_host
-        elif not re.match(self.__host_pattern, value):
-            raise Exception("Error: Invalid format for api_host")
+            return self._api_host
         else:
-            self.__api_host = value
+            self._api_host = value
 
     def auth(self, params=None, **kwargs):
         self.auth_params = params or kwargs
@@ -190,8 +175,14 @@ class Client:
 
         return hasher.hexdigest()
 
-    def get(self, host, request_uri, params=None, header_auth=False):
+    def get(self, host, request_uri, params=None, header_auth=False, additional_headers=None):
         uri = f"https://{host}{request_uri}"
+        
+        if not additional_headers:
+            headers = {**self.headers}
+        else:
+            headers = {**self.headers, **additional_headers}
+
         headers = self.headers
         if header_auth:
             hash = base64.b64encode(
@@ -284,11 +275,16 @@ class Client:
         logger.debug(f"PUT to {repr(uri)} with params {repr(params)}, headers {repr(headers)}")
         return self.parse(host, self.session.put(uri, json=params, headers=headers))
 
-    def delete(self, host, request_uri, header_auth=False):
+    def delete(self, host, request_uri, header_auth=False, additional_headers=None):
         uri = f"https://{host}{request_uri}"
 
         params = None
-        headers = self.headers
+
+        if not additional_headers:
+            headers = {**self.headers}
+        else:
+            headers = {**self.headers, **additional_headers}
+
         if header_auth:
             hash = base64.b64encode(
                 f"{self.api_key}:{self.api_secret}".encode("utf-8")

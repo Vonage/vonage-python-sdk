@@ -43,7 +43,7 @@ class Messages:
     
     def _check_input_is_dict(self, params):
         if type(params) is not dict:
-            raise MessagesError(f'Parameters to the send_message method must be specified as a dictionary.')
+            raise MessagesError('Parameters to the send_message method must be specified as a dictionary.')
 
     def _check_valid_message_channel(self, params):
         if params['channel'] not in Messages.valid_message_channels:

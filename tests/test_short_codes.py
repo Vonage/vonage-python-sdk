@@ -1,5 +1,6 @@
 from util import *
 
+
 @responses.activate
 def test_send_2fa_message(short_codes, dummy_data):
     stub(responses.POST, "https://rest.nexmo.com/sc/us/2fa/json")

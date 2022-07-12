@@ -1,4 +1,8 @@
+from .errors import PricingTypeError
+
 class Account:
+    allowed_pricing_types = {'sms', 'sms-transit', 'voice'}
+
     def __init__(self, client):
         self._client = client
 
@@ -8,22 +12,30 @@ class Account:
     def topup(self, params=None, **kwargs):
         return self._client.post(self._client.host(), "/account/top-up", params or kwargs)
 
-    def get_country_pricing(self, country_code):
+    def get_country_pricing(self, country_code: str, type: str = 'sms'):
+        self._check_allowed_pricing_type(type)
         return self._client.get(
-            self._client.host(), "/account/get-pricing/outbound", {"country": country_code}
+            self._client.host(), f"/account/get-pricing/outbound/{type}", {"country": country_code}
         )
 
-    def get_prefix_pricing(self, prefix):
+    def get_all_countries_pricing(self, type: str = 'sms'):
+        self._check_allowed_pricing_type(type)
         return self._client.get(
-            self._client.host(), "/account/get-prefix-pricing/outbound", {"prefix": prefix}
+            self._client.host(), f"/account/get-full-pricing/outbound/{type}"
         )
 
-    def get_sms_pricing(self, number):
+    def get_prefix_pricing(self, prefix: str, type: str = 'sms'):
+        self._check_allowed_pricing_type(type)
+        return self._client.get(
+            self._client.host(), f"/account/get-prefix-pricing/outbound/{type}", {"prefix": prefix}
+        )
+
+    def get_sms_pricing(self, number: str):
         return self._client.get(
             self._client.host(), "/account/get-phone-pricing/outbound/sms", {"phone": number}
         )
 
-    def get_voice_pricing(self, number):
+    def get_voice_pricing(self, number: str):
         return self._client.get(
             self._client.host(), "/account/get-phone-pricing/outbound/voice", {"phone": number}
         )
@@ -57,3 +69,7 @@ class Account:
             f"/accounts/{api_key}/secrets/{secret_id}",
             header_auth=True,
         )
+
+    def _check_allowed_pricing_type(self, type):
+        if type not in self.allowed_pricing_types:
+            raise PricingTypeError('Invalid pricing type specified.')

@@ -24,5 +24,3 @@ class NumberInsight:
                 "A callback is needed for async advanced number insight"
             )
     
-    def request_number_insight(self, params=None, **kwargs):
-        return self._client.post(self._client.host(), "/ni/json", params or kwargs)

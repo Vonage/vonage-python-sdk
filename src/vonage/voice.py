@@ -1,21 +1,8 @@
-import vonage
+from urllib.parse import urlparse
 
 class Voice:
-    #application_id and private_key are needed for the calling methods
-    #Passing a Vonage Client is also possible 
-    def __init__(
-        self,
-        client=None,
-        application_id=None,
-        private_key=None,
-    ):
-        try:
-            # Client is protected
-            self._client = client
-            if self._client is None:
-                self._client = vonage.Client(application_id=application_id, private_key=private_key)
-        except Exception as e:
-            print(f'Error: {str(e)}')
+    def __init__(self, client):
+        self._client = client
 
     # Creates a new call session
     def create_call(self, params, **kwargs):
@@ -25,7 +12,7 @@ class Voice:
             from the pool of numbers available to the application making 
             the call.
 
-            :param params is a dictionry that holds the 'from' and 'random_from_number'
+            :param params is a dictionary that holds the 'from' and 'random_from_number'
             
         """
         if not params:
@@ -77,18 +64,12 @@ class Voice:
     # Stop a speech recently played into specified call
     def stop_speech(self, uuid):
         return self._jwt_signed_delete(f"/v1/calls/{uuid}/talk")
-    
-    # Deprecated section
-    # This methods are deprecated, to use them a definition of client with key and secret parameters is mandatory
-    def initiate_call(self, params=None, **kwargs):
-        return self._client.post(self._client.host(), "/call/json", params or kwargs)
 
-    def initiate_tts_call(self, params=None, **kwargs):
-        return self._client.post(self._client.api_host(), "/tts/json", params or kwargs)
+    def get_recording(self, url):
+        hostname = urlparse(url).hostname
+        return self._client.parse(hostname, self._client.session.get(url, headers=self._client._headers()))
 
-    def initiate_tts_prompt_call(self, params=None, **kwargs):
-        return self._client.post(self._client.api_host(), "/tts-prompt/json", params or kwargs)
-    # End deprecated section
+
     
     # Utils methods
     # _jwt_signed_post private method that Allows developer perform signed post request

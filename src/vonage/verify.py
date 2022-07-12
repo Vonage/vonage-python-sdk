@@ -1,13 +1,6 @@
-import vonage
-
 class Verify:
-    def __init__(self, client=None, key=None, secret=None):
-        try:
-            self._client = client
-            if self._client is None:
-                self._client = vonage.Client(key=key, secret=secret)
-        except Exception as e:
-            print(f"Error: {str(e)}")
+    def __init__(self, client):
+        self._client = client
 
     def start_verification(self, params=None, **kwargs):
         return self._client.post(

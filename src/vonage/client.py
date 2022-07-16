@@ -337,7 +337,9 @@ class Client:
     def parse(self, host, response):
         logger.debug(f"Response headers {repr(response.headers)}")
         if response.status_code == 401:
-            raise AuthenticationError
+            raise AuthenticationError(
+                "Check you're using a valid authentication method for the API you want to use"
+            )
         elif response.status_code == 204:
             return None
         elif 200 <= response.status_code < 300:

@@ -1,4 +1,6 @@
-class Application:
+class ApplicationV2:
+    auth_type = 'header'
+
     def __init__(self, client):
         self._client = client
 
@@ -12,7 +14,7 @@ class Application:
 
         Details of the `application_data` dict are described at https://developer.vonage.com/api/application.v2#createApplication
         """
-        return self._client._post_json(
+        return self._client.post_json(
             self._client.api_host(),
             "/v2/applications",
             application_data
@@ -31,7 +33,7 @@ class Application:
         return self._client.get(
             self._client.api_host(),
             f"/v2/applications/{application_id}",
-            header_auth=True
+            auth_type=ApplicationV2.auth_type,
         )
 
     def update_application(self, application_id, params):
@@ -74,8 +76,7 @@ class Application:
             self._client.api_host(),
             "/v2/applications",
             params=params,
-            additional_headers={"Content-Type": "application/json"},
-            header_auth=True
+            auth_type=ApplicationV2.auth_type,
         )
 
 

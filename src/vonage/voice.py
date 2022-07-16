@@ -1,6 +1,8 @@
 from urllib.parse import urlparse
 
 class Voice:
+    auth_type = 'jwt'
+
     def __init__(self, client):
         self._client = client
 
@@ -23,15 +25,24 @@ class Voice:
                 params['random_from_number'] = True
 
 
-        return self._jwt_signed_post("/v1/calls", params or kwargs)
+        return self._client.post_json(self._client.api_host(), "/v1/calls", params or kwargs)
     
     # Get call history paginated. Pass start and end dates to filter the retrieved information
     def get_calls(self, params=None, **kwargs):
-        return self._jwt_signed_get("/v1/calls", params or kwargs)
+        return self._client.get(
+            self._client.api_host(),
+            "/v1/calls",
+            params or kwargs,
+            auth_type=Voice.auth_type
+        )
     
     # Get a single call record by identifier
     def get_call(self, uuid):
-        return self._jwt_signed_get(f"/v1/calls/{uuid}")
+        return self._client.get(
+            self._client.api_host(), 
+            f"/v1/calls/{uuid}",
+            auth_type=Voice.auth_type
+        )
     
     # Update call data using custom ncco
     def update_call(self, uuid, params=None, **kwargs):
@@ -67,35 +78,35 @@ class Voice:
 
     def get_recording(self, url):
         hostname = urlparse(url).hostname
-        return self._client.parse(hostname, self._client.session.get(url, headers=self._client._headers()))
+        return self._client.parse(hostname, self._client.session.get(url, headers=self._client._add_jwt_to_request_headers()))
 
 
     
     # Utils methods
     # _jwt_signed_post private method that Allows developer perform signed post request
-    def _jwt_signed_post(self, request_uri, params):
-        uri = f"https://{self._client.api_host()}{request_uri}"
+    # def _jwt_signed_post(self, request_uri, params):
+    #     uri = f"https://{self._client.api_host()}{request_uri}"
 
-        # Uses the client session to perform the call action with api
-        return self._client.parse(
-            self._client.api_host(), self._client.session.post(uri, json=params, headers=self._client._headers())
-        )
+    #     # Uses the client session to perform the call action with api
+    #     return self._client.parse(
+    #         self._client.api_host(), self._client.session.post(uri, json=params, headers=self._client._headers())
+    #     )
     
-    # _jwt_signed_post private method that Allows developer perform signed get request
-    def _jwt_signed_get(self, request_uri, params=None):
-        uri = f"https://{self._client.api_host()}{request_uri}"
+    # _jwt_signed_get private method that Allows developer perform signed get request
+    # def _jwt_signed_get(self, request_uri, params=None):
+    #     uri = f"https://{self._client.api_host()}{request_uri}"
 
-        return self._client.parse(
-            self._client.api_host(),
-            self._client.session.get(uri, params=params or {}, headers=self._client._headers()),
-        )
+    #     return self._client.parse(
+    #         self._client.api_host(),
+    #         self._client.session.get(uri, params=params or {}, headers=self._client._headers()),
+    #     )
     
     # _jwt_signed_put private method that Allows developer perform signed put request
     def _jwt_signed_put(self, request_uri, params):
         uri = f"https://{self._client.api_host()}{request_uri}"
 
         return self._client.parse(
-            self._client.api_host(), self._client.session.put(uri, json=params, headers=self._client._headers())
+            self._client.api_host(), self._client.session.put(uri, json=params, headers=self._client._add_jwt_to_request_headers())
         )
     
     # _jwt_signed_put private method that Allows developer perform signed put request
@@ -103,5 +114,5 @@ class Voice:
         uri = f"https://{self._client.api_host()}{request_uri}"
 
         return self._client.parse(
-            self._client.api_host(), self._client.session.delete(uri, headers=self._client._headers())
+            self._client.api_host(), self._client.session.delete(uri, headers=self._client._add_jwt_to_request_headers())
         )

@@ -1,4 +1,6 @@
 class ShortCodes:
+    auth_type = 'params'
+
     def __init__(self, client):
         self._client = client
 
@@ -12,7 +14,7 @@ class ShortCodes:
         return self._client.post(self._client.host(), "/sc/us/marketing/json", params or kwargs)
 
     def get_event_alert_numbers(self):
-        return self._client.get(self._client.host(), "/sc/us/alert/opt-in/query/json")
+        return self._client.get(self._client.host(), "/sc/us/alert/opt-in/query/json", auth_type=ShortCodes.auth_type)
 
     def resubscribe_event_alert_number(self, params=None, **kwargs):
         return self._client.post(

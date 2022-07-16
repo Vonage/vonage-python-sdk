@@ -1,6 +1,8 @@
 from .errors import RedactError
 
 class Redact:
+    auth_type = 'header'
+
     allowed_product_names = {'sms', 'voice', 'number-insight', 'verify', 'verify-sdk', 'messages'}
 
     def __init__(self, client):
@@ -11,7 +13,7 @@ class Redact:
         params = {"id": id, "product": product}
         if type is not None:
             params["type"] = type
-        return self._client._post_json(self._client.api_host(), "/v1/redact/transaction", params)
+        return self._client.post_json(self._client.api_host(), "/v1/redact/transaction", params)
 
     def _check_allowed_product_name(self, product):
         if product not in self.allowed_product_names:

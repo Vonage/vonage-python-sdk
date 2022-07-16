@@ -2,12 +2,12 @@ from util import *
 
 
 @responses.activate
-def test_get(client, dummy_data):
+def test_get_with_query_params_authentication(client, dummy_data):
     stub(responses.GET, "https://api.nexmo.com/v1/applications")
     host = "api.nexmo.com"
     request_uri = "/v1/applications"
     params = {"aaa": "xxx", "bbb": "yyy"}
-    response = client.get(host, request_uri, params=params)
+    response = client.get(host, request_uri, params=params, auth_type='params')
     assert isinstance(response, dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "aaa=xxx" in request_query()
@@ -15,12 +15,12 @@ def test_get(client, dummy_data):
 
 
 @responses.activate
-def test_get_with_auth(client, dummy_data):
+def test_get_with_header_authentication(client, dummy_data):
     stub(responses.GET, "https://api.nexmo.com/v1/applications")
     host = "api.nexmo.com"
     request_uri = "/v1/applications"
     params = {"aaa": "xxx", "bbb": "yyy"}
-    response = client.get(host, request_uri, params=params, header_auth=True)
+    response = client.get(host, request_uri, params=params, auth_type='header')
     assert isinstance(response, dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "aaa=xxx" in request_query()

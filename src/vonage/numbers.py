@@ -1,13 +1,15 @@
 class Numbers:
+    auth_type = 'params'
+
     def __init__(self, client):
         self._client = client
         
     def get_account_numbers(self, params=None, **kwargs):
-        return self._client.get(self._client.host(), "/account/numbers", params or kwargs)
+        return self._client.get(self._client.host(), "/account/numbers", params or kwargs, auth_type=Numbers.auth_type)
 
     def get_available_numbers(self, country_code, params=None, **kwargs):
         return self._client.get(
-            self._client.host(), "/number/search", dict(params or kwargs, country=country_code)
+            self._client.host(), "/number/search", dict(params or kwargs, country=country_code), auth_type=Numbers.auth_type
         )
 
     def buy_number(self, params=None, **kwargs):

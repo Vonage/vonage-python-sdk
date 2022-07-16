@@ -1,7 +1,7 @@
 import vonage
 
 from .account import Account
-from .application import Application
+from .application import ApplicationV2
 from .errors import *
 from .messages import Messages
 from .number_insight import NumberInsight
@@ -22,8 +22,8 @@ import hmac
 import jwt
 import os
 import time
-from uuid import uuid4
 import re
+from uuid import uuid4
 
 from requests.adapters import HTTPAdapter
 from requests.sessions import Session
@@ -88,12 +88,17 @@ class Client:
         if self.signature_method in {"md5", "sha1", "sha256", "sha512"}:
             self.signature_method = getattr(hashlib, signature_method)
 
-        self.application_id = application_id
-        self.private_key = private_key
+        self._jwt_auth_params = {}
 
-        if isinstance(self.private_key, string_types) and "\n" not in self.private_key:
-            with open(self.private_key, "rb") as key_file:
-                self.private_key = key_file.read()
+        if private_key is not None and application_id is not None:
+            self._application_id = application_id
+            self._private_key = private_key
+
+            if isinstance(self._private_key, string_types) and re.search("[.][a-zA-Z0-9_]+$", self._private_key):
+                with open(self._private_key, "rb") as key_file:
+                    self._private_key = key_file.read()
+
+            self._jwt = self._generate_application_jwt()
 
         self._host = "rest.nexmo.com"
         self._api_host = "api.nexmo.com"
@@ -105,10 +110,9 @@ class Client:
 
         self.headers = {"User-Agent": user_agent, "Accept": "application/json"}
 
-        self.auth_params = {}
 
         self.account = Account(self)
-        self.application = Application(self)
+        self.application_v2 = ApplicationV2(self)
         self.messages = Messages(self)
         self.number_insight = NumberInsight(self)
         self.numbers = Numbers(self)
@@ -143,7 +147,8 @@ class Client:
             self._api_host = value
 
     def auth(self, params=None, **kwargs):
-        self.auth_params = params or kwargs
+        self._jwt_auth_params = params or kwargs
+        self._jwt = self._generate_application_jwt()
 
     def check_signature(self, params):
         params = dict(params)
@@ -175,7 +180,36 @@ class Client:
 
         return hasher.hexdigest()
 
-    def get(self, host, request_uri, params=None, header_auth=False, additional_headers=None):
+    def get(self, host, request_uri, params=None, auth_type=None):
+        uri = f"https://{host}{request_uri}"
+
+        if hasattr(self, '_jwt') and auth_type == 'jwt':
+            headers_with_jwt = self._add_jwt_to_request_headers()
+            return self.parse(
+                host, 
+                self.session.get(
+                    uri, 
+                    params=params or {}, 
+                    headers=headers_with_jwt))
+        elif auth_type == 'params':
+            params = dict(
+                params or {}, api_key=self.api_key, api_secret=self.api_secret
+            )
+            return self.parse(host, self.session.get(uri, params=params, headers=self.headers))
+        elif auth_type == 'header':
+            hash = base64.b64encode(
+                f"{self.api_key}:{self.api_secret}".encode("utf-8")
+            ).decode("ascii")
+            headers = dict(self.headers or {}, Authorization=f"Basic {hash}")
+            return self.parse(host, self.session.get(uri, params=params, headers=headers))
+        else:
+            raise InvalidAuthenticationTypeError(
+                f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
+            )
+
+
+
+    def _get(self, host, request_uri, params=None, header_auth=False, additional_headers=None):
         uri = f"https://{host}{request_uri}"
         
         if not additional_headers:
@@ -208,10 +242,12 @@ class Client:
         """
         Low-level method to make a post request to a Vonage API server, which may have a Nexmo url.
         This method automatically adds authentication, picking the first applicable authentication method from the following:
-        - If the supports_signature_auth param is True, and the client was instantiated with a signature_secret, then signature authentication will be used.
+        - If the supports_signature_auth param is True, and the client was instantiated with a signature_secret, 
+            then signature authentication will be used.
         - If the header_auth param is True, then basic authentication will be used, with the client's key and secret.
         - Otherwise the client's key and secret are appended to the post request's params.
-        :param bool supports_signature_auth: Preferentially use signature authentication if a signature_secret was provided when initializing this client.
+        :param bool supports_signature_auth: Preferentially use signature authentication if a signature_secret was provided 
+            when initializing this client.
         :param bool header_auth: Use basic authentication instead of adding api_key and api_secret to the request params.
         """
         uri = f"https://{host}{request_uri}"
@@ -236,7 +272,7 @@ class Client:
         )
         return self.parse(host, self.session.post(uri, data=params, headers=headers))
 
-    def _post_json(self, host, request_uri, json):
+    def post_json(self, host, request_uri, json):
         """
         Post json to `request_uri`, using basic auth.
         """
@@ -257,7 +293,7 @@ class Client:
 
         return self.parse(
             self.api_host(),
-            self.session.post(uri, json=params, headers=self._headers()),
+            self.session.post(uri, json=params, headers=self._add_jwt_to_request_headers()),
         )
 
     def put(self, host, request_uri, params, header_auth=False):
@@ -340,20 +376,19 @@ class Client:
             message = f"{response.status_code} response from {host}"
             raise ServerError(message)
 
-    def _headers(self):
-        token = self.generate_application_jwt()
-        return dict(self.headers, Authorization=b"Bearer " + token)
+    def _add_jwt_to_request_headers(self):
+        return dict(self.headers, Authorization=b"Bearer " + self._jwt)
 
-    def generate_application_jwt(self, when=None):
-        iat = int(when if when is not None else time.time())
+    def _generate_application_jwt(self):
+        iat = int(time.time())
 
-        payload = dict(self.auth_params)
-        payload.setdefault("application_id", self.application_id)
+        payload = dict(self._jwt_auth_params)
+        payload.setdefault("application_id", self._application_id)
         payload.setdefault("iat", iat)
         payload.setdefault("exp", iat + 60)
         payload.setdefault("jti", str(uuid4()))
 
-        token = jwt.encode(payload, self.private_key, algorithm="RS256")
+        token = jwt.encode(payload, self._private_key, algorithm="RS256")
 
         # If token is string transform it to byte type
         if(type(token) is str):

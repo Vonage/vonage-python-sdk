@@ -29,3 +29,6 @@ class PricingTypeError(Error):
 
 class RedactError(Error):
     """Error related to the Redact class or Redact API."""
+
+class InvalidAuthenticationTypeError(Error):
+    """An authentication method was specified that is not allowed"""

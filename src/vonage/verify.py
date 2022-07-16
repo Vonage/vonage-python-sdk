@@ -1,4 +1,6 @@
 class Verify:
+    auth_type = 'params'
+
     def __init__(self, client):
         self._client = client
 
@@ -16,7 +18,7 @@ class Verify:
 
     def search(self, request_id):
         return self._client.get(
-            self._client.api_host(), "/verify/search/json", {"request_id": request_id}
+            self._client.api_host(), "/verify/search/json", {"request_id": request_id}, auth_type=Verify.auth_type
         )
 
     def cancel(self, request_id):

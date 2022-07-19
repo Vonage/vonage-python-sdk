@@ -13,7 +13,7 @@ class Redact:
         params = {"id": id, "product": product}
         if type is not None:
             params["type"] = type
-        return self._client.post_json(self._client.api_host(), "/v1/redact/transaction", params)
+        return self._client.post(self._client.api_host(), "/v1/redact/transaction", params, auth_type=Redact.auth_type)
 
     def _check_allowed_product_name(self, product):
         if product not in self.allowed_product_names:

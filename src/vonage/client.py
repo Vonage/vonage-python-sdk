@@ -89,6 +89,7 @@ class Client:
             self.signature_method = getattr(hashlib, signature_method)
 
         self._jwt_auth_params = {}
+        self.jwt = None
 
         if private_key is not None and application_id is not None:
             self._application_id = application_id
@@ -98,7 +99,7 @@ class Client:
                 with open(self._private_key, "rb") as key_file:
                     self._private_key = key_file.read()
 
-            self._jwt = self._generate_application_jwt()
+            self.jwt = self._generate_application_jwt()
 
         self._host = "rest.nexmo.com"
         self._api_host = "api.nexmo.com"
@@ -148,7 +149,7 @@ class Client:
 
     def auth(self, params=None, **kwargs):
         self._jwt_auth_params = params or kwargs
-        self._jwt = self._generate_application_jwt()
+        self.jwt = self._generate_application_jwt()
 
     def check_signature(self, params):
         params = dict(params)
@@ -182,119 +183,63 @@ class Client:
 
     def get(self, host, request_uri, params=None, auth_type=None):
         uri = f"https://{host}{request_uri}"
+        self._request_headers = self.headers
 
-        if hasattr(self, '_jwt') and auth_type == 'jwt':
-            headers_with_jwt = self._add_jwt_to_request_headers()
-            return self.parse(
-                host, 
-                self.session.get(
-                    uri, 
-                    params=params or {}, 
-                    headers=headers_with_jwt))
+        if auth_type == 'jwt':
+            self._request_headers = self._add_jwt_to_request_headers()
         elif auth_type == 'params':
             params = dict(
                 params or {}, api_key=self.api_key, api_secret=self.api_secret
             )
-            return self.parse(host, self.session.get(uri, params=params, headers=self.headers))
         elif auth_type == 'header':
             hash = base64.b64encode(
                 f"{self.api_key}:{self.api_secret}".encode("utf-8")
             ).decode("ascii")
-            headers = dict(self.headers or {}, Authorization=f"Basic {hash}")
-            return self.parse(host, self.session.get(uri, params=params, headers=headers))
+            self._request_headers = dict(self.headers or {}, Authorization=f"Basic {hash}")
         else:
             raise InvalidAuthenticationTypeError(
                 f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
             )
+        return self.parse(
+            host, 
+            self.session.get(uri, params=params, headers=self._request_headers))
 
-
-
-    def _get(self, host, request_uri, params=None, header_auth=False, additional_headers=None):
-        uri = f"https://{host}{request_uri}"
-        
-        if not additional_headers:
-            headers = {**self.headers}
-        else:
-            headers = {**self.headers, **additional_headers}
-
-        headers = self.headers
-        if header_auth:
-            hash = base64.b64encode(
-                f"{self.api_key}:{self.api_secret}".encode("utf-8")
-            ).decode("ascii")
-            headers = dict(headers or {}, Authorization=f"Basic {hash}")
-        else:
-            params = dict(
-                params or {}, api_key=self.api_key, api_secret=self.api_secret
-            )
-        logger.debug(f"GET to {repr(uri)} with params {repr(params)}, headers {repr(headers)}")
-        return self.parse(host, self.session.get(uri, params=params, headers=headers))
-
-    def post(
-        self,
-        host,
-        request_uri,
-        params,
-        supports_signature_auth=False,
-        header_auth=False,
-        additional_headers=None
-    ):
+    def post(self, host, request_uri, params, auth_type=None, body_is_json=True, supports_signature_auth=False):
         """
-        Low-level method to make a post request to a Vonage API server, which may have a Nexmo url.
+        Low-level method to make a post request to an API server.
         This method automatically adds authentication, picking the first applicable authentication method from the following:
         - If the supports_signature_auth param is True, and the client was instantiated with a signature_secret, 
             then signature authentication will be used.
-        - If the header_auth param is True, then basic authentication will be used, with the client's key and secret.
-        - Otherwise the client's key and secret are appended to the post request's params.
         :param bool supports_signature_auth: Preferentially use signature authentication if a signature_secret was provided 
             when initializing this client.
-        :param bool header_auth: Use basic authentication instead of adding api_key and api_secret to the request params.
         """
         uri = f"https://{host}{request_uri}"
+        self._request_headers = self.headers
         
-        if not additional_headers:
-            headers = {**self.headers}
-        else:
-            headers = {**self.headers, **additional_headers}
-
         if supports_signature_auth and self.signature_secret:
             params["api_key"] = self.api_key
             params["sig"] = self.signature(params)
-        elif header_auth:
+        elif auth_type == 'jwt':
+            self._request_headers = self._add_jwt_to_request_headers()
+        elif auth_type == 'params':
+            params = dict(
+                params, api_key=self.api_key, api_secret=self.api_secret
+            )
+        elif auth_type == 'header':
             hash = base64.b64encode(
                 f"{self.api_key}:{self.api_secret}".encode("utf-8")
             ).decode("ascii")
-            headers = dict(headers or {}, Authorization=f"Basic {hash}")
+            self._request_headers = dict(self.headers or {}, Authorization=f"Basic {hash}")
         else:
-            params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
-        logger.debug(
-            f"POST to {repr(uri)} with params {repr(params)}, headers {repr(headers)}"
-        )
-        return self.parse(host, self.session.post(uri, data=params, headers=headers))
-
-    def post_json(self, host, request_uri, json):
-        """
-        Post json to `request_uri`, using basic auth.
-        """
-        uri = f"https://{host}{request_uri}"
-        auth = base64.b64encode(
-            f"{self.api_key}:{self.api_secret}".encode("utf-8")
-        ).decode("ascii")
-        headers = dict(
-            self.headers or {}, Authorization=f"Basic {auth}"
-        )
-        logger.debug(
-            f"POST to %{repr(request_uri)} with body: {repr(json)}, headers: {repr(headers)}"
-        )
-        return self.parse(host, self.session.post(uri, headers=headers, json=json))
-
-    def _jwt_signed_post(self, request_uri, params):
-        uri = f"https://{self.api_host()}{request_uri}"
-
-        return self.parse(
-            self.api_host(),
-            self.session.post(uri, json=params, headers=self._add_jwt_to_request_headers()),
-        )
+            raise InvalidAuthenticationTypeError(
+                f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
+            )
+        if body_is_json:
+            return self.parse(
+                host, self.session.post(uri, json=params, headers=self._request_headers))
+        else:
+            return self.parse(
+                host, self.session.post(uri, data=params, headers=self._request_headers))
 
     def put(self, host, request_uri, params, header_auth=False):
         uri = f"https://{host}{request_uri}"
@@ -379,7 +324,7 @@ class Client:
             raise ServerError(message)
 
     def _add_jwt_to_request_headers(self):
-        return dict(self.headers, Authorization=b"Bearer " + self._jwt)
+        return dict(self.headers, Authorization=b"Bearer " + self.jwt)
 
     def _generate_application_jwt(self):
         iat = int(time.time())

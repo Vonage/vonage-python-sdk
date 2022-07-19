@@ -29,12 +29,12 @@ def test_get_with_header_authentication(client, dummy_data):
 
 
 @responses.activate
-def test_post(client, dummy_data):
+def test_post_with_params_auth(client, dummy_data):
     stub(responses.POST, "https://api.nexmo.com/v1/applications")
     host = "api.nexmo.com"
     request_uri = "/v1/applications"
     params = {"aaa": "xxx", "bbb": "yyy"}
-    response = client.post(host, request_uri, params)
+    response = client.post(host, request_uri, params, auth_type='params', body_is_json=False)
     assert isinstance(response, dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "aaa=xxx" in request_body()
@@ -42,12 +42,12 @@ def test_post(client, dummy_data):
 
 
 @responses.activate
-def test_post_with_auth(client, dummy_data):
+def test_post_with_header_auth(client, dummy_data):
     stub(responses.POST, "https://api.nexmo.com/v1/applications")
     host = "api.nexmo.com"
     request_uri = "/v1/applications"
     params = {"aaa": "xxx", "bbb": "yyy"}
-    response = client.post(host, request_uri, params, header_auth=True)
+    response = client.post(host, request_uri, params, auth_type='header', body_is_json=False)
     assert isinstance(response, dict)
     assert request_user_agent() == dummy_data.user_agent
     assert "aaa=xxx" in request_body()

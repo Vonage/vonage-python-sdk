@@ -25,7 +25,7 @@ class Voice:
                 params['random_from_number'] = True
 
 
-        return self._client.post_json(self._client.api_host(), "/v1/calls", params or kwargs)
+        return self._client.post(self._client.api_host(), "/v1/calls", params or kwargs, auth_type=Voice.auth_type)
     
     # Get call history paginated. Pass start and end dates to filter the retrieved information
     def get_calls(self, params=None, **kwargs):

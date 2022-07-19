@@ -14,10 +14,11 @@ class ApplicationV2:
 
         Details of the `application_data` dict are described at https://developer.vonage.com/api/application.v2#createApplication
         """
-        return self._client.post_json(
+        return self._client.post(
             self._client.api_host(),
             "/v2/applications",
-            application_data
+            application_data,
+            auth_type=ApplicationV2.auth_type,
         )
 
     def get_application(self, application_id):

@@ -110,3 +110,9 @@ def redact(client):
     import vonage
 
     return vonage.Redact(client)
+
+@pytest.fixture
+def application_v2(client):
+    import vonage
+
+    return vonage.ApplicationV2(client)

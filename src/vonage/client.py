@@ -1,7 +1,7 @@
 import vonage
 
 from .account import Account
-from .application import ApplicationV2
+from .application import ApplicationV2, Application
 from .errors import *
 from .messages import Messages
 from .number_insight import NumberInsight
@@ -113,7 +113,7 @@ class Client:
 
 
         self.account = Account(self)
-        self.application_v2 = ApplicationV2(self)
+        self.application = Application(self)
         self.messages = Messages(self)
         self.number_insight = NumberInsight(self)
         self.numbers = Numbers(self)

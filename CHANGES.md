@@ -1,10 +1,16 @@
-# 3.0.0 (Unreleased, WIP)
-- Removed automatic client creation when instantiating an `sms`, `voice` or `verify` object
-- Removed methods to call the Message Search API, which has been retired by Vonage
-- Added `get_all_countries_pricing` method to `Account` object
-- Added a `type` parameter for pricing calls, so `sms` or `voice` pricing can now be chosen
-- Removed deprecated voice and number insight methods from `voice.py` and `number_insight.py`
-- Removed deprecated methods from `client.py` that are now available in specific modules related to each of the available Vonage APIs
+# 3.0.0
+- Removed automatic client creation when instantiating an `sms`, `voice` or `verify` object.
+- Removed methods to call the Message Search API, which has been retired by Vonage.
+- Added `get_all_countries_pricing` method to `Account` object.
+- Added a `type` parameter for pricing calls, so `sms` or `voice` pricing can now be chosen.
+- Removed deprecated voice and number insight methods from `voice.py` and `number_insight.py`.
+- Removed deprecated methods from `client.py` that are now available in specific modules related to each of the available Vonage APIs.
+- Deprecated the ApplicationV2 class and created an Application class with the same methods to bring the naming in line with other classes.
+- Deprecated old Pricing API endpoints.
+- Deprecated Redact class as it's a dev preview product that's unsupported in the SDK.
+- Removed automatic client object creation when calling an API class. Objects are accessed from a client-instantiated method as introduced in v2.7.0 of the SDK.
+- Added `max_retries`, `timeout`, `pool_connections` and `pool_maxsize` optional keyword arguments to the `Client` class, which can now be specified and used in the API calls made with the client.
+
 
 # 2.8.0
 - Added Messages API v1.0 support. Messages API can now be used by calling the `client.messages.send_message()` method.

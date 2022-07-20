@@ -1,6 +1,7 @@
 from deprecated import deprecated
 
-@deprecated(version='3.0.0', reason='renaming to Application in a later release as v1 is out of support')
+@deprecated(version='3.0.0', reason='Renamed to Application as V1 is out of support and this new \
+    naming is in line with other APIs. Please use Application instead.')
 class ApplicationV2:
     auth_type = 'header'
 
@@ -102,7 +103,7 @@ class Application:
             self._client.api_host(),
             "/v2/applications",
             application_data,
-            auth_type=ApplicationV2.auth_type,
+            auth_type=Application.auth_type,
         )
 
     def get_application(self, application_id):
@@ -118,7 +119,7 @@ class Application:
         return self._client.get(
             self._client.api_host(),
             f"/v2/applications/{application_id}",
-            auth_type=ApplicationV2.auth_type,
+            auth_type=Application.auth_type,
         )
 
     def update_application(self, application_id, params):
@@ -131,7 +132,7 @@ class Application:
             self._client.api_host(),
             f"/v2/applications/{application_id}",
             params,
-            auth_type=ApplicationV2.auth_type,
+            auth_type=Application.auth_type,
         )
 
     def delete_application(self, application_id):
@@ -142,7 +143,7 @@ class Application:
         self._client.delete(
             self._client.api_host(),
             f"/v2/applications/{application_id}",
-            auth_type=ApplicationV2.auth_type,
+            auth_type=Application.auth_type,
         )
 
     def list_applications(self, page_size=None, page=None):
@@ -160,7 +161,7 @@ class Application:
             self._client.api_host(),
             "/v2/applications",
             params=params,
-            auth_type=ApplicationV2.auth_type,
+            auth_type=Application.auth_type,
         )
 
 

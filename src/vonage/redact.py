@@ -1,5 +1,8 @@
 from .errors import RedactError
 
+from deprecated import deprecated
+
+@deprecated(version='3.0.0', reason='This is a dev preview product and as such is not supported in this SDK.')
 class Redact:
     auth_type = 'header'
 

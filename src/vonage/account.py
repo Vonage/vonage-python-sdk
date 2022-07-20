@@ -1,5 +1,6 @@
 from .errors import PricingTypeError
 
+from deprecated import deprecated
 class Account:
     account_auth_type = 'params'
     pricing_auth_type = 'params'
@@ -46,6 +47,7 @@ class Account:
             auth_type=Account.pricing_auth_type,
         )
 
+    @deprecated(version='3.0.0', reason='The "account/get-phone-pricing" endpoint is deprecated.')
     def get_sms_pricing(self, number: str):
         return self._client.get(
             self._client.host(), 
@@ -54,6 +56,7 @@ class Account:
             auth_type=Account.pricing_auth_type,
         )
 
+    @deprecated(version='3.0.0', reason='The "account/get-phone-pricing" endpoint is deprecated.')
     def get_voice_pricing(self, number: str):
         return self._client.get(
             self._client.host(), 

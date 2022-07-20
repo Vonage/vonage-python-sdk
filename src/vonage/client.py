@@ -117,7 +117,6 @@ class Client:
         self.messages = Messages(self)
         self.number_insight = NumberInsight(self)
         self.numbers = Numbers(self)
-        self.redact = Redact(self)
         self.short_codes = ShortCodes(self)
         self.sms = Sms(self)
         self.ussd = Ussd(self)

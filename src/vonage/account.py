@@ -99,7 +99,7 @@ class Account:
         return self._client.delete(
             self._client.api_host(),
             f"/accounts/{api_key}/secrets/{secret_id}",
-            header_auth=True
+            auth_type=Account.secrets_auth_type,
         )
 
     def _check_allowed_pricing_type(self, type):

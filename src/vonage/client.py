@@ -241,42 +241,43 @@ class Client:
             return self.parse(
                 host, self.session.post(uri, data=params, headers=self._request_headers))
 
-    def put(self, host, request_uri, params, header_auth=False):
+    def put(self, host, request_uri, params, auth_type=None):
         uri = f"https://{host}{request_uri}"
+        self._request_headers = self.headers
 
-        headers = self.headers
-        if header_auth:
+        if auth_type == 'jwt':
+            self._request_headers = self._add_jwt_to_request_headers()
+        elif auth_type == 'header':
             hash = base64.b64encode(
                 f"{self.api_key}:{self.api_secret}".encode("utf-8")
             ).decode("ascii")
-            # Must create a new headers dict here, otherwise we'd be mutating `self.headers`:
-            headers = dict(headers or {}, Authorization=f"Basic {hash}")
+            self._request_headers = dict(self._request_headers or {}, Authorization=f"Basic {hash}")
         else:
-            params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
-        logger.debug(f"PUT to {repr(uri)} with params {repr(params)}, headers {repr(headers)}")
-        return self.parse(host, self.session.put(uri, json=params, headers=headers))
+            raise InvalidAuthenticationTypeError(
+                f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
+            )
 
-    def delete(self, host, request_uri, header_auth=False, additional_headers=None):
+        # All APIs that currently use put methods require a json-formatted body
+        return self.parse(host, self.session.put(uri, json=params, headers=self._request_headers))
+
+    def delete(self, host, request_uri, auth_type=None):
         uri = f"https://{host}{request_uri}"
+        self._request_headers = self.headers
 
-        params = None
-
-        if not additional_headers:
-            headers = {**self.headers}
-        else:
-            headers = {**self.headers, **additional_headers}
-
-        if header_auth:
+        if auth_type == 'jwt':
+            self._request_headers = self._add_jwt_to_request_headers()
+        elif auth_type =='header':
             hash = base64.b64encode(
                 f"{self.api_key}:{self.api_secret}".encode("utf-8")
             ).decode("ascii")
-            # Must create a new headers dict here, otherwise we'd be mutating `self.headers`:
-            headers = dict(headers or {}, Authorization=f"Basic {hash}")
+            self._request_headers = dict(self._request_headers or {}, Authorization=f"Basic {hash}")
         else:
-            params = {"api_key": self.api_key, "api_secret": self.api_secret}
-        logger.debug(f"DELETE to {repr(uri)} with params {repr(params)}, headers {repr(headers)}")
+            raise InvalidAuthenticationTypeError(
+                f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
+            )
+
         return self.parse(
-            host, self.session.delete(uri, params=params, headers=headers)
+            host, self.session.delete(uri, headers=self._request_headers)
         )
 
     def parse(self, host, response):

@@ -47,7 +47,7 @@ class ApplicationV2:
             self._client.api_host(),
             f"/v2/applications/{application_id}",
             params,
-            header_auth=True
+            auth_type=ApplicationV2.auth_type,
         )
 
     def delete_application(self, application_id):
@@ -58,8 +58,7 @@ class ApplicationV2:
         self._client.delete(
             self._client.api_host(),
             f"/v2/applications/{application_id}",
-            additional_headers={"Content-Type": "application/json"},
-            header_auth=True
+            auth_type=ApplicationV2.auth_type,
         )
 
     def list_applications(self, page_size=None, page=None):

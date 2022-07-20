@@ -2,7 +2,6 @@ import os.path
 import time
 
 import jwt
-import requests
 
 import vonage
 from util import *

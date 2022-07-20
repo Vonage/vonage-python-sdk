@@ -2,7 +2,7 @@ from util import *
 
 
 @responses.activate
-def test_get_with_query_params_authentication(client, dummy_data):
+def test_get_with_query_params_auth(client, dummy_data):
     stub(responses.GET, "https://api.nexmo.com/v1/applications")
     host = "api.nexmo.com"
     request_uri = "/v1/applications"
@@ -15,7 +15,7 @@ def test_get_with_query_params_authentication(client, dummy_data):
 
 
 @responses.activate
-def test_get_with_header_authentication(client, dummy_data):
+def test_get_with_header_auth(client, dummy_data):
     stub(responses.GET, "https://api.nexmo.com/v1/applications")
     host = "api.nexmo.com"
     request_uri = "/v1/applications"
@@ -29,7 +29,7 @@ def test_get_with_header_authentication(client, dummy_data):
 
 
 @responses.activate
-def test_post_with_params_auth(client, dummy_data):
+def test_post_with_query_params_auth(client, dummy_data):
     stub(responses.POST, "https://api.nexmo.com/v1/applications")
     host = "api.nexmo.com"
     request_uri = "/v1/applications"
@@ -56,27 +56,12 @@ def test_post_with_header_auth(client, dummy_data):
 
 
 @responses.activate
-def test_put(client, dummy_data):
+def test_put_with_header_auth(client, dummy_data):
     stub(responses.PUT, "https://api.nexmo.com/v1/applications")
     host = "api.nexmo.com"
     request_uri = "/v1/applications"
     params = {"aaa": "xxx", "bbb": "yyy"}
-    response = client.put(host, request_uri, params=params)
-    assert isinstance(response, dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert b"aaa" in request_body()
-    assert b"xxx" in request_body()
-    assert b"bbb" in request_body()
-    assert b"yyy" in request_body()
-
-
-@responses.activate
-def test_put_with_auth(client, dummy_data):
-    stub(responses.PUT, "https://api.nexmo.com/v1/applications")
-    host = "api.nexmo.com"
-    request_uri = "/v1/applications"
-    params = {"aaa": "xxx", "bbb": "yyy"}
-    response = client.put(host, request_uri, params=params, header_auth=True)
+    response = client.put(host, request_uri, params=params, auth_type='header')
     assert_basic_auth()
     assert isinstance(response, dict)
     assert request_user_agent() == dummy_data.user_agent
@@ -87,21 +72,11 @@ def test_put_with_auth(client, dummy_data):
 
 
 @responses.activate
-def test_delete(client, dummy_data):
+def test_delete_with_header_auth(client, dummy_data):
     stub(responses.DELETE, "https://api.nexmo.com/v1/applications")
     host = "api.nexmo.com"
     request_uri = "/v1/applications"
-    response = client.delete(host, request_uri)
-    assert isinstance(response, dict)
-    assert request_user_agent() == dummy_data.user_agent
-
-
-@responses.activate
-def test_delete_with_auth(client, dummy_data):
-    stub(responses.DELETE, "https://api.nexmo.com/v1/applications")
-    host = "api.nexmo.com"
-    request_uri = "/v1/applications"
-    response = client.delete(host, request_uri, header_auth=True)
+    response = client.delete(host, request_uri, auth_type='header')
     assert isinstance(response, dict)
     assert request_user_agent() == dummy_data.user_agent
     assert_basic_auth()

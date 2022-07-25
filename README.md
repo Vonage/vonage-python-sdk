@@ -142,6 +142,16 @@ response = client.sms.send_message({
 client.sms.submit_sms_conversion(response['message-id'])
 ```
 
+### Update the default SMS webhook URLs for callbacks/delivery reciepts
+```python
+client.sms.update_default_sms_webhook({
+    'moCallBackUrl': 'new.url.vonage.com',      # Default inbound sms webhook url
+    'drCallBackUrl': 'different.url.vonage.com' # Delivery receipt url
+    }})
+```
+
+The delivery receipt URL can be unset by sending an empty string.
+
 ## Messages API
 
 The Messages API is an API that allows you to send messages via SMS, MMS, WhatsApp, Messenger and Viber. Call the API from your Python code by 
@@ -458,6 +468,37 @@ client.number_insight.get_advanced_number_insight(number='447700900000')
 
 Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightAdvanced](https://developer.nexmo.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightAdvanced)
 
+## Account API
+
+### Get your account balance
+```python
+client.account.get_balance()
+```
+
+### Top up your account
+This feature is only enabled when you enable auto-reload for your account in the dashboard.
+```python
+# trx is the reference from when auto-reload was enabled and money was added
+client.account.topup(trx=transaction_reference) 
+```
+
+## Pricing API
+
+### Get pricing for a single country
+```python
+client.get_country_pricing(country_code='GB', type='sms') # Default type is sms
+```
+
+### Get pricing for all countries
+```python
+client.get_all_countries_pricing(type='sms') # Default type is sms, can be voice
+```
+
+### Get pricing for a specific dialling prefix
+```python
+client.get_country_pricing(prefix='44', type='sms')
+```
+
 ## Managing Secrets
 
 An API is provided to allow you to rotate your API secrets. You can create a new secret (up to a maximum of two secrets) and delete the existing one once all applications have been updated.
@@ -466,6 +507,12 @@ An API is provided to allow you to rotate your API secrets. You can create a new
 
 ```python
 secrets = client.account.list_secrets(API_KEY)
+```
+
+### Get information about a specific secret
+
+```python
+secrets = client.account.get_secret(API_KEY, secret_id)
 ```
 
 ### Create A New Secret
@@ -481,7 +528,7 @@ client.account.create_secret(API_KEY, 'awes0meNewSekret!!;');
 Delete the old secret (any application still using these credentials will stop working):
 
 ```python
-client.account.delete_secret(API_KEY, 'my-secret-id')
+client.account.revoke_secret(API_KEY, 'my-secret-id')
 ```
 
 ## Application API
@@ -489,7 +536,7 @@ client.account.delete_secret(API_KEY, 'my-secret-id')
 ### Create an application
 
 ```python
-response = client.application_v2.create_application({name='Example App', type='voice'})
+response = client.application.create_application({name='Example App', type='voice'})
 ```
 
 Docs: [https://developer.nexmo.com/api/application.v2#createApplication](https://developer.nexmo.com/api/application.v2#createApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#create-an-application)
@@ -497,7 +544,7 @@ Docs: [https://developer.nexmo.com/api/application.v2#createApplication](https:/
 ### Retrieve a list of applications
 
 ```python
-response = client.application_v2.list_applications()
+response = client.application.list_applications()
 ```
 
 Docs: [https://developer.nexmo.com/api/application.v2#listApplication](https://developer.nexmo.com/api/application.v2#listApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-your-applications)
@@ -505,7 +552,7 @@ Docs: [https://developer.nexmo.com/api/application.v2#listApplication](https://d
 ### Retrieve a single application
 
 ```python
-response = client.application_v2.get_application(uuid)
+response = client.application.get_application(uuid)
 ```
 
 Docs: [https://developer.nexmo.com/api/application.v2#getApplication](https://developer.nexmo.com/api/application.v2#getApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#retrieve-an-application)
@@ -513,7 +560,7 @@ Docs: [https://developer.nexmo.com/api/application.v2#getApplication](https://de
 ### Update an application
 
 ```python
-response = client.application_v2.update_application(uuid, answer_method='POST')
+response = client.application.update_application(uuid, answer_method='POST')
 ```
 
 Docs: [https://developer.nexmo.com/api/application.v2#updateApplication](https://developer.nexmo.com/api/application.v2#updateApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#update-an-application)
@@ -521,7 +568,7 @@ Docs: [https://developer.nexmo.com/api/application.v2#updateApplication](https:/
 ### Delete an application
 
 ```python
-response = client.application_v2.delete_application(uuid)
+response = client.application.delete_application(uuid)
 ```
 
 Docs: [https://developer.nexmo.com/api/application.v2#deleteApplication](https://developer.nexmo.com/api/application.v2#deleteApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#destroy-an-application)
@@ -608,7 +655,7 @@ The following is a list of Vonage APIs and whether the Python SDK provides suppo
 | Number Insight API    | General Availability |     ✅     |
 | Number Management API | General Availability |     ✅     |
 | Pricing API           | General Availability |     ✅     |
-| Redact API            | General Availability |     ✅     |
+| Redact API            |   Developer Preview  |     ❌     |
 | Reports API           |         Beta         |     ❌     |
 | SMS API               | General Availability |     ✅     |
 | Verify API            | General Availability |     ✅     |

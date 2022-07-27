@@ -1,13 +1,6 @@
 from util import *
+from vonage.errors import CallbackRequiredError
 
-
-@responses.activate
-def test_deprecated_get_basic_number_insight(client, dummy_data):
-    stub(responses.GET, "https://api.nexmo.com/ni/basic/json")
-
-    assert isinstance(client.get_basic_number_insight(number="447525856424"), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "number=447525856424" in request_query()
 
 @responses.activate
 def test_get_basic_number_insight(number_insight, dummy_data):
@@ -19,14 +12,6 @@ def test_get_basic_number_insight(number_insight, dummy_data):
 
 
 @responses.activate
-def test_deprecated_get_standard_number_insight(client, dummy_data):
-    stub(responses.GET, "https://api.nexmo.com/ni/standard/json")
-
-    assert isinstance(client.get_standard_number_insight(number="447525856424"), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "number=447525856424" in request_query()
-
-@responses.activate
 def test_get_standard_number_insight(number_insight, dummy_data):
     stub(responses.GET, "https://api.nexmo.com/ni/standard/json")
 
@@ -34,22 +19,6 @@ def test_get_standard_number_insight(number_insight, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert "number=447525856424" in request_query()
 
-@responses.activate
-def test_deprecated_get_number_insight(client, dummy_data):
-    stub(responses.GET, "https://api.nexmo.com/number/lookup/json")
-
-    assert isinstance(client.get_number_insight(number="447525856424"), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "number=447525856424" in request_query()
-
-
-@responses.activate
-def test_deprecated_get_advanced_number_insight(client, dummy_data):
-    stub(responses.GET, "https://api.nexmo.com/ni/advanced/json")
-
-    assert isinstance(client.get_advanced_number_insight(number="447525856424"), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "number=447525856424" in request_query()
 
 @responses.activate
 def test_get_advanced_number_insight(number_insight, dummy_data):
@@ -61,23 +30,20 @@ def test_get_advanced_number_insight(number_insight, dummy_data):
 
 
 @responses.activate
-def test_deprecated_request_number_insight(client, dummy_data):
-    stub(responses.POST, "https://rest.nexmo.com/ni/json")
+def test_get_async_advanced_number_insight(number_insight, dummy_data):
+    stub(responses.GET, "https://api.nexmo.com/ni/advanced/async/json")
 
     params = {"number": "447525856424", "callback": "https://example.com"}
 
-    assert isinstance(client.request_number_insight(params), dict)
+    assert isinstance(number_insight.get_async_advanced_number_insight(params), dict)
     assert request_user_agent() == dummy_data.user_agent
-    assert "number=447525856424" in request_body()
-    assert "callback=https%3A%2F%2Fexample.com" in request_body()
+    assert "number=447525856424" in request_query()
+    assert "callback=https%3A%2F%2Fexample.com" in request_query()
 
-@responses.activate
-def test_request_number_insight(number_insight, dummy_data):
-    stub(responses.POST, "https://rest.nexmo.com/ni/json")
+def test_callback_required_error_async_advanced_number_insight(number_insight, dummy_data):
+    stub(responses.GET, "https://api.nexmo.com/ni/advanced/async/json")
 
-    params = {"number": "447525856424", "callback": "https://example.com"}
+    params = {"number": "447525856424", "callback": ""}
 
-    assert isinstance(number_insight.request_number_insight(params), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "number=447525856424" in request_body()
-    assert "callback=https%3A%2F%2Fexample.com" in request_body()
+    with pytest.raises(CallbackRequiredError):
+        number_insight.get_async_advanced_number_insight(params)

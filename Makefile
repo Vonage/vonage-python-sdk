@@ -1,14 +1,14 @@
 .PHONY: clean test build coverage install requirements release
 
-clean:
-	rm -rf dist build
-
 coverage:
 	pytest -v --cov
 	coverage html
 
 test:
 	pytest -v
+
+clean:
+	rm -rf dist build
 
 build:
 	python -m build

@@ -4,3 +4,7 @@ pytest-cov==3.0.0
 responses==0.20.0
 coveralls
 glom==22.1.0
+
+bump2version
+build
+twine

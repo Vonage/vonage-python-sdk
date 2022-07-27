@@ -199,6 +199,8 @@ class Client:
             raise InvalidAuthenticationTypeError(
                 f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
             )
+
+        logger.debug(f"GET to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}")
         return self.parse(
             host, 
             self.session.get(uri, params=params, headers=self._request_headers))
@@ -233,6 +235,8 @@ class Client:
             raise InvalidAuthenticationTypeError(
                 f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
             )
+        
+        logger.debug(f"POST to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}")
         if body_is_json:
             return self.parse(
                 host, self.session.post(uri, json=params, headers=self._request_headers))
@@ -256,7 +260,8 @@ class Client:
                 f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
             )
 
-        # All APIs that currently use put methods require a json-formatted body
+        logger.debug(f"PUT to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}")
+        # All APIs that currently use put methods require a json-formatted body so don't need to check this
         return self.parse(host, self.session.put(uri, json=params, headers=self._request_headers))
 
     def delete(self, host, request_uri, auth_type=None):
@@ -275,6 +280,7 @@ class Client:
                 f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
             )
 
+        logger.debug(f"DELETE to {repr(uri)} with headers {repr(self._request_headers)}")
         return self.parse(
             host, self.session.delete(uri, headers=self._request_headers)
         )

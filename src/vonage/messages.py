@@ -1,7 +1,6 @@
 from .errors import MessagesError
 
 import re
-import json
 
 class Messages:
     valid_message_channels = {'sms', 'mms', 'whatsapp', 'messenger', 'viber_service'}
@@ -15,22 +14,19 @@ class Messages:
     
     def __init__(self, client):
         self._client = client
+        self._auth_type = 'jwt'
 
-    def send_message(self, params: dict, header_auth=False):        
+    def send_message(self, params: dict):        
         self.validate_send_message_input(params)
-
-        json_formatted_params = json.dumps(params)
-        if header_auth: # Using base64 encoded API key/secret pair
-            return self._client.post(
-                self._client.api_host(), 
-                "/v1/messages",
-                json_formatted_params, 
-                header_auth=header_auth,
-                additional_headers={'Content-Type': 'application/json'})
-        else: # If using jwt auth
-            return self._client._jwt_signed_post(
-                "/v1/messages",
-                params)
+        
+        if self._client.jwt is None:
+            self._auth_type='header'
+        return self._client.post(
+            self._client.api_host(), 
+            "/v1/messages",
+            params, 
+            auth_type=self._auth_type,
+            )
 
     def validate_send_message_input(self, params):
         self._check_input_is_dict(params)

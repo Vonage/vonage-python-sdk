@@ -486,17 +486,17 @@ client.account.topup(trx=transaction_reference)
 
 ### Get pricing for a single country
 ```python
-client.get_country_pricing(country_code='GB', type='sms') # Default type is sms
+client.account.get_country_pricing(country_code='GB', type='sms') # Default type is sms
 ```
 
 ### Get pricing for all countries
 ```python
-client.get_all_countries_pricing(type='sms') # Default type is sms, can be voice
+client.account.get_all_countries_pricing(type='sms') # Default type is sms, can be voice
 ```
 
 ### Get pricing for a specific dialling prefix
 ```python
-client.get_country_pricing(prefix='44', type='sms')
+client.account.get_prefix_pricing(prefix='44', type='sms')
 ```
 
 ## Managing Secrets

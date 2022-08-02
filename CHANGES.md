@@ -5,10 +5,12 @@ Breaking changes:
 - Removed automatic client creation when instantiating an `sms`, `voice` or `verify` object. You can now use these APIs from a client instance you create (e.g. `client.sms.send_message()`) or pass in a client to the API class to create it (e.g. `sms = vonage.Sms(client)`), as has been the case since v2.7.0 of the SDK.
 - Removed methods to call the Message Search API, which has been retired by Vonage.
 - Removed deprecated voice and number insight methods from `voice.py` (`initiate_call, initiate_tts_call and initiate_tts_prompt_call`) and `number_insight.py` (`request_number_insight`).
+- Renamed the `Account.delete_secret()` method to `revoke_secret()` to bring it in line with what is described in our documentation.
+
+Deprecations:
 - Deprecated the ApplicationV2 class and created an Application class with the same methods to bring the naming in line with other classes. This can be called from the client object with `client.application.create_application(...)` etc. or directly with `application = vonage.Application(client)`, `application.create_application(...)` etc.
 - Deprecated old Pricing API methods `get_sms_pricing` and `get_voice_pricing`.
 - Deprecated Redact class as it's a dev preview product that's unsupported in the SDK and will be removed in a later release.
-- Renamed the `Account.delete_secret()` method to `revoke_secret()` to bring it in line with what is described in our documentation.
 
 Enhancements:
 - Added `get_all_countries_pricing` method to `Account` object.

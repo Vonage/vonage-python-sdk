@@ -10,6 +10,7 @@ from .redact import Redact
 from .short_codes import ShortCodes
 from .sms import Sms
 from .ussd import Ussd
+from .video import Video
 from .voice import Voice
 from .verify import Verify
 
@@ -95,7 +96,7 @@ class Client:
         self._jwt_auth_params = {}
 
         if private_key is not None and application_id is not None:
-            self._application_id = application_id
+            self.application_id = application_id
             self._private_key = private_key
 
             if isinstance(self._private_key, string_types) and re.search("[.][a-zA-Z0-9_]+$", self._private_key):
@@ -104,6 +105,7 @@ class Client:
 
         self._host = "rest.nexmo.com"
         self._api_host = "api.nexmo.com"
+        self._video_host = "video.api.vonage.com"
 
         user_agent = f"vonage-python/{vonage.__version__} python/{python_version()}"
 
@@ -120,6 +122,7 @@ class Client:
         self.short_codes = ShortCodes(self)
         self.sms = Sms(self)
         self.ussd = Ussd(self)
+        self.video = Video(self)
         self.verify = Verify(self)
         self.voice = Voice(self)
 
@@ -145,6 +148,12 @@ class Client:
             return self._api_host
         else:
             self._api_host = value
+
+    def video_host(self, value=None):
+        if value is None:
+            return self._video_host
+        else:
+            self._video_host = value
 
     def auth(self, params=None, **kwargs):
         self._jwt_auth_params = params or kwargs
@@ -334,7 +343,7 @@ class Client:
         iat = int(time.time())
 
         payload = dict(self._jwt_auth_params)
-        payload.setdefault("application_id", self._application_id)
+        payload.setdefault("application_id", self.application_id)
         payload.setdefault("iat", iat)
         payload.setdefault("exp", iat + 60)
         payload.setdefault("jti", str(uuid4()))

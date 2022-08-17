@@ -3,7 +3,7 @@ import os.path
 import platform
 
 import pytest
-
+import vonage
 
 # Ensure our client isn't being configured with real values!
 os.environ.clear()
@@ -16,7 +16,6 @@ def read_file(path):
 
 class DummyData(object):
     def __init__(self):
-        import vonage
 
         self.api_key = "nexmo-api-key"
         self.api_secret = "nexmo-api-secret"
@@ -36,8 +35,6 @@ def dummy_data():
 
 @pytest.fixture
 def client(dummy_data):
-    import vonage
-
     return vonage.Client(
         key=dummy_data.api_key,
         secret=dummy_data.api_secret,
@@ -49,70 +46,48 @@ def client(dummy_data):
 # Represents an instance of the Voice class for testing
 @pytest.fixture
 def voice(client):
-    import vonage
-
     return vonage.Voice(client)
 
 
 # Represents an instance of the Sms class for testing
 @pytest.fixture
 def sms(client):
-    import vonage
-
     return vonage.Sms(client)
 
 
 # Represents an instance of the Verify class for testing
 @pytest.fixture
 def verify(client):
-    import vonage
-
     return vonage.Verify(client)
 
 @pytest.fixture
 def number_insight(client):
-    import vonage
-
     return vonage.NumberInsight(client)
 
 @pytest.fixture
 def account(client):
-    import vonage
-
     return vonage.Account(client)
 
 @pytest.fixture
 def numbers(client):
-    import vonage
-    
     return vonage.Numbers(client)
 
 @pytest.fixture
 def ussd(client):
-    import vonage
-    
     return vonage.Ussd(client)
 
 @pytest.fixture
 def short_codes(client):
-    import vonage
-    
     return vonage.ShortCodes(client)
 
 @pytest.fixture
 def messages(client):
-    import vonage
-
     return vonage.Messages(client)
 
 @pytest.fixture
 def redact(client):
-    import vonage
-
     return vonage.Redact(client)
 
 @pytest.fixture
 def application_v2(client):
-    import vonage
-
     return vonage.ApplicationV2(client)

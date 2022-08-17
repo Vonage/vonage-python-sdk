@@ -16,6 +16,10 @@ def read_file(path):
 
 class DummyData(object):
     def __init__(self):
+<<<<<<< HEAD
+=======
+
+>>>>>>> 83528da (created Video class and added methods to create session and get stream)
         self.api_key = "nexmo-api-key"
         self.api_secret = "nexmo-api-secret"
         self.signature_secret = "secret"

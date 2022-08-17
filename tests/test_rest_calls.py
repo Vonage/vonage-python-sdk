@@ -80,7 +80,6 @@ def test_delete_with_header_auth(client, dummy_data):
     assert isinstance(response, dict)
     assert request_user_agent() == dummy_data.user_agent
     assert_basic_auth()
-<<<<<<< HEAD
 
 
 @responses.activate
@@ -124,5 +123,3 @@ def test_patch_invalid_auth_type(client):
     params = {"test_param_1": "test1", "test_param_2": "test2"}
     with pytest.raises(InvalidAuthenticationTypeError):
         client.patch(host, request_uri, params=params, auth_type='params')
-=======
->>>>>>> c27e2f5 (refactoring tests, changing release command)

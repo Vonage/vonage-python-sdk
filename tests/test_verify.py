@@ -61,3 +61,58 @@ def test_start_psd2_verification(verify, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert "number=447525856424" in request_body()
     assert "brand=MyApp" in request_body()
+
+
+@responses.activate
+def test_start_verification_blacklisted_error_with_network(client, dummy_data):
+    stub(responses.POST, "https://api.nexmo.com/verify/json",
+        fixture_path="verify/blocked_with_network.json"
+    )
+
+    params = {"number": "447525856424", "brand": "MyApp"}
+    response = client.verify.start_verification(params)
+
+    assert isinstance(response, dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert "number=447525856424" in request_body()
+    assert "brand=MyApp" in request_body()
+    assert response["status"] == "7"
+    assert response["network"] == "25503"
+    assert response["error_text"] == "The number you are trying to verify is blacklisted for verification"
+
+
+@responses.activate
+def test_start_verification_blacklisted_error_with_request_id(client, dummy_data):
+    stub(responses.POST, "https://api.nexmo.com/verify/json",
+        fixture_path="verify/blocked_with_request_id.json"
+    )
+
+    params = {"number": "447525856424", "brand": "MyApp"}
+    response = client.verify.start_verification(params)
+
+    assert isinstance(response, dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert "number=447525856424" in request_body()
+    assert "brand=MyApp" in request_body()
+    assert response["status"] == "7"
+    assert response["request_id"] == "12345678"
+    assert response["error_text"] == "The number you are trying to verify is blacklisted for verification"
+
+
+@responses.activate
+def test_start_verification_blacklisted_error_with_network_and_request_id(client, dummy_data):
+    stub(responses.POST, "https://api.nexmo.com/verify/json",
+        fixture_path="verify/blocked_with_network_and_request_id.json"
+    )
+
+    params = {"number": "447525856424", "brand": "MyApp"}
+    response = client.verify.start_verification(params)
+
+    assert isinstance(response, dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert "number=447525856424" in request_body()
+    assert "brand=MyApp" in request_body()
+    assert response["status"] == "7"
+    assert response["network"] == "25503"
+    assert response["request_id"] == "12345678"
+    assert response["error_text"] == "The number you are trying to verify is blacklisted for verification"

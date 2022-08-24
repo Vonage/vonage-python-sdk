@@ -22,4 +22,8 @@ class Video:
         )
 
     def list_streams(self, session_id):
-        pass
+        return self._client.get(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/session/{session_id}/stream',
+            auth_type=Video.auth_type
+        )

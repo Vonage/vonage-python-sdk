@@ -309,7 +309,6 @@ class Client:
 
             # Test for standard error format:
             try:
-    
                 error_data = response.json()
                 if (
                     "type" in error_data

@@ -79,3 +79,12 @@ def test_send_signal_to_single_participant(client, dummy_data):
     assert isinstance(client.video.send_signal(session_id, type='chat', data='hello from a test case', connection_id=connection_id), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert request_content_type() == "application/json"
+
+@responses.activate
+def test_disconnect_client(client, dummy_data):
+    stub(responses.DELETE,
+        f"https://video.api.vonage.com/v2/project/{client.application_id}/session/{session_id}/connection/{connection_id}"
+    )
+
+    assert isinstance(client.video.disconnect_client(session_id, connection_id=connection_id), dict)
+    assert request_user_agent() == dummy_data.user_agent

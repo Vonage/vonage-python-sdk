@@ -51,6 +51,16 @@ class Video:
             auth_type=Video.auth_type
         )
 
+    def disconnect_client(self, session_id, connection_id):
+        return self._client.delete(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/session/{session_id}/connection/{connection_id}',
+            auth_type=Video.auth_type
+        )
 
+    def mute_stream(self, session_id, stream_id):
+        pass
 
+    def mute_all_streams(self, session_id, active, excluded_stream_ids):
+        pass
 

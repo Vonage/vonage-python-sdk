@@ -27,3 +27,30 @@ class Video:
             f'/v2/project/{self._client.application_id}/session/{session_id}/stream',
             auth_type=Video.auth_type
         )
+
+    def set_stream_layout(self, session_id, items):
+        return self._client.put(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/session/{session_id}/stream',
+            items,
+            auth_type=Video.auth_type
+        )
+
+    def send_signal(self, session_id, type, data, connection_id=None):
+        if connection_id:
+            request_uri = f'/v2/project/{self._client.application_id}/session/{session_id}/connection/{connection_id}/signal'
+        else:
+            request_uri = f'/v2/project/{self._client.application_id}/session/{session_id}/signal'
+        
+        params = {'type': type, 'data': data}
+
+        return self._client.post(
+            self._client.video_host(),
+            request_uri,
+            params,
+            auth_type=Video.auth_type
+        )
+
+
+
+

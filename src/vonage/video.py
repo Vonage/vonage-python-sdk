@@ -58,9 +58,21 @@ class Video:
             auth_type=Video.auth_type
         )
 
-    def mute_stream(self, session_id, stream_id):
-        pass
+    def mute_stream(self, session_id, stream_id):        
+        return self._client.post(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/session/{session_id}/stream/{stream_id}/mute',
+            params=None,           
+            auth_type=Video.auth_type
+        )
 
-    def mute_all_streams(self, session_id, active, excluded_stream_ids):
-        pass
+    def mute_all_streams(self, session_id, active=True, excluded_stream_ids: list = []):
+        params = {'active': active, 'excludedStreamIds': excluded_stream_ids}
+
+        return self._client.post(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/session/{session_id}/mute',
+            params,           
+            auth_type=Video.auth_type
+        )
 

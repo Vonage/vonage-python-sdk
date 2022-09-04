@@ -265,12 +265,28 @@ class Client:
             self._request_headers = dict(self._request_headers or {}, Authorization=f"Basic {hash}")
         else:
             raise InvalidAuthenticationTypeError(
-                f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
+                f'Invalid authentication type. Must be one of "jwt" or "header".'
             )
 
         logger.debug(f"PUT to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}")
         # All APIs that currently use put methods require a json-formatted body so don't need to check this
         return self.parse(host, self.session.put(uri, json=params, headers=self._request_headers, timeout=self.timeout))
+
+    def patch(self, host, request_uri, params, auth_type='jwt'):
+        uri = f"https://{host}{request_uri}"
+        self._request_headers = self.headers
+
+        if auth_type == 'jwt':
+            self._request_headers = self._add_jwt_to_request_headers()
+        else:
+            raise InvalidAuthenticationTypeError(
+                f"""Invalid authentication type. Must be "jwt", as only the Video API 
+                    (which uses jwt auth) currently uses this method."""
+            )
+
+        logger.debug(f"PATCH to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}")
+        # Only the Video API currently uses this method, so we will always send a json-formatted body
+        return self.parse(host, self.session.patch(uri, json=params, headers=self._request_headers))
 
     def delete(self, host, request_uri, auth_type=None):
         uri = f"https://{host}{request_uri}"

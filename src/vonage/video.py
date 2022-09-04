@@ -76,3 +76,68 @@ class Video:
             auth_type=Video.auth_type
         )
 
+    def list_archives(self, filter_params=None, **filter_kwargs):
+        return self._client.get(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/archive',
+            filter_params or filter_kwargs,           
+            auth_type=Video.auth_type
+        )
+
+    def create_archive(self, params=None, **kwargs):
+        return self._client.post(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/archive',
+            params or kwargs,           
+            auth_type=Video.auth_type
+        )
+
+    def get_archive(self, archive_id):
+        return self._client.get(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/archive/{archive_id}',
+            auth_type=Video.auth_type
+        )
+
+    def delete_archive(self, archive_id):
+        return self._client.get(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/archive/{archive_id}',
+            auth_type=Video.auth_type
+        )
+
+    def add_stream_to_archive(self, archive_id, stream_id, has_audio=True, has_video=True):
+        params = {'addStream': stream_id, 'hasAudio': has_audio, 'hasvideo': has_video}
+
+        return self._client.patch(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/archive/{archive_id}/streams',
+            params,
+            auth_type=Video.auth_type
+        )
+    
+    def remove_stream_from_archive(self, archive_id, stream_id):
+        params = {'removeStream': stream_id}
+
+        return self._client.patch(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/archive/{archive_id}/streams',
+            params,
+            auth_type=Video.auth_type
+        )
+
+    def stop_archive(self, archive_id):
+        return self._client.post(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/archive/{archive_id}/stop',
+            params=None,
+            auth_type=Video.auth_type
+        )
+
+    def change_archive_layout(self, archive_id, params=None, **kwargs):
+        return self._client.put(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/archive/{archive_id}/layout',
+            params or kwargs,
+            auth_type=Video.auth_type
+        )

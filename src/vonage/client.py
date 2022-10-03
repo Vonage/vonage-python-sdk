@@ -62,6 +62,10 @@ class Client:
         provided by this library and can be used to track your app statistics.
     :param str app_version: This optional value is added to the user-agent header
         provided by this library and can be used to track your app statistics.
+    :param timeout: (optional) How many seconds to wait for the server to send data
+        before giving up, as a float, or a (connect timeout, read
+        timeout) tuple. If set this timeout is used for every call to the Vonage enpoints
+    :type timeout: float or tuple
     """
 
     def __init__(
@@ -203,7 +207,7 @@ class Client:
         logger.debug(f"GET to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}")
         return self.parse(
             host, 
-            self.session.get(uri, params=params, headers=self._request_headers))
+            self.session.get(uri, params=params, headers=self._request_headers, timeout=self.timeout))
 
     def post(self, host, request_uri, params, auth_type=None, body_is_json=True, supports_signature_auth=False):
         """
@@ -239,10 +243,10 @@ class Client:
         logger.debug(f"POST to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}")
         if body_is_json:
             return self.parse(
-                host, self.session.post(uri, json=params, headers=self._request_headers))
+                host, self.session.post(uri, json=params, headers=self._request_headers, timeout=self.timeout))
         else:
             return self.parse(
-                host, self.session.post(uri, data=params, headers=self._request_headers))
+                host, self.session.post(uri, data=params, headers=self._request_headers, timeout=self.timeout))
 
     def put(self, host, request_uri, params, auth_type=None):
         uri = f"https://{host}{request_uri}"
@@ -262,7 +266,7 @@ class Client:
 
         logger.debug(f"PUT to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}")
         # All APIs that currently use put methods require a json-formatted body so don't need to check this
-        return self.parse(host, self.session.put(uri, json=params, headers=self._request_headers))
+        return self.parse(host, self.session.put(uri, json=params, headers=self._request_headers, timeout=self.timeout))
 
     def delete(self, host, request_uri, auth_type=None):
         uri = f"https://{host}{request_uri}"
@@ -282,7 +286,7 @@ class Client:
 
         logger.debug(f"DELETE to {repr(uri)} with headers {repr(self._request_headers)}")
         return self.parse(
-            host, self.session.delete(uri, headers=self._request_headers)
+            host, self.session.delete(uri, headers=self._request_headers, timeout=self.timeout)
         )
 
     def parse(self, host, response):

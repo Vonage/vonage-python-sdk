@@ -106,3 +106,15 @@ def test_client_can_make_application_requests_without_api_key(dummy_data):
 def test_invalid_auth_type_raises_error(client):
     with pytest.raises(InvalidAuthenticationTypeError):
         client.get(client.host(), 'my/request/uri', auth_type='magic')
+
+@responses.activate
+def test_timeout_is_set_on_client_calls(dummy_data):
+    stub(responses.POST, "https://api.nexmo.com/v1/calls")
+
+    client = vonage.Client(application_id="myid", private_key=dummy_data.private_key, timeout=1)
+    voice = vonage.Voice(client)
+    voice.create_call("123455")
+
+    assert len(responses.calls) == 1
+    assert responses.calls[0].request.req_kwargs["timeout"] == 1
+

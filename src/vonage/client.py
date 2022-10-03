@@ -93,7 +93,6 @@ class Client:
             self.signature_method = getattr(hashlib, signature_method)
 
         self._jwt_auth_params = {}
-        self.jwt = None
 
         if private_key is not None and application_id is not None:
             self._application_id = application_id
@@ -102,8 +101,6 @@ class Client:
             if isinstance(self._private_key, string_types) and re.search("[.][a-zA-Z0-9_]+$", self._private_key):
                 with open(self._private_key, "rb") as key_file:
                     self._private_key = key_file.read()
-
-            self.jwt = self._generate_application_jwt()
 
         self._host = "rest.nexmo.com"
         self._api_host = "api.nexmo.com"
@@ -114,7 +111,6 @@ class Client:
             user_agent += f" {app_name}/{app_version}"
 
         self.headers = {"User-Agent": user_agent, "Accept": "application/json"}
-
 
         self.account = Account(self)
         self.application = Application(self)
@@ -152,7 +148,6 @@ class Client:
 
     def auth(self, params=None, **kwargs):
         self._jwt_auth_params = params or kwargs
-        self.jwt = self._generate_application_jwt()
 
     def check_signature(self, params):
         params = dict(params)
@@ -293,7 +288,7 @@ class Client:
         logger.debug(f"Response headers {repr(response.headers)}")
         if response.status_code == 401:
             raise AuthenticationError(
-                "Check you're using a valid authentication method for the API you want to use"
+                "Authentication failed. Check you're using a valid authentication method."
             )
         elif response.status_code == 204:
             return None
@@ -313,7 +308,6 @@ class Client:
 
             # Test for standard error format:
             try:
-    
                 error_data = response.json()
                 if (
                     "type" in error_data
@@ -334,7 +328,7 @@ class Client:
             raise ServerError(message)
 
     def _add_jwt_to_request_headers(self):
-        return dict(self.headers, Authorization=b"Bearer " + self.jwt)
+        return dict(self.headers, Authorization=b"Bearer " + self._generate_application_jwt())
 
     def _generate_application_jwt(self):
         iat = int(time.time())

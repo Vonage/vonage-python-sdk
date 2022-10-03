@@ -19,7 +19,7 @@ class Messages:
     def send_message(self, params: dict):        
         self.validate_send_message_input(params)
         
-        if self._client.jwt is None:
+        if self._client._application_id is None:
             self._auth_type='header'
         return self._client.post(
             self._client.api_host(), 

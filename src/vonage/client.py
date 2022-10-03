@@ -328,8 +328,7 @@ class Client:
             raise ServerError(message)
 
     def _add_jwt_to_request_headers(self):
-        jwt = self._generate_application_jwt()
-        return dict(self.headers, Authorization=b"Bearer " + jwt)
+        return dict(self.headers, Authorization=b"Bearer " + self._generate_application_jwt())
 
     def _generate_application_jwt(self):
         iat = int(time.time())

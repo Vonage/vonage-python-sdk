@@ -1,5 +1,8 @@
-# 3.0.0
+# 3.0.1
+- Fixed bug where a JWT was created globally and could expire. Now a new JWT is generated when a request is made.
+- Fixed bug where timeout was not passed to session object.
 
+# 3.0.0
 Breaking changes:
 - Removed deprecated methods from `client.py` that are now available in specific modules related to each of the available Vonage APIs. E.g. to call the number insight API, the methods are now called in this way: `client.number_insight.get_basic_number_insight(...)`, or by instantiating the `NumberInsight` class directly: `ni = vonage.NumberInsight(client)`, `ni.get_basic_number_insight(...)` etc.
 - Removed automatic client creation when instantiating an `sms`, `voice` or `verify` object. You can now use these APIs from a client instance you create (e.g. `client.sms.send_message()`) or pass in a client to the API class to create it (e.g. `sms = vonage.Sms(client)`), as has been the case since v2.7.0 of the SDK.

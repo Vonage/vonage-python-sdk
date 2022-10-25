@@ -109,3 +109,4 @@ ENV*
 .idea
 .pypirc
 .pytest_cache
+html/

@@ -16,10 +16,10 @@ class Messages:
         self._client = client
         self._auth_type = 'jwt'
 
-    def send_message(self, params: dict):        
+    def send_message(self, params: dict):       
         self.validate_send_message_input(params)
         
-        if self._client._application_id is None:
+        if not hasattr(self._client, '_application_id'):
             self._auth_type='header'
         return self._client.post(
             self._client.api_host(), 

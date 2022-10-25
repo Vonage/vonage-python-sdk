@@ -1,3 +1,6 @@
+# 3.0.2
+- Bugfix in `messages.py` where authentication method was not being checked for correctly, throwing an error when using header auth.
+
 # 3.0.1
 - Fixed bug where a JWT was created globally and could expire. Now a new JWT is generated when a request is made.
 - Fixed bug where timeout was not passed to session object.

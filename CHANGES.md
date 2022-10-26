@@ -1,3 +1,7 @@
+# 3.1.0
+- Supporting Python 3.11
+- Upgrading some old dependencies
+
 # 3.0.2
 - Bugfix in `messages.py` where authentication method was not being checked for correctly, throwing an error when using header auth.
 

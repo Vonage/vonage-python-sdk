@@ -1,7 +1,7 @@
 .PHONY: clean test build coverage install requirements release
 
 coverage:
-	pytest -v --cov
+	coverage run -m pytest -v
 	coverage html
 
 test:

@@ -1,7 +1,5 @@
 import platform
 
-from glom import glom
-
 from util import *
 
 import vonage
@@ -118,10 +116,7 @@ def test_list_secrets(account):
 
     secrets = account.list_secrets("myaccountid")
     assert_basic_auth()
-    assert (
-        glom(secrets, "_embedded.secrets.0.id")
-        == "ad6dc56f-07b5-46e1-a527-85530e625800"
-    )
+    assert secrets["_embedded"]["secrets"][0]["id"] == "ad6dc56f-07b5-46e1-a527-85530e625800"
 
 
 @responses.activate

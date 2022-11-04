@@ -14,7 +14,7 @@ build:
 	python -m build
 
 release:
-	python -m twine upload dist/*
+	twine upload --repository pypi dist/*
 
 install: requirements
 

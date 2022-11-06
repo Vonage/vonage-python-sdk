@@ -16,7 +16,6 @@ def read_file(path):
 
 class DummyData(object):
     def __init__(self):
-
         self.api_key = "nexmo-api-key"
         self.api_secret = "nexmo-api-secret"
         self.signature_secret = "secret"

@@ -27,8 +27,17 @@ class MessagesError(Error):
 class PricingTypeError(Error):
     """A pricing type was specified that is not allowed."""
 
+
 class RedactError(Error):
+
     """Error related to the Redact class or Redact API."""
 
 class InvalidAuthenticationTypeError(Error):
-    """An authentication method was specified that is not allowed"""
+    """An authentication method was specified that is not allowed."""
+
+
+class InvalidRoleError(Error):
+    """The specified role was invalid."""
+
+class VideoError(Error):
+    """An error related to the Video class which calls the Vonage Video API."""

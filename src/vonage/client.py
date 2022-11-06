@@ -95,7 +95,7 @@ class Client:
 
         self._jwt_auth_params = {}
 
-        if private_key is not None and application_id is not None:
+        if private_key and application_id:
             self.application_id = application_id
             self._private_key = private_key
 

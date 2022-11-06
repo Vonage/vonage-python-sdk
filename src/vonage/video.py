@@ -1,9 +1,16 @@
+from .errors import InvalidRoleError, VideoError
+
+import jwt
+from time import time
+from uuid import uuid4
+
+
 class Video:
     auth_type = 'jwt'
+    token_roles = {'subscriber', 'publisher', 'moderator'}
 
     def __init__(self, client):
         self._client = client
-
 
     def create_session(self, params=None):
         return self._client.post(
@@ -141,3 +148,47 @@ class Video:
             params or kwargs,
             auth_type=Video.auth_type
         )
+
+    def generate_client_token(self, session_id, token_options=None):
+        now = int(time())
+        claims = {
+            'application_id': self._client.application_id,
+            'scope': 'session.connect',
+            'session_id': session_id,
+            'role': 'publisher',
+            'initial_layout_class_list': '',
+            'jti': str(uuid4()),
+            'iat': now
+        }
+
+        if hasattr(token_options, 'role'):
+            claims['role'] = token_options['role']
+        if hasattr(token_options, 'data'):
+            claims['data'] = token_options['data']
+        if hasattr(token_options, 'initialLayoutClassList'):
+            claims['initial_layout_class_list'] = token_options['initialLayoutClassList']
+        if hasattr(token_options, 'expireTime') and token_options['expireTime'] > now:
+            claims['exp'] = token_options['expireTime']
+        if hasattr(token_options, 'jti'):
+            claims['jti'] = token_options['jti']
+        if hasattr(token_options, 'iat'):
+            claims['iat'] = token_options['iat']
+        if hasattr(token_options, 'subject'):
+            claims['subject'] = token_options['subject']
+        if hasattr(token_options, 'acl'):
+            claims['acl'] = token_options['acl']
+
+        self.validate_client_token_options(claims)
+        headers = {
+            'typ': 'JWT',
+            'alg': 'RS256'
+        }
+
+        return jwt.encode(payload=claims, key=self._client._private_key, algorithm='RS256', headers=headers)
+        
+    def validate_client_token_options(self, claims):
+        now = int(time())
+        if claims['role'] not in Video.token_roles:
+            raise InvalidRoleError(f'Invalid role specified for the client token. Valid values are: {Video.token_roles}')
+        if hasattr(claims, 'exp') and claims['exp'] > now + 3600 * 24 * 30:
+            raise VideoError('Token expiry date must be less than 30 days from now.')

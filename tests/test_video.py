@@ -18,6 +18,12 @@ def test_create_session(client, dummy_data):
     assert session['session_id'] == session_id
 
 
+def test_generate_client_jwt_all_defaults(client):
+    token = client.video.generate_client_token(session_id)
+    print(token)
+    assert False
+
+
 @responses.activate
 def test_get_stream(client, dummy_data):
     stub(responses.GET,

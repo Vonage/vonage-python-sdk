@@ -1,4 +1,4 @@
-from .errors import InvalidRoleError, VideoError
+from .errors import InvalidRoleError, TokenExpiryError
 
 import jwt
 from time import time
@@ -164,7 +164,6 @@ class Video:
             'iat': now
         }
         if 'role' in token_options:
-            print('here')
             claims['role'] = token_options['role']
         if 'data' in token_options:
             claims['data'] = token_options['data']
@@ -186,12 +185,11 @@ class Video:
             'typ': 'JWT',
             'alg': 'RS256'
         }
-        print(claims)
         return jwt.encode(payload=claims, key=self._client._private_key, algorithm='RS256', headers=headers)
         
     def validate_client_token_options(self, claims):
         now = int(time())
         if claims['role'] not in Video.token_roles:
             raise InvalidRoleError(f'Invalid role specified for the client token. Valid values are: {Video.token_roles}')
-        if hasattr(claims, 'exp') and claims['exp'] > now + 3600 * 24 * 30:
-            raise VideoError('Token expiry date must be less than 30 days from now.')
+        if 'exp' in claims and claims['exp'] > now + 3600 * 24 * 30:
+            raise TokenExpiryError('Token expiry date must be less than 30 days from now.')

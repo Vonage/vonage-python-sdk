@@ -1,7 +1,9 @@
 from util import *
+from vonage.errors import InvalidRoleError, TokenExpiryError
 
 import jwt
 from time import time
+
 
 session_id = 'my_session_id'
 stream_id = 'my_stream_id'
@@ -36,17 +38,16 @@ def test_generate_client_token_custom_options(client):
     token_options = {
         'role': 'moderator',
         'data': 'some token data',
-        'expireTime': now + 60,
         'initialLayoutClassList': ['1234', '5678', '9123'],
+        'expireTime': now + 60,
         'jti': 1234,
         'iat': now,
         'subject': 'test_subject',
-        'acl': []
+        'acl': ['1', '2', '3']
     }
 
     token = client.video.generate_client_token(session_id, token_options)
     decoded_token = jwt.decode(token, algorithms='RS256', options={'verify_signature': False})
-    print(decoded_token)
     assert decoded_token['application_id'] == 'nexmo-application-id'
     assert decoded_token['scope'] == 'session.connect'
     assert decoded_token['session_id'] == 'my_session_id'
@@ -55,6 +56,25 @@ def test_generate_client_token_custom_options(client):
     assert decoded_token['data'] == 'some token data'
     assert decoded_token['jti'] == 1234
     assert decoded_token['subject'] == 'test_subject'
+    assert decoded_token['acl'] == ['1', '2', '3']
+
+
+def test_check_client_token_headers(client):
+    token = client.video.generate_client_token(session_id)
+    headers = jwt.get_unverified_header(token)
+    print(headers)
+    assert headers['alg'] == 'RS256'
+    assert headers['typ'] == 'JWT'
+
+def test_generate_client_token_invalid_role(client):
+    with pytest.raises(InvalidRoleError): 
+        client.video.generate_client_token(session_id, {'role': 'observer'})
+
+
+def test_generate_client_token_invalid_expire_time(client):
+    now = int(time())
+    with pytest.raises(TokenExpiryError):
+        client.video.generate_client_token(session_id, {'expireTime': now + 3600 * 24 * 30 + 1})
 
 
 @responses.activate

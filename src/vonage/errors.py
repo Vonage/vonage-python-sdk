@@ -39,5 +39,5 @@ class InvalidAuthenticationTypeError(Error):
 class InvalidRoleError(Error):
     """The specified role was invalid."""
 
-class VideoError(Error):
-    """An error related to the Video class which calls the Vonage Video API."""
+class TokenExpiryError(Error):
+    """The specified token expiry time was invalid."""

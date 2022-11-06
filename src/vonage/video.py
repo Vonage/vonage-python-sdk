@@ -1,4 +1,4 @@
-from .errors import InvalidRoleError, TokenExpiryError
+from .errors import InvalidRoleError, TokenExpiryError, InvalidOptionsError
 
 import jwt
 from time import time
@@ -7,19 +7,59 @@ from uuid import uuid4
 
 class Video:
     auth_type = 'jwt'
+    archive_mode_values = {'manual', 'always'}
+    media_mode_values = {'routed', 'relayed'}
     token_roles = {'subscriber', 'publisher', 'moderator'}
 
     def __init__(self, client):
         self._client = client
 
-    def create_session(self, params=None):
-        return self._client.post(
+    def create_session(self, session_options={}):
+        params = {
+            'archiveMode': 'manual',
+            'p2p.preference': 'disabled',
+            'location': None
+        }
+        if 'archive_mode' in session_options and session_options['archive_mode'] not in Video.archive_mode_values:
+            raise InvalidOptionsError(f'Invalid archive_mode value. Must be one of {Video.archive_mode_values}.')
+        elif 'archive_mode' in session_options:
+            params['archiveMode'] = session_options['archive_mode']
+        if 'media_mode' in session_options and session_options['media_mode'] not in Video.media_mode_values:
+            raise InvalidOptionsError(f'Invalid media_mode value. Must be one of {Video.media_mode_values}.')
+        elif 'media_mode' in session_options:
+            if session_options['media_mode'] == 'routed':
+                params['p2p.preference'] = 'disabled'
+            elif session_options['media_mode'] == 'relayed':
+                if params['archiveMode'] == 'always':
+                    raise InvalidOptionsError('Invalid combination: cannot specify "archive_mode": "always" and "media_mode": "relayed".')
+                else:    
+                    params['p2p.preference'] = 'enabled'
+        if 'location' in session_options:
+            params['location'] = session_options['location']
+        
+        session = self._client.post(
             self._client.video_host(), 
             '/session/create', 
             params, 
             auth_type=Video.auth_type,
             body_is_json=False
         )[0]
+
+        media_mode = self.get_media_mode(params['p2p.preference'])
+        session_info = {
+            'session_id': session['session_id'],
+            'archive_mode': params['archiveMode'],
+            'media_mode': media_mode,
+            'location': params['location']
+        }
+
+        return session_info
+
+    def get_media_mode(self, p2p_preference):
+        if p2p_preference == 'disabled':
+            return 'routed'
+        elif p2p_preference == 'enabled':
+            return 'relayed'
 
     def get_stream(self, session_id, stream_id):
         return self._client.get(

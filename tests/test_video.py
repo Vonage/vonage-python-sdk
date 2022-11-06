@@ -1,5 +1,5 @@
 from util import *
-from vonage.errors import InvalidRoleError, TokenExpiryError
+from vonage.errors import InvalidRoleError, TokenExpiryError, InvalidOptionsError
 
 import jwt
 from time import time
@@ -11,17 +11,79 @@ connection_id = '1234-5678'
 archive_id = '1234-abcd'
 
 @responses.activate
-def test_create_session(client, dummy_data):
+def test_create_default_session(client, dummy_data):
     stub(responses.POST, 
         "https://video.api.vonage.com/session/create", 
         fixture_path="video/create_session.json",
     )
     
-    session = client.video.create_session()
-    assert isinstance(session, dict)
+    session_info = client.video.create_session()
+    assert isinstance(session_info, dict)
     assert request_user_agent() == dummy_data.user_agent
-    assert session['session_id'] == session_id
+    assert session_info['session_id'] == session_id
+    assert session_info['archive_mode'] == 'manual'
+    assert session_info['media_mode'] == 'routed'
+    assert session_info['location'] == None
 
+
+@responses.activate
+def test_create_session_custom_archive_mode_and_location(client, dummy_data):
+    stub(responses.POST, 
+        "https://video.api.vonage.com/session/create", 
+        fixture_path="video/create_session.json",
+    )
+    
+    session_options = {
+        'archive_mode': 'always',
+        'location': '192.0.1.1',
+        'media_mode': 'routed'
+    }
+    session_info = client.video.create_session(session_options)
+    assert isinstance(session_info, dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert session_info['session_id'] == session_id
+    assert session_info['archive_mode'] == 'always'
+    assert session_info['media_mode'] == 'routed'
+    assert session_info['location'] == '192.0.1.1'
+
+
+@responses.activate
+def test_create_session_custom_media_mode(client, dummy_data):
+    stub(responses.POST, 
+        "https://video.api.vonage.com/session/create", 
+        fixture_path="video/create_session.json",
+    )
+    
+    session_options = {'media_mode': 'relayed'}
+    session_info = client.video.create_session(session_options)
+    assert isinstance(session_info, dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert session_info['session_id'] == session_id
+    assert session_info['archive_mode'] == 'manual'
+    assert session_info['media_mode'] == 'relayed'
+    assert session_info['location'] == None
+
+
+def test_create_session_invalid_archive_mode(client):
+    session_options = {'archive_mode': 'invalid_option'}
+    with pytest.raises(InvalidOptionsError) as excinfo:
+        client.video.create_session(session_options)
+    assert 'Invalid archive_mode value. Must be one of ' in str(excinfo.value)
+
+
+def test_create_session_invalid_media_mode(client):
+    session_options = {'media_mode': 'invalid_option'}
+    with pytest.raises(InvalidOptionsError) as excinfo:
+        client.video.create_session(session_options)
+    assert 'Invalid media_mode value. Must be one of ' in str(excinfo.value)
+
+
+def test_create_session_invalid_mode_combination(client):
+    session_options = {'archive_mode': 'always', 'media_mode': 'relayed'}
+    with pytest.raises(InvalidOptionsError) as excinfo:
+        client.video.create_session(session_options)
+    assert str(excinfo.value) == 'Invalid combination: cannot specify "archive_mode": "always" and "media_mode": "relayed".'
+    
 
 def test_generate_client_token_all_defaults(client):
     token = client.video.generate_client_token(session_id)

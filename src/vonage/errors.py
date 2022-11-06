@@ -41,3 +41,6 @@ class InvalidRoleError(Error):
 
 class TokenExpiryError(Error):
     """The specified token expiry time was invalid."""
+
+class InvalidOptionsError(Error):
+    """The option(s) that were specified are invalid."""

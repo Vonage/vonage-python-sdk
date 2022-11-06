@@ -79,7 +79,7 @@ class Video:
         return self._client.post(
             self._client.video_host(),
             f'/v2/project/{self._client.application_id}/session/{session_id}/mute',
-            params,           
+            params,
             auth_type=Video.auth_type
         )
 
@@ -152,7 +152,7 @@ class Video:
             auth_type=Video.auth_type
         )
 
-    def generate_client_token(self, session_id, token_options=None):
+    def generate_client_token(self, session_id, token_options={}):
         now = int(time())
         claims = {
             'application_id': self._client.application_id,
@@ -163,22 +163,22 @@ class Video:
             'jti': str(uuid4()),
             'iat': now
         }
-
-        if hasattr(token_options, 'role'):
+        if 'role' in token_options:
+            print('here')
             claims['role'] = token_options['role']
-        if hasattr(token_options, 'data'):
+        if 'data' in token_options:
             claims['data'] = token_options['data']
-        if hasattr(token_options, 'initialLayoutClassList'):
+        if 'initialLayoutClassList' in token_options:
             claims['initial_layout_class_list'] = token_options['initialLayoutClassList']
-        if hasattr(token_options, 'expireTime') and token_options['expireTime'] > now:
+        if 'expireTime' in token_options and token_options['expireTime'] > now:
             claims['exp'] = token_options['expireTime']
-        if hasattr(token_options, 'jti'):
+        if 'jti' in token_options:
             claims['jti'] = token_options['jti']
-        if hasattr(token_options, 'iat'):
+        if 'iat' in token_options:
             claims['iat'] = token_options['iat']
-        if hasattr(token_options, 'subject'):
+        if 'subject' in token_options:
             claims['subject'] = token_options['subject']
-        if hasattr(token_options, 'acl'):
+        if 'acl' in token_options:
             claims['acl'] = token_options['acl']
 
         self.validate_client_token_options(claims)
@@ -186,7 +186,7 @@ class Video:
             'typ': 'JWT',
             'alg': 'RS256'
         }
-
+        print(claims)
         return jwt.encode(payload=claims, key=self._client._private_key, algorithm='RS256', headers=headers)
         
     def validate_client_token_options(self, claims):

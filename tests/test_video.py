@@ -1,5 +1,8 @@
 from util import *
 
+import jwt
+from time import time
+
 session_id = 'my_session_id'
 stream_id = 'my_stream_id'
 connection_id = '1234-5678'
@@ -18,10 +21,38 @@ def test_create_session(client, dummy_data):
     assert session['session_id'] == session_id
 
 
-def test_generate_client_jwt_all_defaults(client):
+def test_generate_client_token_all_defaults(client):
     token = client.video.generate_client_token(session_id)
-    print(token)
-    assert False
+    decoded_token = jwt.decode(token, algorithms='RS256', options={'verify_signature': False})
+    assert decoded_token['application_id'] == 'nexmo-application-id'
+    assert decoded_token['scope'] == 'session.connect'
+    assert decoded_token['session_id'] == 'my_session_id'
+    assert decoded_token['role'] == 'publisher'
+    assert decoded_token['initial_layout_class_list'] == ''
+
+
+def test_generate_client_token_custom_options(client):
+    now = int(time())
+    token_options = {
+        'role': 'moderator',
+        'data': 'some token data',
+        'expireTime': now + 60,
+        'initialLayoutClassList': ['1234', '5678', '9123'],
+        'jti': 1234,
+        'iat': now,
+        'subject': 'test_subject',
+        'acl': []
+    }
+    token = client.video.generate_client_token(session_id, token_options)
+    decoded_token = jwt.decode(token, algorithms='RS256', options={'verify_signature': False})
+    print(decoded_token)
+    assert decoded_token['application_id'] == 'nexmo-application-id'
+    assert decoded_token['scope'] == 'session.connect'
+    assert decoded_token['session_id'] == 'my_session_id'
+    assert decoded_token['role'] == 'moderator'
+    assert decoded_token['initial_layout_class_list'] == ['1234', '5678', '9123']
+    assert decoded_token['data'] == 'some token data'
+    assert decoded_token['subject'] == 'test_subject'
 
 
 @responses.activate

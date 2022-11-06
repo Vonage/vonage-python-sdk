@@ -83,8 +83,8 @@ class Video:
             auth_type=Video.auth_type
         )
 
-    def disable_mute_all_streams(self, session_id, excluded_stream_ids=[]):
-        self.mute_all_streams(session_id, active=False, excluded_stream_ids=excluded_stream_ids)
+    def disable_mute_all_streams(self, session_id, excluded_stream_ids: list = []):
+        return self.mute_all_streams(session_id, active=False, excluded_stream_ids=excluded_stream_ids)
 
     def list_archives(self, filter_params=None, **filter_kwargs):
         return self._client.get(

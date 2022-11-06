@@ -66,6 +66,7 @@ def test_check_client_token_headers(client):
     assert headers['alg'] == 'RS256'
     assert headers['typ'] == 'JWT'
 
+
 def test_generate_client_token_invalid_role(client):
     with pytest.raises(InvalidRoleError): 
         client.video.generate_client_token(session_id, {'role': 'observer'})
@@ -140,6 +141,7 @@ def test_send_signal_to_single_participant(client, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert request_content_type() == "application/json"
 
+
 @responses.activate
 def test_disconnect_client(client, dummy_data):
     stub(responses.DELETE,
@@ -148,6 +150,7 @@ def test_disconnect_client(client, dummy_data):
 
     assert isinstance(client.video.disconnect_client(session_id, connection_id=connection_id), dict)
     assert request_user_agent() == dummy_data.user_agent
+
 
 @responses.activate
 def test_mute_specific_stream(client, dummy_data):
@@ -163,6 +166,19 @@ def test_mute_specific_stream(client, dummy_data):
 
 
 @responses.activate
+def test_mute_all_streams(client, dummy_data):
+    stub(responses.POST,
+        f"https://video.api.vonage.com/v2/project/{client.application_id}/session/{session_id}/mute",
+        fixture_path="video/mute_multiple_streams.json"
+    )
+
+    response = client.video.mute_all_streams(session_id)
+    assert isinstance(response, dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert response['createdAt'] == 1414642898000
+
+
+@responses.activate
 def test_mute_all_streams_except_excluded_list(client, dummy_data):
     stub(responses.POST,
         f"https://video.api.vonage.com/v2/project/{client.application_id}/session/{session_id}/mute",
@@ -172,6 +188,20 @@ def test_mute_all_streams_except_excluded_list(client, dummy_data):
     response = client.video.mute_all_streams(session_id, excluded_stream_ids=['excluded_stream_id_1', 'excluded_stream_id_2'])
     assert isinstance(response, dict)
     assert request_user_agent() == dummy_data.user_agent
+    assert response['createdAt'] == 1414642898000
+
+
+@responses.activate
+def test_disable_mute_all_streams(client, dummy_data):
+    stub(responses.POST,
+        f"https://video.api.vonage.com/v2/project/{client.application_id}/session/{session_id}/mute",
+        fixture_path="video/disable_mute_multiple_streams.json"
+    )
+
+    response = client.video.disable_mute_all_streams(session_id, excluded_stream_ids=['excluded_stream_id_1', 'excluded_stream_id_2'])
+    assert isinstance(response, dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert request_body() == b'{"active": false, "excludedStreamIds": ["excluded_stream_id_1", "excluded_stream_id_2"]}'
     assert response['createdAt'] == 1414642898000
 
 

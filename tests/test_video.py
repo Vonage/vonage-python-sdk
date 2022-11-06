@@ -43,6 +43,7 @@ def test_generate_client_token_custom_options(client):
         'subject': 'test_subject',
         'acl': []
     }
+
     token = client.video.generate_client_token(session_id, token_options)
     decoded_token = jwt.decode(token, algorithms='RS256', options={'verify_signature': False})
     print(decoded_token)
@@ -52,6 +53,7 @@ def test_generate_client_token_custom_options(client):
     assert decoded_token['role'] == 'moderator'
     assert decoded_token['initial_layout_class_list'] == ['1234', '5678', '9123']
     assert decoded_token['data'] == 'some token data'
+    assert decoded_token['jti'] == 1234
     assert decoded_token['subject'] == 'test_subject'
 
 

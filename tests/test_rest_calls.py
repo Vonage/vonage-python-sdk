@@ -80,20 +80,3 @@ def test_delete_with_header_auth(client, dummy_data):
     assert isinstance(response, dict)
     assert request_user_agent() == dummy_data.user_agent
     assert_basic_auth()
-
-
-@responses.activate
-def test_patch(client, dummy_data):
-    stub(responses.PATCH, "https://api.nexmo.com/v1/applications")
-    host = "api.nexmo.com"
-    request_uri = "/v1/applications"
-    params = {"aaa": "xxx", "bbb": "yyy"}
-    response = client.patch(host, request_uri, params=params, auth_type='jwt')
-    assert request_headers()['Content-Type'] == 'application/json'
-    assert re.search(b'^Bearer ', request_headers()['Authorization']) is not None
-    assert isinstance(response, dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert b"aaa" in request_body()
-    assert b"xxx" in request_body()
-    assert b"bbb" in request_body()
-    assert b"yyy" in request_body()

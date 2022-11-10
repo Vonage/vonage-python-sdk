@@ -84,16 +84,34 @@ def test_delete_with_header_auth(client, dummy_data):
 
 @responses.activate
 def test_patch(client, dummy_data):
-    stub(responses.PATCH, "https://api.nexmo.com/v1/applications")
+    stub(responses.PATCH, f"https://api.nexmo.com/v2/project", fixture_path="rest_calls/patch.json")
     host = "api.nexmo.com"
-    request_uri = "/v1/applications"
-    params = {"aaa": "xxx", "bbb": "yyy"}
+    request_uri = "/v2/project"
+    params = {"test_param_1": "test1", "test_param_2": "test2"}
     response = client.patch(host, request_uri, params=params, auth_type='jwt')
+    assert isinstance(response, dict)
+    assert response['patch'] == 'test_case'
+    assert response['successful'] == True
     assert request_headers()['Content-Type'] == 'application/json'
     assert re.search(b'^Bearer ', request_headers()['Authorization']) is not None
-    assert isinstance(response, dict)
     assert request_user_agent() == dummy_data.user_agent
-    assert b"aaa" in request_body()
-    assert b"xxx" in request_body()
-    assert b"bbb" in request_body()
-    assert b"yyy" in request_body()
+    assert b"test_param_1" in request_body()
+    assert b"test1" in request_body()
+    assert b"test_param_2" in request_body()
+    assert b"test2" in request_body()
+
+
+@responses.activate
+def test_patch_no_content(client, dummy_data):
+    stub(responses.PATCH, f"https://api.nexmo.com/v2/project", status_code=204)
+    host = "api.nexmo.com"
+    request_uri = "/v2/project"
+    params = {"test_param_1": "test1", "test_param_2": "test2"}
+    client.patch(host, request_uri, params=params, auth_type='jwt')
+    assert request_headers()['Content-Type'] == 'application/json'
+    assert re.search(b'^Bearer ', request_headers()['Authorization']) is not None
+    assert request_user_agent() == dummy_data.user_agent
+    assert b"test_param_1" in request_body()
+    assert b"test1" in request_body()
+    assert b"test_param_2" in request_body()
+    assert b"test2" in request_body()

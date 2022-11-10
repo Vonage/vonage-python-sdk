@@ -110,3 +110,4 @@ ENV*
 .pypirc
 .pytest_cache
 html/
+.mutmut-cache

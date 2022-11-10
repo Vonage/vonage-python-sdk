@@ -1,5 +1,5 @@
 from util import *
-
+from vonage.errors import InvalidAuthenticationTypeError
 
 @responses.activate
 def test_get_with_query_params_auth(client, dummy_data):
@@ -115,3 +115,11 @@ def test_patch_no_content(client, dummy_data):
     assert b"test1" in request_body()
     assert b"test_param_2" in request_body()
     assert b"test2" in request_body()
+
+
+def test_patch_invalid_auth_type(client):
+    host = "api.nexmo.com"
+    request_uri = "/v2/project"
+    params = {"test_param_1": "test1", "test_param_2": "test2"}
+    with pytest.raises(InvalidAuthenticationTypeError):
+        client.patch(host, request_uri, params=params, auth_type='params')

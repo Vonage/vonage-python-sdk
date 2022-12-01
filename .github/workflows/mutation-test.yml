@@ -30,4 +30,4 @@ jobs:
         mutmut run --simple-output --no-progress --paths-to-mutate src/vonage/ussd.py
     - name: Show mutation test results
       run: |
-        mutmut run --simple-output
+        mutmut run --simple-output --paths-to-mutate src/vonage/ussd.py

@@ -23,7 +23,7 @@ jobs:
         python -m pip install mutmut==2.4.1
     - name: Run mutation test
       run: |
-        mutmut run --paths-to-mutate src/vonage/sms.py,src/vonage/ussd.py
+        mutmut run --paths-to-mutate src/vonage/sms.py
     - name: Save HTML output
       run: |
         mutmut html

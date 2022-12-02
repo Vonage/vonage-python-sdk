@@ -1,13 +1,9 @@
 name: Mutation Test
-on:
-  push:
-    branches: [ "main", "add-mutation" ]
-  pull_request:
-    branches: [ "main" ]
+on: workflow_dispatch
 
 jobs:
-  build:
-
+  mutation:
+    name: run mutation test
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -35,12 +31,3 @@ jobs:
       with:
         name: mutation-test-report
         path: html/
-    - uses: actions/download-artifact@v3
-      with:
-        name: mutation-test-report
-    - name: comment on PR
-      uses: machine-learning-apps/pr-comment@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        path: index.html

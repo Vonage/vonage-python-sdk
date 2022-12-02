@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.8"]
+        python-version: ["3.10"]
 
     steps:
     - uses: actions/checkout@v3
@@ -25,6 +25,7 @@ jobs:
       run: |
         mutmut run --no-progress --paths-to-mutate src/vonage/sms.py
     - name: Save HTML output
+      if: success() || failure
       run: |
         mutmut html
     - uses: actions/upload-artifact@v3

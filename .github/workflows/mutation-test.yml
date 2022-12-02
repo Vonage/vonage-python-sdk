@@ -1,5 +1,5 @@
 name: Mutation Test
-on: push
+on: workflow_dispatch
 
 jobs:
   mutation:

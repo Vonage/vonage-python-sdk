@@ -1,3 +1,3 @@
 from .client import *
 
-__version__ = "3.2.0b0"
+__version__ = "4.0.0b0"

@@ -33,7 +33,7 @@ jobs:
         mutmut html
     - uses: actions/upload-artifact@v3
       with:
-        name: mutation-test-output
+        name: mutation-test-report
         path: html/
     - uses: actions/download-artifact@v3
       with:

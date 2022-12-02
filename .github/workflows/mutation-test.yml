@@ -35,3 +35,12 @@ jobs:
       with:
         name: mutation-test-output
         path: html/
+    - uses: actions/download-artifact@v3
+      with:
+        name: mutation-test-report
+    - name: comment on PR
+      uses: machine-learning-apps/pr-comment@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        path: mutation-test-report/index.html

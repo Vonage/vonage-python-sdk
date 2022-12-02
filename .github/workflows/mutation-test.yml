@@ -27,7 +27,11 @@ jobs:
         python -m pip install mutmut
     - name: Run mutation test
       run: |
-        mutmut run --simple-output --no-progress --paths-to-mutate src/vonage/ussd.py
-    - name: Show mutation test results
+        mutmut run --no-progress --paths-to-mutate src/vonage/ussd.py
+    - name: Save HTML output
       run: |
-        mutmut run --simple-output --paths-to-mutate src/vonage/ussd.py
+        mutmut html
+    - uses: actions/upload-artifact@v3
+      with:
+        name: mutation-test-output
+        path: html/

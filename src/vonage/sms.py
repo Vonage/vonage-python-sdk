@@ -1,6 +1,8 @@
 import pytz
 from datetime import datetime
 from ._internal import _format_date_param
+from .errors import SmsError
+
 class Sms:
     defaults = {'auth_type': 'params', 'body_is_json': False}
 
@@ -22,7 +24,8 @@ class Sms:
         )
 
         if response_data['messages'][0]['status'] != '0':
-            print(f'Sms.send_message method failed with error: {response_data["messages"][0]["error-text"]}')
+            raise SmsError(f'Sms.send_message method failed with error: {response_data["messages"][0]["error-text"]}')
+            
         return response_data
     
     def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):

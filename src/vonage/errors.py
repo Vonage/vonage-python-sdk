@@ -24,6 +24,12 @@ class MessagesError(Error):
     """
 
 
+class SmsError(Error):
+    """
+    Indicates an error related to the Sms class which calls the Vonage SMS API.
+    """
+
+
 class PricingTypeError(Error):
     """A pricing type was specified that is not allowed."""
 

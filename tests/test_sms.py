@@ -4,7 +4,50 @@ from util import *
 
 @responses.activate
 def test_send_message(sms, dummy_data):
-    stub(responses.POST, "https://rest.nexmo.com/sms/json")
+    stub(responses.POST, "https://rest.nexmo.com/sms/json",
+        fixture_path='sms/send_message.json')
+
+    params = {"from": "Python", "to": "447525856424", "text": "Hey!"}
+
+    assert isinstance(sms.send_message(params), dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert "from=Python" in request_body()
+    assert "to=447525856424" in request_body()
+    assert "text=Hey%21" in request_body()
+
+
+@responses.activate
+def test_send_message_200_error(sms, dummy_data):
+    stub(responses.POST, "https://rest.nexmo.com/sms/json",
+        fixture_path='sms/send_message_200_error.json')
+
+    params = {"from": "Python", "to": "447525856424", "text": "Hey!"}
+
+    assert isinstance(sms.send_message(params), dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert "from=Python" in request_body()
+    assert "to=447525856424" in request_body()
+    assert "text=Hey%21" in request_body()
+
+
+@responses.activate
+def test_send_long_message(sms, dummy_data):
+    stub(responses.POST, "https://rest.nexmo.com/sms/json",
+        fixture_path='sms/send_long_message.json')
+
+    params = {"from": "Python", "to": "447525856424", "text": "Hey!"}
+
+    assert isinstance(sms.send_message(params), dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert "from=Python" in request_body()
+    assert "to=447525856424" in request_body()
+    assert "text=Hey%21" in request_body()
+
+
+@responses.activate
+def test_send_long_message_partial_error(sms, dummy_data):
+    stub(responses.POST, "https://rest.nexmo.com/sms/json",
+        fixture_path='sms/send_long_message_partial_error.json')
 
     params = {"from": "Python", "to": "447525856424", "text": "Hey!"}
 

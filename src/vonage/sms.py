@@ -1,7 +1,7 @@
 import pytz
 from datetime import datetime
 from ._internal import _format_date_param
-from .errors import SmsError
+from .errors import SmsError, PartialFailureError
 
 class Sms:
     defaults = {'auth_type': 'params', 'body_is_json': False}
@@ -23,10 +23,27 @@ class Sms:
             **Sms.defaults,
         )
 
-        if response_data['messages'][0]['status'] != '0':
-            raise SmsError(f'Sms.send_message method failed with error: {response_data["messages"][0]["error-text"]}')
-            
+        if int(response_data['message-count']) > 1:
+            self.check_for_partial_failure(response_data)
+        else:
+            self.check_for_failure(response_data)
+
         return response_data
+
+    def check_for_partial_failure(self, response_data):
+        total_messages = int(response_data['message-count'])
+        successful_messages = 0
+        for message in response_data['messages']:
+            if int(message['status']) == 0:
+                successful_messages += 1
+        if successful_messages == 0:
+            raise SmsError(f'Sms.send_message method failed with error: {response_data["messages"][0]["error-text"]}')
+        elif successful_messages < total_messages: 
+            raise PartialFailureError(f'Sms.send_message method partially failed. Not all of the message sent successfully.')
+
+    def check_for_failure(self, response_data):
+        if int(response_data['messages'][0]['status']) != 0:
+                raise SmsError(f'Sms.send_message method failed with error: {response_data["messages"][0]["error-text"]}')
     
     def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
         """

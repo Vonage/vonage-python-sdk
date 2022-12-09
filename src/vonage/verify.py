@@ -1,3 +1,5 @@
+from .errors import VerifyError
+
 class Verify:
     auth_type = 'params'
     defaults = {'auth_type': auth_type, 'body_is_json': False}
@@ -6,12 +8,17 @@ class Verify:
         self._client = client
 
     def start_verification(self, params=None, **kwargs):
-        return self._client.post(
+        response = self._client.post(
             self._client.api_host(), 
             "/verify/json", 
             params or kwargs,
             **Verify.defaults,
         )
+
+        if 'error_text' in response:
+            raise VerifyError(response)
+
+        return response
 
     def check(self, request_id, params=None, **kwargs):
         return self._client.post(

@@ -1,7 +1,6 @@
 import pytz
 from datetime import datetime
 from ._internal import _format_date_param
-
 class Sms:
     defaults = {'auth_type': 'params', 'body_is_json': False}
 
@@ -14,13 +13,17 @@ class Sms:
         Requires a client initialized with `key` and either `secret` or `signature_secret`.
         :param dict params: A dict of values described at `Send an SMS <https://developer.vonage.com/api/sms#send-an-sms>`_
         """
-        return self._client.post(
+        response_data = self._client.post(
             self._client.host(), 
             "/sms/json", 
             params, 
             supports_signature_auth=True,
             **Sms.defaults,
         )
+
+        if response_data['messages'][0]['status'] != '0':
+            print(f'Sms.send_message method failed with error: {response_data["messages"][0]["error-text"]}')
+        return response_data
     
     def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
         """

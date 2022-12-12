@@ -31,19 +31,18 @@ class Sms:
         return response_data
 
     def check_for_partial_failure(self, response_data):
-        total_messages = int(response_data['message-count'])
         successful_messages = 0
+        total_messages = int(response_data['message-count'])
+        
         for message in response_data['messages']:
-            if int(message['status']) == 0:
+            if message['status'] == '0':
                 successful_messages += 1
-        if successful_messages == 0:
-            raise SmsError(f'Sms.send_message method failed with error: {response_data["messages"][0]["error-text"]}')
-        elif successful_messages < total_messages: 
-            raise PartialFailureError(f'Sms.send_message method partially failed. Not all of the message sent successfully.')
+        if successful_messages < total_messages: 
+            raise PartialFailureError('Sms.send_message method partially failed. Not all of the message sent successfully.')
 
     def check_for_failure(self, response_data):
         if int(response_data['messages'][0]['status']) != 0:
-                raise SmsError(f'Sms.send_message method failed with error: {response_data["messages"][0]["error-text"]}')
+                raise SmsError(f'Sms.send_message method failed with error code {response_data["messages"][0]["status"]}: {response_data["messages"][0]["error-text"]}')
     
     def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
         """

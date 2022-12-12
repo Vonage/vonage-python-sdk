@@ -107,14 +107,14 @@ def test_start_verification_blacklisted_error_with_network_and_request_id(client
     error_msg = "{'request_id': '12345678', 'status': '7', 'error_text': 'The number you are trying to verify is blacklisted for verification', 'network': '25503'}"
     
     with pytest.raises(VerifyError, match=error_msg):
-        client.verify.start_verification(params)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "number=447525856424" in request_body()
-    assert "brand=MyApp" in request_body()
-    assert response["status"] == "7"
-    assert response["network"] == "25503"
-    assert response["request_id"] == "12345678"
-    assert response["error_text"] == "The number you are trying to verify is blacklisted for verification"
+        response = client.verify.start_verification(params)
+        assert request_user_agent() == dummy_data.user_agent
+        assert "number=447525856424" in request_body()
+        assert "brand=MyApp" in request_body()
+        assert response["status"] == "7"
+        assert response["network"] == "25503"
+        assert response["request_id"] == "12345678"
+        assert response["error_text"] == "The number you are trying to verify is blacklisted for verification"
 
 @responses.activate
 def test_start_psd2_verification_blacklisted_error_with_network(client, dummy_data):

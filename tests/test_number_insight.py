@@ -81,6 +81,17 @@ def test_get_async_advanced_number_insight(number_insight, dummy_data):
     assert "number=447525856424" in request_query()
     assert "callback=https%3A%2F%2Fexample.com" in request_query()
 
+
+@responses.activate
+def test_get_async_advanced_number_insight_error(number_insight):
+    stub(responses.GET, "https://api.nexmo.com/ni/advanced/async/json",
+        fixture_path='number_insight/get_async_error.json')
+
+    with pytest.raises(NumberInsightError) as err:
+        number_insight.get_async_advanced_number_insight(number='1234', callback='https://example.com')
+        assert str(err.value) == 'Number Insight API method failed with status: 3 and error: Invalid request :: Not valid number format detected [ 1234 ]'
+
+
 def test_callback_required_error_async_advanced_number_insight(number_insight, dummy_data):
     stub(responses.GET, "https://api.nexmo.com/ni/advanced/async/json")
 

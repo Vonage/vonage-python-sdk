@@ -41,8 +41,9 @@ class Sms:
             raise PartialFailureError('Sms.send_message method partially failed. Not all of the message sent successfully.')
 
     def check_for_failure(self, response_data):
-        if int(response_data['messages'][0]['status']) != 0:
-                raise SmsError(f'Sms.send_message method failed with error code {response_data["messages"][0]["status"]}: {response_data["messages"][0]["error-text"]}')
+        message = response_data['messages'][0]
+        if int(message['status']) != 0:
+                raise SmsError(f'Sms.send_message method failed with error code {message["status"]}: {message["error-text"]}')
     
     def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
         """

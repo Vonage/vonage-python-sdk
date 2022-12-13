@@ -1,0 +1,28 @@
+{
+    "request_id": "xxx",
+    "account_id": "abcdef01",
+    "status": "IN PROGRESS",
+    "number": "447700900000",
+    "price": "0.10000000",
+    "currency": "EUR",
+    "sender_id": "mySenderId",
+    "date_submitted": "2020-01-01 12:00:00",
+    "date_finalized": "2020-01-01 12:00:00",
+    "first_event_date": "2020-01-01 12:00:00",
+    "last_event_date": "2020-01-01 12:00:00",
+    "checks": [
+      {
+        "date_received": "2020-01-01 12:00:00",
+        "code": "987654",
+        "status": "abc123",
+        "ip_address": "123.0.0.255"
+      }
+    ],
+    "events": [
+      {
+        "type": "abc123",
+        "id": "abc123"
+      }
+    ],
+    "estimated_price_messages_sent": "0.03330000"
+}

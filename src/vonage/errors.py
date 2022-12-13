@@ -58,8 +58,12 @@ class TokenExpiryError(Error):
 
 class InvalidOptionsError(Error):
     """The option(s) that were specified are invalid."""
-    """An authentication method was specified that is not allowed"""
+    """An authentication method was specified that is not allowed."""
 
 
 class VerifyError(Error):
-    """Error related to the Verify API"""
+    """Error related to the Verify API."""
+
+
+class BlockedNumberError(Error):
+    """The number you are trying to verify is blocked for verification."""

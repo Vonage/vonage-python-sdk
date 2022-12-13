@@ -26,7 +26,7 @@ class Sms:
         if int(response_data['message-count']) > 1:
             self.check_for_partial_failure(response_data)
         else:
-            self.check_for_failure(response_data)
+            self.check_for_error(response_data)
 
         return response_data
 
@@ -40,7 +40,7 @@ class Sms:
         if successful_messages < total_messages: 
             raise PartialFailureError('Sms.send_message method partially failed. Not all of the message sent successfully.')
 
-    def check_for_failure(self, response_data):
+    def check_for_error(self, response_data):
         message = response_data['messages'][0]
         if int(message['status']) != 0:
                 raise SmsError(f'Sms.send_message method failed with error code {message["status"]}: {message["error-text"]}')

@@ -67,3 +67,7 @@ class VerifyError(Error):
 
 class BlockedNumberError(Error):
     """The number you are trying to verify is blocked for verification."""
+
+
+class NumberInsightError(Error):
+    """Error related to the Number Insight API."""

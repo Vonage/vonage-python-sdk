@@ -162,7 +162,7 @@ def test_start_verification_blacklisted_error_with_network_and_request_id(client
 @responses.activate
 def test_start_psd2_verification(verify, dummy_data):
     stub(responses.POST, "https://api.nexmo.com/verify/psd2/json",
-        fixture_path='verify/psd2_verification.json')
+        fixture_path='verify/start_verification.json')
 
     params = {"number": "447525856424", "brand": "MyApp"}
 
@@ -175,14 +175,13 @@ def test_start_psd2_verification(verify, dummy_data):
 @responses.activate
 def test_start_psd2_verification_error(verify, dummy_data):
     stub(responses.POST, "https://api.nexmo.com/verify/psd2/json",
-        fixture_path='verify/psd2_verification_error.json')
+        fixture_path='verify/start_verification_error.json')
 
-    params = {"number": "447525856424", "brand": "MyApp"}
+    params = {"brand": "MyApp"}
 
-    assert isinstance(verify.psd2(params), dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "number=447525856424" in request_body()
-    assert "brand=MyApp" in request_body()
+    with pytest.raises(VerifyError) as err:
+        verify.psd2(params)
+        assert str(err.value) == 'Verify API method failed with status: 2 and error: Your request is incomplete and missing the mandatory parameter `number`'
 
 
 @responses.activate
@@ -192,13 +191,7 @@ def test_start_psd2_verification_blacklisted_error_with_network_and_request_id(c
     )
 
     params = {"number": "447525856424", "brand": "MyApp"}
-    response = client.verify.psd2(params)
-
-    assert isinstance(response, dict)
-    assert request_user_agent() == dummy_data.user_agent
-    assert "number=447525856424" in request_body()
-    assert "brand=MyApp" in request_body()
-    assert response["status"] == "7"
-    assert response["network"] == "25503"
-    assert response["request_id"] == "12345678"
-    assert response["error_text"] == "The number you are trying to verify is blacklisted for verification"
+    
+    with pytest.raises(BlockedNumberError) as err:
+        client.verify.psd2(params)
+        assert str(err.value) == 'Error code 7: The number you are trying to verify is blocked for verification.'

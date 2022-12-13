@@ -30,14 +30,14 @@ class Verify:
         self.check_for_error(response)
         return response
 
-    def search(self, request_id=None, request_ids=None):
-        if request_id:
+    def search(self, request=None):
+        if type(request) == str:
             response = self._client.get(
-                self._client.api_host(), "/verify/search/json", {"request_id": request_id}, auth_type=Verify.auth_type
+                self._client.api_host(), "/verify/search/json", {"request_id": request}, auth_type=Verify.auth_type
             )
-        elif request_ids:
+        elif type(request) == list:
             response = self._client.get(
-                self._client.api_host(), "/verify/search/json", {"request_ids": request_ids}, auth_type=Verify.auth_type
+                self._client.api_host(), "/verify/search/json", {"request_ids": request}, auth_type=Verify.auth_type
             )
         else:
             raise VerifyError('At least one request ID must be provided.')

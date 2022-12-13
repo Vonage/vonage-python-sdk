@@ -67,7 +67,7 @@ def test_search_for_verification_multiple(verify, dummy_data):
     stub(responses.GET, "https://api.nexmo.com/verify/search/json",
         fixture_path="verify/search_verification.json")
 
-    response = verify.search(request_ids=['xxx', 'yyy'])
+    response = verify.search(request=['xxx', 'yyy'])
     assert isinstance(response, dict)
     assert response['status'] == 'IN PROGRESS'
     assert request_user_agent() == dummy_data.user_agent

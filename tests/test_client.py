@@ -33,3 +33,9 @@ def test_timeout_is_set_on_client_calls(dummy_data):
 
     assert len(responses.calls) == 1
     assert responses.calls[0].request.req_kwargs["timeout"] == 1
+
+
+def test_setting_video_api_host(client):
+    assert client._video_host == 'video.api.vonage.com'
+    client.video_host('new.video.url')
+    assert client._video_host == 'new.video.url'

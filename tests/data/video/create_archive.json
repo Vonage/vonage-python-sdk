@@ -1,0 +1,17 @@
+{
+    "createdAt" : 1384221730555,
+    "duration" : 0,
+    "hasAudio" : true,
+    "hasVideo" : true,
+    "id" : "b40ef09b-3811-4726-b508-e41a0f96c68f",
+    "name" : "my_new_archive",
+    "outputMode" : "composed",
+    "projectId" : 234567,
+    "reason" : "",
+    "resolution" : "640x480",
+    "sessionId" : "my_session_id",
+    "size" : 0,
+    "status" : "started",
+    "streamMode" : "auto",
+    "url" : null
+}

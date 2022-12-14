@@ -41,6 +41,7 @@ class PricingTypeError(Error):
 
 
 class RedactError(Error):
+
     """Error related to the Redact class or Redact API."""
 
 

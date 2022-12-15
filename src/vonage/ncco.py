@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, constr, HttpUrl, validator, conset
-from typing import Optional
+from typing import Optional, List
 from enum import Enum
 import json
 
@@ -39,7 +39,7 @@ class Ncco:  # Used for namespacing reasons
 
         action = Field('notify', const=True)
         payload: dict
-        eventUrl: list[HttpUrl]
+        eventUrl: List[HttpUrl]
         eventMethod: Optional[HttpRequestEnum]
 
         # @validator('eventMethod')

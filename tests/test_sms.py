@@ -1,10 +1,12 @@
 import vonage
 from util import *
+from vonage.errors import SmsError, PartialFailureError
 
 
 @responses.activate
 def test_send_message(sms, dummy_data):
-    stub(responses.POST, "https://rest.nexmo.com/sms/json")
+    stub(responses.POST, "https://rest.nexmo.com/sms/json",
+        fixture_path='sms/send_message.json')
 
     params = {"from": "Python", "to": "447525856424", "text": "Hey!"}
 
@@ -13,6 +15,56 @@ def test_send_message(sms, dummy_data):
     assert "from=Python" in request_body()
     assert "to=447525856424" in request_body()
     assert "text=Hey%21" in request_body()
+
+
+@responses.activate
+def test_send_message_200_error(sms, dummy_data):
+    stub(responses.POST, "https://rest.nexmo.com/sms/json",
+        fixture_path='sms/send_message_200_error.json')
+
+    params = {"from": "Python", "text": "Hey!"}
+
+    with pytest.raises(SmsError) as err:
+        assert isinstance(sms.send_message(params), dict)
+        assert str(err.value) == 'Sms.send_message method failed with error code 2: Missing to param'
+
+    assert request_user_agent() == dummy_data.user_agent
+    assert "from=Python" in request_body()
+    assert "text=Hey%21" in request_body()
+
+
+@responses.activate
+def test_send_long_message(sms, dummy_data):
+    stub(responses.POST, "https://rest.nexmo.com/sms/json",
+        fixture_path='sms/send_long_message.json')
+
+    with open('tests/data/sms/long_message.txt', 'r') as reader:
+        long_message = reader.read()
+
+    params = {"from": "Python", "to": "447525856424", "text": long_message}
+    response_data = sms.send_message(params)
+
+    assert isinstance(response_data, dict)
+    assert response_data['message-count'] == '2'
+    assert request_user_agent() == dummy_data.user_agent
+    assert "from=Python" in request_body()
+    assert "to=447525856424" in request_body()
+    assert f"text={long_message.replace(' ', '+').replace(',', '%2C')}" in request_body() # Check for encoding
+
+
+@responses.activate
+def test_send_long_message_partial_error(sms, dummy_data):
+    stub(responses.POST, "https://rest.nexmo.com/sms/json",
+        fixture_path='sms/send_long_message_partial_error.json')
+
+    with open('tests/data/sms/long_message.txt', 'r') as reader:
+        long_message = reader.read()
+
+    params = {"from": "Python", "to": "447525856424", "text": long_message}
+    
+    with pytest.raises(PartialFailureError) as err:
+        assert isinstance(sms.send_message(params), dict)
+        assert str(err.value) == 'Sms.send_message method partially failed. Not all of the message sent successfully.'
 
 
 @responses.activate

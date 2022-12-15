@@ -1,0 +1,8 @@
+{
+    "request_id": "abcdef0123456789abcdef0123456789",
+    "event_id": "0A00000012345678",
+    "status": "0",
+    "price": "0.10000000",
+    "currency": "EUR",
+    "estimated_price_messages_sent": "0.03330000"
+}

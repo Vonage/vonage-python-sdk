@@ -1,20 +1,13 @@
-from pydantic import BaseModel, Field, constr, HttpUrl, validator, conset
-from typing import Optional, List
+from pydantic import BaseModel, Field, HttpUrl, validator, constr, confloat
+from typing import Optional, List, Union
 from enum import Enum
+from collections import OrderedDict
 import json
-
-
-class HttpRequestEnum(str, Enum):
-    get = 'GET'
-    post = 'POST'
-    put = 'PUT'
-    update = 'UPDATE'
-    delete = 'DELETE'
 
 
 class Ncco:  # Used for namespacing reasons
     class Action(BaseModel):
-        pass
+        ...
 
     class Record(Action):
         ...
@@ -26,7 +19,16 @@ class Ncco:  # Used for namespacing reasons
         ...
 
     class Talk(Action):
-        ...
+        """The talk action sends synthesized speech to a Conversation."""
+
+        action = Field('talk', const=True)
+        text = constr(max_length=1500)
+        bargeIn: Optional[bool]
+        loop: Optional[int]
+        level: Optional[confloat(ge=-1, le=1)]
+        language: Optional[str]
+        style: Optional[int]
+        premium: Optional[bool]
 
     class Stream(Action):
         ...
@@ -39,14 +41,15 @@ class Ncco:  # Used for namespacing reasons
 
         action = Field('notify', const=True)
         payload: dict
-        eventUrl: List[HttpUrl]
-        eventMethod: Optional[HttpRequestEnum]
+        eventUrl: Union[List[HttpUrl], HttpUrl]
+        eventMethod: Optional[constr(to_upper=True)]
 
-        # @validator('eventMethod')
-        # def check_valid_eventMethod(cls, v):
-        #     if v != 'POST' or v != 'PUT':
-        #         raise ValueError('Invalid eventMethod specified. Must be POST or PUT.')
-        #     return v
+        @validator('eventUrl')
+        def check_url_in_list(cls, v):
+            if type(v) != list:
+                return [v]
+            else:
+                return v
 
     class Pay(Action):
         ...
@@ -55,8 +58,10 @@ class Ncco:  # Used for namespacing reasons
     def build_ncco(*args: Action):
         ncco = []
         for action in args:
-            ncco.append(action.dict())
-        print(f'ncco is this: {ncco}')
+            ordered_action = OrderedDict(action.dict(exclude_none=True))
+            ordered_action.move_to_end('action', last=False)
+            ncco.append(ordered_action)
+        print(f'ordered_ncco is this: {ncco}')
         print(f'json representation is this: {json.dumps(ncco)}')
         return json.dumps(ncco)
 

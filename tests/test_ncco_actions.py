@@ -138,6 +138,10 @@ def test_connect_all_endpoints_from_model():
     assert json.dumps(_action_as_dict(connect_app)) == nas.connect_app
 
 
+def test_connect_validator_errors():
+    assert False
+
+
 def test_connect_error():
     assert False
 

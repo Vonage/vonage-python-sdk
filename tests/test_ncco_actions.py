@@ -1,4 +1,4 @@
-from vonage import Ncco
+from vonage import Ncco, ConnectEndpoints
 import data.ncco.ncco_action_samples as nas
 
 import json
@@ -78,10 +78,68 @@ def test_conversation_incompatible_options_error():
     str(err.value) == 'Cannot use mute option if canSpeak option is specified.+'
 
 
-def test_connect_endpoint():
-    connect = Ncco.Connect(from_='447000000000')
-    print(connect.dict(exclude_none=False))
-    connect = Ncco.Connect(endpoint={'phone'})
+def test_connect_phone_endpoint_from_dict():
+    connect = Ncco.Connect(
+        endpoint={
+            "type": "phone",
+            "number": "447000000000",
+            "dtmfAnswer": "1p2p3p#**903#",
+            "onAnswer": {"url": "https://example.com/answer", "ringbackTone": "http://example.com/ringbackTone.wav"},
+        }
+    )
+    assert type(connect) is Ncco.Connect
+    assert json.dumps(_action_as_dict(connect)) == nas.connect_phone
+
+
+def test_connect_options():
+    endpoint = ConnectEndpoints.PhoneEndpoint(number='447000000000')
+    connect = Ncco.Connect(
+        endpoint=endpoint,
+        from_='447400000000',
+        randomFromNumber=False,
+        eventType='synchronous',
+        timeout=15,
+        limit=1000,
+        machineDetection='hangup',
+        eventUrl='http://example.com',
+        eventMethod='PUT',
+        ringbackTone='http://example.com',
+    )
+    assert json.dumps(_action_as_dict(connect)) == nas.connect_full
+
+
+def test_connect_all_endpoints_from_model():
+    phone = ConnectEndpoints.PhoneEndpoint(
+        number='447000000000',
+        dtmfAnswer='1p2p3p#**903#',
+        onAnswer={"url": "https://example.com/answer", "ringbackTone": "http://example.com/ringbackTone.wav"},
+    )
+    connect_phone = Ncco.Connect(endpoint=phone)
+    assert json.dumps(_action_as_dict(connect_phone)) == nas.connect_phone
+
+    app = ConnectEndpoints.AppEndpoint(user='test_user')
+    connect_app = Ncco.Connect(endpoint=app)
+    assert json.dumps(_action_as_dict(connect_app)) == nas.connect_app
+
+    websocket = ConnectEndpoints.WebsocketEndpoint(
+        uri='ws://example.com/socket', contentType='audio/l16;rate=8000', headers={"language": "en-GB"}
+    )
+    connect_websocket = Ncco.Connect(endpoint=websocket)
+    assert json.dumps(_action_as_dict(connect_websocket)) == nas.connect_websocket
+
+    sip = ConnectEndpoints.SipEndpoint(
+        uri='sip:rebekka@sip.mcrussell.com', headers={"location": "New York City", "occupation": "developer"}
+    )
+    connect_sip = Ncco.Connect(endpoint=sip)
+    assert json.dumps(_action_as_dict(connect_sip)) == nas.connect_sip
+
+    vbc = ConnectEndpoints.VbcEndpoint(extension='111')
+    connect_app = Ncco.Connect(endpoint=app)
+    assert json.dumps(_action_as_dict(connect_app)) == nas.connect_app
+
+
+def test_connect_error():
+    assert False
 
 
 def test_talk_basic():

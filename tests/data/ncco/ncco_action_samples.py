@@ -10,6 +10,20 @@ conversation_full = '{"action": "notify", "name": "my_conversation", "musicOnHol
 
 conversation_mute_option = '{"action": "notify", "name": "my_conversation", "mute": true}'
 
+connect_phone = '{"action": "connect", "endpoint": {"type": "phone", "number": "447000000000", "dtmfAnswer": "1p2p3p#**903#", "onAnswer": {"url": "https://example.com/answer", "ringbackTone": "http://example.com/ringbackTone.wav"}}}'
+
+connect_app = '{"action": "connect", "endpoint": {"type": "app", "user": "test_user"}}'
+
+connect_websocket = '{"action": "connect", "endpoint": {"type": "websocket", "uri": "ws://example.com/socket", "contentType": "audio/l16;rate=8000", "headers": {"language": "en-GB"}}}'
+
+connect_sip = '{"action": "connect", "endpoint": {"type": "sip", "uri": "sip:rebekka@sip.mcrussell.com", "headers": {"location": "New York City", "occupation": "developer"}}}'
+
+connect_vbc = ''
+
+connect_error = ''
+
+connect_full = '{"action": "connect", "endpoint": {"type": "phone", "number": "447000000000"}, "from": "447400000000", "randomFromNumber": false, "eventType": "synchronous", "timeout": 15, "limit": 1000, "machineDetection": "hangup", "eventUrl": ["http://example.com"], "eventMethod": "PUT", "ringbackTone": "http://example.com"}'
+
 talk_basic = '{"action": "talk", "text": "hello"}'
 
 talk_full = '{"action": "talk", "text": "hello", "bargeIn": true, "loop": 3, "level": 0.5, "language": "en-GB", "style": 1, "premium": true}'

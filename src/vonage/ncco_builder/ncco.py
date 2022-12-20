@@ -1,29 +1,9 @@
-from pydantic import BaseModel, ValidationError, HttpUrl, AnyUrl, Field, validator, constr, confloat, conint
+from pydantic import BaseModel, HttpUrl, AnyUrl, Field, validator, constr, confloat, conint
 from typing import Optional, Union, List
 from typing_extensions import Literal
 import json
 
-
-class ConnectEndpoints:
-    class Endpoint(BaseModel):
-        type: Field('endpoint', const=True)
-
-    class PhoneEndpoint(Endpoint):
-        type: Field('phone', const=True)
-        number: constr(regex=r'^[1-9]\d{6,14}$')
-        dtmfAnswer: Optional[constr(regex=asdf '^[0-9*#]$')]
-
-    class AppEndpoint(Endpoint):
-        ...
-
-    class WebsocketEndpoint(Endpoint):
-        ...
-
-    class SipEndpoint(Endpoint):
-        ...
-
-    class VbcEndpoint(Endpoint):
-        ...
+from .connect_endpoints import ConnectEndpoints
 
 
 class Ncco:
@@ -76,14 +56,14 @@ class Ncco:
         @validator('mute')
         def can_mute(cls, v, values):
             if 'canSpeak' in values and values['canSpeak'] is not None:
-                raise ValidationError('Cannot use mute option if canSpeak option is specified.')
+                raise ValueError('Cannot use mute option if canSpeak option is specified.')
             return v
 
     class Connect(Action):
         """You can use the connect action to connect a call to endpoints such as phone numbers or a VBC extension."""
-        
+
         action = Field('connect', const=True)
-        endpoint: ConnectEndpoints.Endpoint
+        endpoint: Union[dict, ConnectEndpoints.Endpoint]
         from_: Optional[constr(regex=r'^[1-9]\d{6,14}$')]
         randomFromNumber: Optional[bool]
         eventType: Optional[Literal['synchronous']]
@@ -94,21 +74,12 @@ class Ncco:
         eventMethod: Optional[constr(to_upper=True)]
         ringbackTone: Optional[HttpUrl]
 
-        # @validator('endpoint')
-        # def validate_endpoint(cls, v):
-        #     if v['type'] == 'phone':
-        #         Ncco.validate_phone()
-        #     elif v['type'] == 'app':
-        #         Ncco.validate_app()
-        #     elif v['type'] == 'websocket':
-        #         Ncco.validate_websocket()
-        #     elif v['type'] == 'sip':
-        #         Ncco.validate_sip()
-        #     elif v['type'] == 'vbc':
-        #         Ncco.validate_vbc()
-        #     else:
-        #         raise ValidationError('')
-        #     return v
+        @validator('endpoint')
+        def validate_endpoint(cls, v):
+            if type(v) is dict:
+                return ConnectEndpoints.create_endpoint_model_from_dict(v)
+            else:
+                return v
 
         @validator('from_')
         def set_from_field(cls, v, values):
@@ -116,13 +87,23 @@ class Ncco:
 
         @validator('randomFromNumber')
         def check_from_not_set(cls, v, values):
-            if v == True and values['from'] is not None:
-                raise ValidationError('Cannot set a "from" field and also the "randomFromNumber" = True option')
+            print('here')
+            print(v)
+            print(values)
+            if v is True and 'from' in values:
+                if values['from'] is not None:
+                    print('here!')
+                    raise ValueError(
+                        'Cannot set a "from" ("from_") field and also the "randomFromNumber" = True option'
+                    )
             return v
 
         @validator('eventUrl')
         def validate_url(cls, v):
             return Ncco._ensure_object_in_list(v)
+
+        class Config:
+            smart_union = True
 
     class Talk(Action):
         """The talk action sends synthesized speech to a Conversation."""

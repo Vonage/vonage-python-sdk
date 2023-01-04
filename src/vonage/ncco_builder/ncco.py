@@ -4,6 +4,7 @@ from typing_extensions import Literal
 import json
 
 from .connect_endpoints import ConnectEndpoints
+from .input_types import InputTypes
 
 
 class Ncco:
@@ -31,7 +32,7 @@ class Ncco:
             return v
 
         @validator('eventUrl')
-        def validate_url(cls, v):
+        def ensure_url_in_list(cls, v):
             return Ncco._ensure_object_in_list(v)
 
     class Conversation(Action):
@@ -50,7 +51,7 @@ class Ncco:
         mute: Optional[bool]
 
         @validator('musicOnHoldUrl')
-        def validate_url(cls, v):
+        def ensure_url_in_list(cls, v):
             return Ncco._ensure_object_in_list(v)
 
         @validator('mute')
@@ -63,7 +64,7 @@ class Ncco:
         """You can use the connect action to connect a call to endpoints such as phone numbers or a VBC extension."""
 
         action = Field('connect', const=True)
-        endpoint: Union[dict, ConnectEndpoints.Endpoint]
+        endpoint: Union[dict, ConnectEndpoints.Endpoint, List[dict]]
         from_: Optional[constr(regex=r'^[1-9]\d{6,14}$')]
         randomFromNumber: Optional[bool]
         eventType: Optional[Literal['synchronous']]
@@ -77,9 +78,11 @@ class Ncco:
         @validator('endpoint')
         def validate_endpoint(cls, v):
             if type(v) is dict:
-                return ConnectEndpoints.create_endpoint_model_from_dict(v)
+                return [ConnectEndpoints.create_endpoint_model_from_dict(v)]
+            elif type(v) is list:
+                return [ConnectEndpoints.create_endpoint_model_from_dict(v[0])]
             else:
-                return v
+                return [v]
 
         @validator('from_')
         def set_from_field(cls, v, values):
@@ -87,19 +90,15 @@ class Ncco:
 
         @validator('randomFromNumber')
         def check_from_not_set(cls, v, values):
-            print('here')
-            print(v)
-            print(values)
             if v is True and 'from' in values:
                 if values['from'] is not None:
-                    print('here!')
                     raise ValueError(
                         'Cannot set a "from" ("from_") field and also the "randomFromNumber" = True option'
                     )
             return v
 
         @validator('eventUrl')
-        def validate_url(cls, v):
+        def ensure_url_in_list(cls, v):
             return Ncco._ensure_object_in_list(v)
 
         class Config:
@@ -111,17 +110,58 @@ class Ncco:
         action = Field('talk', const=True)
         text: constr(max_length=1500)
         bargeIn: Optional[bool]
-        loop: Optional[int]
+        loop: Optional[conint(ge=0)]
         level: Optional[confloat(ge=-1, le=1)]
         language: Optional[str]
         style: Optional[int]
         premium: Optional[bool]
 
     class Stream(Action):
-        ...
+        """The stream action allows you to send an audio stream to a Conversation."""
+
+        action = Field('stream', const=True)
+        streamUrl: Union[List[AnyUrl], AnyUrl]
+        level: Optional[confloat(ge=-1, le=1)]
+        bargeIn: Optional[bool]
+        loop: Optional[conint(ge=0)]
+
+        @validator('streamUrl')
+        def ensure_url_in_list(cls, v):
+            return Ncco._ensure_object_in_list(v)
 
     class Input(Action):
-        ...
+        """Collect digits or speech input by the person you are are calling."""
+
+        action = Field('input', const=True)
+        type: Union[
+            Literal['dtmf', 'speech'], List[Literal['dtmf']], List[Literal['speech']], List[Literal['dtmf', 'speech']]
+        ]
+        dtmf: Optional[Union[InputTypes.Dtmf, dict]]
+        speech: Optional[Union[InputTypes.Speech, dict]]
+        eventUrl: Optional[Union[List[HttpUrl], HttpUrl]]
+        eventMethod: Optional[constr(to_upper=True)]
+
+        @validator('type')
+        def ensure_type_in_list(cls, v):
+            return Ncco._ensure_object_in_list(v)
+
+        @validator('dtmf')
+        def ensure_input_object_is_dtmf_model(cls, v):
+            if type(v) is dict:
+                return InputTypes.create_dtmf_model(v)
+            else:
+                return v
+
+        @validator('speech')
+        def ensure_input_object_is_speech_model(cls, v):
+            if type(v) is dict:
+                return InputTypes.create_speech_model(v)
+            else:
+                return v
+
+        @validator('eventUrl')
+        def ensure_url_in_list(cls, v):
+            return Ncco._ensure_object_in_list(v)
 
     class Notify(Action):
         """Use the notify action to send a custom payload to your event URL."""
@@ -132,7 +172,7 @@ class Ncco:
         eventMethod: Optional[constr(to_upper=True)]
 
         @validator('eventUrl')
-        def check_url_in_list(cls, v):
+        def ensure_url_in_list(cls, v):
             return Ncco._ensure_object_in_list(v)
 
     class Pay(Action):
@@ -153,31 +193,3 @@ class Ncco:
             return [obj]
         else:
             return obj
-
-
-class Message(BaseModel):
-    to: constr(min_length=7, max_length=15)
-    sender: constr(min_length=1)
-    client_ref: Optional[str]
-
-
-class SmsMessage(Message):
-    channel = Field(default='sms', const=True)
-    message_type = Field(default='text', const=True)
-    text: constr(max_length=1000)
-
-
-def send_message_from_model(self, message: Message):
-    params = message.dict()
-    params['from'] = params.pop('sender')
-
-    print('params = ', params)
-
-    if self._client.jwt is None:
-        self._auth_type = 'header'
-    return self._client.post(
-        self._client.api_host(),
-        "/v1/messages",
-        params,
-        auth_type=self._auth_type,
-    )

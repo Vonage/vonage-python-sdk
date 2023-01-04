@@ -1,4 +1,4 @@
-from pydantic import BaseModel, HttpUrl, AnyUrl, Field, validator, constr
+from pydantic import BaseModel, HttpUrl, AnyUrl, Field, constr
 from typing import Optional, Dict
 from typing_extensions import Literal
 
@@ -12,16 +12,6 @@ class ConnectEndpoints:
         number: constr(regex=r'^[1-9]\d{6,14}$')
         dtmfAnswer: Optional[constr(regex='^[0-9*#p]+$')]
         onAnswer: Optional[Dict[str, HttpUrl]]
-
-        @validator('onAnswer')
-        def validate_on_answer(cls, v):
-            print(type(v['url']))
-            if type(v['url']) is HttpUrl:
-                if v['ringbackTone'] and type(v['ringbackTone']) is not HttpUrl:
-                    raise ValueError('Must specify a valid HTTP URL for "ringbackTone" if included.')
-                return v
-            else:
-                raise ValueError('Must specify a valid HTTP URL for the "url" field.')
 
     class AppEndpoint(Endpoint):
         type = Field('app', const=True)
@@ -55,4 +45,6 @@ class ConnectEndpoints:
         elif d['type'] == 'vbc':
             return cls.WebsocketEndpoint.parse_obj(d)
         else:
-            raise ValueError('Invalid "type" specified. Cannot create a ConnectEndpoints.Endpoint model.')
+            raise ValueError(
+                'Invalid "type" specified for endpoint object. Cannot create a ConnectEndpoints.Endpoint model.'
+            )

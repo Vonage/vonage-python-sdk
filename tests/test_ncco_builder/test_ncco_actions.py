@@ -1,5 +1,5 @@
 from vonage import Ncco, ConnectEndpoints
-import data.ncco.ncco_action_samples as nas
+import ncco_samples.ncco_action_samples as nas
 
 import json
 import pytest
@@ -91,6 +91,23 @@ def test_connect_phone_endpoint_from_dict():
     assert json.dumps(_action_as_dict(connect)) == nas.connect_phone
 
 
+def test_connect_phone_endpoint_from_list():
+    connect = Ncco.Connect(
+        endpoint=[
+            {
+                "type": "phone",
+                "number": "447000000000",
+                "dtmfAnswer": "1p2p3p#**903#",
+                "onAnswer": {
+                    "url": "https://example.com/answer",
+                    "ringbackTone": "http://example.com/ringbackTone.wav",
+                },
+            }
+        ]
+    )
+    assert json.dumps(_action_as_dict(connect)) == nas.connect_phone
+
+
 def test_connect_options():
     endpoint = ConnectEndpoints.PhoneEndpoint(number='447000000000')
     connect = Ncco.Connect(
@@ -134,16 +151,46 @@ def test_connect_all_endpoints_from_model():
     assert json.dumps(_action_as_dict(connect_sip)) == nas.connect_sip
 
     vbc = ConnectEndpoints.VbcEndpoint(extension='111')
-    connect_app = Ncco.Connect(endpoint=app)
-    assert json.dumps(_action_as_dict(connect_app)) == nas.connect_app
+    connect_vbc = Ncco.Connect(endpoint=vbc)
+    assert json.dumps(_action_as_dict(connect_vbc)) == nas.connect_vbc
 
 
-def test_connect_validator_errors():
-    assert False
+def test_connect_endpoints_errors():
+    with pytest.raises(ValidationError) as err:
+        ConnectEndpoints.PhoneEndpoint(number='447000000000', onAnswer={'url': 'not-a-valid-url'})
+
+    with pytest.raises(ValidationError) as err:
+        ConnectEndpoints.PhoneEndpoint(
+            number='447000000000',
+            onAnswer={'url': 'http://example.com/answer', 'ringbackTone': 'not-a-valid-url'},
+        )
+
+    with pytest.raises(ValueError) as err:
+        ConnectEndpoints.create_endpoint_model_from_dict({'type': 'carrier_pigeon'})
+    assert (
+        str(err.value)
+        == 'Invalid "type" specified for endpoint object. Cannot create a ConnectEndpoints.Endpoint model.'
+    )
 
 
-def test_connect_error():
-    assert False
+def test_connect_random_from_number_error():
+    endpoint = ConnectEndpoints.PhoneEndpoint(number='447000000000')
+    with pytest.raises(ValueError) as err:
+        Ncco.Connect(endpoint=endpoint, from_='447400000000', randomFromNumber=True)
+
+    assert 'Cannot set a "from" ("from_") field and also the "randomFromNumber" = True option' in str(err.value)
+
+
+def test_connect_validation_errors():
+    endpoint = ConnectEndpoints.PhoneEndpoint(number='447000000000')
+    with pytest.raises(ValidationError):
+        Ncco.Connect(endpoint=endpoint, from_=1234)
+    with pytest.raises(ValidationError):
+        Ncco.Connect(endpoint=endpoint, eventType='asynchronous')
+    with pytest.raises(ValidationError):
+        Ncco.Connect(endpoint=endpoint, limit=7201)
+    with pytest.raises(ValidationError):
+        Ncco.Connect(endpoint=endpoint, machineDetection='do_nothing')
 
 
 def test_talk_basic():
@@ -160,6 +207,37 @@ def test_talk_optional_params():
 def test_talk_validation_error():
     with pytest.raises(ValidationError):
         Ncco.Talk(text='hello', bargeIn='go ahead')
+
+
+def test_stream_basic():
+    stream = Ncco.Stream(streamUrl='https://example.com/stream/music.mp3')
+    assert type(stream) == Ncco.Stream
+    assert json.dumps(_action_as_dict(stream)) == nas.stream_basic
+
+
+def test_stream_full():
+    stream = Ncco.Stream(streamUrl='https://example.com/stream/music.mp3', level=0.1, bargeIn=True, loop=10)
+    assert json.dumps(_action_as_dict(stream)) == nas.stream_full
+
+
+def test_stream_error():
+    with pytest.raises(ValidationError):
+        Ncco.Stream(streamUrl='not_a_url')
+
+
+def test_input_basic():
+    input = Ncco.Input(type='dtmf')
+    assert type(input) == Ncco.Input
+    assert json.dumps(_action_as_dict(input)) == nas.input_basic_dtmf
+
+
+def test_input_basic_list():
+    input = Ncco.Input(type=['dtmf', 'speech'])
+    assert json.dumps(_action_as_dict(input)) == nas.input_basic_dtmf_speech
+
+
+def test_input_dtmf_options():
+    ...
 
 
 def test_notify_basic():

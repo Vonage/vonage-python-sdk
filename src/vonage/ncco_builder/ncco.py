@@ -5,6 +5,7 @@ import json
 
 from .connect_endpoints import ConnectEndpoints
 from .input_types import InputTypes
+from .pay_prompts import PayPrompts
 
 
 class Ncco:
@@ -141,8 +142,8 @@ class Ncco:
         eventUrl: Optional[Union[List[HttpUrl], HttpUrl]]
         eventMethod: Optional[constr(to_upper=True)]
 
-        @validator('type')
-        def ensure_type_in_list(cls, v):
+        @validator('type', 'eventUrl')
+        def ensure_value_in_list(cls, v):
             return Ncco._ensure_object_in_list(v)
 
         @validator('dtmf')
@@ -159,10 +160,6 @@ class Ncco:
             else:
                 return v
 
-        @validator('eventUrl')
-        def ensure_url_in_list(cls, v):
-            return Ncco._ensure_object_in_list(v)
-
     class Notify(Action):
         """Use the notify action to send a custom payload to your event URL."""
 
@@ -176,7 +173,36 @@ class Ncco:
             return Ncco._ensure_object_in_list(v)
 
     class Pay(Action):
-        ...
+        """The pay action collects credit card information with DTMF input in a secure (PCI-DSS compliant) way."""
+
+        action = Field('pay', const=True)
+        amount: confloat(ge=0)
+        currency: Optional[constr(to_lower=True)]
+        eventUrl: Union[List[HttpUrl], HttpUrl]
+        prompts: Optional[Union[PayPrompts.TextSettings, dict]]
+        voice: Optional[Union[PayPrompts.VoiceSettings, dict]]
+
+        @validator('amount')
+        def round_amount(cls, v):
+            return round(v, 2)
+
+        @validator('eventUrl')
+        def ensure_url_in_list(cls, v):
+            return Ncco._ensure_object_in_list(v)
+
+        @validator('prompts')
+        def ensure_model(cls, v):
+            if type(v) is dict:
+                return PayPrompts.create_text_model(v)
+            else:
+                return v
+
+        @validator('voice')
+        def ensure_model(cls, v):
+            if type(v) is dict:
+                return PayPrompts.create_voice_model(v)
+            else:
+                return v
 
     @staticmethod
     def build_ncco(*args: Action):

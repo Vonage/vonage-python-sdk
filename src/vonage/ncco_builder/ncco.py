@@ -191,14 +191,14 @@ class Ncco:
             return Ncco._ensure_object_in_list(v)
 
         @validator('prompts')
-        def ensure_model(cls, v):
+        def ensure_text_model(cls, v):
             if type(v) is dict:
                 return PayPrompts.create_text_model(v)
             else:
                 return v
 
         @validator('voice')
-        def ensure_model(cls, v):
+        def ensure_voice_model(cls, v):
             if type(v) is dict:
                 return PayPrompts.create_voice_model(v)
             else:

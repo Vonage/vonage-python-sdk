@@ -1,4 +1,4 @@
-from vonage import Ncco, ConnectEndpoints, InputTypes
+from vonage import Ncco, ConnectEndpoints, InputTypes, PayPrompts
 import ncco_samples.ncco_action_samples as nas
 
 import json
@@ -211,26 +211,41 @@ def test_input_validation_error():
 
 
 def test_notify_basic():
-    notify = Ncco.Notify(payload={"message": "hello"}, eventUrl=["http://example.com"])
+    notify = Ncco.Notify(payload={'message': 'hello'}, eventUrl=['http://example.com'])
     assert type(notify) == Ncco.Notify
     assert json.dumps(_action_as_dict(notify)) == nas.notify_basic
 
 
 def test_notify_basic_str_in_event_url():
-    notify = Ncco.Notify(payload={"message": "hello"}, eventUrl="http://example.com")
+    notify = Ncco.Notify(payload={'message': 'hello'}, eventUrl='http://example.com')
     assert type(notify) == Ncco.Notify
     assert json.dumps(_action_as_dict(notify)) == nas.notify_basic
 
 
 def test_notify_full():
-    notify = Ncco.Notify(payload={"message": "hello"}, eventUrl=["http://example.com"], eventMethod='POST')
+    notify = Ncco.Notify(payload={'message': 'hello'}, eventUrl=['http://example.com'], eventMethod='POST')
     assert type(notify) == Ncco.Notify
     assert json.dumps(_action_as_dict(notify)) == nas.notify_full
 
 
 def test_notify_validation_error():
     with pytest.raises(ValidationError):
-        Ncco.Notify(payload={"message": "hello"}, eventUrl=["not-a-valid-url"])
+        Ncco.Notify(payload={'message': 'hello'}, eventUrl=["not-a-valid-url"])
+
+
+def test_pay_voice_basic():
+    pay = Ncco.Pay(amount='10.00')
+    assert type(pay) == Ncco.Pay
+    assert json.dumps(_action_as_dict(pay)) == nas.pay_basic
+
+
+def test_pay_voice_full():
+    voice_settings = PayPrompts.VoiceSettings(language='en-GB', style=1)
+    pay = Ncco.Pay(amount=99.99, currency='gbp', eventUrl='https://example.com/payment', voice=voice_settings)
+    assert json.dumps(_action_as_dict(pay)) == nas.pay_voice_full
+
+
+########################################
 
 
 def test_build_ncco_from_notify_actions():

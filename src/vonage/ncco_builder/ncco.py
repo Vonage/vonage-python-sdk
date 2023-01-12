@@ -178,7 +178,7 @@ class Ncco:
         action = Field('pay', const=True)
         amount: confloat(ge=0)
         currency: Optional[constr(to_lower=True)]
-        eventUrl: Union[List[HttpUrl], HttpUrl]
+        eventUrl: Optional[Union[List[HttpUrl], HttpUrl]]
         prompts: Optional[Union[PayPrompts.TextSettings, dict]]
         voice: Optional[Union[PayPrompts.VoiceSettings, dict]]
 

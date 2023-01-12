@@ -42,4 +42,8 @@ notify_full = (
     '{"action": "notify", "payload": {"message": "hello"}, "eventUrl": ["http://example.com"], "eventMethod": "POST"}'
 )
 
+pay_basic = '{"action": "pay", "amount": 10.0}'
+
+pay_voice_full = '{"action": "pay", "amount": 99.99, "currency": "gbp", "eventUrl": ["https://example.com/payment"], "voice": {"language": "en-GB", "style": 1}}'
+
 two_notify_ncco = '[{"action": "notify", "payload": {"message": "hello"}, "eventUrl": ["http://example.com"]}, {"action": "notify", "payload": {"message": "world"}, "eventUrl": ["http://example.com"], "eventMethod": "PUT"}]'

@@ -240,9 +240,23 @@ def test_pay_voice_basic():
 
 
 def test_pay_voice_full():
-    voice_settings = PayPrompts.VoiceSettings(language='en-GB', style=1)
+    voice_settings = PayPrompts.VoicePrompt(language='en-GB', style=1)
     pay = Ncco.Pay(amount=99.99, currency='gbp', eventUrl='https://example.com/payment', voice=voice_settings)
     assert json.dumps(_action_as_dict(pay)) == nas.pay_voice_full
+
+
+def test_pay_text_basic():
+    text_prompts = PayPrompts.TextPrompt(
+        type='CardNumber',
+        text='Enter your card number.',
+        errors={'InvalidCardType': {'text': 'The card you are trying to use is not valid for this purchase.'}},
+    )
+    pay = Ncco.Pay(amount=12.345, prompts=text_prompts)
+    assert json.dumps(_action_as_dict(pay)) == nas.pay_text_basic
+
+
+def test_pay_validation_error():
+    assert 0
 
 
 ########################################

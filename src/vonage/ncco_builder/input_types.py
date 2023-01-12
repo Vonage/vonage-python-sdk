@@ -18,9 +18,9 @@ class InputTypes:
         saveAudio: Optional[bool]
 
     @classmethod
-    def create_dtmf_model(cls, dict):
+    def create_dtmf_model(cls, dict) -> Dtmf:
         return cls.Dtmf.parse_obj(dict)
 
     @classmethod
-    def create_speech_model(cls, dict):
+    def create_speech_model(cls, dict) -> Speech:
         return cls.Speech.parse_obj(dict)

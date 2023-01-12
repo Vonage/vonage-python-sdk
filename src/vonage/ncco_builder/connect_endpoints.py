@@ -33,7 +33,7 @@ class ConnectEndpoints:
         extension: str
 
     @classmethod
-    def create_endpoint_model_from_dict(cls, d):
+    def create_endpoint_model_from_dict(cls, d) -> Endpoint:
         if d['type'] == 'phone':
             return cls.PhoneEndpoint.parse_obj(d)
         elif d['type'] == 'app':

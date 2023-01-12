@@ -46,4 +46,6 @@ pay_basic = '{"action": "pay", "amount": 10.0}'
 
 pay_voice_full = '{"action": "pay", "amount": 99.99, "currency": "gbp", "eventUrl": ["https://example.com/payment"], "voice": {"language": "en-GB", "style": 1}}'
 
+pay_text_basic = '{"action": "pay", "amount": 12.35, "prompts": {"type": "CardNumber", "text": "Enter your card number.", "errors": {"InvalidCardType": {"text": "The card you are trying to use is not valid for this purchase."}}}}'
+
 two_notify_ncco = '[{"action": "notify", "payload": {"message": "hello"}, "eventUrl": ["http://example.com"]}, {"action": "notify", "payload": {"message": "world"}, "eventUrl": ["http://example.com"], "eventMethod": "PUT"}]'

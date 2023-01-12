@@ -4,14 +4,17 @@ from typing_extensions import Literal
 
 
 class PayPrompts:
-    class VoiceSettings(BaseModel):
+    class VoicePrompt(BaseModel):
         language: Optional[str]
         style: Optional[int]
 
-    class TextSettings(BaseModel):
+    class TextPrompt(BaseModel):
         type: Literal['CardNumber', 'ExpirationDate', 'SecurityCode']
         text: str
-        errors: dict
+        errors: Dict[
+            Literal['InvalidCardType', 'InvalidCardNumber', 'InvalidExpirationDate', 'InvalidSecurityCode', 'Timeout'],
+            Dict[Literal['text'], str],
+        ]
 
         @validator('errors')
         def check_valid_error_format(cls, v, values):
@@ -29,10 +32,8 @@ class PayPrompts:
         @validator('errors')
         def check_text_field_present(cls, v):
             for error_type in v:
-                if 'text' not in error_type:
-                    raise ValueError(
-                        f'You must supply an error message for the error "{error_type}". in a "text" field.'
-                    )
+                if 'text' not in v[error_type]:
+                    raise ValueError(f'You must supply an error message for the error "{error_type}".')
             return v
 
         def check_allowed_values(errors, allowed_values, prompt_type):
@@ -41,9 +42,9 @@ class PayPrompts:
                     raise ValueError(f'Value "{key}" is not a valid {prompt_type} error.')
 
     @classmethod
-    def create_voice_model(cls, dict):
-        return cls.VoiceSettings.parse_obj(dict)
+    def create_voice_model(cls, dict) -> VoicePrompt:
+        return cls.VoicePrompt.parse_obj(dict)
 
     @classmethod
-    def create_text_model(cls, dict):
-        return cls.TextSettings.parse_obj(dict)
+    def create_text_model(cls, dict) -> TextPrompt:
+        return cls.TextPrompt.parse_obj(dict)

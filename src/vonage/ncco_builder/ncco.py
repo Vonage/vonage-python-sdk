@@ -179,8 +179,8 @@ class Ncco:
         amount: confloat(ge=0)
         currency: Optional[constr(to_lower=True)]
         eventUrl: Optional[Union[List[HttpUrl], HttpUrl]]
-        prompts: Optional[Union[PayPrompts.TextSettings, dict]]
-        voice: Optional[Union[PayPrompts.VoiceSettings, dict]]
+        prompts: Optional[Union[List[PayPrompts.TextPrompt], PayPrompts.TextPrompt, dict]]
+        voice: Optional[Union[PayPrompts.VoicePrompt, dict]]
 
         @validator('amount')
         def round_amount(cls, v):
@@ -205,7 +205,7 @@ class Ncco:
                 return v
 
     @staticmethod
-    def build_ncco(*args: Action):
+    def build_ncco(*args: Action) -> str:
         ncco = []
         for action in args:
             ncco.append(action.dict(exclude_none=True))

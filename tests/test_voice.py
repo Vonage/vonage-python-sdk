@@ -4,6 +4,7 @@ import time
 import jwt
 
 import vonage
+from vonage import Ncco
 from util import *
 
 
@@ -14,12 +15,13 @@ def test_create_call(voice, dummy_data):
     params = {
         "to": [{"type": "phone", "number": "14843331234"}],
         "from": {"type": "phone", "number": "14843335555"},
-        "answer_url": ["https://example.com/answer"]
+        "answer_url": ["https://example.com/answer"],
     }
 
     assert isinstance(voice.create_call(params), dict)
     assert request_user_agent() == dummy_data.user_agent
     assert request_content_type() == "application/json"
+
 
 @responses.activate
 def test_params_with_random_number(voice, dummy_data):
@@ -27,11 +29,34 @@ def test_params_with_random_number(voice, dummy_data):
 
     params = {
         "to": [{"type": "phone", "number": "14843331234"}],
-        "random_from_number":True,
-        "answer_url": ["https://example.com/answer"]
+        "random_from_number": True,
+        "answer_url": ["https://example.com/answer"],
     }
 
     assert isinstance(voice.create_call(params), dict)
+    assert request_user_agent() == dummy_data.user_agent
+    assert request_content_type() == "application/json"
+
+
+@responses.activate
+def test_create_call_with_ncco_builder(voice, dummy_data):
+    stub(responses.POST, "https://api.nexmo.com/v1/calls")
+
+    talk = Ncco.Talk(
+        text='Hello from Vonage!', bargeIn=True, loop=3, level=0.5, language='en-GB', style=1, premium=True
+    )
+    ncco = Ncco.build_ncco(talk)
+    voice.create_call(
+        {
+            'to': [{'type': 'phone', 'number': '447449815316'}],
+            'from': {'type': 'phone', 'number': '447418370240'},
+            'ncco': ncco,
+        }
+    )
+    assert (
+        request_body()
+        == b'{"to": [{"type": "phone", "number": "447449815316"}], "from": {"type": "phone", "number": "447418370240"}, "ncco": [{"action": "talk", "text": "Hello from Vonage!", "bargeIn": true, "loop": 3, "level": 0.5, "language": "en-GB", "style": 1, "premium": true}]}'
+    )
     assert request_user_agent() == dummy_data.user_agent
     assert request_content_type() == "application/json"
 
@@ -149,9 +174,7 @@ def test_authorization_with_private_key_path(dummy_data):
     voice = vonage.Voice(client)
     voice.get_call("xx-xx-xx-xx")
 
-    token = jwt.decode(
-        request_authorization().split()[1], dummy_data.public_key, algorithms="RS256"
-    )
+    token = jwt.decode(request_authorization().split()[1], dummy_data.public_key, algorithms="RS256")
     assert token["application_id"] == dummy_data.application_id
 
 
@@ -161,10 +184,9 @@ def test_authorization_with_private_key_object(voice, dummy_data):
 
     voice.get_call("xx-xx-xx-xx")
 
-    token = jwt.decode(
-        request_authorization().split()[1], dummy_data.public_key, algorithms="RS256"
-    )
+    token = jwt.decode(request_authorization().split()[1], dummy_data.public_key, algorithms="RS256")
     assert token["application_id"] == dummy_data.application_id
+
 
 @responses.activate
 def test_get_recording(voice, dummy_data):
@@ -174,10 +196,7 @@ def test_get_recording(voice, dummy_data):
     )
 
     assert isinstance(
-        voice.get_recording(
-            "https://api.nexmo.com/v1/files/d6e47a2e-3414-11e8-8c2c-2f8b643ed957"
-        ),
+        voice.get_recording("https://api.nexmo.com/v1/files/d6e47a2e-3414-11e8-8c2c-2f8b643ed957"),
         bytes,
     )
     assert request_user_agent() == dummy_data.user_agent
-

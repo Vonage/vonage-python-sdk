@@ -46,6 +46,8 @@ pay_basic = '{"action": "pay", "amount": 10.0}'
 
 pay_voice_full = '{"action": "pay", "amount": 99.99, "currency": "gbp", "eventUrl": ["https://example.com/payment"], "voice": {"language": "en-GB", "style": 1}}'
 
-pay_text_basic = '{"action": "pay", "amount": 12.35, "prompts": {"type": "CardNumber", "text": "Enter your card number.", "errors": {"InvalidCardType": {"text": "The card you are trying to use is not valid for this purchase."}}}}'
+pay_text = '{"action": "pay", "amount": 12.35, "currency": "gbp", "eventUrl": ["https://example.com/payment"], "prompts": {"type": "CardNumber", "text": "Enter your card number.", "errors": {"InvalidCardType": {"text": "The card you are trying to use is not valid for this purchase."}}}}'
+
+pay_text_multiple_prompts = '{"action": "pay", "amount": 12.0, "prompts": [{"type": "CardNumber", "text": "Enter your card number.", "errors": {"InvalidCardType": {"text": "The card you are trying to use is not valid for this purchase."}}}, {"type": "ExpirationDate", "text": "Enter your card expiration date.", "errors": {"InvalidExpirationDate": {"text": "You have entered an invalid expiration date."}, "Timeout": {"text": "Please enter your card\'s expiration date."}}}, {"type": "SecurityCode", "text": "Enter your 3-digit security code.", "errors": {"InvalidSecurityCode": {"text": "You have entered an invalid security code."}, "Timeout": {"text": "Please enter your card\'s security code."}}}]}'
 
 two_notify_ncco = '[{"action": "notify", "payload": {"message": "hello"}, "eventUrl": ["http://example.com"]}, {"action": "notify", "payload": {"message": "world"}, "eventUrl": ["http://example.com"], "eventMethod": "PUT"}]'

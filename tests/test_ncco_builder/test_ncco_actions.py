@@ -245,25 +245,44 @@ def test_pay_voice_full():
     assert json.dumps(_action_as_dict(pay)) == nas.pay_voice_full
 
 
-def test_pay_text_basic():
+def test_pay_text():
     text_prompts = PayPrompts.TextPrompt(
         type='CardNumber',
         text='Enter your card number.',
         errors={'InvalidCardType': {'text': 'The card you are trying to use is not valid for this purchase.'}},
     )
-    pay = Ncco.Pay(amount=12.345, prompts=text_prompts)
-    assert json.dumps(_action_as_dict(pay)) == nas.pay_text_basic
+    pay = Ncco.Pay(amount=12.345, currency='gbp', eventUrl='https://example.com/payment', prompts=text_prompts)
+    assert json.dumps(_action_as_dict(pay)) == nas.pay_text
+
+
+def test_pay_text_multiple_prompts():
+    card_prompt = PayPrompts.TextPrompt(
+        type='CardNumber',
+        text='Enter your card number.',
+        errors={'InvalidCardType': {'text': 'The card you are trying to use is not valid for this purchase.'}},
+    )
+    expiration_date_prompt = PayPrompts.TextPrompt(
+        type='ExpirationDate',
+        text='Enter your card expiration date.',
+        errors={
+            'InvalidExpirationDate': {'text': 'You have entered an invalid expiration date.'},
+            'Timeout': {'text': 'Please enter your card\'s expiration date.'},
+        },
+    )
+    security_code_prompt = PayPrompts.TextPrompt(
+        type='SecurityCode',
+        text='Enter your 3-digit security code.',
+        errors={
+            'InvalidSecurityCode': {'text': 'You have entered an invalid security code.'},
+            'Timeout': {'text': 'Please enter your card\'s security code.'},
+        },
+    )
+
+    text_prompts = [card_prompt, expiration_date_prompt, security_code_prompt]
+    pay = Ncco.Pay(amount=12, prompts=text_prompts)
+    assert json.dumps(_action_as_dict(pay)) == nas.pay_text_multiple_prompts
 
 
 def test_pay_validation_error():
-    assert 0
-
-
-########################################
-
-
-def test_build_ncco_from_notify_actions():
-    notify1 = Ncco.Notify(payload={"message": "hello"}, eventUrl=["http://example.com"])
-    notify2 = Ncco.Notify(payload={"message": "world"}, eventUrl=["http://example.com"], eventMethod='PUT')
-    ncco = Ncco.build_ncco(notify1, notify2)
-    assert ncco == nas.two_notify_ncco
+    with pytest.raises(ValidationError):
+        Ncco.Pay(amount='not-valid')

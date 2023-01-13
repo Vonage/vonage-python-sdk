@@ -29,17 +29,10 @@ class PayPrompts:
                 cls.check_allowed_values(v, allowed_values, values['type'])
             return v
 
-        @validator('errors')
-        def check_text_field_present(cls, v):
-            for error_type in v:
-                if 'text' not in v[error_type]:
-                    raise ValueError(f'You must supply an error message for the error "{error_type}".')
-            return v
-
         def check_allowed_values(errors, allowed_values, prompt_type):
             for key in errors:
                 if key not in allowed_values:
-                    raise ValueError(f'Value "{key}" is not a valid {prompt_type} error.')
+                    raise ValueError(f'Value "{key}" is not a valid error for the "{prompt_type}" prompt type.')
 
     @classmethod
     def create_voice_model(cls, dict) -> VoicePrompt:

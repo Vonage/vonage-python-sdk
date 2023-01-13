@@ -1,5 +1,8 @@
 from vonage import PayPrompts
 
+import pytest
+from pydantic import ValidationError
+
 
 def test_create_voice_model():
     voice_prompt = PayPrompts.VoicePrompt(language='en-GB', style=1)
@@ -31,9 +34,21 @@ def test_create_text_model_from_dict():
     assert type(text_prompt) == PayPrompts.TextPrompt
 
 
-def test_pay_text_field_not_present():
-    assert 0
+def test_error_message_not_in_subdictionary():
+    with pytest.raises(ValidationError):
+        PayPrompts.TextPrompt(
+            type='CardNumber',
+            text='Enter your card number.',
+            errors={'InvalidCardType': 'The card you are trying to use is not valid for this purchase.'},
+        )
 
 
-def test_pay_text_invalid_error_value():
-    assert 0
+def test_invalid_error_type_for_prompt():
+    with pytest.raises(ValueError) as err:
+        PayPrompts.TextPrompt(
+            type='SecurityCode',
+            text='Enter your card number.',
+            errors={'InvalidCardType': {'text': 'The card you are trying to use is not valid for this purchase.'}},
+        )
+
+    assert 'Value "InvalidCardType" is not a valid error for the "SecurityCode" prompt type.' in str(err.value)

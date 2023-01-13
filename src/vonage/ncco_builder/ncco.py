@@ -205,7 +205,7 @@ class Ncco:
                 return v
 
     @staticmethod
-    def build_ncco(*args: Action) -> str:
+    def build_ncco(*args: Union[Action, List[Action]]) -> str:
         ncco = []
         for action in args:
             ncco.append(action.dict(exclude_none=True))

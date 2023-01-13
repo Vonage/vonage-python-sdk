@@ -13,11 +13,20 @@ def test_build_basic_ncco():
 def test_build_ncco_from_args():
     ncco = Ncco.build_ncco(nbs.record, nbs.talk_minimal)
     assert ncco == nbs.two_part_ncco
-    assert json.dumps(ncco) == ''
+    assert (
+        json.dumps(ncco)
+        == '[{"action": "record", "eventUrl": ["http://example.com/events"]}, {"action": "talk", "text": "hello"}]'
+    )
 
 
 def test_build_ncco_from_list():
-    assert 0
+    action_list = [nbs.record, nbs.talk_minimal]
+    ncco = Ncco.build_ncco(actions=action_list)
+    assert ncco == nbs.two_part_ncco
+    assert (
+        json.dumps(ncco)
+        == '[{"action": "record", "eventUrl": ["http://example.com/events"]}, {"action": "talk", "text": "hello"}]'
+    )
 
 
 def test_build_insane_ncco():

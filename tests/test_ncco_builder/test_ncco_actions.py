@@ -172,11 +172,6 @@ def test_stream_full():
     assert json.dumps(_action_as_dict(stream)) == nas.stream_full
 
 
-def test_stream_error():
-    with pytest.raises(ValidationError):
-        Ncco.Stream(streamUrl='not_a_url')
-
-
 def test_input_basic():
     input = Ncco.Input(type='dtmf')
     assert type(input) == Ncco.Input
@@ -230,7 +225,7 @@ def test_notify_full():
 
 def test_notify_validation_error():
     with pytest.raises(ValidationError):
-        Ncco.Notify(payload={'message': 'hello'}, eventUrl=["not-a-valid-url"])
+        Ncco.Notify(payload={'message', 'hello'}, eventUrl=['http://example.com'])
 
 
 def test_pay_voice_basic():

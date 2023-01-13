@@ -1,7 +1,5 @@
 from vonage import Ncco, ConnectEndpoints, InputTypes, PayPrompts
 
-from pydantic import BaseModel, HttpUrl
-
 record = Ncco.Record(eventUrl='http://example.com/events')
 
 conversation = Ncco.Conversation(name='my_conversation')
@@ -61,16 +59,12 @@ pay_text_prompt = Ncco.Pay(
     ),
 )
 
-basic_ncco = '[{"action": "talk", "text": "hello"}]'
+basic_ncco = [{"action": "talk", "text": "hello"}]
 
 two_part_ncco = [
     {
         'action': 'record',
-        'eventUrl': [
-            HttpUrl(
-                'http://example.com/events',
-            )
-        ],
+        'eventUrl': ['http://example.com/events'],
     },
     {'action': 'talk', 'text': 'hello'},
 ]

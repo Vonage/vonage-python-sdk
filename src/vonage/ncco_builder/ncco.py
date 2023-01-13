@@ -1,7 +1,6 @@
-from pydantic import BaseModel, HttpUrl, AnyUrl, Field, validator, constr, confloat, conint
+from pydantic import BaseModel, Field, validator, constr, confloat, conint
 from typing import Optional, Union, List
 from typing_extensions import Literal
-import json
 
 from .connect_endpoints import ConnectEndpoints
 from .input_types import InputTypes
@@ -23,7 +22,7 @@ class Ncco:
         endOnKey: Optional[constr(regex='^[0-9*#]$')]
         timeOut: Optional[conint(ge=3, le=7200)]
         beepStart: Optional[bool]
-        eventUrl: Optional[Union[List[HttpUrl], HttpUrl]]
+        eventUrl: Optional[Union[List[str], str]]
         eventMethod: Optional[constr(to_upper=True)]
 
         @validator('channels')
@@ -43,7 +42,7 @@ class Ncco:
 
         action = Field('notify', const=True)
         name: str
-        musicOnHoldUrl: Optional[Union[List[AnyUrl], AnyUrl]]
+        musicOnHoldUrl: Optional[Union[List[str], str]]
         startOnEnter: Optional[bool]
         endOnExit: Optional[bool]
         record: Optional[bool]
@@ -72,9 +71,9 @@ class Ncco:
         timeout: Optional[int]
         limit: Optional[conint(le=7200)]
         machineDetection: Optional[Literal['continue', 'hangup']]
-        eventUrl: Optional[Union[List[HttpUrl], HttpUrl]]
+        eventUrl: Optional[Union[List[str], str]]
         eventMethod: Optional[constr(to_upper=True)]
-        ringbackTone: Optional[HttpUrl]
+        ringbackTone: Optional[str]
 
         @validator('endpoint')
         def validate_endpoint(cls, v):
@@ -121,7 +120,7 @@ class Ncco:
         """The stream action allows you to send an audio stream to a Conversation."""
 
         action = Field('stream', const=True)
-        streamUrl: Union[List[AnyUrl], AnyUrl]
+        streamUrl: Union[List[str], str]
         level: Optional[confloat(ge=-1, le=1)]
         bargeIn: Optional[bool]
         loop: Optional[conint(ge=0)]
@@ -139,7 +138,7 @@ class Ncco:
         ]
         dtmf: Optional[Union[InputTypes.Dtmf, dict]]
         speech: Optional[Union[InputTypes.Speech, dict]]
-        eventUrl: Optional[Union[List[HttpUrl], HttpUrl]]
+        eventUrl: Optional[Union[List[str], str]]
         eventMethod: Optional[constr(to_upper=True)]
 
         @validator('type', 'eventUrl')
@@ -165,7 +164,7 @@ class Ncco:
 
         action = Field('notify', const=True)
         payload: dict
-        eventUrl: Union[List[HttpUrl], HttpUrl]
+        eventUrl: Union[List[str], str]
         eventMethod: Optional[constr(to_upper=True)]
 
         @validator('eventUrl')
@@ -178,7 +177,7 @@ class Ncco:
         action = Field('pay', const=True)
         amount: confloat(ge=0)
         currency: Optional[constr(to_lower=True)]
-        eventUrl: Optional[Union[List[HttpUrl], HttpUrl]]
+        eventUrl: Optional[Union[List[str], str]]
         prompts: Optional[Union[List[PayPrompts.TextPrompt], PayPrompts.TextPrompt, dict]]
         voice: Optional[Union[PayPrompts.VoicePrompt, dict]]
 
@@ -205,13 +204,14 @@ class Ncco:
                 return v
 
     @staticmethod
-    def build_ncco(*args: Union[Action, List[Action]]) -> str:
+    def build_ncco(*args: Action, actions: List[Action] = None) -> str:
         ncco = []
+        if actions is not None:
+            for action in actions:
+                ncco.append(action.dict(exclude_none=True))
         for action in args:
             ncco.append(action.dict(exclude_none=True))
-        print(f'ncco is this: {ncco}')
-        print(f'json representation is this: {json.dumps(ncco)}')
-        return json.dumps(ncco)
+        return ncco
 
     @staticmethod
     def _ensure_object_in_list(obj):

@@ -30,4 +30,16 @@ def test_build_ncco_from_list():
 
 
 def test_build_insane_ncco():
-    ncco = Ncco.build_ncco(nbs.talk)
+    action_list = [
+        nbs.record,
+        nbs.conversation,
+        nbs.connect,
+        nbs.talk,
+        nbs.stream,
+        nbs.input,
+        nbs.notify,
+        nbs.pay_voice_prompt,
+        nbs.pay_text_prompt,
+    ]
+    ncco = Ncco.build_ncco(actions=action_list)
+    assert ncco == nbs.insane_ncco

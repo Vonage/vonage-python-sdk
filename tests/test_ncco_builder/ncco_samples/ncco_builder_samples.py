@@ -69,4 +69,74 @@ two_part_ncco = [
     {'action': 'talk', 'text': 'hello'},
 ]
 
-insane_ncco = ''
+insane_ncco = [
+    {'action': 'record', 'eventUrl': ['http://example.com/events']},
+    {'action': 'notify', 'name': 'my_conversation'},
+    {
+        'action': 'connect',
+        'endpoint': [{'number': '447000000000', 'type': 'phone'}],
+        'eventMethod': 'PUT',
+        'eventType': 'synchronous',
+        'eventUrl': ['http://example.com'],
+        'from': '447400000000',
+        'limit': 1000,
+        'machineDetection': 'hangup',
+        'randomFromNumber': False,
+        'ringbackTone': 'http://example.com',
+        'timeout': 15,
+    },
+    {
+        'action': 'talk',
+        'bargeIn': True,
+        'language': 'en-GB',
+        'level': 0.5,
+        'loop': 3,
+        'premium': True,
+        'style': 1,
+        'text': 'hello',
+    },
+    {
+        'action': 'stream',
+        'bargeIn': True,
+        'level': 0.1,
+        'loop': 10,
+        'streamUrl': ['https://example.com/stream/music.mp3'],
+    },
+    {
+        'action': 'input',
+        'dtmf': {'maxDigits': 12, 'submitOnHash': True, 'timeOut': 5},
+        'eventMethod': 'PUT',
+        'eventUrl': ['http://example.com/speech'],
+        'speech': {
+            'context': ['sales', 'billing'],
+            'endOnSilence': 2.5,
+            'language': 'en-GB',
+            'maxDuration': 30,
+            'saveAudio': True,
+            'startTimeout': 20,
+            'uuid': 'my-uuid',
+        },
+        'type': ['dtmf', 'speech'],
+    },
+    {'action': 'notify', 'eventMethod': 'PUT', 'eventUrl': ['http://example.com'], 'payload': {'message': 'world'}},
+    {
+        'action': 'pay',
+        'amount': 99.99,
+        'currency': 'gbp',
+        'eventUrl': ['https://example.com/payment'],
+        'voice': {'language': 'en-GB', 'style': 1},
+    },
+    {
+        'action': 'pay',
+        'amount': 12.35,
+        'currency': 'gbp',
+        'eventUrl': ['https://example.com/payment'],
+        'prompts': {
+            'errors': {
+                'InvalidCardType': {'text': 'The card you are trying ' 'to use is not valid for ' 'this purchase.'}
+            },
+            'text': 'Enter your card number.',
+            'type': 'CardNumber',
+        },
+    },
+]

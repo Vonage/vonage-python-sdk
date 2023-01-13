@@ -4,6 +4,7 @@ from .account import Account
 from .application import ApplicationV2, Application
 from .errors import *
 from .messages import Messages
+from .ncco_builder.ncco import Ncco, ConnectEndpoints, InputTypes, PayPrompts
 from .number_insight import NumberInsight
 from .numbers import Numbers
 from .redact import Redact
@@ -36,6 +37,7 @@ except ImportError:
     JSONDecodeError = ValueError
 
 logger = logging.getLogger("vonage")
+
 
 class Client:
     """
@@ -78,10 +80,10 @@ class Client:
         private_key=None,
         app_name=None,
         app_version=None,
-        timeout=None, 
-        pool_connections=10, 
-        pool_maxsize=10, 
-        max_retries=3
+        timeout=None,
+        pool_connections=10,
+        pool_maxsize=10,
+        max_retries=3,
     ):
         self.api_key = key or os.environ.get("VONAGE_API_KEY", None)
         self.api_secret = secret or os.environ.get("VONAGE_API_SECRET", None)
@@ -126,9 +128,7 @@ class Client:
         self.timeout = timeout
         self.session = Session()
         self.adapter = HTTPAdapter(
-            pool_connections=pool_connections, 
-            pool_maxsize=pool_maxsize, 
-            max_retries=max_retries
+            pool_connections=pool_connections, pool_maxsize=pool_maxsize, max_retries=max_retries
         )
         self.session.mount("https://", self.adapter)
 
@@ -156,9 +156,7 @@ class Client:
 
     def signature(self, params):
         if self.signature_method:
-            hasher = hmac.new(
-                self.signature_secret.encode(), digestmod=self.signature_method
-            )
+            hasher = hmac.new(self.signature_secret.encode(), digestmod=self.signature_method)
         else:
             hasher = hashlib.md5()
 
@@ -186,13 +184,9 @@ class Client:
         if auth_type == 'jwt':
             self._request_headers = self._add_jwt_to_request_headers()
         elif auth_type == 'params':
-            params = dict(
-                params or {}, api_key=self.api_key, api_secret=self.api_secret
-            )
+            params = dict(params or {}, api_key=self.api_key, api_secret=self.api_secret)
         elif auth_type == 'header':
-            hash = base64.b64encode(
-                f"{self.api_key}:{self.api_secret}".encode("utf-8")
-            ).decode("ascii")
+            hash = base64.b64encode(f"{self.api_key}:{self.api_secret}".encode("utf-8")).decode("ascii")
             self._request_headers = dict(self.headers or {}, Authorization=f"Basic {hash}")
         else:
             raise InvalidAuthenticationTypeError(
@@ -201,47 +195,45 @@ class Client:
 
         logger.debug(f"GET to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}")
         return self.parse(
-            host, 
-            self.session.get(uri, params=params, headers=self._request_headers, timeout=self.timeout))
+            host, self.session.get(uri, params=params, headers=self._request_headers, timeout=self.timeout)
+        )
 
     def post(self, host, request_uri, params, auth_type=None, body_is_json=True, supports_signature_auth=False):
         """
         Low-level method to make a post request to an API server.
         This method automatically adds authentication, picking the first applicable authentication method from the following:
-        - If the supports_signature_auth param is True, and the client was instantiated with a signature_secret, 
+        - If the supports_signature_auth param is True, and the client was instantiated with a signature_secret,
             then signature authentication will be used.
-        :param bool supports_signature_auth: Preferentially use signature authentication if a signature_secret was provided 
+        :param bool supports_signature_auth: Preferentially use signature authentication if a signature_secret was provided
             when initializing this client.
         """
         uri = f"https://{host}{request_uri}"
         self._request_headers = self.headers
-        
+
         if supports_signature_auth and self.signature_secret:
             params["api_key"] = self.api_key
             params["sig"] = self.signature(params)
         elif auth_type == 'jwt':
             self._request_headers = self._add_jwt_to_request_headers()
         elif auth_type == 'params':
-            params = dict(
-                params, api_key=self.api_key, api_secret=self.api_secret
-            )
+            params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
         elif auth_type == 'header':
-            hash = base64.b64encode(
-                f"{self.api_key}:{self.api_secret}".encode("utf-8")
-            ).decode("ascii")
+            hash = base64.b64encode(f"{self.api_key}:{self.api_secret}".encode("utf-8")).decode("ascii")
             self._request_headers = dict(self.headers or {}, Authorization=f"Basic {hash}")
         else:
             raise InvalidAuthenticationTypeError(
                 f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
             )
-        
+
         logger.debug(f"POST to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}")
         if body_is_json:
             return self.parse(
-                host, self.session.post(uri, json=params, headers=self._request_headers, timeout=self.timeout))
+                host, self.session.post(uri, json=params, headers=self._request_headers, timeout=self.timeout)
+            )
         else:
             return self.parse(
-                host, self.session.post(uri, data=params, headers=self._request_headers, timeout=self.timeout))
+                host, self.session.post(uri, data=params, headers=self._request_headers, timeout=self.timeout)
+            )
 
     def put(self, host, request_uri, params, auth_type=None):
         uri = f"https://{host}{request_uri}"
@@ -250,9 +242,7 @@ class Client:
         if auth_type == 'jwt':
             self._request_headers = self._add_jwt_to_request_headers()
         elif auth_type == 'header':
-            hash = base64.b64encode(
-                f"{self.api_key}:{self.api_secret}".encode("utf-8")
-            ).decode("ascii")
+            hash = base64.b64encode(f"{self.api_key}:{self.api_secret}".encode("utf-8")).decode("ascii")
             self._request_headers = dict(self._request_headers or {}, Authorization=f"Basic {hash}")
         else:
             raise InvalidAuthenticationTypeError(
@@ -269,10 +259,8 @@ class Client:
 
         if auth_type == 'jwt':
             self._request_headers = self._add_jwt_to_request_headers()
-        elif auth_type =='header':
-            hash = base64.b64encode(
-                f"{self.api_key}:{self.api_secret}".encode("utf-8")
-            ).decode("ascii")
+        elif auth_type == 'header':
+            hash = base64.b64encode(f"{self.api_key}:{self.api_secret}".encode("utf-8")).decode("ascii")
             self._request_headers = dict(self._request_headers or {}, Authorization=f"Basic {hash}")
         else:
             raise InvalidAuthenticationTypeError(
@@ -280,16 +268,12 @@ class Client:
             )
 
         logger.debug(f"DELETE to {repr(uri)} with headers {repr(self._request_headers)}")
-        return self.parse(
-            host, self.session.delete(uri, headers=self._request_headers, timeout=self.timeout)
-        )
+        return self.parse(host, self.session.delete(uri, headers=self._request_headers, timeout=self.timeout))
 
     def parse(self, host, response):
         logger.debug(f"Response headers {repr(response.headers)}")
         if response.status_code == 401:
-            raise AuthenticationError(
-                "Authentication failed. Check you're using a valid authentication method."
-            )
+            raise AuthenticationError("Authentication failed. Check you're using a valid authentication method.")
         elif response.status_code == 204:
             return None
         elif 200 <= response.status_code < 300:
@@ -301,22 +285,16 @@ class Client:
             else:
                 return response.content
         elif 400 <= response.status_code < 500:
-            logger.warning(
-                f"Client error: {response.status_code} {repr(response.content)}"
-            )
+            logger.warning(f"Client error: {response.status_code} {repr(response.content)}")
             message = f"{response.status_code} response from {host}"
 
             # Test for standard error format:
             try:
                 error_data = response.json()
-                if (
-                    "type" in error_data
-                    and "title" in error_data
-                    and "detail" in error_data
-                ):
-                    title=error_data["title"]
-                    detail=error_data["detail"]
-                    type=error_data["type"]
+                if "type" in error_data and "title" in error_data and "detail" in error_data:
+                    title = error_data["title"]
+                    detail = error_data["detail"]
+                    type = error_data["type"]
                     message = f"{title}: {detail} ({type})"
 
             except JSONDecodeError:
@@ -342,7 +320,7 @@ class Client:
         token = jwt.encode(payload, self._private_key, algorithm="RS256")
 
         # If token is string transform it to byte type
-        if(type(token) is str):
+        if type(token) is str:
             token = bytes(token, 'utf-8')
 
         return token

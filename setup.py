@@ -27,6 +27,7 @@ setup(
         "PyJWT[crypto]>=1.6.4",
         "pytz>=2018.5",
         "Deprecated",
+        "pydantic>=1.10.2",
     ],
     python_requires=">=3.7",
     tests_require=["cryptography>=2.3.1"],

@@ -1,4 +1,3 @@
-import pytest
 import json
 
 from vonage import Ncco

@@ -1,3 +1,6 @@
+from .errors import MeetingsError
+
+
 class Meetings:
     """Class containing methods used to create and manage meetings using the Meetings API."""
 
@@ -24,3 +27,34 @@ class Meetings:
 
     def update_room(self, room_id: str, params: dict):
         return self._client.patch(self._meetings_api_host, f'/rooms/{room_id}', params, auth_type=Meetings._auth_type)
+
+    def get_recording(self, recording_id: str):
+        return self._client.get(self._meetings_api_host, f'/recordings/{recording_id}', auth_type=Meetings._auth_type)
+
+    def delete_recording(self, recording_id: str):
+        return self._client.delete(
+            self._meetings_api_host, f'/recordings/{recording_id}', auth_type=Meetings._auth_type
+        )
+
+    def get_session_recordings(self, session_id: str):
+        return self._client.get(
+            self._meetings_api_host, f'/sessions/{session_id}/recordings', auth_type=Meetings._auth_type
+        )
+
+    def list_dial_in_numbers(self):
+        return self._client.get(self._meetings_api_host, '/dial-in-numbers', auth_type=Meetings._auth_type)
+
+    def list_themes(self):
+        return self._client.get(self._meetings_api_host, '/themes', auth_type=Meetings._auth_type)
+
+    def create_theme(self, params: dict):
+        if 'main_color' not in params or 'brand_text' not in params:
+            raise MeetingsError('Values for "main_color" and "brand_text" must be specified')
+
+        return self._client.post(self._meetings_api_host, '/themes', params, auth_type=Meetings._auth_type)
+
+    def get_theme(self, theme_id: str):
+        return self._client.get(self._meetings_api_host, f'/themes/{theme_id}', auth_type=Meetings._auth_type)
+
+    def delete_theme(self, theme_id: str):
+        return self._client.delete(self._meetings_api_host, f'/themes/{theme_id}', auth_type=Meetings._auth_type)

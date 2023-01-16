@@ -269,7 +269,7 @@ class Client:
         # Only newer APIs (that expect json-bodies) currently use this method, so we will always send a json-formatted body
         return self.parse(host, self.session.patch(uri, json=params, headers=self._request_headers))
 
-    def delete(self, host, request_uri, auth_type=None):
+    def delete(self, host, request_uri, params=None, auth_type=None):
         uri = f"https://{host}{request_uri}"
         self._request_headers = self.headers
 
@@ -284,7 +284,11 @@ class Client:
             )
 
         logger.debug(f"DELETE to {repr(uri)} with headers {repr(self._request_headers)}")
-        return self.parse(host, self.session.delete(uri, headers=self._request_headers, timeout=self.timeout))
+        if params is not None:
+            logger.debug(f"DELETE call also has params {repr(params)}")
+        return self.parse(
+            host, self.session.delete(uri, headers=self._request_headers, timeout=self.timeout, params=params)
+        )
 
     def parse(self, host, response):
         logger.debug(f"Response headers {repr(response.headers)}")

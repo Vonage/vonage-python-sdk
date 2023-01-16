@@ -16,6 +16,7 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [SMS API](#sms-api)
 - [Messages API](#messages-api)
 - [Voice API](#voice-api)
+- [NCCO Builder](#ncco-builder)
 - [Verify API](#verify-api)
 - [Number Insight API](#number-insight-api)
 - [Number Management API](#number-management-api)
@@ -337,6 +338,65 @@ client.voice.send_dtmf(response['uuid'], digits='1234')
 response = client.get_recording(RECORDING_URL)
 ```
 
+## NCCO Builder
+
+The SDK contains a builder to help you create Call Control Objects (NCCOs) for use with the Vonage Voice API.
+
+For more information, [check the full NCCO reference documentation on the Vonage website](https://developer.vonage.com/voice/voice-api/ncco-reference).
+
+An NCCO is a list of "Actions": steps to be followed when a call is initiated or received.
+
+Use the builder to construct valid NCCO actions, which are modelled in the SDK as [Pydantic](https://docs.pydantic.dev) models, and build them into an NCCO. The NCCO actions supported by the builder are:
+
+* Record
+* Conversation
+* Connect
+* Talk
+* Stream
+* Input
+* Notify
+* Pay
+
+### Construct actions
+
+```python
+record = Ncco.Record(eventUrl=['https://example.com'])
+talk = Ncco.Talk(text='Hello from Vonage!', bargeIn=True, loop=5, premium=True)
+```
+
+The Connect action has each valid endpoint type (phone, application, WebSocket, SIP and VBC) specified as a Pydantic model so these can be validated, though it is also possible to pass in a dict with the endpoint properties directly into the `Ncco.Connect` object.
+
+This example shows a Connect action created with an endpoint object.
+
+```python
+phone = ConnectEndpoints.PhoneEndpoint(
+        number='447000000000',
+        dtmfAnswer='1p2p3p#**903#',
+    )
+connect = Ncco.Connect(endpoint=phone, eventUrl=['https://example.com/events'], from_='447000000000')
+```
+
+This example shows a different Connect action, created with a dictionary.
+
+```python
+connect = Ncco.Connect(endpoint={'type': 'phone', 'number': '447000000000', 'dtmfAnswer': '2p02p'}, randomFromNumber=True)
+```
+
+### Build into an NCCO
+
+Create an NCCO from the actions with the `Ncco.build_ncco` method. This will be returned as a list of dicts representing each action and can be used in calls to the Voice API.
+
+```python
+ncco = Ncco.build_ncco(record, connect, talk)
+
+response = client.voice.create_call({
+    'to': [{'type': 'phone', 'number': TO_NUMBER}],
+    'from': {'type': 'phone', 'number': VONAGE_NUMBER},
+    'ncco': ncco
+})
+
+pprint(response)
+```
 
 ## Verify API
 

@@ -1,3 +1,7 @@
+# 3.2.0
+- Adding an NCCO Builder to make it easier to work with NCCOs when using the Voice API
+- Individual NCCO Actions can be created as Pydantic models, which can be built into an NCCO via the `Ncco.build_ncco` method
+
 # 3.1.0
 - Supporting Python 3.11
 - Upgrading some old dependencies

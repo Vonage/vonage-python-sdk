@@ -11,7 +11,11 @@ with io.open(
 
 setup(
     name="vonage",
+<<<<<<< HEAD
     version="4.0.0b0",
+=======
+    version="3.2.0",
+>>>>>>> main
     description="Vonage Server SDK for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -27,6 +31,7 @@ setup(
         "PyJWT[crypto]>=1.6.4",
         "pytz>=2018.5",
         "Deprecated",
+        "pydantic>=1.10.2",
     ],
     python_requires=">=3.7",
     tests_require=["cryptography>=2.3.1"],

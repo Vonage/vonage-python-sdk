@@ -106,6 +106,7 @@ class Client:
 
         self._host = "rest.nexmo.com"
         self._api_host = "api.nexmo.com"
+        self._meetings_api_host = "api-eu.vonage.com/beta/meetings"
 
         user_agent = f"vonage-python/{vonage.__version__} python/{python_version()}"
 
@@ -132,19 +133,26 @@ class Client:
         )
         self.session.mount("https://", self.adapter)
 
-    # Get and Set _host attribute
+    # Gets and sets _host attribute
     def host(self, value=None):
         if value is None:
             return self._host
         else:
             self._host = value
 
-    # Gets And Set _api_host attribute
+    # Gets and sets _api_host attribute
     def api_host(self, value=None):
         if value is None:
             return self._api_host
         else:
             self._api_host = value
+
+    # Gets and sets _meetings_api_host attribute
+    def meetings_api_host(self, value=None):
+        if value is None:
+            return self._meetings_api_host
+        else:
+            self._meetings_api_host = value
 
     def auth(self, params=None, **kwargs):
         self._jwt_auth_params = params or kwargs

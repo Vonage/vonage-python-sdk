@@ -1,3 +1,6 @@
+# 3.2.2
+- Fixing a bug on Windows
+
 # 3.2.1
 - Fixing an import bug
 

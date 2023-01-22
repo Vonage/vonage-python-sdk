@@ -14,10 +14,12 @@ class Meetings:
         params = Meetings.set_start_and_end_params(start_id, end_id)
         return self._client.get(self._meetings_api_host, '/rooms', params, auth_type=Meetings._auth_type)
 
-    def create_room(self, params: dict):
+    def create_room(self, params: dict = None):
+        if 'display_name' not in params:
+            raise MeetingsError('You must include a value for display_name when creating a meeting room.')
         return self._client.post(self._meetings_api_host, '/rooms', params, auth_type=Meetings._auth_type)
 
-    def get_room_details(self, room_id: str):
+    def get_room(self, room_id: str):
         return self._client.get(self._meetings_api_host, f'/rooms/{room_id}', auth_type=Meetings._auth_type)
 
     def update_room(self, room_id: str, params: dict):

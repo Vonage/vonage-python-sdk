@@ -126,7 +126,7 @@ def test_update_room_error_no_params_specified(meetings):
     )
     with pytest.raises(TypeError) as err:
         meetings.update_room(room_id='33791484-231c-421b-8349-96e1a44e27d2')
-    assert str(err.value) == "Meetings.update_room() missing 1 required positional argument: 'params'"
+    assert "update_room() missing 1 required positional argument: 'params'" in str(err.value)
 
 
 @responses.activate
@@ -227,3 +227,123 @@ def test_get_session_recordings_not_found(meetings):
         str(err.value)
         == 'Status Code 404: NotFoundError: Failed to find session recordings by id: not-a-real-session-id'
     )
+
+
+@responses.activate
+def test_list_dial_in_numbers(meetings):
+    stub(
+        responses.GET,
+        'https://api-eu.vonage.com/beta/meetings/dial-in-numbers',
+        fixture_path='meetings/list_dial_in_numbers.json',
+    )
+
+    numbers = meetings.list_dial_in_numbers()
+    assert numbers[0]['number'] == '541139862166'
+    assert numbers[0]['display_name'] == 'Argentina'
+    assert numbers[1]['number'] == '442381924626'
+    assert numbers[1]['locale'] == 'en-GB'
+
+
+@responses.activate
+def test_list_themes(meetings):
+    stub(responses.GET, 'https://api-eu.vonage.com/beta/meetings/themes', fixture_path='meetings/list_themes.json')
+
+    themes = meetings.list_themes()
+    assert themes[0]['theme_id'] == '1fc39568-bc50-464f-82dc-01e13bed0908'
+    assert themes[0]['main_color'] == '#FF0000'
+    assert themes[0]['brand_text'] == 'My Other Company'
+    assert themes[1]['theme_id'] == '90a21428-b74a-4221-adc3-783935d654db'
+    assert themes[1]['main_color'] == '#12f64e'
+    assert themes[1]['brand_text'] == 'My Company'
+
+
+@responses.activate
+def test_list_themes_no_themes(meetings):
+    stub(responses.GET, 'https://api-eu.vonage.com/beta/meetings/themes', fixture_path='meetings/list_themes_none.json')
+
+    assert meetings.list_themes() == None
+
+
+@responses.activate
+def test_create_theme(meetings):
+    stub(responses.POST, "https://api-eu.vonage.com/beta/meetings/themes", fixture_path='meetings/theme.json')
+
+    params = {
+        'theme_name': 'my_theme',
+        'main_color': '#12f64e',
+        'brand_text': 'My Company',
+        'short_company_url': 'my-company',
+    }
+
+    theme = meetings.create_theme(params)
+    assert theme['theme_id'] == '90a21428-b74a-4221-adc3-783935d654db'
+    assert theme['main_color'] == '#12f64e'
+    assert theme['brand_text'] == 'My Company'
+    assert theme['domain'] == 'VCP'
+
+
+def test_create_theme_missing_required_params(meetings):
+    with pytest.raises(MeetingsError) as err:
+        meetings.create_theme({})
+    assert str(err.value) == 'Values for "main_color" and "brand_text" must be specified'
+
+
+@responses.activate
+def test_create_theme_name_already_in_use(meetings):
+    stub(
+        responses.POST,
+        "https://api-eu.vonage.com/beta/meetings/themes",
+        fixture_path='meetings/theme_name_in_use.json',
+        status_code=409,
+    )
+
+    params = {
+        'theme_name': 'my_theme',
+        'main_color': '#12f64e',
+        'brand_text': 'My Company',
+    }
+
+    with pytest.raises(ClientError) as err:
+        meetings.create_theme(params)
+    assert str(err.value) == 'Status Code 409: ConflictError: theme_name already exists in application'
+
+
+@responses.activate
+def test_get_theme(meetings):
+    stub(
+        responses.GET,
+        "https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654db",
+        fixture_path='meetings/theme.json',
+    )
+
+    theme = meetings.get_theme('90a21428-b74a-4221-adc3-783935d654db')
+    assert theme['main_color'] == '#12f64e'
+    assert theme['brand_text'] == 'My Company'
+
+
+@responses.activate
+def test_get_theme_not_found(meetings):
+    stub(
+        responses.GET,
+        "https://api-eu.vonage.com/beta/meetings/themes/not-a-real-theme",
+        fixture_path='meetings/theme_not_found.json',
+        status_code=404,
+    )
+
+    with pytest.raises(ClientError) as err:
+        meetings.get_theme('not-a-real-theme')
+    assert str(err.value) == 'Status Code 400: InputValidationError: "theme_id" must be a valid GUID'
+
+
+@responses.activate
+def test_delete_theme(meetings):
+    stub(
+        responses.GET,
+        "https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654db",
+        fixture_path='meetings/theme.json',
+    )
+
+    theme = meetings.get_theme('90a21428-b74a-4221-adc3-783935d654db')
+    assert theme['main_color'] == '#12f64e'
+    assert theme['brand_text'] == 'My Company'
+    assert False

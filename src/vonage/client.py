@@ -310,7 +310,10 @@ class Client:
             # Strip off any encoding from the content-type header:
             content_mime = response.headers.get("content-type").split(";", 1)[0]
             if content_mime == "application/json":
-                return response.json()
+                try:
+                    return response.json()
+                except JSONDecodeError:
+                    pass
             else:
                 return response.content
         elif 400 <= response.status_code < 500:

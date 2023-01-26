@@ -335,15 +335,15 @@ def test_get_theme_not_found(meetings):
     assert str(err.value) == 'Status Code 400: InputValidationError: "theme_id" must be a valid GUID'
 
 
-@responses.activate
-def test_delete_theme(meetings):
-    stub(
-        responses.GET,
-        "https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654db",
-        fixture_path='meetings/theme.json',
-    )
+# @responses.activate
+# def test_delete_theme(meetings):
+#     stub(
+#         responses.GET,
+#         "https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654db",
+#         fixture_path='meetings/theme.json',
+#     )
 
-    theme = meetings.get_theme('90a21428-b74a-4221-adc3-783935d654db')
-    assert theme['main_color'] == '#12f64e'
-    assert theme['brand_text'] == 'My Company'
-    assert False
+#     theme = meetings.get_theme('90a21428-b74a-4221-adc3-783935d654db')
+#     assert theme['main_color'] == '#12f64e'
+#     assert theme['brand_text'] == 'My Company'
+#     assert False

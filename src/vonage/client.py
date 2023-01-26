@@ -325,6 +325,8 @@ class Client:
                     detail = error_data["detail"]
                     type = error_data["type"]
                     message = f"{title}: {detail} ({type})"
+                elif 'status' in error_data and 'message' in error_data and 'name' in error_data:
+                    message = f'Status Code {error_data["status"]}: {error_data["name"]}: {error_data["message"]}'
 
             except JSONDecodeError:
                 pass

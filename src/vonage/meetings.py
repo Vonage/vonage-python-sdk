@@ -14,9 +14,11 @@ class Meetings:
         params = Meetings.set_start_and_end_params(start_id, end_id)
         return self._client.get(self._meetings_api_host, '/rooms', params, auth_type=Meetings._auth_type)
 
-    def create_room(self, params: dict = None):
+    def create_room(self, params: dict = {}):
         if 'display_name' not in params:
-            raise MeetingsError('You must include a value for display_name when creating a meeting room.')
+            raise MeetingsError(
+                'You must include a value for display_name as a field in the params dict when creating a meeting room.'
+            )
         return self._client.post(self._meetings_api_host, '/rooms', params, auth_type=Meetings._auth_type)
 
     def get_room(self, room_id: str):
@@ -77,7 +79,7 @@ class Meetings:
         )
 
     def update_application_theme(self, default_theme_id: str = None):
-        params = {'deafult_theme_id': default_theme_id}
+        params = {'default_theme_id': default_theme_id}
         return self._client.patch(self._meetings_api_host, '/applications', params, auth_type=Meetings._auth_type)
 
     @staticmethod

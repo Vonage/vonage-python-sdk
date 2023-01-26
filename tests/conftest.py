@@ -27,6 +27,7 @@ class DummyData(object):
         self.user_agent = f"vonage-python/{vonage.__version__} python/{platform.python_version()}"
         self.host = "rest.nexmo.com"
         self.api_host = "api.nexmo.com"
+        self.meetings_api_host = "api-eu.vonage.com/beta/meetings"
 
 
 @pytest.fixture(scope="session")
@@ -69,11 +70,13 @@ def verify(client):
 
     return vonage.Verify(client)
 
+
 @pytest.fixture
 def number_insight(client):
     import vonage
 
     return vonage.NumberInsight(client)
+
 
 @pytest.fixture
 def account(client):
@@ -81,23 +84,27 @@ def account(client):
 
     return vonage.Account(client)
 
+
 @pytest.fixture
 def numbers(client):
     import vonage
-    
+
     return vonage.Numbers(client)
+
 
 @pytest.fixture
 def ussd(client):
     import vonage
-    
+
     return vonage.Ussd(client)
+
 
 @pytest.fixture
 def short_codes(client):
     import vonage
-    
+
     return vonage.ShortCodes(client)
+
 
 @pytest.fixture
 def messages(client):
@@ -105,14 +112,23 @@ def messages(client):
 
     return vonage.Messages(client)
 
+
 @pytest.fixture
 def redact(client):
     import vonage
 
     return vonage.Redact(client)
 
+
 @pytest.fixture
 def application_v2(client):
     import vonage
 
     return vonage.ApplicationV2(client)
+
+
+@pytest.fixture
+def meetings(client):
+    import vonage
+
+    return vonage.Meetings(client)

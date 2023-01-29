@@ -1,9 +1,8 @@
 from .errors import MeetingsError
 
-from typing import Literal
+from typing_extensions import Literal
 import logging
 import requests
-import json
 
 
 logger = logging.getLogger("vonage")

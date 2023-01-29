@@ -1,0 +1,16 @@
+{
+    "theme_id": "90a21428-b74a-4221-adc3-783935d654db",
+    "theme_name": "updated_theme",
+    "domain": "VCP",
+    "account_id": "1234",
+    "application_id": "5678",
+    "main_color": "#FF0000",
+    "short_company_url": "updated_company_url",
+    "brand_text": "My Updated Company Name",
+    "brand_image_colored": null,
+    "brand_image_white": null,
+    "branded_favicon": null,
+    "brand_image_white_url": null,
+    "brand_image_colored_url": null,
+    "branded_favicon_url": null
+}

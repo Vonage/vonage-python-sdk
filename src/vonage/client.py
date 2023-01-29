@@ -294,7 +294,7 @@ class Client:
 
         logger.debug(f"DELETE to {repr(uri)} with headers {repr(self._request_headers)}")
         if params is not None:
-            logger.debug(f"DELETE call also has params {repr(params)}")
+            logger.debug(f"DELETE call has params {repr(params)}")
         return self.parse(
             host, self.session.delete(uri, headers=self._request_headers, timeout=self.timeout, params=params)
         )
@@ -330,7 +330,9 @@ class Client:
                     message = f"{title}: {detail} ({type})"
                 elif 'status' in error_data and 'message' in error_data and 'name' in error_data:
                     message = f'Status Code {error_data["status"]}: {error_data["name"]}: {error_data["message"]}'
-
+                    if 'errors' in error_data:
+                        for error in error_data['errors']:
+                            message += f', error: {error}'
             except JSONDecodeError:
                 pass
             raise ClientError(message)

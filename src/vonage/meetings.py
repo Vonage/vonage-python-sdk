@@ -1,5 +1,13 @@
 from .errors import MeetingsError
 
+from typing import Literal
+import logging
+import requests
+import json
+
+
+logger = logging.getLogger("vonage")
+
 
 class Meetings:
     """Class containing methods used to create and manage meetings using the Meetings API."""
@@ -25,6 +33,10 @@ class Meetings:
         return self._client.get(self._meetings_api_host, f'/rooms/{room_id}', auth_type=Meetings._auth_type)
 
     def update_room(self, room_id: str, params: dict):
+        return self._client.patch(self._meetings_api_host, f'/rooms/{room_id}', params, auth_type=Meetings._auth_type)
+
+    def add_theme_to_room(self, room_id: str, theme_id: str):
+        params = {'update_details': {'theme_id': theme_id}}
         return self._client.patch(self._meetings_api_host, f'/rooms/{room_id}', params, auth_type=Meetings._auth_type)
 
     def get_recording(self, recording_id: str):
@@ -64,23 +76,49 @@ class Meetings:
     def update_theme(self, theme_id: str, params: dict):
         return self._client.patch(self._meetings_api_host, f'/themes/{theme_id}', params, auth_type=Meetings._auth_type)
 
-    def make_logo_permanent(self, theme_id: str, params: dict):
-        return self._client.put(
-            self._meetings_api_host, f'/themes/{theme_id}/finalizeLogos', params, auth_type=Meetings._auth_type
-        )
-
-    def list_logo_upload_urls(self):
-        return self._client.get(self._meetings_api_host, '/themes/logos-upload-urls', auth_type=Meetings._auth_type)
-
     def list_rooms_with_theme_id(self, theme_id: str, start_id: str = None, end_id: str = None):
         params = Meetings.set_start_and_end_params(start_id, end_id)
         return self._client.get(
             self._meetings_api_host, f'/themes/{theme_id}/rooms', params, auth_type=Meetings._auth_type
         )
 
-    def update_application_theme(self, default_theme_id: str = None):
-        params = {'default_theme_id': default_theme_id}
+    def update_application_theme(self, theme_id: str = None):
+        params = {'update_details': {'default_theme_id': theme_id}}
         return self._client.patch(self._meetings_api_host, '/applications', params, auth_type=Meetings._auth_type)
+
+    def upload_logo_to_theme(
+        self, theme_id: str, path_to_image: str, logo_type: Literal['white', 'colored', 'favicon']
+    ):
+        params = self._get_logo_upload_url(logo_type)
+        self._upload_to_aws(params, path_to_image)
+        self._add_logo_to_theme(theme_id, params['fields']['key'])
+        return f'Logo upload to theme: {theme_id} was successful.'
+
+    def _get_logo_upload_url(self, logo_type):
+        upload_urls = self._client.get(
+            self._meetings_api_host, '/themes/logos-upload-urls', auth_type=Meetings._auth_type
+        )
+        for url_object in upload_urls:
+            if url_object['fields']['logoType'] == logo_type:
+                return url_object
+        raise MeetingsError('Cannot find the upload URL for the specified logo type.')
+
+    def _upload_to_aws(self, params, path_to_image):
+        form = {**params['fields'], 'file': open(path_to_image, 'rb')}
+
+        logger.debug(f"POST to {params['url']} to upload file {path_to_image}")
+        logo_upload = requests.post(
+            url=params['url'],
+            files=form,
+        )
+        if logo_upload.status_code != 204:
+            raise MeetingsError('Logo upload process failed.')
+
+    def _add_logo_to_theme(self, theme_id: str, key: str):
+        params = {'keys': [key]}
+        return self._client.put(
+            self._meetings_api_host, f'/themes/{theme_id}/finalizeLogos', params, auth_type=Meetings._auth_type
+        )
 
     @staticmethod
     def set_start_and_end_params(start_id, end_id):

@@ -1,1 +1,1 @@
-{"message":"\"theme_id\" must be a valid GUID","name":"InputValidationError","status":400}
+{"message":"could not find theme 90a21428-b74a-4221-adc3-783935d654dc","name":"NotFoundError","status":404}

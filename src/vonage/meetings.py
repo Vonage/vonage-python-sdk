@@ -81,7 +81,7 @@ class Meetings:
             self._meetings_api_host, f'/themes/{theme_id}/rooms', params, auth_type=Meetings._auth_type
         )
 
-    def update_application_theme(self, theme_id: str = None):
+    def update_application_theme(self, theme_id: str):
         params = {'update_details': {'default_theme_id': theme_id}}
         return self._client.patch(self._meetings_api_host, '/applications', params, auth_type=Meetings._auth_type)
 

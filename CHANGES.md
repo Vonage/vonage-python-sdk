@@ -1,3 +1,6 @@
+# 3.3.0
+- Adding support for the [Vonage Meetings API](https://developer.vonage.com/en/meetings/overview)
+
 # 3.2.2
 - Fixing a bug on Windows
 

@@ -25,8 +25,7 @@ jobs:
         python -m pip install mutmut
     - name: Run mutation test
       run: |
-        mutmut run --no-progress || \
-        if [ $? -eq 1 ]; then exit 1; fi
+        mutmut run --no-progress --CI
     - name: Save HTML output
       run: |
         mutmut html

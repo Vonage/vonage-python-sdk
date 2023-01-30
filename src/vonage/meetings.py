@@ -111,7 +111,7 @@ class Meetings:
             files=form,
         )
         if logo_upload.status_code != 204:
-            raise MeetingsError('Logo upload process failed.')
+            raise MeetingsError(f'Logo upload process failed. {logo_upload.content}')
 
     def _add_logo_to_theme(self, theme_id: str, key: str):
         params = {'keys': [key]}

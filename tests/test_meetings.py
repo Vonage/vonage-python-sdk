@@ -599,6 +599,7 @@ def test_upload_to_aws_error(meetings):
         responses.POST,
         'https://s3.amazonaws.com/not-a-valid-url',
         status_code=403,
+        fixture_path='meetings/upload_to_aws_error.xml'
     )
 
     with open('tests/data/meetings/list_logo_upload_urls.json') as file:
@@ -608,7 +609,7 @@ def test_upload_to_aws_error(meetings):
     params['url'] = 'https://s3.amazonaws.com/not-a-valid-url'
     with pytest.raises(MeetingsError) as err:
         meetings._upload_to_aws(params, 'tests/data/meetings/transparent_logo.png')
-    assert str(err.value) == 'Logo upload process failed.'
+    assert str(err.value) == 'Logo upload process failed. b\'<?xml version="1.0" encoding="UTF-8"?>\\\\n<Error><Code>SignatureDoesNotMatch</Code><Message>The request signature we calculated does not match the signature you provided. Check your key and signing method.</Message><AWSAccessKeyId>ASIA5NAYMMB6M7A2QEAR</AWSAccessKeyId><StringToSign></StringToSign><SignatureProvided>b2f311449e26692a174ab2c7ca2afab24bd19c509cc611a4cef7cb2c5bb2ea9a</SignatureProvided><StringToSignBytes></StringToSignBytes><RequestId>5ZS7MSFN46X89NXA</RequestId><HostId>f+HV7uSpeawLv5lFvN+QiYP6swbiTMd/XaJeVGC+/pqKHlwlgKZ6vg+qBjV/ufb1e5WS/bxBM/Y=</HostId></Error>\''
 
 
 @responses.activate

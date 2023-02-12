@@ -72,3 +72,7 @@ class BlockedNumberError(Error):
 
 class NumberInsightError(Error):
     """Error related to the Number Insight API."""
+
+class SipError(Error):
+    """Error related to usage of SIP calls."""
+    

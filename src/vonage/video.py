@@ -1,6 +1,7 @@
-from .errors import InvalidRoleError, TokenExpiryError, InvalidOptionsError, SipError
+from .errors import InvalidRoleError, TokenExpiryError, InvalidOptionsError, SipError, InvalidInputError
 
 import jwt
+import re
 from time import time
 from uuid import uuid4
 
@@ -191,6 +192,88 @@ class Video:
         return self._client.post(
             self._client.video_host(),
             f'/v2/project/{self._client.application_id}/dial',
+            params,
+            auth_type=Video.auth_type,
+        )
+
+    def play_dtmf(self, session_id: str, digits: str, connection_id: str = None):
+        if not re.search('^[0-9*#p]+$', digits):
+            raise InvalidInputError('Only digits 0-9, *, #, and "p" are allowed.')
+
+        params = {'digits': digits}
+
+        if connection_id is not None:
+            return self._client.post(
+                self._client.video_host(),
+                f'/v2/project/{self._client.application_id}/session/{session_id}/connection/{connection_id}/play-dtmf',
+                params,
+                auth_type=Video.auth_type,
+            )
+
+        return self._client.post(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/session/{session_id}/play-dtmf',
+            params,
+            auth_type=Video.auth_type,
+        )
+
+    def list_broadcasts(self, offset=None, count=None, session_id=None):
+        params = {'offset': str(offset), 'count': str(count), 'sessionId': session_id}
+
+        return self._client.get(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/broadcast',
+            params,
+            auth_type=Video.auth_type,
+        )
+
+    def start_broadcast(self, params: dict):
+        return self._client.post(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/broadcast',
+            params,
+            auth_type=Video.auth_type,
+        )
+
+    def get_broadcast(self, broadcast_id: str):
+        return self._client.get(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/broadcast/{broadcast_id}',
+            auth_type=Video.auth_type,
+        )
+
+    def stop_broadcast(self, broadcast_id: str):
+        return self._client.post(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/broadcast/{broadcast_id}',
+            params={},
+            auth_type=Video.auth_type,
+        )
+
+    def change_broadcast_layout(self, broadcast_id: str, params: dict):
+        return self._client.post(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/broadcast/{broadcast_id}/layout',
+            params=params,
+            auth_type=Video.auth_type,
+        )
+
+    def add_stream_to_broadcast(self, broadcast_id: str, stream_id: str, has_audio=True, has_video=True):
+        params = {'addStream': stream_id, 'hasAudio': has_audio, 'hasvideo': has_video}
+
+        return self._client.patch(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/broadcast/{broadcast_id}/streams',
+            params,
+            auth_type=Video.auth_type,
+        )
+
+    def remove_stream_from_broadcast(self, broadcast_id: str, stream_id: str):
+        params = {'removeStream': stream_id}
+
+        return self._client.patch(
+            self._client.video_host(),
+            f'/v2/project/{self._client.application_id}/broadcast/{broadcast_id}/streams',
             params,
             auth_type=Video.auth_type,
         )

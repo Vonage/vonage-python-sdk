@@ -1,5 +1,12 @@
 from util import *
-from vonage.errors import InvalidRoleError, TokenExpiryError, InvalidOptionsError
+from vonage.errors import (
+    ClientError,
+    InvalidRoleError,
+    TokenExpiryError,
+    InvalidOptionsError,
+    SipError,
+    InvalidInputError,
+)
 
 import jwt
 from time import time
@@ -9,6 +16,7 @@ session_id = 'my_session_id'
 stream_id = 'my_stream_id'
 connection_id = '1234-5678'
 archive_id = '1234-abcd'
+broadcast_id = '1748b7070a81464c9759c46ad10d3734'
 
 
 @responses.activate
@@ -391,10 +399,229 @@ def test_change_archive_layout(client, dummy_data):
 
 
 @responses.activate
-def test_create_sip_call(client, dummy_data):
-    stub(responses.POST, f"https://video.api.vonage.com/v2/project/{client.application_id}/dial")
+def test_create_sip_call(client):
+    stub(
+        responses.POST,
+        f'https://video.api.vonage.com/v2/project/{client.application_id}/dial',
+        fixture_path='video/create_sip_call.json',
+    )
 
-    sip = {'uri': 'https://example.com/dial'}
+    sip = {'uri': 'sip:user@sip.partner.com;transport=tls'}
 
-    sip_call = client.video.create_sip_call(session_id, 'not_a_real_token', sip)
-    assert isinstance(sip_call, dict)
+    sip_call = client.video.create_sip_call(session_id, 'my_token', sip)
+    assert sip_call['id'] == 'b0a5a8c7-dc38-459f-a48d-a7f2008da853'
+    assert sip_call['connectionId'] == 'e9f8c166-6c67-440d-994a-04fb6dfed007'
+    assert sip_call['streamId'] == '482bce73-f882-40fd-8ca5-cb74ff416036'
+
+
+@responses.activate
+def test_create_sip_call_not_found_error(client):
+    stub(responses.POST, f'https://video.api.vonage.com/v2/project/{client.application_id}/dial', status_code=404)
+    sip = {'uri': 'sip:user@sip.partner.com;transport=tls'}
+    with pytest.raises(ClientError):
+        client.video.create_sip_call('an-invalid-session-id', 'my_token', sip)
+
+
+def test_create_sip_call_no_uri_error(client):
+    sip = {}
+    with pytest.raises(SipError) as err:
+        client.video.create_sip_call(session_id, 'my_token', sip)
+
+    assert str(err.value) == 'You must specify a uri when creating a SIP call.'
+
+
+@responses.activate
+def test_play_dtmf(client):
+    stub(
+        responses.POST,
+        f'https://video.api.vonage.com/v2/project/{client.application_id}/session/{session_id}/play-dtmf',
+        fixture_path='video/null.json',
+    )
+
+    assert client.video.play_dtmf(session_id, '1234') == None
+
+
+@responses.activate
+def test_play_dtmf_specific_connection(client):
+    stub(
+        responses.POST,
+        f'https://video.api.vonage.com/v2/project/{client.application_id}/session/{session_id}/connection/my-connection-id/play-dtmf',
+        fixture_path='video/null.json',
+    )
+
+    assert client.video.play_dtmf(session_id, '1234', connection_id='my-connection-id') == None
+
+
+@responses.activate
+def test_play_dtmf_invalid_session_id_error(client):
+    stub(
+        responses.POST,
+        f'https://video.api.vonage.com/v2/project/{client.application_id}/session/{session_id}/play-dtmf',
+        fixture_path='video/play_dtmf_invalid_error.json',
+        status_code=400,
+    )
+
+    with pytest.raises(ClientError) as err:
+        client.video.play_dtmf(session_id, '1234')
+    assert str(err.value) == "{'code': 400, 'message': 'One of the properties digits or sessionId is invalid.'}"
+
+
+def test_play_dtmf_invalid_input_error(client):
+    with pytest.raises(InvalidInputError) as err:
+        client.video.play_dtmf(session_id, '!@£$%^&()asdfghjkl;')
+
+    assert str(err.value) == 'Only digits 0-9, *, #, and "p" are allowed.'
+
+
+@responses.activate
+def test_list_broadcasts(client):
+    stub(
+        responses.GET,
+        f'https://video.api.vonage.com/v2/project/{client.application_id}/broadcast',
+        fixture_path='video/list_broadcasts.json',
+    )
+
+    broadcasts = client.video.list_broadcasts()
+    assert broadcasts['count'] == '1'
+    assert broadcasts['items'][0]['id'] == '1748b7070a81464c9759c46ad10d3734'
+    assert broadcasts['items'][0]['applicationId'] == 'abc123'
+
+
+@responses.activate
+def test_list_broadcasts_options(client):
+    stub(
+        responses.GET,
+        f'https://video.api.vonage.com/v2/project/{client.application_id}/broadcast',
+        fixture_path='video/list_broadcasts.json',
+    )
+
+    broadcasts = client.video.list_broadcasts(count=1, session_id='2_MX4xMDBfjE0Mzc2NzY1NDgwMTJ-TjMzfn4')
+    assert broadcasts['count'] == '1'
+    assert broadcasts['items'][0]['sessionId'] == '2_MX4xMDBfjE0Mzc2NzY1NDgwMTJ-TjMzfn4'
+    assert broadcasts['items'][0]['id'] == '1748b7070a81464c9759c46ad10d3734'
+    assert broadcasts['items'][0]['applicationId'] == 'abc123'
+
+
+@responses.activate
+def test_start_broadcast_required_params(client):
+    stub(
+        responses.POST,
+        f'https://video.api.vonage.com/v2/project/{client.application_id}/broadcast',
+        fixture_path='video/broadcast.json',
+    )
+
+    params = {
+        "sessionId": "2_MX40NTMyODc3Mn5-fg",
+        "outputs": {"rtmp": [{"id": "foo", "serverUrl": "rtmps://myfooserver/myfooapp", "streamName": "myfoostream"}]},
+    }
+
+    broadcast = client.video.start_broadcast(params)
+    assert broadcast['id'] == '1748b7070a81464c9759c46ad10d3734'
+    assert broadcast['createdAt'] == 1437676551000
+    assert broadcast['maxBitrate'] == 2000000
+    assert broadcast['broadcastUrls']['rtmp'][0]['id'] == 'abc123'
+
+
+@responses.activate
+def test_start_broadcast_all_params(client):
+    stub(
+        responses.POST,
+        f'https://video.api.vonage.com/v2/project/{client.application_id}/broadcast',
+        fixture_path='video/broadcast.json',
+    )
+
+    params = {
+        "sessionId": "2_MX40NTMyODc3Mn5-fg",
+        "layout": {
+            "type": "custom",
+            "stylesheet": "the layout stylesheet (only used with type == custom)",
+            "screenshareType": "horizontalPresentation",
+        },
+        "maxDuration": 5400,
+        "outputs": {"rtmp": [{"id": "foo", "serverUrl": "rtmps://myfooserver/myfooapp", "streamName": "myfoostream"}]},
+        "resolution": "1920x1080",
+        "streamMode": "manual",
+        "multiBroadcastTag": "foo",
+    }
+
+    broadcast = client.video.start_broadcast(params)
+    assert broadcast['id'] == '1748b7070a81464c9759c46ad10d3734'
+    assert broadcast['createdAt'] == 1437676551000
+    assert broadcast['maxBitrate'] == 2000000
+    assert broadcast['broadcastUrls']['rtmp'][0]['id'] == 'abc123'
+
+
+@responses.activate
+def test_get_broadcast(client):
+    stub(
+        responses.GET,
+        f'https://video.api.vonage.com/v2/project/{client.application_id}/broadcast/{broadcast_id}',
+        fixture_path='video/broadcast.json',
+    )
+
+    broadcast = client.video.get_broadcast(broadcast_id)
+    assert broadcast['id'] == '1748b7070a81464c9759c46ad10d3734'
+    assert broadcast['sessionId'] == '2_MX4xMDBfjE0Mzc2NzY1NDgwMTJ-TjMzfn4'
+    assert broadcast['updatedAt'] == 1437676551000
+    assert broadcast['resolution'] == 'abc123'
+
+
+@responses.activate
+def test_stop_broadcast(client):
+    stub(
+        responses.POST,
+        f'https://video.api.vonage.com/v2/project/{client.application_id}/broadcast/{broadcast_id}',
+        fixture_path='video/broadcast.json',
+    )
+
+    broadcast = client.video.stop_broadcast(broadcast_id)
+    assert broadcast['id'] == '1748b7070a81464c9759c46ad10d3734'
+    assert broadcast['sessionId'] == '2_MX4xMDBfjE0Mzc2NzY1NDgwMTJ-TjMzfn4'
+    assert broadcast['updatedAt'] == 1437676551000
+    assert broadcast['resolution'] == 'abc123'
+
+
+@responses.activate
+def test_stop_broadcast(client):
+    stub(
+        responses.POST,
+        f'https://video.api.vonage.com/v2/project/{client.application_id}/broadcast/{broadcast_id}/layout',
+        fixture_path='video/null.json',
+    )
+
+    params = {
+        "type": "bestFit",
+        "stylesheet": "stream.instructor {position: absolute; width: 100%;  height:50%;}",
+        "screenshareType": "pip",
+    }
+
+    assert client.video.change_broadcast_layout(broadcast_id, params) == None
+
+
+@responses.activate
+def test_add_stream_to_broadcast(client, dummy_data):
+    stub(
+        responses.PATCH,
+        f"https://video.api.vonage.com/v2/project/{client.application_id}/broadcast/{broadcast_id}/streams",
+        status_code=204,
+    )
+
+    assert (
+        client.video.add_stream_to_broadcast(
+            broadcast_id=broadcast_id, stream_id='1234', has_audio=True, has_video=True
+        )
+        == None
+    )
+    assert request_user_agent() == dummy_data.user_agent
+
+
+@responses.activate
+def test_remove_stream_from_archive(client, dummy_data):
+    stub(
+        responses.PATCH,
+        f"https://video.api.vonage.com/v2/project/{client.application_id}/broadcast/{broadcast_id}/streams",
+        status_code=204,
+    )
+
+    assert client.video.remove_stream_from_broadcast(broadcast_id=broadcast_id, stream_id='1234') == None
+    assert request_user_agent() == dummy_data.user_agent

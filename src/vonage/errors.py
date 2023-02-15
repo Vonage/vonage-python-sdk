@@ -59,6 +59,7 @@ class TokenExpiryError(Error):
 
 class InvalidOptionsError(Error):
     """The option(s) that were specified are invalid."""
+
     """An authentication method was specified that is not allowed."""
 
 
@@ -73,6 +74,10 @@ class BlockedNumberError(Error):
 class NumberInsightError(Error):
     """Error related to the Number Insight API."""
 
+
 class SipError(Error):
     """Error related to usage of SIP calls."""
-    
+
+
+class InvalidInputError(Error):
+    """The input that was provided was invalid."""

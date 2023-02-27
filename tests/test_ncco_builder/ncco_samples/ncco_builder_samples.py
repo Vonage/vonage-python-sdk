@@ -1,4 +1,4 @@
-from vonage import Ncco, ConnectEndpoints, InputTypes, PayPrompts
+from vonage import Ncco, ConnectEndpoints, InputTypes
 
 record = Ncco.Record(eventUrl='http://example.com/events')
 
@@ -40,24 +40,6 @@ input = Ncco.Input(
 )
 
 notify = Ncco.Notify(payload={"message": "world"}, eventUrl=["http://example.com"], eventMethod='PUT')
-
-pay_voice_prompt = Ncco.Pay(
-    amount=99.99,
-    currency='gbp',
-    eventUrl='https://example.com/payment',
-    voice=PayPrompts.VoicePrompt(language='en-GB', style=1),
-)
-
-pay_text_prompt = Ncco.Pay(
-    amount=12.345,
-    currency='gbp',
-    eventUrl='https://example.com/payment',
-    prompts=PayPrompts.TextPrompt(
-        type='CardNumber',
-        text='Enter your card number.',
-        errors={'InvalidCardType': {'text': 'The card you are trying to use is not valid for this purchase.'}},
-    ),
-)
 
 basic_ncco = [{"action": "talk", "text": "hello"}]
 
@@ -119,24 +101,4 @@ insane_ncco = [
         'type': ['dtmf', 'speech'],
     },
     {'action': 'notify', 'eventMethod': 'PUT', 'eventUrl': ['http://example.com'], 'payload': {'message': 'world'}},
-    {
-        'action': 'pay',
-        'amount': 99.99,
-        'currency': 'gbp',
-        'eventUrl': ['https://example.com/payment'],
-        'voice': {'language': 'en-GB', 'style': 1},
-    },
-    {
-        'action': 'pay',
-        'amount': 12.35,
-        'currency': 'gbp',
-        'eventUrl': ['https://example.com/payment'],
-        'prompts': {
-            'errors': {
-                'InvalidCardType': {'text': 'The card you are trying ' 'to use is not valid for ' 'this purchase.'}
-            },
-            'text': 'Enter your card number.',
-            'type': 'CardNumber',
-        },
-    },
 ]

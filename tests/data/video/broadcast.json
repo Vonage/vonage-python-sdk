@@ -24,16 +24,16 @@
             "dvr": false
         }
     },
-    "resolution": "abc123",
-    "hasAudio": false,
-    "hasVideo": false,
-    "streamMode": "manual",
-    "status": "abc123",
+    "resolution": "640x480",
+    "hasAudio": true,
+    "hasVideo": true,
+    "streamMode": "auto",
+    "status": "started",
     "streams": [
         {
-            "streamId": "abc123",
-            "hasAudio": "abc123",
-            "hasVideo": "abc123"
+            "streamId": "70a81464c9759c46ad10d3734",
+            "hasAudio": true,
+            "hasVideo": true
         }
     ]
 }

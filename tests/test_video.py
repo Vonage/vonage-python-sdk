@@ -503,6 +503,27 @@ def test_list_broadcasts_options(client):
 
 
 @responses.activate
+def test_list_broadcasts_invalid_options_errors(client):
+    stub(
+        responses.GET,
+        f'https://video.api.vonage.com/v2/project/{client.application_id}/broadcast',
+        fixture_path='video/list_broadcasts.json',
+    )
+
+    with pytest.raises(InvalidOptionsError) as err:
+        client.video.list_broadcasts(offset=-2, session_id='2_MX4xMDBfjE0Mzc2NzY1NDgwMTJ-TjMzfn4')
+    assert str(err.value) == 'Offset must be an int >= 0.'
+
+    with pytest.raises(InvalidOptionsError) as err:
+        client.video.list_broadcasts(count=9999, session_id='2_MX4xMDBfjE0Mzc2NzY1NDgwMTJ-TjMzfn4')
+    assert str(err.value) == 'Count must be an int between 0 and 1000.'
+
+    with pytest.raises(InvalidOptionsError) as err:
+        client.video.list_broadcasts(offset='10', session_id='2_MX4xMDBfjE0Mzc2NzY1NDgwMTJ-TjMzfn4')
+    assert str(err.value) == 'Offset must be an int >= 0.'
+
+
+@responses.activate
 def test_start_broadcast_required_params(client):
     stub(
         responses.POST,
@@ -563,7 +584,7 @@ def test_get_broadcast(client):
     assert broadcast['id'] == '1748b7070a81464c9759c46ad10d3734'
     assert broadcast['sessionId'] == '2_MX4xMDBfjE0Mzc2NzY1NDgwMTJ-TjMzfn4'
     assert broadcast['updatedAt'] == 1437676551000
-    assert broadcast['resolution'] == 'abc123'
+    assert broadcast['resolution'] == '640x480'
 
 
 @responses.activate
@@ -578,13 +599,13 @@ def test_stop_broadcast(client):
     assert broadcast['id'] == '1748b7070a81464c9759c46ad10d3734'
     assert broadcast['sessionId'] == '2_MX4xMDBfjE0Mzc2NzY1NDgwMTJ-TjMzfn4'
     assert broadcast['updatedAt'] == 1437676551000
-    assert broadcast['resolution'] == 'abc123'
+    assert broadcast['resolution'] == '640x480'
 
 
 @responses.activate
-def test_stop_broadcast(client):
+def test_change_broadcast_layout(client):
     stub(
-        responses.POST,
+        responses.PUT,
         f'https://video.api.vonage.com/v2/project/{client.application_id}/broadcast/{broadcast_id}/layout',
         fixture_path='video/null.json',
     )

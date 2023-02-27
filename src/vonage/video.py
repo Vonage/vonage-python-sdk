@@ -15,7 +15,10 @@ class Video:
     def __init__(self, client):
         self._client = client
 
-    def create_session(self, session_options={}):
+    def create_session(self, session_options: dict = None):
+        if session_options is None:
+            session_options = {}
+
         params = {'archiveMode': 'manual', 'p2p.preference': 'disabled', 'location': None}
         if 'archive_mode' in session_options and session_options['archive_mode'] not in Video.archive_mode_values:
             raise InvalidOptionsError(f'Invalid archive_mode value. Must be one of {Video.archive_mode_values}.')
@@ -217,7 +220,12 @@ class Video:
             auth_type=Video.auth_type,
         )
 
-    def list_broadcasts(self, offset=None, count=None, session_id=None):
+    def list_broadcasts(self, offset: int = None, count: int = None, session_id: str = None):
+        if offset is not None and (type(offset) != int or offset < 0):
+            raise InvalidOptionsError('Offset must be an int >= 0.')
+        if count is not None and (type(count) != int or count < 0 or count > 1000):
+            raise InvalidOptionsError('Count must be an int between 0 and 1000.')
+
         params = {'offset': str(offset), 'count': str(count), 'sessionId': session_id}
 
         return self._client.get(
@@ -251,7 +259,7 @@ class Video:
         )
 
     def change_broadcast_layout(self, broadcast_id: str, params: dict):
-        return self._client.post(
+        return self._client.put(
             self._client.video_host(),
             f'/v2/project/{self._client.application_id}/broadcast/{broadcast_id}/layout',
             params=params,

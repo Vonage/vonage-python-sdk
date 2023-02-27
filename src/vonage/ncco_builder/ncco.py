@@ -6,6 +6,8 @@ from .connect_endpoints import ConnectEndpoints
 from .input_types import InputTypes
 from .pay_prompts import PayPrompts
 
+from deprecated import deprecated
+
 
 class Ncco:
     class Action(BaseModel):
@@ -171,6 +173,7 @@ class Ncco:
         def ensure_url_in_list(cls, v):
             return Ncco._ensure_object_in_list(v)
 
+    @deprecated(version='3.2.3', reason='The Pay NCCO action has been deprecated.')
     class Pay(Action):
         """The pay action collects credit card information with DTMF input in a secure (PCI-DSS compliant) way."""
 

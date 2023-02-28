@@ -1,0 +1,4 @@
+{
+    "code": 400,
+    "message": "One of the properties digits or sessionId is invalid."
+}

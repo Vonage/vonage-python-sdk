@@ -253,9 +253,7 @@ class Client:
             hash = base64.b64encode(f"{self.api_key}:{self.api_secret}".encode("utf-8")).decode("ascii")
             self._request_headers = dict(self._request_headers or {}, Authorization=f"Basic {hash}")
         else:
-            raise InvalidAuthenticationTypeError(
-                f'Invalid authentication type. Must be one of "jwt" or "header".'
-            )
+            raise InvalidAuthenticationTypeError(f'Invalid authentication type. Must be one of "jwt" or "header".')
 
         logger.debug(f"PUT to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}")
         # All APIs that currently use put methods require a json-formatted body so don't need to check this
@@ -319,6 +317,8 @@ class Client:
                     detail = error_data["detail"]
                     type = error_data["type"]
                     message = f"{title}: {detail} ({type})"
+                else:
+                    message = str(error_data)
 
             except JSONDecodeError:
                 pass

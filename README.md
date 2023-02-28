@@ -355,7 +355,6 @@ Use the builder to construct valid NCCO actions, which are modelled in the SDK a
 * Stream
 * Input
 * Notify
-* Pay
 
 ### Construct actions
 

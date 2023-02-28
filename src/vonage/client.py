@@ -5,7 +5,7 @@ from .application import ApplicationV2, Application
 from .errors import *
 from .messages import Messages
 from .number_insight import NumberInsight
-from .numbers import Numbers
+from .number_management import Numbers
 from .redact import Redact
 from .short_codes import ShortCodes
 from .sms import Sms
@@ -301,7 +301,6 @@ class Client:
         elif response.status_code == 204:
             return None
         elif 200 <= response.status_code < 300:
-
             # Strip off any encoding from the content-type header:
             content_mime = response.headers.get("content-type").split(";", 1)[0]
             if content_mime == "application/json":

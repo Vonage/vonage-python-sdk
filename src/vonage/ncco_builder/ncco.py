@@ -5,6 +5,8 @@ from typing_extensions import Literal
 from .connect_endpoints import ConnectEndpoints
 from .input_types import InputTypes
 
+from deprecated import deprecated
+
 
 class Ncco:
     class Action(BaseModel):

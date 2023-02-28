@@ -7,6 +7,8 @@ from .input_types import InputTypes
 
 from deprecated import deprecated
 
+from deprecated import deprecated
+
 
 class Ncco:
     class Action(BaseModel):

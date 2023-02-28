@@ -4,7 +4,6 @@ from typing_extensions import Literal
 
 from .connect_endpoints import ConnectEndpoints
 from .input_types import InputTypes
-from .pay_prompts import PayPrompts
 
 
 class Ncco:
@@ -170,38 +169,6 @@ class Ncco:
         @validator('eventUrl')
         def ensure_url_in_list(cls, v):
             return Ncco._ensure_object_in_list(v)
-
-    class Pay(Action):
-        """The pay action collects credit card information with DTMF input in a secure (PCI-DSS compliant) way."""
-
-        action = Field('pay', const=True)
-        amount: confloat(ge=0)
-        currency: Optional[constr(to_lower=True)]
-        eventUrl: Optional[Union[List[str], str]]
-        prompts: Optional[Union[List[PayPrompts.TextPrompt], PayPrompts.TextPrompt, dict]]
-        voice: Optional[Union[PayPrompts.VoicePrompt, dict]]
-
-        @validator('amount')
-        def round_amount(cls, v):
-            return round(v, 2)
-
-        @validator('eventUrl')
-        def ensure_url_in_list(cls, v):
-            return Ncco._ensure_object_in_list(v)
-
-        @validator('prompts')
-        def ensure_text_model(cls, v):
-            if type(v) is dict:
-                return PayPrompts.create_text_model(v)
-            else:
-                return v
-
-        @validator('voice')
-        def ensure_voice_model(cls, v):
-            if type(v) is dict:
-                return PayPrompts.create_voice_model(v)
-            else:
-                return v
 
     @staticmethod
     def build_ncco(*args: Action, actions: List[Action] = None) -> str:

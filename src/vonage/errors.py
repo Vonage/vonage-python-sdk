@@ -1,12 +1,8 @@
-class Error(Exception):
+class ClientError(Exception):
     pass
 
 
-class ClientError(Error):
-    pass
-
-
-class ServerError(Error):
+class ServerError(Exception):
     pass
 
 
@@ -14,21 +10,23 @@ class AuthenticationError(ClientError):
     pass
 
 
-class CallbackRequiredError(Error):
+class CallbackRequiredError(Exception):
     """Indicates a callback is required but was not present."""
 
 
-class MessagesError(Error):
+class MessagesError(Exception):
     """
     Indicates an error related to the Messages class which calls the Vonage Messages API.
     """
 
 
-class PricingTypeError(Error):
+class PricingTypeError(Exception):
     """A pricing type was specified that is not allowed."""
 
-class RedactError(Error):
+
+class RedactError(Exception):
     """Error related to the Redact class or Redact API."""
 
-class InvalidAuthenticationTypeError(Error):
+
+class InvalidAuthenticationTypeError(Exception):
     """An authentication method was specified that is not allowed"""

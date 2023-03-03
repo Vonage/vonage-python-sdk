@@ -246,13 +246,27 @@ def test_whatsapp_sticker_url(messages):
     )
 
 
-def test_whatsapp_sticker_error(messages):
+def test_whatsapp_sticker_invalid_input_error(messages):
     with pytest.raises(MessagesError) as err:
         messages.validate_send_message_input(
             {
                 'channel': 'whatsapp',
                 'message_type': 'sticker',
                 'sticker': {'my_sticker'},
+                'to': '44123456789',
+                'from': 'vonage',
+            }
+        )
+    assert str(err.value) == 'Must specify one, and only one, of "id" or "url" in the "sticker" field.'
+
+
+def test_whatsapp_sticker_exclusive_keys_error(messages):
+    with pytest.raises(MessagesError) as err:
+        messages.validate_send_message_input(
+            {
+                'channel': 'whatsapp',
+                'message_type': 'sticker',
+                'sticker': {'id': '13aaecab-2485-4255-a0a7-97a2be6906b9', 'url': 'https://example.com/sticker1.webp'},
                 'to': '44123456789',
                 'from': 'vonage',
             }

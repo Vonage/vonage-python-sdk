@@ -8,7 +8,7 @@ class Messages:
     valid_message_types = {
         'sms': {'text'},
         'mms': {'image', 'vcard', 'audio', 'video'},
-        'whatsapp': {'text', 'image', 'audio', 'video', 'file', 'template', 'custom'},
+        'whatsapp': {'text', 'image', 'audio', 'video', 'file', 'template', 'sticker', 'custom'},
         'messenger': {'text', 'image', 'audio', 'video', 'file'},
         'viber_service': {'text', 'image', 'video', 'file'},
     }
@@ -46,7 +46,7 @@ class Messages:
         if params['channel'] not in Messages.valid_message_channels:
             raise MessagesError(
                 f"""
-            '{params['channel']}' is an invalid message channel. 
+            "{params['channel']}" is an invalid message channel. 
             Must be one of the following types: {self.valid_message_channels}'
             """
             )
@@ -75,16 +75,24 @@ class Messages:
             )
 
     def _channel_specific_checks(self, params):
-        if (params['channel'] == 'whatsapp' and params['message_type'] == 'template' and 'whatsapp' not in params) or (
-            params['channel'] == 'viber_service' and 'viber_service' not in params
+        if (
+            (params['channel'] == 'whatsapp' and params['message_type'] == 'template' and 'whatsapp' not in params)
+            or (params['channel'] == 'whatsapp' and params['message_type'] == 'sticker' and 'sticker' not in params)
+            or (params['channel'] == 'viber_service' and 'viber_service' not in params)
         ):
             raise MessagesError(
                 f'''You must specify all required properties for message channel "{params["channel"]}".'''
             )
+        elif params['channel'] == 'whatsapp' and params['message_type'] == 'sticker':
+            self._check_valid_whatsapp_sticker(params['sticker'])
 
     def _check_valid_client_ref(self, params):
         if 'client_ref' in params:
-            if len(params['client_ref']) <= 40:
+            if len(params['client_ref']) <= 100:
                 self._client_ref = params['client_ref']
             else:
-                raise MessagesError('client_ref can be a maximum of 40 characters.')
+                raise MessagesError('client_ref can be a maximum of 100 characters.')
+
+    def _check_valid_whatsapp_sticker(self, sticker):
+        if ('id' not in sticker and 'url' not in sticker) or ('id' in sticker and 'url' in sticker):
+            raise MessagesError('Must specify one, and only one, of "id" or "url" in the "sticker" field.')

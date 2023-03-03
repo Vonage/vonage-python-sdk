@@ -75,12 +75,9 @@ class Messages:
             )
 
     def _channel_specific_checks(self, params):
-        try:
-            if params['channel'] == 'whatsapp' and params['message_type'] == 'template':
-                params['whatsapp']
-            if params['channel'] == 'viber_service':
-                params['viber_service']
-        except (KeyError, TypeError):
+        if (params['channel'] == 'whatsapp' and params['message_type'] == 'template' and 'whatsapp' not in params) or (
+            params['channel'] == 'viber_service' and 'viber_service' not in params
+        ):
             raise MessagesError(
                 f'''You must specify all required properties for message channel "{params["channel"]}".'''
             )

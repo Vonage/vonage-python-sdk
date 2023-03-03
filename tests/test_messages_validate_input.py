@@ -134,6 +134,36 @@ def test_set_viber_service_optional_attribute(messages):
     )
 
 
+def test_viber_service_video(messages):
+    messages.validate_send_message_input(
+        {
+            'channel': 'viber_service',
+            'message_type': 'video',
+            'to': '44123456789',
+            'from': 'vonage',
+            'video': {
+                'url': 'https://example.com/video.mp4',
+                'caption': 'Look at this video',
+                'thumb_url': 'https://example.com/thumbnail.jpg',
+            },
+            'viber_service': {'category': 'transaction', 'duration': '120', 'ttl': 30, 'type': 'string'},
+        }
+    )
+
+
+def test_viber_service_file(messages):
+    messages.validate_send_message_input(
+        {
+            'channel': 'viber_service',
+            'message_type': 'file',
+            'to': '44123456789',
+            'from': 'vonage',
+            'video': {'url': 'https://example.com/files', 'name': 'example.pdf'},
+            'viber_service': {'category': 'transaction', 'ttl': 30, 'type': 'string'},
+        }
+    )
+
+
 def test_incomplete_input(messages):
     with pytest.raises(MessagesError):
         messages.validate_send_message_input(

@@ -164,6 +164,42 @@ def test_viber_service_file(messages):
     )
 
 
+def test_viber_service_text_action_button(messages):
+    messages.validate_send_message_input(
+        {
+            'channel': 'viber_service',
+            'message_type': 'text',
+            'to': '44123456789',
+            'from': 'vonage',
+            'text': 'my important message',
+            'viber_service': {
+                'category': 'transaction',
+                'ttl': 30,
+                'type': 'string',
+                'action': {'url': 'https://example.com/page1.html', 'text': 'Find out more'},
+            },
+        }
+    )
+
+
+def test_viber_service_image_action_button(messages):
+    messages.validate_send_message_input(
+        {
+            'channel': 'viber_service',
+            'message_type': 'image',
+            'to': '44123456789',
+            'from': 'vonage',
+            'image': {'url': 'https://example.com/image.jpg', 'caption': 'Check out this new promotion'},
+            'viber_service': {
+                'category': 'transaction',
+                'ttl': 30,
+                'type': 'string',
+                'action': {'url': 'https://example.com/page1.html', 'text': 'Find out more'},
+            },
+        }
+    )
+
+
 def test_incomplete_input(messages):
     with pytest.raises(MessagesError):
         messages.validate_send_message_input(

@@ -1,5 +1,9 @@
 # 3.3.0
-- Adding support for the [Vonage Meetings API](https://developer.vonage.com/en/meetings/overview)
+- Updated Messages API:
+    - Added new messaging channels for Viber Service Messages (`video`, `file`)
+    - Added new WhatsApp `sticker` message channel
+    - Increased `client_ref` max value to 100 characters
+- Deprecated `pay` action in the NCCO builder as it is being removed by Vonage
 
 # 3.2.2
 - Fixing a bug on Windows

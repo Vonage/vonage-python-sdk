@@ -4,11 +4,11 @@ record_url_as_str = '{"action": "record", "eventUrl": ["http://example.com/event
 
 record_add_split = '{"action": "record", "split": "conversation", "channels": 4}'
 
-conversation_basic = '{"action": "notify", "name": "my_conversation"}'
+conversation_basic = '{"action": "conversation", "name": "my_conversation"}'
 
-conversation_full = '{"action": "notify", "name": "my_conversation", "musicOnHoldUrl": ["http://example.com/music.mp3"], "startOnEnter": true, "endOnExit": true, "record": true, "canSpeak": ["asdf", "qwer"], "canHear": ["asdf"]}'
+conversation_full = '{"action": "conversation", "name": "my_conversation", "musicOnHoldUrl": ["http://example.com/music.mp3"], "startOnEnter": true, "endOnExit": true, "record": true, "canSpeak": ["asdf", "qwer"], "canHear": ["asdf"]}'
 
-conversation_mute_option = '{"action": "notify", "name": "my_conversation", "mute": true}'
+conversation_mute_option = '{"action": "conversation", "name": "my_conversation", "mute": true}'
 
 connect_phone = '{"action": "connect", "endpoint": [{"type": "phone", "number": "447000000000", "dtmfAnswer": "1p2p3p#**903#", "onAnswer": {"url": "https://example.com/answer", "ringbackTone": "http://example.com/ringbackTone.wav"}}]}'
 

@@ -20,11 +20,16 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [Verify API](#verify-api)
 - [Meetings API](#meetings-api)
 - [Number Insight API](#number-insight-api)
+- [Account API](#account-api)
 - [Number Management API](#number-management-api)
+- [Pricing API](#pricing-api)
 - [Managing Secrets](#managing-secrets)
 - [Application API](#application-api)
+- [Validating Webhook Signatures](#validate-webhook-signatures)
+- [JWT Parameters](#jwt-parameters)
 - [Overriding API Attributes](#overriding-api-attributes)
 - [Frequently Asked Questions](#frequently-asked-questions)
+- [Contributing](#contributing)
 - [License](#license)
 
 ## Installation
@@ -356,7 +361,6 @@ Use the builder to construct valid NCCO actions, which are modelled in the SDK a
 * Stream
 * Input
 * Notify
-* Pay
 
 ### Construct actions
 
@@ -398,6 +402,11 @@ response = client.voice.create_call({
 
 pprint(response)
 ```
+
+### Note on from_ parameter in connect action
+
+When using the `connect` action, use the parameter `from_` to specify the recipient (as `from` is a reserved keyword in Python!)
+
 
 ## Verify API
 
@@ -861,7 +870,7 @@ The following is a list of Vonage APIs and whether the Python SDK provides suppo
 | Verify API            | General Availability |     ✅     |
 | Voice API             | General Availability |     ✅     |
 
-## asyncio Support
+### asyncio Support
 
 [asyncio](https://docs.python.org/3/library/asyncio.html) is a library to write **concurrent** code using the **async/await** syntax.
 

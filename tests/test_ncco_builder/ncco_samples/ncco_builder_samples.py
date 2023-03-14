@@ -71,7 +71,7 @@ two_part_ncco = [
 
 insane_ncco = [
     {'action': 'record', 'eventUrl': ['http://example.com/events']},
-    {'action': 'notify', 'name': 'my_conversation'},
+    {'action': 'conversation', 'name': 'my_conversation'},
     {
         'action': 'connect',
         'endpoint': [{'number': '447000000000', 'type': 'phone'}],

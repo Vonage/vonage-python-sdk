@@ -42,7 +42,7 @@ class Ncco:
         while preserving the communication context.
         Using conversation with the same name reuses the same persisted conversation."""
 
-        action = Field('notify', const=True)
+        action = Field('conversation', const=True)
         name: str
         musicOnHoldUrl: Optional[Union[List[str], str]]
         startOnEnter: Optional[bool]

@@ -402,6 +402,11 @@ response = client.voice.create_call({
 pprint(response)
 ```
 
+### Note on from_ parameter in connect action
+
+When using the `connect` action, use the parameter `from_` to specify the recipient (as `from` is a reserved keyword in Python!)
+
+
 ## Verify API
 
 ### Search for a Verification request

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, conint, constr, ValidationError, parse_obj_as
-from typing import Optional, Literal, List
+from typing import Optional, List
+from typing_extensions import Literal
 import copy
 
 from .errors import Verify2Error

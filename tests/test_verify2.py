@@ -37,6 +37,21 @@ def test_new_request_sms_full():
     assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
 
 
+def test_new_request_invalid_channel_error():
+    params = {
+        'code_length': 4,
+        'brand': 'ACME, Inc',
+        'workflow': [{'channel': 'carrier_pigeon', 'to': '447700900000'}],
+    }
+
+    with raises(Verify2Error) as err:
+        verify2.new_request(params)
+    assert (
+        str(err.value)
+        == 'You must specify a valid verify channel inside the "workflow" object, one of: "[\'sms\', \'whatsapp\', \'whatsapp_interactive\', \'voice\', \'email\', \'silent_auth\']"'
+    )
+
+
 def test_new_request_code_length_error():
     params = {
         'code_length': 1000,
@@ -71,6 +86,17 @@ def test_new_request_sms_app_hash_error():
     assert 'Invalid "app_hash" specified.' in str(err.value)
 
 
+def test_new_request_whatsapp_app_hash_error():
+    params = {
+        'brand': 'ACME, Inc',
+        'workflow': [{'channel': 'whatsapp', 'to': '447700900000', 'app_hash': 'asdfqwerzxc'}],
+    }
+
+    with raises(Verify2Error) as err:
+        verify2.new_request(params)
+    assert str(err.value) == 'Cannot specify a value for "app_hash" unless using SMS for authentication.'
+
+
 @responses.activate
 def test_new_request_whatsapp():
     stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
@@ -92,7 +118,20 @@ def test_new_request_whatsapp_from_field():
 
 
 @responses.activate
-def test_new_request_whatsapp_from_field_error():
+def test_new_request_whatsapp_invalid_sender_error():
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/invalid_sender.json', status_code=422)
+
+    params = {
+        'brand': 'ACME, Inc',
+        'workflow': [{'channel': 'whatsapp', 'to': '447700900000', 'from': 'asdfghjkl'}],
+    }
+    with pytest.raises(ClientError) as err:
+        verify2.new_request(params)
+    assert str(err.value) == 'You must specify a valid "from" value if included.'
+
+
+@responses.activate
+def test_new_request_whatsapp_sender_unregistered_error():
     stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/invalid_sender.json', status_code=422)
 
     params = {

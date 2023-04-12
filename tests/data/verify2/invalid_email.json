@@ -1,0 +1,12 @@
+{
+    "title": "Invalid params",
+    "detail": "The value of one or more parameters is invalid",
+    "instance": "e151c892-76b2-4486-8a37-b88faa70babd",
+    "type": "https://www.nexmo.com/messages/Errors#InvalidParams",
+    "invalid_parameters": [
+        {
+            "name": "workflow[0]",
+            "reason": "`to` Email address is invalid"
+        }
+    ]
+}

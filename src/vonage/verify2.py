@@ -1,55 +1,33 @@
-from pydantic import BaseModel, conint, constr, ValidationError, parse_obj_as
+from pydantic import BaseModel, conint, ValidationError, validator
 from typing import Optional, List
-from typing_extensions import Literal
+
 import copy
+import re
 
 from .errors import Verify2Error
 
 
-allowed_channels = 'sms', 'whatsapp', 'whatsapp_interactive', 'voice', 'email', 'silent_auth'
-
-
-class VerifyWorkflow(BaseModel):
-    channel: Literal['sms', 'whatsapp', 'whatsapp_interactive', 'voice', 'email', 'silent_auth']
-
-
-class SmsWorkflow(VerifyWorkflow):
-    to: constr(regex=r'^[1-9]\d{6,14}$')
-    app_hash: Optional[constr(min_length=11, max_length=11)]
-
-
-class VerifyRequest(BaseModel):
-    locale: Optional[str]
-    channel_timeout: Optional[conint(ge=60, le=900)]
-    client_ref: Optional[str]
-    code_length: Optional[conint(ge=4, le=10)]
-    brand: str
-    workflow: List[VerifyWorkflow]
-
-
 class Verify2:
+    valid_channels = [
+        'sms',
+        'whatsapp',
+        'whatsapp_interactive',
+        'voice',
+        'email',
+        'silent_auth',
+    ]
+
     def __init__(self, client):
         self._client = client
         self._auth_type = 'jwt'
 
     def new_request(self, params: dict):
-        if 'workflow' not in params:
-            raise Verify2Error(
-                'You must provide the workflow for the verification request as a dictionary, inside a list, inside the params object.'
-            )
-        if 'channel' not in params['workflow'][0] or params['workflow'][0]['channel'] not in allowed_channels:
-            raise Verify2Error(f'You must specify a valid verify channel, one of: {allowed_channels}')
-
-        params_to_verify = copy.deepcopy(params)
-        if params['workflow'][0]['channel'] == 'sms':
-            params_to_verify['workflow'][0] = SmsWorkflow.parse_obj(params['workflow'][0])
-
         try:
-            VerifyRequest.parse_obj(params_to_verify)
-        except ValidationError as v:
-            raise Verify2Error(
-                f'Invalid input params to the verify v2 request. Validation error received:\n {v.json()}'
-            )
+            params_to_verify = copy.deepcopy(params)
+            print(params_to_verify)
+            Verify2.VerifyRequest.parse_obj(params_to_verify)
+        except (ValidationError, Verify2Error) as err:
+            raise err
 
         if not hasattr(self._client, '_application_id'):
             self._auth_type = 'header'
@@ -62,13 +40,57 @@ class Verify2:
         )
 
     def check_code(self, request_id: str, code: str):
-        params = {'code': code}
+        params = {'code': str(code)}
 
         if not hasattr(self._client, '_application_id'):
             self._auth_type = 'header'
+
         return self._client.post(
             self._client.api_host(),
             f'/v2/verify/{request_id}',
             params,
             auth_type=self._auth_type,
         )
+
+    class VerifyRequest(BaseModel):
+        brand: str
+        workflow: List[dict]
+        locale: Optional[str]
+        channel_timeout: Optional[conint(ge=60, le=900)]
+        client_ref: Optional[str]
+        code_length: Optional[conint(ge=4, le=10)]
+
+        @validator('workflow')
+        def check_valid_workflow(cls, v):
+            for workflow in v:
+                Verify2._check_valid_channel(workflow)
+                Verify2._check_valid_recipient(workflow)
+                Verify2._check_app_hash(workflow)
+                if workflow['channel'] == 'whatsapp' and 'from' in workflow:
+                    Verify2._check_whatsapp_sender(workflow)
+
+    def _check_valid_channel(workflow):
+        if 'channel' not in workflow or workflow['channel'] not in Verify2.valid_channels:
+            raise Verify2Error(
+                f'You must specify a valid verify channel inside the "workflow" object, one of: "{Verify2.valid_channels}"'
+            )
+
+    def _check_valid_recipient(workflow):
+        if 'to' not in workflow or (
+            workflow['channel'] != 'email' and not re.search(r'^[1-9]\d{6,14}$', workflow['to'])
+        ):
+            raise Verify2Error(f'You must specify a valid "to" value for channel "{workflow["channel"]}"')
+
+    def _check_app_hash(workflow):
+        if workflow['channel'] == 'sms' and 'app_hash' in workflow:
+            if type(workflow['app_hash']) != str or len(workflow['app_hash']) != 11:
+                raise Verify2Error(
+                    'Invalid "app_hash" specified. If specifying app_hash, \
+                        it must be passed as a string and contain exactly 11 characters.'
+                )
+        elif workflow['channel'] != 'sms' and 'app_hash' in workflow:
+            raise Verify2Error('Cannot specify a value for "app_hash" unless using SMS for authentication.')
+
+    def _check_whatsapp_sender(workflow):
+        if not re.search(r'^[1-9]\d{6,14}$', workflow['from']):
+            raise Verify2Error(f'You must specify a valid "from" value if included.')

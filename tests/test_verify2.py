@@ -1,28 +1,28 @@
 from vonage import Client, Verify2
 from util import *
-from vonage.errors import ClientError
+from vonage.errors import ClientError, Verify2Error
 
-import responses
+from pydantic import ValidationError
 from pytest import raises
+import responses
 
 verify2 = Verify2(Client())
 
 
 @responses.activate
 def test_new_request_sms_basic(dummy_data):
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json')
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
 
     params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'sms', 'to': '447700900000'}]}
     verify_request = verify2.new_request(params)
 
-    assert isinstance(verify_request, dict)
     assert request_user_agent() == dummy_data.user_agent
     assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
 
 
 @responses.activate
 def test_new_request_sms_full():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json')
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
 
     params = {
         'locale': 'en-gb',
@@ -34,7 +34,149 @@ def test_new_request_sms_full():
     }
     verify_request = verify2.new_request(params)
 
-    assert isinstance(verify_request, dict)
+    assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
+
+
+def test_new_request_code_length_error():
+    params = {
+        'code_length': 1000,
+        'brand': 'ACME, Inc',
+        'workflow': [{'channel': 'sms', 'to': '447700900000', 'app_hash': 'asdfghjklqw'}],
+    }
+
+    with raises(ValidationError) as err:
+        verify2.new_request(params)
+    assert 'ensure this value is less than or equal to 10' in str(err.value)
+
+
+def test_new_request_to_error():
+    params = {
+        'brand': 'ACME, Inc',
+        'workflow': [{'channel': 'sms', 'to': '123'}],
+    }
+
+    with raises(Verify2Error) as err:
+        verify2.new_request(params)
+    assert 'You must specify a valid "to" value for channel "sms"' in str(err.value)
+
+
+def test_new_request_sms_app_hash_error():
+    params = {
+        'brand': 'ACME, Inc',
+        'workflow': [{'channel': 'sms', 'to': '447700900000', 'app_hash': '00'}],
+    }
+
+    with raises(Verify2Error) as err:
+        verify2.new_request(params)
+    assert 'Invalid "app_hash" specified.' in str(err.value)
+
+
+@responses.activate
+def test_new_request_whatsapp():
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+
+    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'whatsapp', 'to': '447700900000'}]}
+    verify_request = verify2.new_request(params)
+
+    assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
+
+
+@responses.activate
+def test_new_request_whatsapp_from_field():
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+
+    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'whatsapp', 'to': '447700900000', 'from': '447000000000'}]}
+    verify_request = verify2.new_request(params)
+
+    assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
+
+
+@responses.activate
+def test_new_request_whatsapp_from_field_error():
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/invalid_sender.json', status_code=422)
+
+    params = {
+        'brand': 'ACME, Inc',
+        'workflow': [{'channel': 'whatsapp', 'to': '447700900000', 'from': '447999999999'}],
+    }
+    with pytest.raises(ClientError) as err:
+        verify2.new_request(params)
+    assert (
+        str(err.value)
+        == 'Invalid sender: The `from` parameter is invalid. (https://developer.nexmo.com/api-errors#invalid-param)'
+    )
+
+
+@responses.activate
+def test_new_request_whatsapp_interactive():
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+
+    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'whatsapp_interactive', 'to': '447700900000'}]}
+    verify_request = verify2.new_request(params)
+
+    assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
+
+
+@responses.activate
+def test_new_request_voice():
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+
+    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'voice', 'to': '447700900000'}]}
+    verify_request = verify2.new_request(params)
+
+    assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
+
+
+@responses.activate
+def test_new_request_email():
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+
+    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'email', 'to': 'recipient@example.com'}]}
+    verify_request = verify2.new_request(params)
+
+    assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
+
+
+@responses.activate
+def test_new_request_email_additional_fields():
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+
+    params = {
+        'locale': 'en-gb',
+        'channel_timeout': 120,
+        'client_ref': 'my client ref',
+        'code_length': 8,
+        'brand': 'ACME, Inc',
+        'workflow': [{'channel': 'email', 'to': 'recipient@example.com', 'from': 'sender@example.com'}],
+    }
+    verify_request = verify2.new_request(params)
+
+    assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
+
+
+@responses.activate
+def test_new_request_email_error():
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/invalid_email.json', status_code=422)
+
+    params = {
+        'brand': 'ACME, Inc',
+        'workflow': [{'channel': 'email', 'to': 'not-an-email-address'}],
+    }
+    with pytest.raises(ClientError) as err:
+        verify2.new_request(params)
+    assert (
+        str(err.value)
+        == 'Invalid params: The value of one or more parameters is invalid (https://www.nexmo.com/messages/Errors#InvalidParams)'
+    )
+
+
+@responses.activate
+def test_new_request_silent_auth():
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+
+    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'silent_auth', 'to': '447700900000'}]}
+    verify_request = verify2.new_request(params)
+
     assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
 
 
@@ -48,4 +190,97 @@ def test_new_request_error_conflict():
     assert (
         str(err.value)
         == "Conflict: Concurrent verifications to the same number are not allowed. (https://www.developer.vonage.com/api-errors/verify#conflict)"
+    )
+
+
+@responses.activate
+def test_new_request_rate_limit():
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/rate_limit.json', status_code=429)
+    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'sms', 'to': '447700900000'}]}
+
+    with raises(ClientError) as err:
+        verify2.new_request(params)
+    assert (
+        str(err.value)
+        == "Rate Limit Hit: Please wait, then retry your request (https://www.developer.vonage.com/api-errors#throttled)"
+    )
+
+
+@responses.activate
+def test_check_code():
+    stub(
+        responses.POST, 'https://api.nexmo.com/v2/verify/c11236f4-00bf-4b89-84ba-88b25df97315', fixture_path='null.json'
+    )
+
+    assert verify2.check_code('c11236f4-00bf-4b89-84ba-88b25df97315', '1234') == None
+
+
+@responses.activate
+def test_check_code_invalid_code():
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify/c11236f4-00bf-4b89-84ba-88b25df97315',
+        fixture_path='verify2/invalid_code.json',
+        status_code=400,
+    )
+
+    with pytest.raises(ClientError) as err:
+        verify2.check_code('c11236f4-00bf-4b89-84ba-88b25df97315', '5678')
+
+    assert (
+        str(err.value)
+        == 'Invalid Code: The code you provided does not match the expected value. (https://developer.nexmo.com/api-errors#bad-request)'
+    )
+
+
+@responses.activate
+def test_check_code_workflow_not_supported():
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify/c11236f4-00bf-4b89-84ba-88b25df97315',
+        fixture_path='verify2/code_not_supported.json',
+        status_code=409,
+    )
+
+    with pytest.raises(ClientError) as err:
+        verify2.check_code('c11236f4-00bf-4b89-84ba-88b25df97315', '5678')
+
+    assert (
+        str(err.value)
+        == 'Conflict: The current Verify workflow step does not support a code. (https://developer.nexmo.com/api-errors#conflict)'
+    )
+
+
+@responses.activate
+def test_check_code_too_many_invalid_code_attempts():
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify/c11236f4-00bf-4b89-84ba-88b25df97315',
+        fixture_path='verify2/too_many_code_attempts.json',
+        status_code=410,
+    )
+
+    with pytest.raises(ClientError) as err:
+        verify2.check_code('c11236f4-00bf-4b89-84ba-88b25df97315', '5678')
+
+    assert (
+        str(err.value)
+        == 'Invalid Code: An incorrect code has been provided too many times. Workflow terminated. (https://developer.nexmo.com/api-errors#gone)'
+    )
+
+
+@responses.activate
+def test_check_code_rate_limit():
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify/c11236f4-00bf-4b89-84ba-88b25df97315',
+        fixture_path='verify2/rate_limit.json',
+        status_code=429,
+    )
+
+    with raises(ClientError) as err:
+        verify2.check_code('c11236f4-00bf-4b89-84ba-88b25df97315', '5678')
+    assert (
+        str(err.value)
+        == "Rate Limit Hit: Please wait, then retry your request (https://www.developer.vonage.com/api-errors#throttled)"
     )

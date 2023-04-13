@@ -37,6 +37,29 @@ def test_new_request_sms_full():
     assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
 
 
+@responses.activate
+def test_new_request_sms_custom_code(dummy_data):
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+
+    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'sms', 'to': '447700900000', 'code': 'e4dR1Qz'}]}
+    verify_request = verify2.new_request(params)
+
+    assert request_user_agent() == dummy_data.user_agent
+    assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
+
+
+def test_new_request_sms_custom_code_error():
+    params = {
+        'code_length': 4,
+        'brand': 'ACME, Inc',
+        'workflow': [{'channel': 'sms', 'to': '447700900000', 'code': 'a'}],
+    }
+
+    with raises(Verify2Error) as err:
+        verify2.new_request(params)
+    assert str(err.value) == 'Invalid custom code supplied. Must be alphanumeric and between 4 and 10 characters.'
+
+
 def test_new_request_invalid_channel_error():
     params = {
         'code_length': 4,
@@ -56,7 +79,7 @@ def test_new_request_code_length_error():
     params = {
         'code_length': 1000,
         'brand': 'ACME, Inc',
-        'workflow': [{'channel': 'sms', 'to': '447700900000', 'app_hash': 'asdfghjklqw'}],
+        'workflow': [{'channel': 'sms', 'to': '447700900000'}],
     }
 
     with raises(ValidationError) as err:
@@ -102,6 +125,16 @@ def test_new_request_whatsapp():
     stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
 
     params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'whatsapp', 'to': '447700900000'}]}
+    verify_request = verify2.new_request(params)
+
+    assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
+
+
+@responses.activate
+def test_new_request_whatsapp_custom_code():
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+
+    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'whatsapp', 'to': '447700900000', 'code': 'asdfgjkl'}]}
     verify_request = verify2.new_request(params)
 
     assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
@@ -167,6 +200,16 @@ def test_new_request_voice():
 
 
 @responses.activate
+def test_new_request_voice_custom_code():
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+
+    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'voice', 'to': '447700900000', 'code': 'asdfhjkl'}]}
+    verify_request = verify2.new_request(params)
+
+    assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
+
+
+@responses.activate
 def test_new_request_email():
     stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
 
@@ -186,7 +229,9 @@ def test_new_request_email_additional_fields():
         'client_ref': 'my client ref',
         'code_length': 8,
         'brand': 'ACME, Inc',
-        'workflow': [{'channel': 'email', 'to': 'recipient@example.com', 'from': 'sender@example.com'}],
+        'workflow': [
+            {'channel': 'email', 'to': 'recipient@example.com', 'from': 'sender@example.com', 'code': 'asdfhjkl'}
+        ],
     }
     verify_request = verify2.new_request(params)
 

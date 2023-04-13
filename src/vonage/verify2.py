@@ -24,7 +24,6 @@ class Verify2:
     def new_request(self, params: dict):
         try:
             params_to_verify = copy.deepcopy(params)
-            print(params_to_verify)
             Verify2.VerifyRequest.parse_obj(params_to_verify)
         except (ValidationError, Verify2Error) as err:
             raise err
@@ -65,6 +64,8 @@ class Verify2:
             for workflow in v:
                 Verify2._check_valid_channel(workflow)
                 Verify2._check_valid_recipient(workflow)
+                if workflow['channel'] in ('sms', 'whatsapp', 'voice', 'email') and 'code' in workflow:
+                    Verify2._check_supplied_code(workflow)
                 Verify2._check_app_hash(workflow)
                 if workflow['channel'] == 'whatsapp' and 'from' in workflow:
                     Verify2._check_whatsapp_sender(workflow)
@@ -80,6 +81,10 @@ class Verify2:
             workflow['channel'] != 'email' and not re.search(r'^[1-9]\d{6,14}$', workflow['to'])
         ):
             raise Verify2Error(f'You must specify a valid "to" value for channel "{workflow["channel"]}"')
+
+    def _check_supplied_code(workflow):
+        if not re.search('^(?=[a-zA-Z0-9]{4,10}$)[a-zA-Z0-9]*$', workflow['code']):
+            raise Verify2Error('Invalid custom code supplied. Must be alphanumeric and between 4 and 10 characters.')
 
     def _check_app_hash(workflow):
         if workflow['channel'] == 'sms' and 'app_hash' in workflow:

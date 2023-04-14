@@ -25,6 +25,7 @@ import time
 import re
 from uuid import uuid4
 
+from requests import Response
 from requests.adapters import HTTPAdapter
 from requests.sessions import Session
 
@@ -269,7 +270,7 @@ class Client:
         logger.debug(f"DELETE to {repr(uri)} with headers {repr(self._request_headers)}")
         return self.parse(host, self.session.delete(uri, headers=self._request_headers, timeout=self.timeout))
 
-    def parse(self, host, response):
+    def parse(self, host, response: Response):
         logger.debug(f"Response headers {repr(response.headers)}")
         if response.status_code == 401:
             raise AuthenticationError("Authentication failed. Check you're using a valid authentication method.")

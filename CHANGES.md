@@ -1,3 +1,7 @@
+# 3.4.0
+- Internal refactoring changes
+- Using header authentication for the Numbers API
+
 # 3.3.0
 - Updated Messages API:
     - Added new messaging channels for Viber Service Messages (`video`, `file`)

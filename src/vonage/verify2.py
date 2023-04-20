@@ -1,4 +1,4 @@
-from pydantic import BaseModel, conint, ValidationError, validator
+from pydantic import BaseModel, ValidationError, validator, conint, constr
 from typing import Optional, List
 
 import copy
@@ -58,14 +58,13 @@ class Verify2:
         channel_timeout: Optional[conint(ge=60, le=900)]
         client_ref: Optional[str]
         code_length: Optional[conint(ge=4, le=10)]
+        code: Optional[constr(min_length=4, max_length=10, regex='^(?=[a-zA-Z0-9]{4,10}$)[a-zA-Z0-9]*$')]
 
         @validator('workflow')
         def check_valid_workflow(cls, v):
             for workflow in v:
                 Verify2._check_valid_channel(workflow)
                 Verify2._check_valid_recipient(workflow)
-                if workflow['channel'] in ('sms', 'whatsapp', 'voice', 'email') and 'code' in workflow:
-                    Verify2._check_supplied_code(workflow)
                 Verify2._check_app_hash(workflow)
                 if workflow['channel'] == 'whatsapp' and 'from' in workflow:
                     Verify2._check_whatsapp_sender(workflow)
@@ -81,10 +80,6 @@ class Verify2:
             workflow['channel'] != 'email' and not re.search(r'^[1-9]\d{6,14}$', workflow['to'])
         ):
             raise Verify2Error(f'You must specify a valid "to" value for channel "{workflow["channel"]}"')
-
-    def _check_supplied_code(workflow):
-        if not re.search('^(?=[a-zA-Z0-9]{4,10}$)[a-zA-Z0-9]*$', workflow['code']):
-            raise Verify2Error('Invalid custom code supplied. Must be alphanumeric and between 4 and 10 characters.')
 
     def _check_app_hash(workflow):
         if workflow['channel'] == 'sms' and 'app_hash' in workflow:

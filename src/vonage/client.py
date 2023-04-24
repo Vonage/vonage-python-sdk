@@ -6,6 +6,7 @@ from .errors import *
 from .messages import Messages
 from .number_insight import NumberInsight
 from .number_management import Numbers
+from .proactive_connect import ProactiveConnect
 from .redact import Redact
 from .short_codes import ShortCodes
 from .sms import Sms
@@ -106,6 +107,7 @@ class Client:
 
         self._host = "rest.nexmo.com"
         self._api_host = "api.nexmo.com"
+        self._proactive_connect_host = "api-eu.vonage.com"
 
         user_agent = f"vonage-python/{vonage.__version__} python/{python_version()}"
 
@@ -119,6 +121,7 @@ class Client:
         self.messages = Messages(self)
         self.number_insight = NumberInsight(self)
         self.numbers = Numbers(self)
+        self.proactive_connect = ProactiveConnect(self)
         self.short_codes = ShortCodes(self)
         self.sms = Sms(self)
         self.ussd = Ussd(self)
@@ -145,6 +148,12 @@ class Client:
             return self._api_host
         else:
             self._api_host = value
+
+    def proactive_connect_host(self, value=None):
+        if value is None:
+            return self._proactive_connect_host
+        else:
+            self._proactive_connect_host = value
 
     def auth(self, params=None, **kwargs):
         self._jwt_auth_params = params or kwargs

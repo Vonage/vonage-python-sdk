@@ -1,0 +1,30 @@
+{
+    "items_count": 0,
+    "datasource": {
+        "type": "salesforce",
+        "integration_id": "salesforce_credentials",
+        "soql": "select Id, LastName, FirstName, Phone, Email FROM Contact"
+    },
+    "id": "246d17c4-79e6-4a25-8b4e-b777a83f6c30",
+    "sync_status": {
+        "value": "configured",
+        "metadata_modified": true,
+        "data_modified": true,
+        "dirty": true
+    },
+    "name": "my_salesforce_list",
+    "description": "my salesforce description",
+    "tags": [
+        "vip",
+        "sport"
+    ],
+    "attributes": [
+        {
+            "key": false,
+            "name": "phone_number",
+            "alias": "phone"
+        }
+    ],
+    "created_at": "2023-04-28T14:16:49.375Z",
+    "updated_at": "2023-04-28T14:16:49.375Z"
+}

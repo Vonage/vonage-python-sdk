@@ -1,5 +1,10 @@
 from .errors import ProactiveConnectError
 
+import requests
+import logging
+
+logger = logging.getLogger("vonage")
+
 
 class ProactiveConnect:
     def __init__(self, client):
@@ -50,7 +55,74 @@ class ProactiveConnect:
             auth_type=self._auth_type,
         )
 
-    def _check_pagination_params(self, page=None, page_size=None) -> dict:
+    def list_all_items(self, list_id: str, page: int = None, page_size: int = None):
+        params = self._check_pagination_params(page, page_size)
+        return self._client.get(
+            self._client.proactive_connect_host(),
+            f'/v0.1/bulk/lists/{list_id}/items',
+            params,
+            auth_type=self._auth_type,
+        )
+
+    def create_item(self, list_id: str, data: dict):
+        params = {'data': data}
+        return self._client.post(
+            self._client.proactive_connect_host(),
+            f'/v0.1/bulk/lists/{list_id}/items',
+            params,
+            auth_type=self._auth_type,
+        )
+
+    def download_list_items(self, list_id: str, file_path) -> list[dict]:
+        uri = f'https://{self._client.proactive_connect_host()}/v0.1/bulk/lists/{list_id}/items/download'
+        logger.debug(f"GET request sent to {repr(uri)}")
+        response = requests.get(
+            uri,
+            headers=self._client._add_jwt_to_request_headers(),
+        )
+        if 200 <= response.status_code < 300:
+            with open(file_path, 'wb') as file:
+                file.write(response.content)
+        else:
+            return self._client.parse(self._client.proactive_connect_host(), response)
+
+    def get_item(self, list_id: str, item_id: str):
+        return self._client.get(
+            self._client.proactive_connect_host(),
+            f'/v0.1/bulk/lists/{list_id}/items/{item_id}',
+            auth_type=self._auth_type,
+        )
+
+    def update_item(self, list_id: str, item_id: str, data: dict):
+        params = {'data': data}
+        return self._client.put(
+            self._client.proactive_connect_host(),
+            f'/v0.1/bulk/lists/{list_id}/items/{item_id}',
+            params,
+            auth_type=self._auth_type,
+        )
+
+    def delete_item(self, list_id: str, item_id: str):
+        return self._client.delete(
+            self._client.proactive_connect_host(),
+            f'/v0.1/bulk/lists/{list_id}/items/{item_id}',
+            auth_type=self._auth_type,
+        )
+
+    def import_list_items(self, list_id: str, file_path: str):
+        uri = f'https://{self._client.proactive_connect_host()}/v0.1/bulk/lists/{list_id}/items/import'
+        with open(file_path, 'rb') as csv_file:
+            logger.debug(f"POST request sent to {repr(uri)}")
+            response = requests.post(uri, headers=self._client._add_jwt_to_request_headers(), files={'file': csv_file})
+        return self._client.parse(self._client.proactive_connect_host(), response)
+
+    def list_events(self, page: int = None, page_size: int = None):
+        params = self._check_pagination_params(page, page_size)
+        return self._client.get(
+            self._client.proactive_connect_host(), '/v0.1/bulk/events', params, auth_type=self._auth_type
+        )
+
+    def _check_pagination_params(self, page: int = None, page_size: int = None) -> dict:
         params = {}
         if page is not None:
             if type(page) == int and page > 0:

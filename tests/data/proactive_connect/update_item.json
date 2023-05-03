@@ -1,0 +1,11 @@
+{
+    "id": "d91c39ed-7c34-4803-a139-34bb4b7c6d53",
+    "created_at": "2023-05-02T21:07:25.790Z",
+    "updated_at": "2023-05-03T19:50:33.207Z",
+    "list_id": "246d17c4-79e6-4a25-8b4e-b777a83f6c30",
+    "data": {
+        "first_name": "John",
+        "last_name": "Doe",
+        "phone": "447007000000"
+    }
+}

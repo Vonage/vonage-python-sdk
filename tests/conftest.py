@@ -3,6 +3,7 @@ import os.path
 import platform
 
 import pytest
+import csv
 
 
 # Ensure our client isn't being configured with real values!

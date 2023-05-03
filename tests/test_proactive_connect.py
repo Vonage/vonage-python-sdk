@@ -439,7 +439,7 @@ def test_download_list_items(proc):
     )
 
     proc.download_list_items(list_id, os.path.join(os.path.dirname(__file__), 'data/proactive_connect/list_items.csv'))
-    items = read_csv_file(os.path.join(os.path.dirname(__file__), 'data/proactive_connect/list_items.csv'))
+    items = _read_csv_file(os.path.join(os.path.dirname(__file__), 'data/proactive_connect/list_items.csv'))
     assert items[0]['favourite_number'] == '0'
     assert items[1]['least_favourite_number'] == '0'
 
@@ -535,7 +535,7 @@ def test_update_item_error_invalid_data(proc):
 
 
 @responses.activate
-def test_get_item_404(proc):
+def test_update_item_404(proc):
     list_id = '346d17c4-79e6-4a25-8b4e-b777a83f6c30'
     item_id = 'd91c39ed-7c34-4803-a139-34bb4b7c6d53'
     data = {'first_name': 'John', 'last_name': 'Doe', 'phone': '447007000000'}
@@ -589,21 +589,21 @@ def test_delete_item_404(proc):
 
 
 @responses.activate
-def test_import_list_items_from_csv(proc):
+def test_upload_list_items_from_csv(proc):
     list_id = '246d17c4-79e6-4a25-8b4e-b777a83f6c30'
     file_path = os.path.join(os.path.dirname(__file__), 'data/proactive_connect/csv_to_upload.csv')
     stub(
         responses.POST,
         f'https://api-eu.vonage.com/v0.1/bulk/lists/{list_id}/items/import',
-        fixture_path='proactive_connect/import_from_csv.json',
+        fixture_path='proactive_connect/upload_from_csv.json',
     )
 
-    response = proc.import_list_items(list_id, file_path)
+    response = proc.upload_list_items(list_id, file_path)
     assert response['inserted'] == 3
 
 
 @responses.activate
-def test_import_list_items_from_csv_404(proc):
+def test_upload_list_items_from_csv_404(proc):
     list_id = '346d17c4-79e6-4a25-8b4e-b777a83f6c30'
     file_path = os.path.join(os.path.dirname(__file__), 'data/proactive_connect/csv_to_upload.csv')
     stub(
@@ -614,7 +614,7 @@ def test_import_list_items_from_csv_404(proc):
     )
 
     with raises(ClientError) as err:
-        proc.import_list_items(list_id, file_path)
+        proc.upload_list_items(list_id, file_path)
     assert (
         str(err.value)
         == 'The requested resource does not exist: Not Found (https://developer.vonage.com/en/api-errors)'
@@ -636,7 +636,7 @@ def test_list_events(proc):
     assert lists['_embedded']['events'][0]['run_id'] == '7d0d4e5f-6453-4c63-87cf-f95b04377324'
 
 
-def read_csv_file(path):
+def _read_csv_file(path):
     with open(os.path.join(os.path.dirname(__file__), path)) as csv_file:
         reader = csv.DictReader(csv_file)
         dict_list = [row for row in reader]

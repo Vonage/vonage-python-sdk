@@ -73,19 +73,6 @@ class ProactiveConnect:
             auth_type=self._auth_type,
         )
 
-    def download_list_items(self, list_id: str, file_path) -> list[dict]:
-        uri = f'https://{self._client.proactive_connect_host()}/v0.1/bulk/lists/{list_id}/items/download'
-        logger.debug(f"GET request sent to {repr(uri)}")
-        response = requests.get(
-            uri,
-            headers=self._client._add_jwt_to_request_headers(),
-        )
-        if 200 <= response.status_code < 300:
-            with open(file_path, 'wb') as file:
-                file.write(response.content)
-        else:
-            return self._client.parse(self._client.proactive_connect_host(), response)
-
     def get_item(self, list_id: str, item_id: str):
         return self._client.get(
             self._client.proactive_connect_host(),
@@ -109,7 +96,20 @@ class ProactiveConnect:
             auth_type=self._auth_type,
         )
 
-    def import_list_items(self, list_id: str, file_path: str):
+    def download_list_items(self, list_id: str, file_path) -> list[dict]:
+        uri = f'https://{self._client.proactive_connect_host()}/v0.1/bulk/lists/{list_id}/items/download'
+        logger.debug(f"GET request sent to {repr(uri)}")
+        response = requests.get(
+            uri,
+            headers=self._client._add_jwt_to_request_headers(),
+        )
+        if 200 <= response.status_code < 300:
+            with open(file_path, 'wb') as file:
+                file.write(response.content)
+        else:
+            return self._client.parse(self._client.proactive_connect_host(), response)
+
+    def upload_list_items(self, list_id: str, file_path: str):
         uri = f'https://{self._client.proactive_connect_host()}/v0.1/bulk/lists/{list_id}/items/import'
         with open(file_path, 'rb') as csv_file:
             logger.debug(f"POST request sent to {repr(uri)}")

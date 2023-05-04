@@ -97,7 +97,7 @@ class ProactiveConnect:
             auth_type=self._auth_type,
         )
 
-    def download_list_items(self, list_id: str, file_path) -> List[dict]:
+    def download_list_items(self, list_id: str, file_path) -> list[dict]:
         uri = f'https://{self._client.proactive_connect_host()}/v0.1/bulk/lists/{list_id}/items/download'
         logger.debug(f"GET request sent to {repr(uri)}")
         response = requests.get(
@@ -114,7 +114,11 @@ class ProactiveConnect:
         uri = f'https://{self._client.proactive_connect_host()}/v0.1/bulk/lists/{list_id}/items/import'
         with open(file_path, 'rb') as csv_file:
             logger.debug(f"POST request sent to {repr(uri)}")
-            response = requests.post(uri, headers=self._client._add_jwt_to_request_headers(), files={'file': csv_file})
+            response = requests.post(
+                uri,
+                headers=self._client._add_jwt_to_request_headers(),
+                files={'file': ('list_items.csv', csv_file, 'text/csv')},
+            )
         return self._client.parse(self._client.proactive_connect_host(), response)
 
     def list_events(self, page: int = None, page_size: int = None):

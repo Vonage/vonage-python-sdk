@@ -4,9 +4,7 @@ import os
 from setuptools import setup, find_packages
 
 
-with io.open(
-    os.path.join(os.path.dirname(__file__), "README.md"), encoding="utf-8"
-) as f:
+with io.open(os.path.join(os.path.dirname(__file__), "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
@@ -23,7 +21,7 @@ setup(
     package_dir={"": "src"},
     platforms=["any"],
     install_requires=[
-        "requests>=2.4.2",
+        "requests>=2.4.2,<2.30",
         "PyJWT[crypto]>=1.6.4",
         "pytz>=2018.5",
         "Deprecated",

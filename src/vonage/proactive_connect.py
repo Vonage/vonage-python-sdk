@@ -97,7 +97,7 @@ class ProactiveConnect:
             auth_type=self._auth_type,
         )
 
-    def download_list_items(self, list_id: str, file_path) -> list[dict]:
+    def download_list_items(self, list_id: str, file_path) -> List[dict]:
         uri = f'https://{self._client.proactive_connect_host()}/v0.1/bulk/lists/{list_id}/items/download'
         logger.debug(f"GET request sent to {repr(uri)}")
         response = requests.get(

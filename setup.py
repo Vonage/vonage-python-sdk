@@ -21,7 +21,7 @@ setup(
     package_dir={"": "src"},
     platforms=["any"],
     install_requires=[
-        "requests>=2.4.2,<2.30",
+        "requests>=2.4.2",
         "PyJWT[crypto]>=1.6.4",
         "pytz>=2018.5",
         "Deprecated",

@@ -5,6 +5,7 @@ from .application import ApplicationV2, Application
 from .errors import *
 from .messages import Messages
 from .number_insight import NumberInsight
+from .number_insight2 import NumberInsight2
 from .number_management import Numbers
 from .redact import Redact
 from .short_codes import ShortCodes

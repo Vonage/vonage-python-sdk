@@ -423,3 +423,32 @@ def test_check_code_rate_limit():
         str(err.value)
         == "Rate Limit Hit: Please wait, then retry your request (https://www.developer.vonage.com/api-errors#throttled)"
     )
+
+
+@responses.activate
+def test_cancel_verification():
+    stub(
+        responses.DELETE,
+        'https://api.nexmo.com/v2/verify/c11236f4-00bf-4b89-84ba-88b25df97315',
+        fixture_path='no_content.json',
+        status_code=204,
+    )
+
+    assert verify2.cancel_verification('c11236f4-00bf-4b89-84ba-88b25df97315') == None
+
+
+@responses.activate
+def test_cancel_verification_error_not_found():
+    stub(
+        responses.DELETE,
+        'https://api.nexmo.com/v2/verify/c11236f4-00bf-4b89-84ba-88b25df97315',
+        fixture_path='verify2/request_not_found.json',
+        status_code=404,
+    )
+
+    with raises(ClientError) as err:
+        verify2.cancel_verification('c11236f4-00bf-4b89-84ba-88b25df97315')
+    assert (
+        str(err.value)
+        == "Not Found: Request 'c11236f4-00bf-4b89-84ba-88b25df97315' was not found or it has been verified already. (https://developer.nexmo.com/api-errors#not-found)"
+    )

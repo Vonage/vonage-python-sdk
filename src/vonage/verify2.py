@@ -51,6 +51,16 @@ class Verify2:
             auth_type=self._auth_type,
         )
 
+    def cancel_verification(self, request_id: str):
+        if not hasattr(self._client, '_application_id'):
+            self._auth_type = 'header'
+
+        return self._client.delete(
+            self._client.api_host(),
+            f'/v2/verify/{request_id}',
+            auth_type=self._auth_type,
+        )
+
     class VerifyRequest(BaseModel):
         brand: str
         workflow: List[dict]

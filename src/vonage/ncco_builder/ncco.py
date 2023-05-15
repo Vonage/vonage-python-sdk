@@ -73,6 +73,7 @@ class Ncco:
         timeout: Optional[int]
         limit: Optional[conint(le=7200)]
         machineDetection: Optional[Literal['continue', 'hangup']]
+        advancedMachineDetection: Optional[dict]
         eventUrl: Optional[Union[List[str], str]]
         eventMethod: Optional[constr(to_upper=True)]
         ringbackTone: Optional[str]
@@ -102,6 +103,18 @@ class Ncco:
         @validator('eventUrl')
         def ensure_url_in_list(cls, v):
             return Ncco._ensure_object_in_list(v)
+
+        @validator('advancedMachineDetection')
+        def validate_advancedMachineDetection(cls, v):
+            if 'behavior' in v and v['behavior'] not in ('continue', 'hangup'):
+                raise ValueError('advancedMachineDetection["behavior"] must be one of: "continue", "hangup".')
+            if 'mode' in v and v['mode'] not in ('detect, detect_beep'):
+                raise ValueError('advancedMachineDetection["mode"] must be one of: "detect", "detect_beep".')
+            if 'beep_timeout' in v and type(v['beep_timeout']) != int:
+                raise ValueError('advancedMachineDetection["beep_timeout"] must be an integer.')
+            if 'beep_timeout' in v and (v['beep_timeout'] < 45 or v['beep_timeout'] > 120):
+                raise ValueError('advancedMachineDetection["beep_timeout"] must be >= 45 or <= 120.')
+            return v
 
         class Config:
             smart_union = True

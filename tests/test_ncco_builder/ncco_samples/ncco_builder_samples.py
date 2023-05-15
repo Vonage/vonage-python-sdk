@@ -17,6 +17,12 @@ connect = Ncco.Connect(
     ringbackTone='http://example.com',
 )
 
+connect_advancedMachineDetection = Ncco.Connect(
+    endpoint=ConnectEndpoints.PhoneEndpoint(number='447000000000'),
+    advancedMachineDetection={'behavior': 'continue', 'mode': 'detect', 'beep_timeout': 45},
+)
+
+
 talk_minimal = Ncco.Talk(text='hello')
 
 talk = Ncco.Talk(text='hello', bargeIn=True, loop=3, level=0.5, language='en-GB', style=1, premium=True)
@@ -65,6 +71,16 @@ two_part_ncco = [
     {
         'action': 'record',
         'eventUrl': ['http://example.com/events'],
+    },
+    {'action': 'talk', 'text': 'hello'},
+]
+
+three_part_advancedMachineDetection_ncco = [
+    {'action': 'record', 'eventUrl': ['http://example.com/events']},
+    {
+        'action': 'connect',
+        'endpoint': [{'type': 'phone', 'number': '447000000000'}],
+        'advancedMachineDetection': {'behavior': 'continue', 'mode': 'detect', 'beep_timeout': 45},
     },
     {'action': 'talk', 'text': 'hello'},
 ]

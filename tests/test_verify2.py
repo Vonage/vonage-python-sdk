@@ -29,6 +29,7 @@ def test_new_request_sms_full():
         'channel_timeout': 120,
         'client_ref': 'my client ref',
         'code_length': 8,
+        'fraud_check': False,
         'brand': 'ACME, Inc',
         'workflow': [{'channel': 'sms', 'to': '447700900000', 'app_hash': 'asdfghjklqw'}],
     }
@@ -46,6 +47,25 @@ def test_new_request_sms_custom_code(dummy_data):
 
     assert request_user_agent() == dummy_data.user_agent
     assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
+
+
+@responses.activate
+def test_new_request_error_fraud_check_invalid_account(dummy_data):
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/fraud_check_invalid_account.json',
+        status_code=403,
+    )
+
+    params = {'brand': 'ACME, Inc', 'fraud_check': False, 'workflow': [{'channel': 'sms', 'to': '447700900000'}]}
+
+    with raises(ClientError) as err:
+        verify2.new_request(params)
+    assert (
+        str(err.value)
+        == 'Forbidden: Your account does not have permission to perform this action. (https://developer.nexmo.com/api-errors#forbidden)'
+    )
 
 
 def test_new_request_sms_custom_code_length_error():
@@ -306,10 +326,14 @@ def test_new_request_rate_limit():
 @responses.activate
 def test_check_code():
     stub(
-        responses.POST, 'https://api.nexmo.com/v2/verify/c11236f4-00bf-4b89-84ba-88b25df97315', fixture_path='null.json'
+        responses.POST,
+        'https://api.nexmo.com/v2/verify/c11236f4-00bf-4b89-84ba-88b25df97315',
+        fixture_path='verify2/check_code.json',
     )
 
-    assert verify2.check_code('c11236f4-00bf-4b89-84ba-88b25df97315', '1234') == None
+    response = verify2.check_code('c11236f4-00bf-4b89-84ba-88b25df97315', '1234')
+    assert response['request_id'] == 'e043d872-459b-4750-a20c-d33f91d6959f'
+    assert response['status'] == 'completed'
 
 
 @responses.activate
@@ -327,6 +351,24 @@ def test_check_code_invalid_code():
     assert (
         str(err.value)
         == 'Invalid Code: The code you provided does not match the expected value. (https://developer.nexmo.com/api-errors#bad-request)'
+    )
+
+
+@responses.activate
+def test_check_code_already_verified():
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify/c11236f4-00bf-4b89-84ba-88b25df97315',
+        fixture_path='verify2/already_verified.json',
+        status_code=404,
+    )
+
+    with pytest.raises(ClientError) as err:
+        verify2.check_code('c11236f4-00bf-4b89-84ba-88b25df97315', '5678')
+
+    assert (
+        str(err.value)
+        == "Not Found: Request '5fcc26ef-1e54-48a6-83ab-c47546a19824' was not found or it has been verified already. (https://developer.nexmo.com/api-errors#not-found)"
     )
 
 

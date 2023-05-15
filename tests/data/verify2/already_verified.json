@@ -1,0 +1,6 @@
+{
+    "type": "https://developer.nexmo.com/api-errors#not-found",
+    "title": "Not Found",
+    "detail": "Request '5fcc26ef-1e54-48a6-83ab-c47546a19824' was not found or it has been verified already.",
+    "instance": "02cabfcc-2e09-4b5d-b098-1fa7ccef4607"
+}

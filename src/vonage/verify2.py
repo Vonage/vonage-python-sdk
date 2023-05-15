@@ -58,6 +58,7 @@ class Verify2:
         channel_timeout: Optional[conint(ge=60, le=900)]
         client_ref: Optional[str]
         code_length: Optional[conint(ge=4, le=10)]
+        fraud_check: Optional[bool]
         code: Optional[constr(min_length=4, max_length=10, regex='^(?=[a-zA-Z0-9]{4,10}$)[a-zA-Z0-9]*$')]
 
         @validator('workflow')

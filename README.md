@@ -17,7 +17,7 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [Messages API](#messages-api)
 - [Voice API](#voice-api)
 - [NCCO Builder](#ncco-builder)
-- [Verify V2 API](#verify-v1-api)
+- [Verify V2 API](#verify-v2-api)
 - [Verify V1 API](#verify-v1-api)
 - [Number Insight API](#number-insight-api)
 - [Account API](#account-api)

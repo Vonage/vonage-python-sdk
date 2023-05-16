@@ -19,7 +19,7 @@ connect = Ncco.Connect(
 
 connect_advancedMachineDetection = Ncco.Connect(
     endpoint=ConnectEndpoints.PhoneEndpoint(number='447000000000'),
-    advancedMachineDetection={'behavior': 'continue', 'mode': 'detect', 'beep_timeout': 45},
+    advancedMachineDetection={'behavior': 'continue', 'mode': 'detect'},
 )
 
 
@@ -80,7 +80,7 @@ three_part_advancedMachineDetection_ncco = [
     {
         'action': 'connect',
         'endpoint': [{'type': 'phone', 'number': '447000000000'}],
-        'advancedMachineDetection': {'behavior': 'continue', 'mode': 'detect', 'beep_timeout': 45},
+        'advancedMachineDetection': {'behavior': 'continue', 'mode': 'detect'},
     },
     {'action': 'talk', 'text': 'hello'},
 ]

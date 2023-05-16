@@ -110,10 +110,6 @@ class Ncco:
                 raise ValueError('advancedMachineDetection["behavior"] must be one of: "continue", "hangup".')
             if 'mode' in v and v['mode'] not in ('detect, detect_beep'):
                 raise ValueError('advancedMachineDetection["mode"] must be one of: "detect", "detect_beep".')
-            if 'beep_timeout' in v and type(v['beep_timeout']) != int:
-                raise ValueError('advancedMachineDetection["beep_timeout"] must be an integer.')
-            if 'beep_timeout' in v and (v['beep_timeout'] < 45 or v['beep_timeout'] > 120):
-                raise ValueError('advancedMachineDetection["beep_timeout"] must be >= 45 or <= 120.')
             return v
 
         class Config:

@@ -126,7 +126,7 @@ def test_connect_options():
 
 
 def test_connect_advanced_machine_detection():
-    advancedMachineDetectionParams = {'behavior': 'continue', 'mode': 'detect', 'beep_timeout': 45}
+    advancedMachineDetectionParams = {'behavior': 'continue', 'mode': 'detect'}
     endpoint = ConnectEndpoints.PhoneEndpoint(number='447000000000')
     connect = Ncco.Connect(
         endpoint=endpoint,
@@ -159,12 +159,6 @@ def test_connect_validation_errors():
         Ncco.Connect(endpoint=endpoint, advancedMachineDetection={'behavior': 'do_nothing'})
     with pytest.raises(ValidationError):
         Ncco.Connect(endpoint=endpoint, advancedMachineDetection={'mode': 'detect_nothing'})
-    with pytest.raises(ValidationError):
-        Ncco.Connect(endpoint=endpoint, advancedMachineDetection={'beep_timeout': '100'})
-    with pytest.raises(ValidationError):
-        Ncco.Connect(endpoint=endpoint, advancedMachineDetection={'beep_timeout': 10})
-    with pytest.raises(ValidationError):
-        Ncco.Connect(endpoint=endpoint, advancedMachineDetection={'beep_timeout': 1000})
 
 
 def test_talk_basic():

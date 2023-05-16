@@ -22,7 +22,7 @@ connect_vbc = '{"action": "connect", "endpoint": [{"type": "vbc", "extension": "
 
 connect_full = '{"action": "connect", "endpoint": [{"type": "phone", "number": "447000000000"}], "from": "447400000000", "randomFromNumber": false, "eventType": "synchronous", "timeout": 15, "limit": 1000, "machineDetection": "hangup", "eventUrl": ["http://example.com"], "eventMethod": "PUT", "ringbackTone": "http://example.com"}'
 
-connect_advancedMachineDetection = '{"action": "connect", "endpoint": [{"type": "phone", "number": "447000000000"}], "from": "447400000000", "advancedMachineDetection": {"behavior": "continue", "mode": "detect", "beep_timeout": 45}, "eventUrl": ["http://example.com"]}'
+connect_advancedMachineDetection = '{"action": "connect", "endpoint": [{"type": "phone", "number": "447000000000"}], "from": "447400000000", "advancedMachineDetection": {"behavior": "continue", "mode": "detect"}, "eventUrl": ["http://example.com"]}'
 
 talk_basic = '{"action": "talk", "text": "hello"}'
 

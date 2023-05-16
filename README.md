@@ -17,7 +17,8 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [Messages API](#messages-api)
 - [Voice API](#voice-api)
 - [NCCO Builder](#ncco-builder)
-- [Verify API](#verify-api)
+- [Verify V2 API](#verify-v2-api)
+- [Verify V1 API](#verify-v1-api)
 - [Number Insight API](#number-insight-api)
 - [Account API](#account-api)
 - [Number Management API](#number-management-api)
@@ -406,8 +407,75 @@ pprint(response)
 
 When using the `connect` action, use the parameter `from_` to specify the recipient (as `from` is a reserved keyword in Python!)
 
+## Verify V2 API
 
-## Verify API
+V2 of the Vonage Verify API lets you send verification codes via SMS, WhatsApp, Voice and Email
+
+You can also verify a user by WhatsApp Interactive Message or by Silent Authentication on their mobile device.
+
+### Send a verification code
+
+```python
+params = {
+    'brand': 'ACME, Inc', 
+    'workflow': [{'channel': 'sms', 'to': '447700900000'}]
+}
+verify_request = verify2.new_request(params)
+```
+
+### Use silent authentication, with email as a fallback
+
+```python
+params = {
+    'brand': 'ACME, Inc', 
+    'workflow': [
+        {'channel': 'silent_auth', 'to': '447700900000'},
+        {'channel': 'email', 'to': 'customer@example.com', 'from': 'business@example.com'}
+    ]
+}
+verify_request = verify2.new_request(params)
+```
+
+### Send a verification code with custom options, including a custom code
+
+```python
+params = {
+    'locale': 'en-gb',
+    'channel_timeout': 120,
+    'client_ref': 'my client reference',
+    'code': 'asdf1234',
+    'brand': 'ACME, Inc',
+    'workflow': [{'channel': 'sms', 'to': '447700900000', 'app_hash': 'asdfghjklqw'}],
+}
+verify_request = verify2.new_request(params)
+```
+
+### Send a verification request to a blocked network
+
+This feature is only enabled if you have requested for it to be added to your account.
+
+```python
+params = {
+    'brand': 'ACME, Inc', 
+    'fraud_check': False, 
+    'workflow': [{'channel': 'sms', 'to': '447700900000'}]
+}
+verify_request = verify2.new_request(params)
+```
+
+### Check a verification code
+
+```python
+verify2.check_code(REQUEST_ID, CODE)
+```
+
+### Cancel an ongoing verification
+
+```python
+verify2.cancel_verification(REQUEST_ID)
+```
+
+## Verify V1 API
 
 ### Search for a Verification request
 

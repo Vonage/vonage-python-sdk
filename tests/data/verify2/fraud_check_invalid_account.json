@@ -1,0 +1,6 @@
+{
+    "type": "https://developer.nexmo.com/api-errors#forbidden",
+    "title": "Forbidden",
+    "detail": "Your account does not have permission to perform this action.",
+    "instance": "1995bc0d-c850-4bf0-aa1e-6c40da43d3bf"
+}

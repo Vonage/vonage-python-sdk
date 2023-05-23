@@ -22,6 +22,7 @@ class Verify2:
         self._auth_type = 'jwt'
 
     def new_request(self, params: dict):
+        self._remove_unnecessary_fraud_check(params)
         try:
             params_to_verify = copy.deepcopy(params)
             Verify2.VerifyRequest.parse_obj(params_to_verify)
@@ -60,6 +61,10 @@ class Verify2:
             f'/v2/verify/{request_id}',
             auth_type=self._auth_type,
         )
+
+    def _remove_unnecessary_fraud_check(self, params):
+        if 'fraud_check' in params and params['fraud_check'] != False:
+            del params['fraud_check']
 
     class VerifyRequest(BaseModel):
         brand: str

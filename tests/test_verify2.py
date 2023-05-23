@@ -452,3 +452,10 @@ def test_cancel_verification_error_not_found():
         str(err.value)
         == "Not Found: Request 'c11236f4-00bf-4b89-84ba-88b25df97315' was not found or it has been verified already. (https://developer.nexmo.com/api-errors#not-found)"
     )
+
+
+def test_remove_unnecessary_fraud_check():
+    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'sms', 'to': '447700900000'}], 'fraud_check': True}
+    verify2._remove_unnecessary_fraud_check(params)
+
+    assert 'fraud_check' not in params

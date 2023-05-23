@@ -1,3 +1,6 @@
+# 3.5.1
+- Updating the internal use of the `fraud_check` parameter in the Vonage Verify V2 API
+
 # 3.5.0
 - Adding support for V2 of the Vonage Verify API
     - Multiple authentication channels are supported (sms, voice, email, whatsapp, whatsapp interactive messages and silent authentication)

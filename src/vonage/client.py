@@ -120,6 +120,7 @@ class Client:
         self.application = Application(self)
         self.messages = Messages(self)
         self.number_insight = NumberInsight(self)
+        self.number_insight2 = NumberInsight2(self)
         self.numbers = Numbers(self)
         self.short_codes = ShortCodes(self)
         self.sms = Sms(self)
@@ -131,7 +132,9 @@ class Client:
         self.timeout = timeout
         self.session = Session()
         self.adapter = HTTPAdapter(
-            pool_connections=pool_connections, pool_maxsize=pool_maxsize, max_retries=max_retries
+            pool_connections=pool_connections,
+            pool_maxsize=pool_maxsize,
+            max_retries=max_retries,
         )
         self.session.mount("https://", self.adapter)
 
@@ -198,10 +201,19 @@ class Client:
 
         logger.debug(f"GET to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}")
         return self.parse(
-            host, self.session.get(uri, params=params, headers=self._request_headers, timeout=self.timeout)
+            host,
+            self.session.get(uri, params=params, headers=self._request_headers, timeout=self.timeout),
         )
 
-    def post(self, host, request_uri, params, auth_type=None, body_is_json=True, supports_signature_auth=False):
+    def post(
+        self,
+        host,
+        request_uri,
+        params,
+        auth_type=None,
+        body_is_json=True,
+        supports_signature_auth=False,
+    ):
         """
         Low-level method to make a post request to an API server.
         This method automatically adds authentication, picking the first applicable authentication method from the following:
@@ -231,11 +243,23 @@ class Client:
         logger.debug(f"POST to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}")
         if body_is_json:
             return self.parse(
-                host, self.session.post(uri, json=params, headers=self._request_headers, timeout=self.timeout)
+                host,
+                self.session.post(
+                    uri,
+                    json=params,
+                    headers=self._request_headers,
+                    timeout=self.timeout,
+                ),
             )
         else:
             return self.parse(
-                host, self.session.post(uri, data=params, headers=self._request_headers, timeout=self.timeout)
+                host,
+                self.session.post(
+                    uri,
+                    data=params,
+                    headers=self._request_headers,
+                    timeout=self.timeout,
+                ),
             )
 
     def put(self, host, request_uri, params, auth_type=None):
@@ -254,7 +278,10 @@ class Client:
 
         logger.debug(f"PUT to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}")
         # All APIs that currently use put methods require a json-formatted body so don't need to check this
-        return self.parse(host, self.session.put(uri, json=params, headers=self._request_headers, timeout=self.timeout))
+        return self.parse(
+            host,
+            self.session.put(uri, json=params, headers=self._request_headers, timeout=self.timeout),
+        )
 
     def delete(self, host, request_uri, auth_type=None):
         uri = f"https://{host}{request_uri}"
@@ -271,7 +298,10 @@ class Client:
             )
 
         logger.debug(f"DELETE to {repr(uri)} with headers {repr(self._request_headers)}")
-        return self.parse(host, self.session.delete(uri, headers=self._request_headers, timeout=self.timeout))
+        return self.parse(
+            host,
+            self.session.delete(uri, headers=self._request_headers, timeout=self.timeout),
+        )
 
     def parse(self, host, response: Response):
         logger.debug(f"Response headers {repr(response.headers)}")

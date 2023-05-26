@@ -7,8 +7,8 @@ class Verify:
 
     def start_verification(self, params=None, **kwargs):
         return self._client.post(
-            self._client.api_host(), 
-            "/verify/json", 
+            self._client.api_host(),
+            "/verify/json",
             params or kwargs,
             **Verify.defaults,
         )
@@ -44,6 +44,8 @@ class Verify:
 
     def psd2(self, params=None, **kwargs):
         return self._client.post(
-            self._client.api_host(), "/verify/psd2/json", params or kwargs, **Verify.defaults,
+            self._client.api_host(),
+            "/verify/psd2/json",
+            params or kwargs,
+            **Verify.defaults,
         )
-

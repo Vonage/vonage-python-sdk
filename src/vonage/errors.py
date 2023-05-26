@@ -27,8 +27,14 @@ class MessagesError(Error):
 class PricingTypeError(Error):
     """A pricing type was specified that is not allowed."""
 
+
 class RedactError(Error):
     """Error related to the Redact class or Redact API."""
 
+
 class InvalidAuthenticationTypeError(Error):
-    """An authentication method was specified that is not allowed"""
+    """An authentication method was specified that is not allowed."""
+
+
+class Verify2Error(ClientError):
+    """An error relating to the Verify (V2) API."""

@@ -1,3 +1,13 @@
+# 3.5.1
+- Updating the internal use of the `fraud_check` parameter in the Vonage Verify V2 API
+
+# 3.5.0
+- Adding support for V2 of the Vonage Verify API
+    - Multiple authentication channels are supported (sms, voice, email, whatsapp, whatsapp interactive messages and silent authentication)
+    - Using fallback channels is now possible in case verification methods fail
+    - You can now customise the verification code that is sent, or even specify your own custom code
+- Adding `advancedMachineDetection` functionality to the NCCO builder for the Vonage Voice API
+
 # 3.4.0
 - Internal refactoring changes
 - Using header authentication for the Numbers API

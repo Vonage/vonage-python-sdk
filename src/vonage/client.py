@@ -1,4 +1,5 @@
 import vonage
+from vonage_jwt.jwt import JwtClient
 
 from .account import Account
 from .application import ApplicationV2, Application
@@ -20,11 +21,8 @@ from platform import python_version
 import base64
 import hashlib
 import hmac
-import jwt
 import os
 import time
-import re
-from uuid import uuid4
 
 from requests import Response
 from requests.adapters import HTTPAdapter
@@ -95,16 +93,10 @@ class Client:
         if self.signature_method in {"md5", "sha1", "sha256", "sha512"}:
             self.signature_method = getattr(hashlib, signature_method)
 
-        self._jwt_auth_params = {}
-
         if private_key is not None and application_id is not None:
-            self._application_id = application_id
-            self._private_key = private_key
+            self._jwt_client = JwtClient(application_id, private_key)
 
-            if isinstance(self._private_key, string_types) and re.search("[.][a-zA-Z0-9_]+$", self._private_key):
-                with open(self._private_key, "rb") as key_file:
-                    self._private_key = key_file.read()
-
+        self._jwt_claims = {}
         self._host = "rest.nexmo.com"
         self._api_host = "api.nexmo.com"
 
@@ -149,7 +141,7 @@ class Client:
             self._api_host = value
 
     def auth(self, params=None, **kwargs):
-        self._jwt_auth_params = params or kwargs
+        self._jwt_claims = params or kwargs
 
     def check_signature(self, params):
         params = dict(params)
@@ -312,21 +304,10 @@ class Client:
             raise ServerError(message)
 
     def _add_jwt_to_request_headers(self):
-        return dict(self.headers, Authorization=b"Bearer " + self._generate_application_jwt())
-
+        return dict(
+            self.headers, 
+            Authorization=b"Bearer " + self._generate_application_jwt()
+        )
+    
     def _generate_application_jwt(self):
-        iat = int(time.time())
-
-        payload = dict(self._jwt_auth_params)
-        payload.setdefault("application_id", self._application_id)
-        payload.setdefault("iat", iat)
-        payload.setdefault("exp", iat + 60)
-        payload.setdefault("jti", str(uuid4()))
-
-        token = jwt.encode(payload, self._private_key, algorithm="RS256")
-
-        # If token is string transform it to byte type
-        if type(token) is str:
-            token = bytes(token, 'utf-8')
-
-        return token
+        return self._jwt_client.generate_application_jwt(self._jwt_claims)

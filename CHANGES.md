@@ -1,3 +1,6 @@
+# 3.5.2
+- Using the [Vonage JWT Generator](https://github.com/Vonage/vonage-python-jwt) instead of `PyJWT` for generating JWTs.
+
 # 3.5.1
 - Updating the internal use of the `fraud_check` parameter in the Vonage Verify V2 API
 

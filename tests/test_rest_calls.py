@@ -80,3 +80,12 @@ def test_delete_with_header_auth(client, dummy_data):
     assert isinstance(response, dict)
     assert request_user_agent() == dummy_data.user_agent
     assert_basic_auth()
+
+@responses.activate
+def test_get_with_jwt_auth(client, dummy_data):
+    stub(responses.GET, "https://api.nexmo.com/v1/calls")
+    host = "api.nexmo.com"
+    request_uri = "/v1/calls"
+    response = client.get(host, request_uri, auth_type='jwt')
+    assert isinstance(response, dict)
+    assert request_user_agent() == dummy_data.user_agent

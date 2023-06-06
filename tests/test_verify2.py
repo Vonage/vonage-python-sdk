@@ -454,6 +454,22 @@ def test_cancel_verification_error_not_found():
     )
 
 
+@responses.activate
+def test_new_request_multiple_workflows():
+    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+
+    params = {
+        'brand': 'ACME, Inc',
+        'workflow': [
+            {'channel': 'whatsapp_interactive', 'to': '447700900000'},
+            {'channel': 'sms', 'to': '4477009999999'},
+        ],
+    }
+    verify_request = verify2.new_request(params)
+
+    assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
+
+
 def test_remove_unnecessary_fraud_check():
     params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'sms', 'to': '447700900000'}], 'fraud_check': True}
     verify2._remove_unnecessary_fraud_check(params)

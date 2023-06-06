@@ -4,7 +4,6 @@
 
 [![PyPI version](https://badge.fury.io/py/vonage.svg)](https://badge.fury.io/py/vonage)
 [![Build Status](https://github.com/Vonage/vonage-python-sdk/workflows/Build/badge.svg)](https://github.com/Vonage/vonage-python-sdk/actions)
-[![codecov](https://codecov.io/gh/Vonage/vonage-python-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/Vonage/vonage-python-sdk)
 [![Python versions supported](https://img.shields.io/pypi/pyversions/vonage.svg)](https://pypi.python.org/pypi/vonage)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
@@ -728,34 +727,32 @@ your account before you can validate webhook signatures.
 
 ## JWT parameters
 
-By default, the library generates short-lived tokens for JWT authentication.
+By default, the library generates 15-minute tokens for JWT authentication.
 
-Use the auth method to specify parameters for a longer life token or to
-specify a different token identifier:
+Use the `auth` method of the client class to specify custom parameters:
 
 ```python
 client.auth(nbf=nbf, exp=exp, jti=jti)
+# OR
+client.auth({'nbf': nbf, 'exp': exp, 'jti': jti})
 ```
 
 ## Overriding API Attributes
 
-In order to rewrite/get the value of variables used across all the Vonage classes Python uses `Call by Object Reference` that allows you to create a single client for Sms/Voice Classes. This means that if you make a change on a client instance this will be available for the Sms class.
+In order to rewrite/get the value of variables used across all the Vonage classes Python uses `Call by Object Reference` that allows you to create a single client to use with all API classes.
 
 An example using setters/getters with `Object references`:
 
 ```python
-from vonage import Client, Sms
+from vonage import Client
 
-#Defines the client
+# Define the client
 client = Client(key='YOUR_API_KEY', secret='YOUR_API_SECRET')
 print(client.host()) # using getter for host -- value returned: rest.nexmo.com
 
-#Define the sms instance
-sms = Sms(client)
-
-#Change the value in client
-client.host('mio.nexmo.com') #Change host to mio.nexmo.com - this change will be available for sms
-
+# Change the value in client
+client.host('mio.nexmo.com') # Change host to mio.nexmo.com - this change will be available for sms
+client.sms.send_message(params) # Sends an SMS to the host above
 ```
 
 ### Overriding API Host / Host Attributes

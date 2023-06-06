@@ -21,8 +21,6 @@ class Messages:
     def send_message(self, params: dict):
         self.validate_send_message_input(params)
 
-        if not hasattr(self._client, '_application_id'):
-            self._auth_type = 'header'
         return self._client.post(
             self._client.api_host(),
             "/v1/messages",

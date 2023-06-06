@@ -4,7 +4,6 @@
 
 [![PyPI version](https://badge.fury.io/py/vonage.svg)](https://badge.fury.io/py/vonage)
 [![Build Status](https://github.com/Vonage/vonage-python-sdk/workflows/Build/badge.svg)](https://github.com/Vonage/vonage-python-sdk/actions)
-[![codecov](https://codecov.io/gh/Vonage/vonage-python-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/Vonage/vonage-python-sdk)
 [![Python versions supported](https://img.shields.io/pypi/pyversions/vonage.svg)](https://pypi.python.org/pypi/vonage)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
@@ -17,7 +16,8 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [Messages API](#messages-api)
 - [Voice API](#voice-api)
 - [NCCO Builder](#ncco-builder)
-- [Verify API](#verify-api)
+- [Verify V2 API](#verify-v2-api)
+- [Verify V1 API](#verify-v1-api)
 - [Meetings API](#meetings-api)
 - [Number Insight API](#number-insight-api)
 - [Account API](#account-api)
@@ -407,8 +407,75 @@ pprint(response)
 
 When using the `connect` action, use the parameter `from_` to specify the recipient (as `from` is a reserved keyword in Python!)
 
+## Verify V2 API
 
-## Verify API
+V2 of the Vonage Verify API lets you send verification codes via SMS, WhatsApp, Voice and Email
+
+You can also verify a user by WhatsApp Interactive Message or by Silent Authentication on their mobile device.
+
+### Send a verification code
+
+```python
+params = {
+    'brand': 'ACME, Inc', 
+    'workflow': [{'channel': 'sms', 'to': '447700900000'}]
+}
+verify_request = verify2.new_request(params)
+```
+
+### Use silent authentication, with email as a fallback
+
+```python
+params = {
+    'brand': 'ACME, Inc', 
+    'workflow': [
+        {'channel': 'silent_auth', 'to': '447700900000'},
+        {'channel': 'email', 'to': 'customer@example.com', 'from': 'business@example.com'}
+    ]
+}
+verify_request = verify2.new_request(params)
+```
+
+### Send a verification code with custom options, including a custom code
+
+```python
+params = {
+    'locale': 'en-gb',
+    'channel_timeout': 120,
+    'client_ref': 'my client reference',
+    'code': 'asdf1234',
+    'brand': 'ACME, Inc',
+    'workflow': [{'channel': 'sms', 'to': '447700900000', 'app_hash': 'asdfghjklqw'}],
+}
+verify_request = verify2.new_request(params)
+```
+
+### Send a verification request to a blocked network
+
+This feature is only enabled if you have requested for it to be added to your account.
+
+```python
+params = {
+    'brand': 'ACME, Inc', 
+    'fraud_check': False, 
+    'workflow': [{'channel': 'sms', 'to': '447700900000'}]
+}
+verify_request = verify2.new_request(params)
+```
+
+### Check a verification code
+
+```python
+verify2.check_code(REQUEST_ID, CODE)
+```
+
+### Cancel an ongoing verification
+
+```python
+verify2.cancel_verification(REQUEST_ID)
+```
+
+## Verify V1 API
 
 ### Search for a Verification request
 
@@ -799,34 +866,32 @@ your account before you can validate webhook signatures.
 
 ## JWT parameters
 
-By default, the library generates short-lived tokens for JWT authentication.
+By default, the library generates 15-minute tokens for JWT authentication.
 
-Use the auth method to specify parameters for a longer life token or to
-specify a different token identifier:
+Use the `auth` method of the client class to specify custom parameters:
 
 ```python
 client.auth(nbf=nbf, exp=exp, jti=jti)
+# OR
+client.auth({'nbf': nbf, 'exp': exp, 'jti': jti})
 ```
 
 ## Overriding API Attributes
 
-In order to rewrite/get the value of variables used across all the Vonage classes Python uses `Call by Object Reference` that allows you to create a single client for Sms/Voice Classes. This means that if you make a change on a client instance this will be available for the Sms class.
+In order to rewrite/get the value of variables used across all the Vonage classes Python uses `Call by Object Reference` that allows you to create a single client to use with all API classes.
 
 An example using setters/getters with `Object references`:
 
 ```python
-from vonage import Client, Sms
+from vonage import Client
 
-#Defines the client
+# Define the client
 client = Client(key='YOUR_API_KEY', secret='YOUR_API_SECRET')
 print(client.host()) # using getter for host -- value returned: rest.nexmo.com
 
-#Define the sms instance
-sms = Sms(client)
-
-#Change the value in client
-client.host('newhost.vonage.com') #Change host to newhost.vonage.com - this change will be available for sms
-
+# Change the value in client
+client.host('mio.nexmo.com') # Change host to mio.nexmo.com - this change will be available for sms
+client.sms.send_message(params) # Sends an SMS to the host above
 ```
 
 ### Overriding API Host / Host Attributes

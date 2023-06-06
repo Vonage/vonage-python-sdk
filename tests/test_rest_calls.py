@@ -122,3 +122,11 @@ def test_patch_invalid_auth_type(client):
     params = {"test_param_1": "test1", "test_param_2": "test2"}
     with pytest.raises(InvalidAuthenticationTypeError):
         client.patch(host, request_uri, params=params, auth_type='params')
+@responses.activate
+def test_get_with_jwt_auth(client, dummy_data):
+    stub(responses.GET, "https://api.nexmo.com/v1/calls")
+    host = "api.nexmo.com"
+    request_uri = "/v1/calls"
+    response = client.get(host, request_uri, auth_type='jwt')
+    assert isinstance(response, dict)
+    assert request_user_agent() == dummy_data.user_agent

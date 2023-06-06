@@ -1,0 +1,6 @@
+{
+    "title": "Invalid sender",
+    "detail": "The `from` parameter is invalid.",
+    "instance": "1711258a-12e2-48ad-99a2-43fe3315409c",
+    "type": "https://developer.nexmo.com/api-errors#invalid-param"
+}

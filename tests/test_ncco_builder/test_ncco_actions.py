@@ -125,6 +125,18 @@ def test_connect_options():
     assert json.dumps(_action_as_dict(connect)) == nas.connect_full
 
 
+def test_connect_advanced_machine_detection():
+    advancedMachineDetectionParams = {'behavior': 'continue', 'mode': 'detect'}
+    endpoint = ConnectEndpoints.PhoneEndpoint(number='447000000000')
+    connect = Ncco.Connect(
+        endpoint=endpoint,
+        from_='447400000000',
+        advancedMachineDetection=advancedMachineDetectionParams,
+        eventUrl='http://example.com',
+    )
+    assert json.dumps(_action_as_dict(connect)) == nas.connect_advancedMachineDetection
+
+
 def test_connect_random_from_number_error():
     endpoint = ConnectEndpoints.PhoneEndpoint(number='447000000000')
     with pytest.raises(ValueError) as err:
@@ -143,6 +155,10 @@ def test_connect_validation_errors():
         Ncco.Connect(endpoint=endpoint, limit=7201)
     with pytest.raises(ValidationError):
         Ncco.Connect(endpoint=endpoint, machineDetection='do_nothing')
+    with pytest.raises(ValidationError):
+        Ncco.Connect(endpoint=endpoint, advancedMachineDetection={'behavior': 'do_nothing'})
+    with pytest.raises(ValidationError):
+        Ncco.Connect(endpoint=endpoint, advancedMachineDetection={'mode': 'detect_nothing'})
 
 
 def test_talk_basic():

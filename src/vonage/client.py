@@ -1,4 +1,5 @@
 import vonage
+from vonage_jwt.jwt import JwtClient
 
 from .account import Account
 from .application import ApplicationV2, Application
@@ -13,6 +14,7 @@ from .sms import Sms
 from .ussd import Ussd
 from .voice import Voice
 from .verify import Verify
+from .verify2 import Verify2
 
 import logging
 from platform import python_version
@@ -20,12 +22,10 @@ from platform import python_version
 import base64
 import hashlib
 import hmac
-import jwt
 import os
 import time
-import re
-from uuid import uuid4
 
+from requests import Response
 from requests.adapters import HTTPAdapter
 from requests.sessions import Session
 
@@ -94,16 +94,10 @@ class Client:
         if self.signature_method in {"md5", "sha1", "sha256", "sha512"}:
             self.signature_method = getattr(hashlib, signature_method)
 
-        self._jwt_auth_params = {}
-
         if private_key is not None and application_id is not None:
-            self._application_id = application_id
-            self._private_key = private_key
+            self._jwt_client = JwtClient(application_id, private_key)
 
-            if isinstance(self._private_key, string_types) and re.search("[.][a-zA-Z0-9_]+$", self._private_key):
-                with open(self._private_key, "rb") as key_file:
-                    self._private_key = key_file.read()
-
+        self._jwt_claims = {}
         self._host = "rest.nexmo.com"
         self._api_host = "api.nexmo.com"
         self._meetings_api_host = "api-eu.vonage.com/beta/meetings"
@@ -125,6 +119,7 @@ class Client:
         self.sms = Sms(self)
         self.ussd = Ussd(self)
         self.verify = Verify(self)
+        self.verify2 = Verify2(self)
         self.voice = Voice(self)
 
         self.timeout = timeout
@@ -156,7 +151,7 @@ class Client:
             self._meetings_api_host = value
 
     def auth(self, params=None, **kwargs):
-        self._jwt_auth_params = params or kwargs
+        self._jwt_claims = params or kwargs
 
     def check_signature(self, params):
         params = dict(params)
@@ -299,15 +294,19 @@ class Client:
             host, self.session.delete(uri, headers=self._request_headers, timeout=self.timeout, params=params)
         )
 
-    def parse(self, host, response):
+    def parse(self, host, response: Response):
         logger.debug(f"Response headers {repr(response.headers)}")
         if response.status_code == 401:
-            raise AuthenticationError("Authentication failed. Check you're using a valid authentication method.")
+            raise AuthenticationError("Authentication failed.")
         elif response.status_code == 204:
             return None
         elif 200 <= response.status_code < 300:
             # Strip off any encoding from the content-type header:
-            content_mime = response.headers.get("content-type").split(";", 1)[0]
+            try:
+                content_mime = response.headers.get("content-type").split(";", 1)[0]
+            except AttributeError:
+                if response.json() is None:
+                    return None
             if content_mime == "application/json":
                 try:
                     return response.json()
@@ -332,6 +331,8 @@ class Client:
                     if 'errors' in error_data:
                         for error in error_data['errors']:
                             message += f', error: {error}'
+                else:
+                    message = error_data
             except JSONDecodeError:
                 pass
             raise ClientError(message)
@@ -341,21 +342,10 @@ class Client:
             raise ServerError(message)
 
     def _add_jwt_to_request_headers(self):
-        return dict(self.headers, Authorization=b"Bearer " + self._generate_application_jwt())
-
+        return dict(
+            self.headers, 
+            Authorization=b"Bearer " + self._generate_application_jwt()
+        )
+    
     def _generate_application_jwt(self):
-        iat = int(time.time())
-
-        payload = dict(self._jwt_auth_params)
-        payload.setdefault("application_id", self._application_id)
-        payload.setdefault("iat", iat)
-        payload.setdefault("exp", iat + 60)
-        payload.setdefault("jti", str(uuid4()))
-
-        token = jwt.encode(payload, self._private_key, algorithm="RS256")
-
-        # If token is string transform it to byte type
-        if type(token) is str:
-            token = bytes(token, 'utf-8')
-
-        return token
+        return self._jwt_client.generate_application_jwt(self._jwt_claims)

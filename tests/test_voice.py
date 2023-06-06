@@ -139,21 +139,22 @@ def test_send_dtmf(voice, dummy_data):
 
 
 @responses.activate
-def test_user_provided_authorization(client, dummy_data):
+def test_user_provided_authorization(dummy_data):
     stub(responses.GET, "https://api.nexmo.com/v1/calls/xx-xx-xx-xx")
 
-    application_id = "different-nexmo-application-id"
+    application_id = "different-application-id"
+    client = vonage.Client(application_id=application_id, private_key=dummy_data.private_key)
+
     nbf = int(time.time())
     exp = nbf + 3600
-
-    client.auth(application_id=application_id, nbf=nbf, exp=exp)
-    voice = vonage.Voice(client)
-    voice.get_call("xx-xx-xx-xx")
+    
+    client.auth(nbf=nbf, exp=exp)
+    client.voice.get_call("xx-xx-xx-xx")
 
     token = request_authorization().split()[1]
 
     token = jwt.decode(token, dummy_data.public_key, algorithms="RS256")
-
+    print(token)
     assert token["application_id"] == application_id
     assert token["nbf"] == nbf
     assert token["exp"] == exp

@@ -38,3 +38,7 @@ class InvalidAuthenticationTypeError(Error):
 
 class MeetingsError(Error):
     """An error related to the Meetings class which calls the Vonage Meetings API."""
+
+
+class Verify2Error(ClientError):
+    """An error relating to the Verify (V2) API."""

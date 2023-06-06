@@ -1,3 +1,4 @@
+from ._internal import set_auth_type
 from .errors import MessagesError
 
 import re
@@ -15,13 +16,11 @@ class Messages:
 
     def __init__(self, client):
         self._client = client
-        self._auth_type = 'jwt'
+        self._auth_type = set_auth_type(self._client)
 
     def send_message(self, params: dict):
         self.validate_send_message_input(params)
 
-        if not hasattr(self._client, '_application_id'):
-            self._auth_type = 'header'
         return self._client.post(
             self._client.api_host(),
             "/v1/messages",
@@ -40,7 +39,9 @@ class Messages:
 
     def _check_input_is_dict(self, params):
         if type(params) is not dict:
-            raise MessagesError('Parameters to the send_message method must be specified as a dictionary.')
+            raise MessagesError(
+                'Parameters to the send_message method must be specified as a dictionary.'
+            )
 
     def _check_valid_message_channel(self, params):
         if params['channel'] not in Messages.valid_message_channels:
@@ -64,9 +65,13 @@ class Messages:
         if not isinstance(params['to'], str):
             raise MessagesError(f'Message recipient ("to={params["to"]}") not in a valid format.')
         elif params['channel'] != 'messenger' and not re.search(r'^[1-9]\d{6,14}$', params['to']):
-            raise MessagesError(f'Message recipient number ("to={params["to"]}") not in a valid format.')
+            raise MessagesError(
+                f'Message recipient number ("to={params["to"]}") not in a valid format.'
+            )
         elif params['channel'] == 'messenger' and not 0 < len(params['to']) < 50:
-            raise MessagesError(f'Message recipient ID ("to={params["to"]}") not in a valid format.')
+            raise MessagesError(
+                f'Message recipient ID ("to={params["to"]}") not in a valid format.'
+            )
 
     def _check_valid_sender(self, params):
         if not isinstance(params['from'], str) or params['from'] == "":
@@ -76,8 +81,16 @@ class Messages:
 
     def _channel_specific_checks(self, params):
         if (
-            (params['channel'] == 'whatsapp' and params['message_type'] == 'template' and 'whatsapp' not in params)
-            or (params['channel'] == 'whatsapp' and params['message_type'] == 'sticker' and 'sticker' not in params)
+            (
+                params['channel'] == 'whatsapp'
+                and params['message_type'] == 'template'
+                and 'whatsapp' not in params
+            )
+            or (
+                params['channel'] == 'whatsapp'
+                and params['message_type'] == 'sticker'
+                and 'sticker' not in params
+            )
             or (params['channel'] == 'viber_service' and 'viber_service' not in params)
         ):
             raise MessagesError(
@@ -95,4 +108,6 @@ class Messages:
 
     def _check_valid_whatsapp_sticker(self, sticker):
         if ('id' not in sticker and 'url' not in sticker) or ('id' in sticker and 'url' in sticker):
-            raise MessagesError('Must specify one, and only one, of "id" or "url" in the "sticker" field.')
+            raise MessagesError(
+                'Must specify one, and only one, of "id" or "url" in the "sticker" field.'
+            )

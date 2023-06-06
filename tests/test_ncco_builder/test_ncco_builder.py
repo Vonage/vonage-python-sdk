@@ -19,13 +19,9 @@ def test_build_ncco_from_args():
 
 
 def test_build_ncco_from_list():
-    action_list = [nbs.record, nbs.talk_minimal]
+    action_list = [nbs.record, nbs.connect_advancedMachineDetection, nbs.talk_minimal]
     ncco = Ncco.build_ncco(actions=action_list)
-    assert ncco == nbs.two_part_ncco
-    assert (
-        json.dumps(ncco)
-        == '[{"action": "record", "eventUrl": ["http://example.com/events"]}, {"action": "talk", "text": "hello"}]'
-    )
+    assert ncco == nbs.three_part_advancedMachineDetection_ncco
 
 
 def test_build_insane_ncco():

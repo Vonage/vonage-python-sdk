@@ -102,7 +102,12 @@ def test_patch(client, dummy_data):
 
 @responses.activate
 def test_patch_no_content(client, dummy_data):
-    stub(responses.PATCH, f"https://api.nexmo.com/v2/project", status_code=204)
+    stub(
+        responses.PATCH,
+        f"https://api.nexmo.com/v2/project",
+        status_code=204,
+        fixture_path='no_content.json',
+    )
     host = "api.nexmo.com"
     request_uri = "/v2/project"
     params = {"test_param_1": "test1", "test_param_2": "test2"}
@@ -122,6 +127,8 @@ def test_patch_invalid_auth_type(client):
     params = {"test_param_1": "test1", "test_param_2": "test2"}
     with pytest.raises(InvalidAuthenticationTypeError):
         client.patch(host, request_uri, params=params, auth_type='params')
+
+
 @responses.activate
 def test_get_with_jwt_auth(client, dummy_data):
     stub(responses.GET, "https://api.nexmo.com/v1/calls")

@@ -179,7 +179,7 @@ def test_delete_recording(meetings):
     stub(
         responses.DELETE,
         'https://api-eu.vonage.com/beta/meetings/recordings/e5b73c98-c087-4ee5-b61b-0ea08204fc65',
-        fixture_path='meetings/null.json',
+        fixture_path='no_content.json',
     )
 
     assert meetings.delete_recording(recording_id='e5b73c98-c087-4ee5-b61b-0ea08204fc65') == None
@@ -276,7 +276,7 @@ def test_list_themes(meetings):
 
 @responses.activate
 def test_list_themes_no_themes(meetings):
-    stub(responses.GET, 'https://api-eu.vonage.com/beta/meetings/themes', fixture_path='meetings/null.json')
+    stub(responses.GET, 'https://api-eu.vonage.com/beta/meetings/themes', fixture_path='no_content.json')
 
     assert meetings.list_themes() == None
 
@@ -357,7 +357,7 @@ def test_delete_theme(meetings):
     stub(
         responses.DELETE,
         "https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654db",
-        fixture_path='meetings/null.json',
+        fixture_path='no_content.json',
     )
 
     theme = meetings.delete_theme('90a21428-b74a-4221-adc3-783935d654db')
@@ -536,7 +536,7 @@ def test_upload_logo_to_theme(meetings):
     stub(
         responses.POST,
         'https://s3.amazonaws.com/roomservice-whitelabel-logos-prod',
-        fixture_path='meetings/null.json',
+        fixture_path='no_content.json',
         status_code=204,
     )
     stub_bytes(
@@ -583,7 +583,7 @@ def test_upload_to_aws(meetings):
     stub(
         responses.POST,
         'https://s3.amazonaws.com/roomservice-whitelabel-logos-prod',
-        fixture_path='meetings/null.json',
+        fixture_path='no_content.json',
         status_code=204,
     )
 

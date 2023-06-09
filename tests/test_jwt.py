@@ -32,8 +32,9 @@ def test_generate_application_jwt(client):
     assert jwt == test_jwt
 
 
-def test_add_jwt_to_request_headers(client):
+def test_create_jwt_auth_string(client):
+    headers = client.headers
     with patch('vonage.client.JwtClient.generate_application_jwt', vonage_jwt_mock):
-        headers = client._add_jwt_to_request_headers()
+        headers['Authorization'] = client._create_jwt_auth_string()
     assert headers['Accept'] == 'application/json'
     assert headers['Authorization'] == b'Bearer ' + test_jwt

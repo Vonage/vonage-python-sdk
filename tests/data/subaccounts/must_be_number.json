@@ -1,0 +1,12 @@
+{
+    "type": "https://developer.nexmo.com/api-errors/account/subaccounts#validation",
+    "title": "Bad Request",
+    "detail": "The request failed due to validation errors",
+    "instance": "b4fb726d-0a83-4f97-b4b8-30b64d1aeac7",
+    "invalid_parameters": [
+        {
+            "reason": "Only positive values of data type JSON number are allowed",
+            "name": "amount"
+        }
+    ]
+}

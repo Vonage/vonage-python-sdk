@@ -1,0 +1,12 @@
+{
+    "type": "https://developer.nexmo.com/api-errors/account/subaccounts#validation",
+    "title": "Bad Request",
+    "detail": "The request failed due to validation errors",
+    "instance": "fb97a734-7087-4b3a-8ec3-88d271e27fb2",
+    "invalid_parameters": [
+        {
+            "reason": "Transitioning from 'use_primary_account_balance = false' to 'use_primary_account_balance = true' is not supported",
+            "name": "use_primary_account_balance"
+        }
+    ]
+}

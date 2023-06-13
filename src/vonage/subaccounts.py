@@ -10,6 +10,8 @@ if TYPE_CHECKING:
 class Subaccounts:
     """Class containing methods for working with the Vonage Subaccounts API."""
 
+    default_start_date = '1970-01-01T00:00:00Z'
+
     def __init__(self, client: Client):
         self._client = client
         self._api_key = self._client.api_key
@@ -29,9 +31,7 @@ class Subaccounts:
         secret: Optional[str] = None,
         use_primary_account_balance: Optional[bool] = None,
     ):
-        params = {'name': name}
-        if secret is not None:
-            params['secret'] = secret
+        params = {'name': name, 'secret': secret}
         if self._is_boolean(use_primary_account_balance):
             params['use_primary_account_balance'] = use_primary_account_balance
 
@@ -56,7 +56,11 @@ class Subaccounts:
         use_primary_account_balance: Optional[bool] = None,
         name: Optional[str] = None,
     ):
-        params = {}
+        params = {'name': name}
+        if self._is_boolean(suspended):
+            params['suspended'] = suspended
+        if self._is_boolean(use_primary_account_balance):
+            params['use_primary_account_balance'] = use_primary_account_balance
 
         return self._client.patch(
             self._api_host,
@@ -65,21 +69,76 @@ class Subaccounts:
             auth_type=self._auth_type,
         )
 
-    def list_credit_transfers(self, start_date: str = None, end_date: str = None, subaccount=[]):
-        ...
+    def list_credit_transfers(
+        self,
+        start_date: str = default_start_date,
+        end_date: Optional[str] = None,
+        subaccount: Optional[str] = None,
+    ):
+        params = {
+            'start_date': start_date,
+            'end_date': end_date,
+            'subaccount': subaccount,
+        }
+
+        return self._client.get(
+            self._api_host,
+            f'/accounts/{self._api_key}/credit-transfers',
+            params=params,
+            auth_type=self._auth_type,
+        )
 
     def transfer_credit(
-        self, from_: str, to: str, amount: Union[float, int], reference: str = None
+        self,
+        from_: str,
+        to: str,
+        amount: Union[float, int],
+        reference: str = None,
     ):
-        ...
+        params = {
+            'from': from_,
+            'to': to,
+            'amount': amount,
+            'reference': reference,
+        }
 
-    def list_balance_transfers(self, start_date: str = None, end_date: str = None, subaccount=[]):
-        ...
+        return self._client.post(
+            self._api_host,
+            f'/accounts/{self._api_key}/credit-transfers',
+            params=params,
+            auth_type=self._auth_type,
+        )
+
+    def list_balance_transfers(
+        self,
+        start_date: str = default_start_date,
+        end_date: Optional[str] = None,
+        subaccount: Optional[str] = None,
+    ):
+        params = {
+            'start_date': start_date,
+            'end_date': end_date,
+            'subaccount': subaccount,
+        }
+
+        return self._client.get(
+            self._api_host,
+            f'/accounts/{self._api_key}/balance-transfers',
+            params=params,
+            auth_type=self._auth_type,
+        )
 
     def transfer_balance(
         self, from_: str, to: str, amount: Union[float, int], reference: str = None
     ):
-        ...
+        params = {'from': from_, 'to': to, 'amount': amount, 'reference': reference}
+
+        return self._client.post(
+            self._api_host,
+            f'/accounts/{self._api_key}/balance-transfers',
+            params=params,
+            auth_type=self._auth_type,
+        )
 
     def transfer_number(self, from_: str, to: str, number: int, country: str):
         ...

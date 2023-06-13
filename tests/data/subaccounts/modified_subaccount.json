@@ -1,0 +1,10 @@
+{
+    "api_key": "asdfzxcv",
+    "primary_account_api_key": "1234asdf",
+    "use_primary_account_balance": false,
+    "name": "my modified subaccount",
+    "balance": 0,
+    "credit_limit": 0,
+    "suspended": true,
+    "created_at": "2023-06-09T14:42:55.000Z"
+}

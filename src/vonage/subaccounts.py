@@ -129,7 +129,11 @@ class Subaccounts:
         )
 
     def transfer_balance(
-        self, from_: str, to: str, amount: Union[float, int], reference: str = None
+        self,
+        from_: str,
+        to: str,
+        amount: Union[float, int],
+        reference: str = None,
     ):
         params = {'from': from_, 'to': to, 'amount': amount, 'reference': reference}
 
@@ -141,7 +145,13 @@ class Subaccounts:
         )
 
     def transfer_number(self, from_: str, to: str, number: int, country: str):
-        ...
+        params = {'from': from_, 'to': to, 'number': number, 'country': country}
+        return self._client.post(
+            self._api_host,
+            f'/accounts/{self._api_key}/transfer-number',
+            params=params,
+            auth_type=self._auth_type,
+        )
 
     def _is_boolean(self, var):
         if var is not None:

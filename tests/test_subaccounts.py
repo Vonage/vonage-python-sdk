@@ -17,12 +17,12 @@ def test_list_subaccounts():
         f'https://api.nexmo.com/accounts/{api_key}/subaccounts',
         fixture_path='subaccounts/list_subaccounts.json',
     )
-    subaccount_list = client.subaccounts.list_subaccounts()
-    assert subaccount_list['total_balance'] == 9.9999
-    assert subaccount_list['_embedded']['primary_account']['api_key'] == api_key
-    assert subaccount_list['_embedded']['primary_account']['balance'] == 9.9999
-    assert subaccount_list['_embedded']['subaccounts'][0]['api_key'] == 'qwerasdf'
-    assert subaccount_list['_embedded']['subaccounts'][0]['name'] == 'test_subaccount'
+    subaccounts = client.subaccounts.list_subaccounts()
+    assert subaccounts['total_balance'] == 9.9999
+    assert subaccounts['_embedded']['primary_account']['api_key'] == api_key
+    assert subaccounts['_embedded']['primary_account']['balance'] == 9.9999
+    assert subaccounts['_embedded']['subaccounts'][0]['api_key'] == 'qwerasdf'
+    assert subaccounts['_embedded']['subaccounts'][0]['name'] == 'test_subaccount'
 
 
 @responses.activate
@@ -373,13 +373,13 @@ def test_transfer_credit():
         f'https://api.nexmo.com/accounts/{api_key}/credit-transfers',
         fixture_path='subaccounts/credit_transfer.json',
     )
-    subaccount = client.subaccounts.transfer_credit(
+    transfer = client.subaccounts.transfer_credit(
         from_='1234asdf', to='asdfzxcv', amount=0.50, reference='test credit transfer'
     )
-    assert subaccount['from'] == '1234asdf'
-    assert subaccount['to'] == 'asdfzxcv'
-    assert subaccount['amount'] == 0.5
-    assert subaccount['reference'] == 'test credit transfer'
+    assert transfer['from'] == '1234asdf'
+    assert transfer['to'] == 'asdfzxcv'
+    assert transfer['amount'] == 0.5
+    assert transfer['reference'] == 'test credit transfer'
 
 
 @responses.activate
@@ -551,13 +551,13 @@ def test_transfer_balance():
         f'https://api.nexmo.com/accounts/{api_key}/balance-transfers',
         fixture_path='subaccounts/balance_transfer.json',
     )
-    subaccount = client.subaccounts.transfer_balance(
+    transfer = client.subaccounts.transfer_balance(
         from_='1234asdf', to='asdfzxcv', amount=0.50, reference='test transfer'
     )
-    assert subaccount['from'] == '1234asdf'
-    assert subaccount['to'] == 'asdfzxcv'
-    assert subaccount['amount'] == 0.5
-    assert subaccount['reference'] == 'test transfer'
+    assert transfer['from'] == '1234asdf'
+    assert transfer['to'] == 'asdfzxcv'
+    assert transfer['amount'] == 0.5
+    assert transfer['reference'] == 'test transfer'
 
 
 @responses.activate
@@ -617,6 +617,133 @@ def test_transfer_balance_validation_error():
     )
     with raises(ClientError) as err:
         client.subaccounts.transfer_balance(from_='1234asdf', to='asdfzxcv', amount='0.50')
+    assert (
+        str(err.value)
+        == 'Bad Request: The request failed due to validation errors (https://developer.nexmo.com/api-errors/account/subaccounts#validation)'
+    )
+
+
+#
+
+#
+#
+
+#
+#
+
+#
+#
+
+#
+#
+
+#
+#
+
+
+#
+#
+@responses.activate
+def test_transfer_number():
+    stub(
+        responses.POST,
+        f'https://api.nexmo.com/accounts/{api_key}/transfer-number',
+        fixture_path='subaccounts/transfer_number.json',
+    )
+    transfer = client.subaccounts.transfer_number(
+        from_='1234asdf', to='asdfzxcv', number='12345678901', country='US'
+    )
+    assert transfer['from'] == '1234asdf'
+    assert transfer['to'] == 'asdfzxcv'
+    assert transfer['number'] == '12345678901'
+    assert transfer['country'] == 'US'
+    assert transfer['masterAccountId'] == '1234asdf'
+
+
+@responses.activate
+def test_transfer_number_error_authentication():
+    stub(
+        responses.POST,
+        f'https://api.nexmo.com/accounts/{api_key}/transfer-number',
+        fixture_path='subaccounts/invalid_credentials.json',
+        status_code=401,
+    )
+
+    with raises(ClientError) as err:
+        client.subaccounts.transfer_number(
+            from_='1234asdf', to='asdfzxcv', number='12345678901', country='US'
+        )
+    assert str(err.value) == 'Authentication failed.'
+
+
+@responses.activate
+def test_transfer_number_invalid_transfer():
+    stub(
+        responses.POST,
+        f'https://api.nexmo.com/accounts/{api_key}/transfer-number',
+        fixture_path='subaccounts/invalid_number_transfer.json',
+        status_code=403,
+    )
+    with raises(ClientError) as err:
+        client.subaccounts.transfer_number(
+            from_='1234asdf', to='asdfzxcv', number='12345678901', country='US'
+        )
+    assert (
+        str(err.value)
+        == 'Invalid Number Transfer: Could not transfer number 12345678901 from account 1234asdf to asdfzxcv - ShortCode is not owned by from account (https://developer.nexmo.com/api-errors/account/subaccounts#invalid-number-transfer)'
+    )
+
+
+@responses.activate
+def test_transfer_number_error_number_not_found():
+    stub(
+        responses.POST,
+        f'https://api.nexmo.com/accounts/{api_key}/transfer-number',
+        fixture_path='subaccounts/number_not_found.json',
+        status_code=404,
+    )
+
+    with raises(ClientError) as err:
+        client.subaccounts.transfer_number(
+            from_='1234asdf', to='asdfzxcv', number='12345678901', country='US'
+        )
+    assert (
+        str(err.value)
+        == 'Invalid Number Transfer: Could not transfer number 12345678901 from account 1234asdf to asdfzxcv - ShortCode not found (https://developer.nexmo.com/api-errors/account/subaccounts#missing-number-transfer)'
+    )
+
+
+@responses.activate
+def test_transfer_number_error_number_not_found():
+    stub(
+        responses.POST,
+        f'https://api.nexmo.com/accounts/{api_key}/transfer-number',
+        fixture_path='subaccounts/number_not_found.json',
+        status_code=404,
+    )
+
+    with raises(ClientError) as err:
+        client.subaccounts.transfer_number(
+            from_='1234asdf', to='asdfzxcv', number='12345678901', country='US'
+        )
+    assert (
+        str(err.value)
+        == 'Invalid Number Transfer: Could not transfer number 12345678901 from account 1234asdf to asdfzxcv - ShortCode not found (https://developer.nexmo.com/api-errors/account/subaccounts#missing-number-transfer)'
+    )
+
+
+@responses.activate
+def test_transfer_number_validation_error():
+    stub(
+        responses.POST,
+        f'https://api.nexmo.com/accounts/{api_key}/transfer-number',
+        fixture_path='subaccounts/same_from_and_to_accounts.json',
+        status_code=422,
+    )
+    with raises(ClientError) as err:
+        client.subaccounts.transfer_number(
+            from_='asdfzxcv', to='asdfzxcv', number='12345678901', country='US'
+        )
     assert (
         str(err.value)
         == 'Bad Request: The request failed due to validation errors (https://developer.nexmo.com/api-errors/account/subaccounts#validation)'

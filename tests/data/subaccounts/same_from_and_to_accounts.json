@@ -1,0 +1,12 @@
+{
+    "type": "https://developer.nexmo.com/api-errors/account/subaccounts#validation",
+    "title": "Bad Request",
+    "detail": "The request failed due to validation errors",
+    "instance": "5499d21c-35e2-42c9-a50e-e96bdccdb34c",
+    "invalid_parameters": [
+        {
+            "reason": "Invalid accounts. From and To accounts should be different",
+            "name": "from"
+        }
+    ]
+}

@@ -1,0 +1,6 @@
+{
+    "type": "https://developer.nexmo.com/api-errors#unprovisioned",
+    "title": "Authorisation error",
+    "detail": "Account 1234adsf is not provisioned to access Subaccount Provisioning API",
+    "instance": "158b8f199c45014ab7b08bfe9cc1c12c"
+}

@@ -20,6 +20,7 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [Verify V1 API](#verify-v1-api)
 - [Number Insight API](#number-insight-api)
 - [Account API](#account-api)
+- [Subaccounts API](#subaccounts-api)
 - [Number Management API](#number-management-api)
 - [Pricing API](#pricing-api)
 - [Managing Secrets](#managing-secrets)
@@ -408,7 +409,7 @@ When using the `connect` action, use the parameter `from_` to specify the recipi
 
 ## Verify V2 API
 
-V2 of the Vonage Verify API lets you send verification codes via SMS, WhatsApp, Voice and Email
+V2 of the Vonage Verify API lets you send verification codes via SMS, WhatsApp, Voice and Email.
 
 You can also verify a user by WhatsApp Interactive Message or by Silent Authentication on their mobile device.
 
@@ -618,6 +619,150 @@ This feature is only enabled when you enable auto-reload for your account in the
 client.account.topup(trx=transaction_reference) 
 ```
 
+## Subaccounts API
+
+This API is used to create and configure subaccounts related to your primary account and transfer credit, balances and bought numbers between accounts.
+
+The subaccounts API is disabled by default. If you want to use subaccounts, [contact support](https://api.support.vonage.com) to have the API enabled on your account.
+
+### Get a list of all subaccounts
+
+```python
+client.subaccounts.list_subaccounts()
+```
+
+### Create a subaccount
+
+```python
+client.subaccounts.create_subaccount(name='my subaccount')
+
+# With options
+client.subaccounts.create_subaccount(
+    name='my subaccount', 
+    secret='Password123', 
+    use_primary_account_balance=False,
+)
+```
+
+### Get information about a subaccount
+
+```python
+client.subaccounts.get_subaccount(SUBACCOUNT_API_KEY)
+```
+
+### Modify a subaccount
+
+```python
+client.subaccounts.modify_subaccount(
+    SUBACCOUNT_KEY,
+    suspended=True,
+    use_primary_account_balance=False,
+    name='my modified subaccount',
+)
+```
+
+### List credit transfers between accounts
+
+All fields are optional. If `start_date` or `end_date` are used, the dates must be specified in UTC ISO 8601 format, e.g. `1970-01-01T00:00:00Z`. Don't use milliseconds.
+
+```python
+client.subaccounts.list_credit_transfers(
+    start_date='2022-03-29T14:16:56Z',
+    end_date='2023-06-12T17:20:01Z',
+    subaccount=SUBACCOUNT_API_KEY, # Use to show only the results that contain this key 
+)
+```
+
+### Transfer credit between accounts
+
+Transferring credit is only possible for postpaid accounts, i.e. accounts that can have a negative balance. For prepaid and self-serve customers, account balances can be transferred between accounts (see below).
+
+```python
+client.subaccounts.transfer_credit(
+    from_=FROM_ACCOUNT, 
+    to=TO_ACCOUNT, 
+    amount=0.50, 
+    reference='test credit transfer',
+)
+```
+
+### List balance transfers between accounts
+
+All fields are optional. If `start_date` or `end_date` are used, the dates must be specified in UTC ISO 8601 format, e.g. `1970-01-01T00:00:00Z`. Don't use milliseconds.
+
+```python
+client.subaccounts.list_balance_transfers(
+    start_date='2022-03-29T14:16:56Z',
+    end_date='2023-06-12T17:20:01Z',
+    subaccount=SUBACCOUNT_API_KEY, # Use to show only the results that contain this key 
+)
+```
+
+### Transfer account balances between accounts
+
+```python
+client.subaccounts.transfer_balance(
+    from_=FROM_ACCOUNT, 
+    to=TO_ACCOUNT, 
+    amount=0.50, 
+    reference='test balance transfer',
+)
+```
+
+### Transfer bought phone numbers between accounts
+
+```python
+client.subaccounts.transfer_balance(
+    from_=FROM_ACCOUNT, 
+    to=TO_ACCOUNT, 
+    number=NUMBER_TO_TRANSFER, 
+    country='US',
+)
+```
+
+## Number Management API
+
+### Get numbers associated with your account
+
+```python
+client.numbers.get_account_numbers(size=25)
+```
+
+### Get numbers that are available to buy
+
+```python
+client.numbers.get_available_numbers('CA', size=25)
+```
+
+### Buy an available number
+
+```python
+params = {'country': 'US', 'msisdn': 'number_to_buy'}
+client.numbers.buy_number(params)
+
+# To buy a number for a subaccount
+params = {'country': 'US', 'msisdn': 'number_to_buy', 'target_api_key': SUBACCOUNT_API_KEY}
+client.numbers.buy_number(params)
+```
+
+### Cancel your subscription for a specific number
+
+```python
+params = {'country': 'US', 'msisdn': 'number_to_cancel'}
+client.numbers.cancel_number(params)
+
+# To cancel a number assigned to a subaccount
+params = {'country': 'US', 'msisdn': 'number_to_buy', 'target_api_key': SUBACCOUNT_API_KEY}
+client.numbers.cancel_number(params)
+```
+
+### Update the behaviour of a number that you own
+
+```python
+params = {"country": "US", "msisdn": "number_to_update", "moHttpUrl": "callback_url"}
+client.numbers.update_number(params)
+```
+
 ## Pricing API
 
 ### Get pricing for a single country
@@ -792,6 +937,7 @@ The following is a list of Vonage APIs and whether the Python SDK provides suppo
 | Redact API            |   Developer Preview  |     ❌     |
 | Reports API           |         Beta         |     ❌     |
 | SMS API               | General Availability |     ✅     |
+| Subaccounts API       | General Availability |     ✅     |
 | Verify API            | General Availability |     ✅     |
 | Voice API             | General Availability |     ✅     |
 

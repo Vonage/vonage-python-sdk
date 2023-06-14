@@ -1,9 +1,16 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from vonage import Client
+
 from pydantic import BaseModel, ValidationError, validator, conint, constr
 from typing import Optional, List
 
 import copy
 import re
 
+from ._internal import set_auth_type
 from .errors import Verify2Error
 
 
@@ -17,9 +24,9 @@ class Verify2:
         'silent_auth',
     ]
 
-    def __init__(self, client):
+    def __init__(self, client: Client):
         self._client = client
-        self._auth_type = 'jwt'
+        self._auth_type = set_auth_type(self._client)
 
     def new_request(self, params: dict):
         self._remove_unnecessary_fraud_check(params)
@@ -28,9 +35,6 @@ class Verify2:
             Verify2.VerifyRequest.parse_obj(params_to_verify)
         except (ValidationError, Verify2Error) as err:
             raise err
-
-        if not hasattr(self._client, '_application_id'):
-            self._auth_type = 'header'
 
         return self._client.post(
             self._client.api_host(),
@@ -42,9 +46,6 @@ class Verify2:
     def check_code(self, request_id: str, code: str):
         params = {'code': str(code)}
 
-        if not hasattr(self._client, '_application_id'):
-            self._auth_type = 'header'
-
         return self._client.post(
             self._client.api_host(),
             f'/v2/verify/{request_id}',
@@ -53,9 +54,6 @@ class Verify2:
         )
 
     def cancel_verification(self, request_id: str):
-        if not hasattr(self._client, '_application_id'):
-            self._auth_type = 'header'
-
         return self._client.delete(
             self._client.api_host(),
             f'/v2/verify/{request_id}',
@@ -74,7 +72,9 @@ class Verify2:
         client_ref: Optional[str]
         code_length: Optional[conint(ge=4, le=10)]
         fraud_check: Optional[bool]
-        code: Optional[constr(min_length=4, max_length=10, regex='^(?=[a-zA-Z0-9]{4,10}$)[a-zA-Z0-9]*$')]
+        code: Optional[
+            constr(min_length=4, max_length=10, regex='^(?=[a-zA-Z0-9]{4,10}$)[a-zA-Z0-9]*$')
+        ]
 
         @validator('workflow')
         def check_valid_workflow(cls, v):
@@ -95,7 +95,9 @@ class Verify2:
         if 'to' not in workflow or (
             workflow['channel'] != 'email' and not re.search(r'^[1-9]\d{6,14}$', workflow['to'])
         ):
-            raise Verify2Error(f'You must specify a valid "to" value for channel "{workflow["channel"]}"')
+            raise Verify2Error(
+                f'You must specify a valid "to" value for channel "{workflow["channel"]}"'
+            )
 
     def _check_app_hash(workflow):
         if workflow['channel'] == 'sms' and 'app_hash' in workflow:
@@ -105,7 +107,9 @@ class Verify2:
                         it must be passed as a string and contain exactly 11 characters.'
                 )
         elif workflow['channel'] != 'sms' and 'app_hash' in workflow:
-            raise Verify2Error('Cannot specify a value for "app_hash" unless using SMS for authentication.')
+            raise Verify2Error(
+                'Cannot specify a value for "app_hash" unless using SMS for authentication.'
+            )
 
     def _check_whatsapp_sender(workflow):
         if not re.search(r'^[1-9]\d{6,14}$', workflow['from']):

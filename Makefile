@@ -5,7 +5,7 @@ coverage:
 	coverage html
 
 test:
-	pytest -v
+	pytest -vv --disable-warnings
 
 clean:
 	rm -rf dist build

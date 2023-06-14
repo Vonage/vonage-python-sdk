@@ -471,7 +471,7 @@ def test_list_balance_transfers():
     transfers = client.subaccounts.list_balance_transfers(
         start_date='2022-03-29T14:16:56Z',
         end_date='2023-06-12T17:20:01.000Z',
-        subaccount='3e78c84a',
+        subaccount='asdfzxcv',
     )
     assert transfers['_embedded']['balance_transfers'][0]['from'] == '1234asdf'
     assert transfers['_embedded']['balance_transfers'][0]['reference'] == 'test transfer'
@@ -552,12 +552,12 @@ def test_transfer_balance():
         fixture_path='subaccounts/balance_transfer.json',
     )
     transfer = client.subaccounts.transfer_balance(
-        from_='1234asdf', to='asdfzxcv', amount=0.50, reference='test transfer'
+        from_='1234asdf', to='asdfzxcv', amount=0.50, reference='test balance transfer'
     )
     assert transfer['from'] == '1234asdf'
     assert transfer['to'] == 'asdfzxcv'
     assert transfer['amount'] == 0.5
-    assert transfer['reference'] == 'test transfer'
+    assert transfer['reference'] == 'test balance transfer'
 
 
 @responses.activate
@@ -623,26 +623,6 @@ def test_transfer_balance_validation_error():
     )
 
 
-#
-
-#
-#
-
-#
-#
-
-#
-#
-
-#
-#
-
-#
-#
-
-
-#
-#
 @responses.activate
 def test_transfer_number():
     stub(

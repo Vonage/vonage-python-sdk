@@ -294,7 +294,7 @@ def test_list_credit_transfers():
     )
     transfers = client.subaccounts.list_credit_transfers(
         start_date='2022-03-29T14:16:56Z',
-        end_date='2023-06-12T17:20:01.000Z',
+        end_date='2023-06-12T17:20:01Z',
         subaccount='asdfzxcv',
     )
     assert transfers['_embedded']['credit_transfers'][0]['from'] == '1234asdf'
@@ -470,7 +470,7 @@ def test_list_balance_transfers():
     )
     transfers = client.subaccounts.list_balance_transfers(
         start_date='2022-03-29T14:16:56Z',
-        end_date='2023-06-12T17:20:01.000Z',
+        end_date='2023-06-12T17:20:01Z',
         subaccount='asdfzxcv',
     )
     assert transfers['_embedded']['balance_transfers'][0]['from'] == '1234asdf'

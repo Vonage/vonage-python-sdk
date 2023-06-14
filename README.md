@@ -663,13 +663,13 @@ client.subaccounts.modify_subaccount(
 
 ### List credit transfers between accounts
 
-All fields are optional. If `start_date` or `end_date` are used, the dates must be specified in ISO 8601 format.
+All fields are optional. If `start_date` or `end_date` are used, the dates must be specified in UTC ISO 8601 format, e.g. `1970-01-01T00:00:00Z`. Don't use milliseconds.
 
 ```python
 client.subaccounts.list_credit_transfers(
     start_date='2022-03-29T14:16:56Z',
-    end_date='2023-06-12T17:20:01.000Z',
-    subaccount=SUBACCOUNT_API_KEY, # Use to only show results that contain this key 
+    end_date='2023-06-12T17:20:01Z',
+    subaccount=SUBACCOUNT_API_KEY, # Use to show only the results that contain this key 
 )
 ```
 
@@ -688,13 +688,13 @@ client.subaccounts.transfer_credit(
 
 ### List balance transfers between accounts
 
-All fields are optional. If `start_date` or `end_date` are used, the dates must be specified in ISO 8601 format.
+All fields are optional. If `start_date` or `end_date` are used, the dates must be specified in UTC ISO 8601 format, e.g. `1970-01-01T00:00:00Z`. Don't use milliseconds.
 
 ```python
 client.subaccounts.list_balance_transfers(
     start_date='2022-03-29T14:16:56Z',
-    end_date='2023-06-12T17:20:01.000Z',
-    subaccount=SUBACCOUNT_API_KEY, # Use to only show results that contain this key 
+    end_date='2023-06-12T17:20:01Z',
+    subaccount=SUBACCOUNT_API_KEY, # Use to show only the results that contain this key 
 )
 ```
 

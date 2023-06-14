@@ -1,3 +1,6 @@
+# 3.6.0
+- Adding support for the [Vonage Subaccounts API](https://developer.vonage.com/en/account/subaccounts/overview)
+
 # 3.5.2
 - Using the [Vonage JWT Generator](https://github.com/Vonage/vonage-python-jwt) instead of `PyJWT` for generating JWTs.
 - Other internal refactoring and enhancements

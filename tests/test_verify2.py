@@ -11,7 +11,12 @@ verify2 = Verify2(Client())
 
 @responses.activate
 def test_new_request_sms_basic(dummy_data):
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/create_request.json',
+        status_code=202,
+    )
 
     params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'sms', 'to': '447700900000'}]}
     verify_request = verify2.new_request(params)
@@ -22,7 +27,12 @@ def test_new_request_sms_basic(dummy_data):
 
 @responses.activate
 def test_new_request_sms_full():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/create_request.json',
+        status_code=202,
+    )
 
     params = {
         'locale': 'en-gb',
@@ -40,9 +50,18 @@ def test_new_request_sms_full():
 
 @responses.activate
 def test_new_request_sms_custom_code(dummy_data):
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/create_request.json',
+        status_code=202,
+    )
 
-    params = {'brand': 'ACME, Inc', 'code': 'asdfghjk', 'workflow': [{'channel': 'sms', 'to': '447700900000'}]}
+    params = {
+        'brand': 'ACME, Inc',
+        'code': 'asdfghjk',
+        'workflow': [{'channel': 'sms', 'to': '447700900000'}],
+    }
     verify_request = verify2.new_request(params)
 
     assert request_user_agent() == dummy_data.user_agent
@@ -58,7 +77,11 @@ def test_new_request_error_fraud_check_invalid_account(dummy_data):
         status_code=403,
     )
 
-    params = {'brand': 'ACME, Inc', 'fraud_check': False, 'workflow': [{'channel': 'sms', 'to': '447700900000'}]}
+    params = {
+        'brand': 'ACME, Inc',
+        'fraud_check': False,
+        'workflow': [{'channel': 'sms', 'to': '447700900000'}],
+    }
 
     with raises(ClientError) as err:
         verify2.new_request(params)
@@ -151,12 +174,20 @@ def test_new_request_whatsapp_app_hash_error():
 
     with raises(Verify2Error) as err:
         verify2.new_request(params)
-    assert str(err.value) == 'Cannot specify a value for "app_hash" unless using SMS for authentication.'
+    assert (
+        str(err.value)
+        == 'Cannot specify a value for "app_hash" unless using SMS for authentication.'
+    )
 
 
 @responses.activate
 def test_new_request_whatsapp():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/create_request.json',
+        status_code=202,
+    )
 
     params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'whatsapp', 'to': '447700900000'}]}
     verify_request = verify2.new_request(params)
@@ -166,9 +197,18 @@ def test_new_request_whatsapp():
 
 @responses.activate
 def test_new_request_whatsapp_custom_code():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/create_request.json',
+        status_code=202,
+    )
 
-    params = {'brand': 'ACME, Inc', 'code': 'asdfghjk', 'workflow': [{'channel': 'whatsapp', 'to': '447700900000'}]}
+    params = {
+        'brand': 'ACME, Inc',
+        'code': 'asdfghjk',
+        'workflow': [{'channel': 'whatsapp', 'to': '447700900000'}],
+    }
     verify_request = verify2.new_request(params)
 
     assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
@@ -176,9 +216,17 @@ def test_new_request_whatsapp_custom_code():
 
 @responses.activate
 def test_new_request_whatsapp_from_field():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/create_request.json',
+        status_code=202,
+    )
 
-    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'whatsapp', 'to': '447700900000', 'from': '447000000000'}]}
+    params = {
+        'brand': 'ACME, Inc',
+        'workflow': [{'channel': 'whatsapp', 'to': '447700900000', 'from': '447000000000'}],
+    }
     verify_request = verify2.new_request(params)
 
     assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
@@ -186,7 +234,12 @@ def test_new_request_whatsapp_from_field():
 
 @responses.activate
 def test_new_request_whatsapp_invalid_sender_error():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/invalid_sender.json', status_code=422)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/invalid_sender.json',
+        status_code=422,
+    )
 
     params = {
         'brand': 'ACME, Inc',
@@ -199,7 +252,12 @@ def test_new_request_whatsapp_invalid_sender_error():
 
 @responses.activate
 def test_new_request_whatsapp_sender_unregistered_error():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/invalid_sender.json', status_code=422)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/invalid_sender.json',
+        status_code=422,
+    )
 
     params = {
         'brand': 'ACME, Inc',
@@ -215,9 +273,17 @@ def test_new_request_whatsapp_sender_unregistered_error():
 
 @responses.activate
 def test_new_request_whatsapp_interactive():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/create_request.json',
+        status_code=202,
+    )
 
-    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'whatsapp_interactive', 'to': '447700900000'}]}
+    params = {
+        'brand': 'ACME, Inc',
+        'workflow': [{'channel': 'whatsapp_interactive', 'to': '447700900000'}],
+    }
     verify_request = verify2.new_request(params)
 
     assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
@@ -225,7 +291,12 @@ def test_new_request_whatsapp_interactive():
 
 @responses.activate
 def test_new_request_voice():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/create_request.json',
+        status_code=202,
+    )
 
     params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'voice', 'to': '447700900000'}]}
     verify_request = verify2.new_request(params)
@@ -235,9 +306,18 @@ def test_new_request_voice():
 
 @responses.activate
 def test_new_request_voice_custom_code():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/create_request.json',
+        status_code=202,
+    )
 
-    params = {'brand': 'ACME, Inc', 'code': 'asdfhjkl', 'workflow': [{'channel': 'voice', 'to': '447700900000'}]}
+    params = {
+        'brand': 'ACME, Inc',
+        'code': 'asdfhjkl',
+        'workflow': [{'channel': 'voice', 'to': '447700900000'}],
+    }
     verify_request = verify2.new_request(params)
 
     assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
@@ -245,9 +325,17 @@ def test_new_request_voice_custom_code():
 
 @responses.activate
 def test_new_request_email():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/create_request.json',
+        status_code=202,
+    )
 
-    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'email', 'to': 'recipient@example.com'}]}
+    params = {
+        'brand': 'ACME, Inc',
+        'workflow': [{'channel': 'email', 'to': 'recipient@example.com'}],
+    }
     verify_request = verify2.new_request(params)
 
     assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
@@ -255,7 +343,12 @@ def test_new_request_email():
 
 @responses.activate
 def test_new_request_email_additional_fields():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/create_request.json',
+        status_code=202,
+    )
 
     params = {
         'locale': 'en-gb',
@@ -264,7 +357,9 @@ def test_new_request_email_additional_fields():
         'code_length': 8,
         'brand': 'ACME, Inc',
         'code': 'asdfhjkl',
-        'workflow': [{'channel': 'email', 'to': 'recipient@example.com', 'from': 'sender@example.com'}],
+        'workflow': [
+            {'channel': 'email', 'to': 'recipient@example.com', 'from': 'sender@example.com'}
+        ],
     }
     verify_request = verify2.new_request(params)
 
@@ -273,7 +368,12 @@ def test_new_request_email_additional_fields():
 
 @responses.activate
 def test_new_request_email_error():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/invalid_email.json', status_code=422)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/invalid_email.json',
+        status_code=422,
+    )
 
     params = {
         'brand': 'ACME, Inc',
@@ -289,7 +389,12 @@ def test_new_request_email_error():
 
 @responses.activate
 def test_new_request_silent_auth():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/create_request.json',
+        status_code=202,
+    )
 
     params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'silent_auth', 'to': '447700900000'}]}
     verify_request = verify2.new_request(params)
@@ -299,7 +404,12 @@ def test_new_request_silent_auth():
 
 @responses.activate
 def test_new_request_error_conflict():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/error_conflict.json', status_code=409)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/error_conflict.json',
+        status_code=409,
+    )
     params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'sms', 'to': '447700900000'}]}
 
     with raises(ClientError) as err:
@@ -312,7 +422,12 @@ def test_new_request_error_conflict():
 
 @responses.activate
 def test_new_request_rate_limit():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/rate_limit.json', status_code=429)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/rate_limit.json',
+        status_code=429,
+    )
     params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'sms', 'to': '447700900000'}]}
 
     with raises(ClientError) as err:
@@ -456,7 +571,12 @@ def test_cancel_verification_error_not_found():
 
 @responses.activate
 def test_new_request_multiple_workflows():
-    stub(responses.POST, 'https://api.nexmo.com/v2/verify', fixture_path='verify2/create_request.json', status_code=202)
+    stub(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify',
+        fixture_path='verify2/create_request.json',
+        status_code=202,
+    )
 
     params = {
         'brand': 'ACME, Inc',
@@ -471,7 +591,11 @@ def test_new_request_multiple_workflows():
 
 
 def test_remove_unnecessary_fraud_check():
-    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'sms', 'to': '447700900000'}], 'fraud_check': True}
+    params = {
+        'brand': 'ACME, Inc',
+        'workflow': [{'channel': 'sms', 'to': '447700900000'}],
+        'fraud_check': True,
+    }
     verify2._remove_unnecessary_fraud_check(params)
 
     assert 'fraud_check' not in params

@@ -22,6 +22,9 @@ def _format_date_param(params, key, format="%Y-%m-%d %H:%M:%S"):
 
 
 def set_auth_type(client: Client) -> str:
+    """Sets the authentication type used. If a JWT Client has been created,
+    it will create a JWT and use JWT authentication."""
+
     if hasattr(client, '_jwt_client'):
         return 'jwt'
     else:

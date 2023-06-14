@@ -1,0 +1,6 @@
+{
+    "type": "https://developer.nexmo.com/api-errors#invalid-api-key",
+    "title": "Invalid API Key",
+    "detail": "API key '1234asdf' does not exist, or you do not have access",
+    "instance": "158b8f199c45014ab7b08bfe9cc1c12c"
+}

@@ -348,4 +348,16 @@ class Client:
         )
     
     def _generate_application_jwt(self):
-        return self._jwt_client.generate_application_jwt(self._jwt_claims)
+        try:
+            return self._jwt_client.generate_application_jwt(self._jwt_claims)
+        except AttributeError as err:
+            if '_jwt_client' in str(err):
+                raise ClientError(
+                    'JWT generation failed. Check that you passed in valid values for "application_id" and "private_key".'
+                )
+            else:
+                raise err
+
+    def _create_header_auth_string(self):
+        hash = base64.b64encode(f"{self.api_key}:{self.api_secret}".encode("utf-8")).decode("ascii")
+        return f"Basic {hash}"

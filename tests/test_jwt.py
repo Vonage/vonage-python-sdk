@@ -1,5 +1,8 @@
 from time import time
 from unittest.mock import patch
+from pytest import raises
+
+from vonage import Client, ClientError
 
 now = int(time())
 
@@ -37,3 +40,11 @@ def test_add_jwt_to_request_headers(client):
         headers = client._add_jwt_to_request_headers()
     assert headers['Accept'] == 'application/json'
     assert headers['Authorization'] == b'Bearer ' + test_jwt
+
+
+def test_create_jwt_error_no_application_id_or_private_key():
+    empty_client = Client()
+    
+    with raises(ClientError) as err:
+        empty_client._generate_application_jwt()
+    assert str(err.value) == 'JWT generation failed. Check that you passed in valid values for "application_id" and "private_key".'

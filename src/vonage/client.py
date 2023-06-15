@@ -6,7 +6,7 @@ from .application import ApplicationV2, Application
 from .errors import *
 from .messages import Messages
 from .number_insight import NumberInsight
-from .number_insight2 import NumberInsight2
+from .number_insight_v2 import NumberInsightV2
 from .number_management import Numbers
 from .redact import Redact
 from .short_codes import ShortCodes
@@ -113,7 +113,7 @@ class Client:
         self.application = Application(self)
         self.messages = Messages(self)
         self.number_insight = NumberInsight(self)
-        self.number_insight2 = NumberInsight2(self)
+        self.number_insight_v2 = NumberInsightV2(self)
         self.numbers = Numbers(self)
         self.short_codes = ShortCodes(self)
         self.sms = Sms(self)

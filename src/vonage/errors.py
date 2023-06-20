@@ -42,3 +42,7 @@ class MeetingsError(Error):
 
 class Verify2Error(ClientError):
     """An error relating to the Verify (V2) API."""
+
+
+class SubaccountsError(ClientError):
+    """An error relating to the Subaccounts API."""

@@ -11,6 +11,7 @@ from .number_management import Numbers
 from .redact import Redact
 from .short_codes import ShortCodes
 from .sms import Sms
+from .subaccounts import Subaccounts
 from .ussd import Ussd
 from .voice import Voice
 from .verify import Verify
@@ -117,6 +118,7 @@ class Client:
         self.numbers = Numbers(self)
         self.short_codes = ShortCodes(self)
         self.sms = Sms(self)
+        self.subaccounts = Subaccounts(self)
         self.ussd = Ussd(self)
         self.verify = Verify(self)
         self.verify2 = Verify2(self)
@@ -186,12 +188,11 @@ class Client:
         self._request_headers = self.headers
 
         if auth_type == 'jwt':
-            self._request_headers = self._add_jwt_to_request_headers()
+            self._request_headers['Authorization'] = self._create_jwt_auth_string()
         elif auth_type == 'params':
             params = dict(params or {}, api_key=self.api_key, api_secret=self.api_secret)
         elif auth_type == 'header':
-            hash = base64.b64encode(f"{self.api_key}:{self.api_secret}".encode("utf-8")).decode("ascii")
-            self._request_headers = dict(self.headers or {}, Authorization=f"Basic {hash}")
+            self._request_headers['Authorization'] = self._create_header_auth_string()
         else:
             raise InvalidAuthenticationTypeError(
                 f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
@@ -218,12 +219,11 @@ class Client:
             params["api_key"] = self.api_key
             params["sig"] = self.signature(params)
         elif auth_type == 'jwt':
-            self._request_headers = self._add_jwt_to_request_headers()
+            self._request_headers['Authorization'] = self._create_jwt_auth_string()
         elif auth_type == 'params':
             params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
         elif auth_type == 'header':
-            hash = base64.b64encode(f"{self.api_key}:{self.api_secret}".encode("utf-8")).decode("ascii")
-            self._request_headers = dict(self.headers or {}, Authorization=f"Basic {hash}")
+            self._request_headers['Authorization'] = self._create_header_auth_string()
         else:
             raise InvalidAuthenticationTypeError(
                 f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
@@ -244,10 +244,9 @@ class Client:
         self._request_headers = self.headers
 
         if auth_type == 'jwt':
-            self._request_headers = self._add_jwt_to_request_headers()
+            self._request_headers['Authorization'] = self._create_jwt_auth_string()
         elif auth_type == 'header':
-            hash = base64.b64encode(f"{self.api_key}:{self.api_secret}".encode("utf-8")).decode("ascii")
-            self._request_headers = dict(self._request_headers or {}, Authorization=f"Basic {hash}")
+            self._request_headers['Authorization'] = self._create_header_auth_string()
         else:
             raise InvalidAuthenticationTypeError(
                 f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
@@ -257,17 +256,16 @@ class Client:
         # All APIs that currently use put methods require a json-formatted body so don't need to check this
         return self.parse(host, self.session.put(uri, json=params, headers=self._request_headers, timeout=self.timeout))
 
-    def patch(self, host, request_uri, params, auth_type='jwt'):
+    def patch(self, host, request_uri, params, auth_type=None):
         uri = f"https://{host}{request_uri}"
         self._request_headers = self.headers
 
         if auth_type == 'jwt':
-            self._request_headers = self._add_jwt_to_request_headers()
+            self._request_headers['Authorization'] = self._create_jwt_auth_string()
+        elif auth_type == 'header':
+            self._request_headers['Authorization'] = self._create_header_auth_string()
         else:
-            raise InvalidAuthenticationTypeError(
-                f"""Invalid authentication type. Must be "jwt", as only APIs 
-                    which use jwt authentication currently use this method."""
-            )
+            raise InvalidAuthenticationTypeError(f"""Invalid authentication type.""")
 
         logger.debug(f"PATCH to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}")
         # Only newer APIs (that expect json-bodies) currently use this method, so we will always send a json-formatted body
@@ -278,10 +276,9 @@ class Client:
         self._request_headers = self.headers
 
         if auth_type == 'jwt':
-            self._request_headers = self._add_jwt_to_request_headers()
+            self._request_headers['Authorization'] = self._create_jwt_auth_string()
         elif auth_type == 'header':
-            hash = base64.b64encode(f"{self.api_key}:{self.api_secret}".encode("utf-8")).decode("ascii")
-            self._request_headers = dict(self._request_headers or {}, Authorization=f"Basic {hash}")
+            self._request_headers['Authorization'] = self._create_header_auth_string()
         else:
             raise InvalidAuthenticationTypeError(
                 f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
@@ -341,11 +338,8 @@ class Client:
             message = f"{response.status_code} response from {host}"
             raise ServerError(message)
 
-    def _add_jwt_to_request_headers(self):
-        return dict(
-            self.headers, 
-            Authorization=b"Bearer " + self._generate_application_jwt()
-        )
+    def _create_jwt_auth_string(self):
+        return b"Bearer " + self._generate_application_jwt()
     
     def _generate_application_jwt(self):
         try:

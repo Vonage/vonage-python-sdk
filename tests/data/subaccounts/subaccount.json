@@ -1,0 +1,11 @@
+{
+    "api_key": "asdfzxcv",
+    "secret": "Password123",
+    "primary_account_api_key": "1234asdf",
+    "use_primary_account_balance": true,
+    "name": "my subaccount",
+    "balance": null,
+    "credit_limit": null,
+    "suspended": false,
+    "created_at": "2023-06-09T02:23:21.327Z"
+}

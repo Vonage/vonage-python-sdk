@@ -1,0 +1,27 @@
+{
+    "_links": {
+        "self": {
+            "href": "/accounts/1234asdf/credit-transfers"
+        }
+    },
+    "_embedded": {
+        "credit_transfers": [
+            {
+                "from": "1234asdf",
+                "to": "asdfzxcv",
+                "amount": 0.5,
+                "reference": "test credit transfer",
+                "id": "7380eecb-b82c-46e8-9478-af6b5793af1b",
+                "created_at": "2023-06-12T17:31:48.000Z"
+            },
+            {
+                "from": "1234asdf",
+                "to": "asdfzxcv",
+                "amount": 0.5,
+                "reference": "",
+                "id": "83c4da50-9d42-434d-aaa9-76cf3109e9a5",
+                "created_at": "2023-06-12T17:20:01.000Z"
+            }
+        ]
+    }
+}

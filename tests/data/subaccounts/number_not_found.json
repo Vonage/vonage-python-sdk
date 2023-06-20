@@ -1,0 +1,6 @@
+{
+    "type": "https://developer.nexmo.com/api-errors/account/subaccounts#missing-number-transfer",
+    "title": "Invalid Number Transfer",
+    "detail": "Could not transfer number 12345678901 from account 1234asdf to asdfzxcv - ShortCode not found",
+    "instance": "37f2f76c-ade3-4f26-a448-a1adee0ff85e"
+}

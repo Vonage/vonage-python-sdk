@@ -1,0 +1,6 @@
+{
+    "type": "https://developer.nexmo.com/api-errors/account/subaccounts#valid-transfers",
+    "title": "Transfer amount is invalid",
+    "detail": "Insufficient Credit",
+    "instance": "70160200-6424-4fa3-a57d-21ed8be2c0b1"
+}

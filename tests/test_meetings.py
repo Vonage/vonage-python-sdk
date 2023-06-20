@@ -21,6 +21,7 @@ def test_create_instant_room(meetings, dummy_data):
     assert meeting['id'] == 'b3142c46-d1c1-4405-baa6-85683827ed69'
     assert meeting['display_name'] == 'my_test_room'
     assert meeting['expires_at'] == '2023-01-24T03:30:38.629Z'
+    assert meeting['join_approval_level'] == 'none'
 
 
 @responses.activate
@@ -67,6 +68,10 @@ def test_get_room(meetings):
     assert meeting['id'] == 'b3142c46-d1c1-4405-baa6-85683827ed69'
     assert meeting['display_name'] == 'my_test_room'
     assert meeting['expires_at'] == '2023-01-24T03:30:38.629Z'
+    assert meeting['join_approval_level'] == 'none'
+    assert meeting['ui_settings']['language'] == 'default'
+    assert meeting['available_features']['is_locale_switcher_available'] == False
+    assert meeting['available_features']['is_captions_available'] == False
 
 
 def test_get_room_error_no_room_specified(meetings):

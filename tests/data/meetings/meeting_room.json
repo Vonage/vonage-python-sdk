@@ -24,7 +24,7 @@
     "initial_join_options": {
         "microphone_state": "default"
     },
-    "joinApprovalLevel": "none",
+    "join_approval_level": "none",
     "ui_settings": {
         "language": "default"
     },
@@ -32,6 +32,7 @@
         "is_recording_available": true,
         "is_chat_available": true,
         "is_whiteboard_available": true,
-        "is_locale_switcher_available": false
+        "is_locale_switcher_available": false,
+        "is_captions_available": false
     }
 }

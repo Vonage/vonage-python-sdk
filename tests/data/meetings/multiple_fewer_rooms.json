@@ -27,7 +27,7 @@
             "initial_join_options": {
                 "microphone_state": "default"
             },
-            "joinApprovalLevel": "none",
+            "join_approval_level": "none",
             "ui_settings": {
                 "language": "default"
             },
@@ -64,7 +64,7 @@
             "initial_join_options": {
                 "microphone_state": "default"
             },
-            "joinApprovalLevel": "none",
+            "join_approval_level": "none",
             "ui_settings": {
                 "language": "default"
             },

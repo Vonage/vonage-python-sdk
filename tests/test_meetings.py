@@ -7,7 +7,11 @@ import json
 
 @responses.activate
 def test_create_instant_room(meetings, dummy_data):
-    stub(responses.POST, "https://api-eu.vonage.com/beta/meetings/rooms", fixture_path='meetings/meeting_room.json')
+    stub(
+        responses.POST,
+        "https://api-eu.vonage.com/beta/meetings/rooms",
+        fixture_path='meetings/meeting_room.json',
+    )
 
     params = {'display_name': 'my_test_room'}
     meeting = meetings.create_room(params)
@@ -21,9 +25,17 @@ def test_create_instant_room(meetings, dummy_data):
 
 @responses.activate
 def test_create_long_term_room(meetings, dummy_data):
-    stub(responses.POST, "https://api-eu.vonage.com/beta/meetings/rooms", fixture_path='meetings/long_term_room.json')
+    stub(
+        responses.POST,
+        "https://api-eu.vonage.com/beta/meetings/rooms",
+        fixture_path='meetings/long_term_room.json',
+    )
 
-    params = {'display_name': 'test_long_term_room', 'type': 'long_term', 'expires_at': '2023-01-30T00:47:04+0000'}
+    params = {
+        'display_name': 'test_long_term_room',
+        'type': 'long_term',
+        'expires_at': '2023-01-30T00:47:04+0000',
+    }
     meeting = meetings.create_room(params)
 
     assert isinstance(meeting, dict)
@@ -64,7 +76,11 @@ def test_get_room_error_no_room_specified(meetings):
 
 @responses.activate
 def test_list_rooms(meetings):
-    stub(responses.GET, 'https://api-eu.vonage.com/beta/meetings/rooms', fixture_path='meetings/multiple_rooms.json')
+    stub(
+        responses.GET,
+        'https://api-eu.vonage.com/beta/meetings/rooms',
+        fixture_path='meetings/multiple_rooms.json',
+    )
     response = meetings.list_rooms()
 
     assert isinstance(response, dict)
@@ -74,6 +90,22 @@ def test_list_rooms(meetings):
     assert response['_embedded'][3]['id'] == '4f7dc750-6049-42ef-a25f-e7afa4953e32'
     assert response['_embedded'][4]['id'] == 'b3142c46-d1c1-4405-baa6-85683827ed69'
     assert response['total_items'] == 5
+
+
+@responses.activate
+def test_list_rooms_with_page_size(meetings):
+    stub(
+        responses.GET,
+        'https://api-eu.vonage.com/beta/meetings/rooms',
+        fixture_path='meetings/multiple_fewer_rooms.json',
+    )
+    response = meetings.list_rooms(page_size=2)
+
+    assert isinstance(response, dict)
+    assert response['_embedded'][0]['id'] == '4814804d-7c2d-4846-8c7d-4f6fae1f910a'
+    assert response['_embedded'][1]['id'] == 'de34416a-2a4c-4a59-a16a-8cd7d3121ea0'
+    assert response['page_size'] == 2
+    assert response['total_items'] == 2
 
 
 @responses.activate
@@ -110,7 +142,8 @@ def test_add_theme_to_room(meetings):
     )
 
     meeting = meetings.add_theme_to_room(
-        room_id='33791484-231c-421b-8349-96e1a44e27d2', theme_id='90a21428-b74a-4221-adc3-783935d654db'
+        room_id='33791484-231c-421b-8349-96e1a44e27d2',
+        theme_id='90a21428-b74a-4221-adc3-783935d654db',
     )
 
     assert meeting['id'] == '33791484-231c-421b-8349-96e1a44e27d2'
@@ -155,7 +188,10 @@ def test_get_recording(meetings):
     )
 
     recording = meetings.get_recording(recording_id='e5b73c98-c087-4ee5-b61b-0ea08204fc65')
-    assert recording['session_id'] == '1_MX40NjMzOTg5Mn5-MTY3NDYxNDI4NjY5M35WM0xaVXBSc1lpT3hKWE1XQ2diM1B3cXB-fn4'
+    assert (
+        recording['session_id']
+        == '1_MX40NjMzOTg5Mn5-MTY3NDYxNDI4NjY5M35WM0xaVXBSc1lpT3hKWE1XQ2diM1B3cXB-fn4'
+    )
     assert recording['started_at'] == '2023-01-25T02:38:31.000Z'
     assert recording['status'] == 'uploaded'
 
@@ -171,7 +207,10 @@ def test_get_recording_not_found(meetings):
 
     with pytest.raises(ClientError) as err:
         meetings.get_recording(recording_id='not-a-real-recording-id')
-    assert str(err.value) == 'Status Code 404: NotFoundError: Recording not-a-real-recording-id was not found'
+    assert (
+        str(err.value)
+        == 'Status Code 404: NotFoundError: Recording not-a-real-recording-id was not found'
+    )
 
 
 @responses.activate
@@ -263,7 +302,11 @@ def test_list_dial_in_numbers(meetings):
 
 @responses.activate
 def test_list_themes(meetings):
-    stub(responses.GET, 'https://api-eu.vonage.com/beta/meetings/themes', fixture_path='meetings/list_themes.json')
+    stub(
+        responses.GET,
+        'https://api-eu.vonage.com/beta/meetings/themes',
+        fixture_path='meetings/list_themes.json',
+    )
 
     themes = meetings.list_themes()
     assert themes[0]['theme_id'] == '1fc39568-bc50-464f-82dc-01e13bed0908'
@@ -276,14 +319,22 @@ def test_list_themes(meetings):
 
 @responses.activate
 def test_list_themes_no_themes(meetings):
-    stub(responses.GET, 'https://api-eu.vonage.com/beta/meetings/themes', fixture_path='no_content.json')
+    stub(
+        responses.GET,
+        'https://api-eu.vonage.com/beta/meetings/themes',
+        fixture_path='no_content.json',
+    )
 
     assert meetings.list_themes() == None
 
 
 @responses.activate
 def test_create_theme(meetings):
-    stub(responses.POST, "https://api-eu.vonage.com/beta/meetings/themes", fixture_path='meetings/theme.json')
+    stub(
+        responses.POST,
+        "https://api-eu.vonage.com/beta/meetings/themes",
+        fixture_path='meetings/theme.json',
+    )
 
     params = {
         'theme_name': 'my_theme',
@@ -322,7 +373,9 @@ def test_create_theme_name_already_in_use(meetings):
 
     with pytest.raises(ClientError) as err:
         meetings.create_theme(params)
-    assert str(err.value) == 'Status Code 409: ConflictError: theme_name already exists in application'
+    assert (
+        str(err.value) == 'Status Code 409: ConflictError: theme_name already exists in application'
+    )
 
 
 @responses.activate
@@ -349,7 +402,10 @@ def test_get_theme_not_found(meetings):
 
     with pytest.raises(ClientError) as err:
         meetings.get_theme('90a21428-b74a-4221-adc3-783935d654dc')
-    assert str(err.value) == 'Status Code 404: NotFoundError: could not find theme 90a21428-b74a-4221-adc3-783935d654dc'
+    assert (
+        str(err.value)
+        == 'Status Code 404: NotFoundError: could not find theme 90a21428-b74a-4221-adc3-783935d654dc'
+    )
 
 
 @responses.activate
@@ -375,7 +431,10 @@ def test_delete_theme_not_found(meetings):
 
     with pytest.raises(ClientError) as err:
         meetings.delete_theme('90a21428-b74a-4221-adc3-783935d654dc')
-    assert str(err.value) == 'Status Code 404: NotFoundError: could not find theme 90a21428-b74a-4221-adc3-783935d654dc'
+    assert (
+        str(err.value)
+        == 'Status Code 404: NotFoundError: could not find theme 90a21428-b74a-4221-adc3-783935d654dc'
+    )
 
 
 @responses.activate
@@ -430,7 +489,10 @@ def test_update_theme_no_keys(meetings):
 
     with pytest.raises(ClientError) as err:
         meetings.update_theme('90a21428-b74a-4221-adc3-783935d654db', {'update_details': {}})
-    assert str(err.value) == 'Status Code 400: InputValidationError: "update_details" must have at least 1 key'
+    assert (
+        str(err.value)
+        == 'Status Code 400: InputValidationError: "update_details" must have at least 1 key'
+    )
 
 
 @responses.activate
@@ -443,8 +505,14 @@ def test_update_theme_not_found(meetings):
     )
 
     with pytest.raises(ClientError) as err:
-        meetings.update_theme('90a21428-b74a-4221-adc3-783935d654dc', {'update_details': {'theme_name': 'my_new_name'}})
-    assert str(err.value) == 'Status Code 404: NotFoundError: could not find theme 90a21428-b74a-4221-adc3-783935d654dc'
+        meetings.update_theme(
+            '90a21428-b74a-4221-adc3-783935d654dc',
+            {'update_details': {'theme_name': 'my_new_name'}},
+        )
+    assert (
+        str(err.value)
+        == 'Status Code 404: NotFoundError: could not find theme 90a21428-b74a-4221-adc3-783935d654dc'
+    )
 
 
 @responses.activate
@@ -458,24 +526,36 @@ def test_update_theme_name_already_exists(meetings):
 
     with pytest.raises(ClientError) as err:
         meetings.update_theme(
-            '90a21428-b74a-4221-adc3-783935d654db', {'update_details': {'theme_name': 'my_other_theme'}}
+            '90a21428-b74a-4221-adc3-783935d654db',
+            {'update_details': {'theme_name': 'my_other_theme'}},
         )
-    assert str(err.value) == 'Status Code 409: ConflictError: theme_name already exists in application'
+    assert (
+        str(err.value) == 'Status Code 409: ConflictError: theme_name already exists in application'
+    )
 
 
 @responses.activate
-def test_list_rooms_with_theme_id(meetings):
+def test_list_rooms_with_options(meetings):
     stub(
         responses.GET,
         'https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654db/rooms',
         fixture_path='meetings/list_rooms_with_theme_id.json',
     )
 
-    rooms = meetings.list_rooms_with_theme_id('90a21428-b74a-4221-adc3-783935d654db', start_id=0, end_id=99999999)
+    rooms = meetings.list_rooms_with_theme_id(
+        '90a21428-b74a-4221-adc3-783935d654db',
+        page_size=5,
+        start_id=0,
+        end_id=99999999,
+    )
     assert rooms['_embedded'][0]['id'] == '33791484-231c-421b-8349-96e1a44e27d2'
     assert rooms['_embedded'][0]['display_name'] == 'test_long_term_room'
     assert rooms['_embedded'][0]['theme_id'] == '90a21428-b74a-4221-adc3-783935d654db'
-    assert rooms['_links']['self']['href'] == 'api-eu.vonage.com/meetings/rooms?page_size=20&start_id=2009870'
+    assert rooms['page_size'] == 5
+    assert (
+        rooms['_links']['self']['href']
+        == 'api-eu.vonage.com/meetings/rooms?page_size=20&start_id=2009870'
+    )
 
 
 @responses.activate
@@ -488,7 +568,9 @@ def test_list_rooms_with_theme_id_not_found(meetings):
     )
 
     with pytest.raises(ClientError) as err:
-        meetings.list_rooms_with_theme_id('90a21428-b74a-4221-adc3-783935d654dc', start_id=0, end_id=99999999)
+        meetings.list_rooms_with_theme_id(
+            '90a21428-b74a-4221-adc3-783935d654dc', start_id=0, end_id=99999999
+        )
     assert (
         str(err.value)
         == 'Status Code 404: NotFoundError: Failed to get rooms because theme id 90a21428-b74a-4221-adc3-783935d654dc not found'
@@ -564,13 +646,22 @@ def test_get_logo_upload_url(meetings):
     url_w = meetings._get_logo_upload_url('white')
     assert url_w['url'] == 'https://s3.amazonaws.com/roomservice-whitelabel-logos-prod'
     assert url_w['fields']['X-Amz-Credential'] == 'some-credential'
-    assert url_w['fields']['key'] == 'auto-expiring-temp/logos/white/d92b31ae-fbf1-4709-a729-c0fa75368c25'
+    assert (
+        url_w['fields']['key']
+        == 'auto-expiring-temp/logos/white/d92b31ae-fbf1-4709-a729-c0fa75368c25'
+    )
     assert url_w['fields']['logoType'] == 'white'
     url_c = meetings._get_logo_upload_url('colored')
-    assert url_c['fields']['key'] == 'auto-expiring-temp/logos/colored/c4e00bac-781b-4bf0-bd5f-b9ff2cbc1b6c'
+    assert (
+        url_c['fields']['key']
+        == 'auto-expiring-temp/logos/colored/c4e00bac-781b-4bf0-bd5f-b9ff2cbc1b6c'
+    )
     assert url_c['fields']['logoType'] == 'colored'
     url_f = meetings._get_logo_upload_url('favicon')
-    assert url_f['fields']['key'] == 'auto-expiring-temp/logos/favicon/d7a81477-38f7-460c-b51f-1462b8426df5'
+    assert (
+        url_f['fields']['key']
+        == 'auto-expiring-temp/logos/favicon/d7a81477-38f7-460c-b51f-1462b8426df5'
+    )
     assert url_f['fields']['logoType'] == 'favicon'
 
     with pytest.raises(MeetingsError) as err:
@@ -599,7 +690,7 @@ def test_upload_to_aws_error(meetings):
         responses.POST,
         'https://s3.amazonaws.com/not-a-valid-url',
         status_code=403,
-        fixture_path='meetings/upload_to_aws_error.xml'
+        fixture_path='meetings/upload_to_aws_error.xml',
     )
 
     with open('tests/data/meetings/list_logo_upload_urls.json') as file:
@@ -609,7 +700,10 @@ def test_upload_to_aws_error(meetings):
     params['url'] = 'https://s3.amazonaws.com/not-a-valid-url'
     with pytest.raises(MeetingsError) as err:
         meetings._upload_to_aws(params, 'tests/data/meetings/transparent_logo.png')
-    assert str(err.value) == 'Logo upload process failed. b\'<?xml version="1.0" encoding="UTF-8"?>\\\\n<Error><Code>SignatureDoesNotMatch</Code><Message>The request signature we calculated does not match the signature you provided. Check your key and signing method.</Message><AWSAccessKeyId>ASIA5NAYMMB6M7A2QEAR</AWSAccessKeyId><StringToSign></StringToSign><SignatureProvided>b2f311449e26692a174ab2c7ca2afab24bd19c509cc611a4cef7cb2c5bb2ea9a</SignatureProvided><StringToSignBytes></StringToSignBytes><RequestId>5ZS7MSFN46X89NXA</RequestId><HostId>f+HV7uSpeawLv5lFvN+QiYP6swbiTMd/XaJeVGC+/pqKHlwlgKZ6vg+qBjV/ufb1e5WS/bxBM/Y=</HostId></Error>\''
+    assert (
+        str(err.value)
+        == 'Logo upload process failed. b\'<?xml version="1.0" encoding="UTF-8"?>\\\\n<Error><Code>SignatureDoesNotMatch</Code><Message>The request signature we calculated does not match the signature you provided. Check your key and signing method.</Message><AWSAccessKeyId>ASIA5NAYMMB6M7A2QEAR</AWSAccessKeyId><StringToSign></StringToSign><SignatureProvided>b2f311449e26692a174ab2c7ca2afab24bd19c509cc611a4cef7cb2c5bb2ea9a</SignatureProvided><StringToSignBytes></StringToSignBytes><RequestId>5ZS7MSFN46X89NXA</RequestId><HostId>f+HV7uSpeawLv5lFvN+QiYP6swbiTMd/XaJeVGC+/pqKHlwlgKZ6vg+qBjV/ufb1e5WS/bxBM/Y=</HostId></Error>\''
+    )
 
 
 @responses.activate
@@ -661,4 +755,7 @@ def test_add_logo_to_theme_not_found_error(meetings):
             theme_id='90a21428-b74a-4221-adc3-783935d654dc',
             key='auto-expiring-temp/logos/white/d92b31ae-fbf1-4709-a729-c0fa75368c25',
         )
-    assert str(err.value) == 'Status Code 404: NotFoundError: could not find theme 90a21428-b74a-4221-adc3-783935d654dc'
+    assert (
+        str(err.value)
+        == 'Status Code 404: NotFoundError: could not find theme 90a21428-b74a-4221-adc3-783935d654dc'
+    )

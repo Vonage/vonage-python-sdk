@@ -27,6 +27,7 @@ class DummyData(object):
         self.user_agent = f"vonage-python/{vonage.__version__} python/{platform.python_version()}"
         self.host = "rest.nexmo.com"
         self.api_host = "api.nexmo.com"
+        self.meetings_api_host = "api-eu.vonage.com/beta/meetings"
 
 
 @pytest.fixture(scope="session")
@@ -124,3 +125,10 @@ def application_v2(client):
     import vonage
 
     return vonage.ApplicationV2(client)
+
+
+@pytest.fixture
+def meetings(client):
+    import vonage
+
+    return vonage.Meetings(client)

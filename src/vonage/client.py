@@ -4,6 +4,7 @@ from vonage_jwt.jwt import JwtClient
 from .account import Account
 from .application import ApplicationV2, Application
 from .errors import *
+from .meetings import Meetings
 from .messages import Messages
 from .number_insight import NumberInsight
 from .number_management import Numbers
@@ -100,6 +101,7 @@ class Client:
         self._jwt_claims = {}
         self._host = "rest.nexmo.com"
         self._api_host = "api.nexmo.com"
+        self._meetings_api_host = "api-eu.vonage.com/beta/meetings"
 
         user_agent = f"vonage-python/{vonage.__version__} python/{python_version()}"
 
@@ -110,6 +112,7 @@ class Client:
 
         self.account = Account(self)
         self.application = Application(self)
+        self.meetings = Meetings(self)
         self.messages = Messages(self)
         self.number_insight = NumberInsight(self)
         self.numbers = Numbers(self)
@@ -128,19 +131,26 @@ class Client:
         )
         self.session.mount("https://", self.adapter)
 
-    # Get and Set _host attribute
+    # Gets and sets _host attribute
     def host(self, value=None):
         if value is None:
             return self._host
         else:
             self._host = value
 
-    # Gets And Set _api_host attribute
+    # Gets and sets _api_host attribute
     def api_host(self, value=None):
         if value is None:
             return self._api_host
         else:
             self._api_host = value
+
+    # Gets and sets _meetings_api_host attribute
+    def meetings_api_host(self, value=None):
+        if value is None:
+            return self._meetings_api_host
+        else:
+            self._meetings_api_host = value
 
     def auth(self, params=None, **kwargs):
         self._jwt_claims = params or kwargs
@@ -261,7 +271,7 @@ class Client:
         # Only newer APIs (that expect json-bodies) currently use this method, so we will always send a json-formatted body
         return self.parse(host, self.session.patch(uri, json=params, headers=self._request_headers))
 
-    def delete(self, host, request_uri, auth_type=None):
+    def delete(self, host, request_uri, params=None, auth_type=None):
         uri = f"https://{host}{request_uri}"
         self._request_headers = self.headers
 
@@ -275,7 +285,11 @@ class Client:
             )
 
         logger.debug(f"DELETE to {repr(uri)} with headers {repr(self._request_headers)}")
-        return self.parse(host, self.session.delete(uri, headers=self._request_headers, timeout=self.timeout))
+        if params is not None:
+            logger.debug(f"DELETE call has params {repr(params)}")
+        return self.parse(
+            host, self.session.delete(uri, headers=self._request_headers, timeout=self.timeout, params=params)
+        )
 
     def parse(self, host, response: Response):
         logger.debug(f"Response headers {repr(response.headers)}")
@@ -291,7 +305,10 @@ class Client:
                 if response.json() is None:
                     return None
             if content_mime == "application/json":
-                return response.json()
+                try:
+                    return response.json()
+                except JSONDecodeError:
+                    pass
             else:
                 return response.content
         elif 400 <= response.status_code < 500:
@@ -306,6 +323,11 @@ class Client:
                     detail = error_data["detail"]
                     type = error_data["type"]
                     message = f"{title}: {detail} ({type})"
+                elif 'status' in error_data and 'message' in error_data and 'name' in error_data:
+                    message = f'Status Code {error_data["status"]}: {error_data["name"]}: {error_data["message"]}'
+                    if 'errors' in error_data:
+                        for error in error_data['errors']:
+                            message += f', error: {error}'
                 else:
                     message = error_data
             except JSONDecodeError:
@@ -320,7 +342,15 @@ class Client:
         return b"Bearer " + self._generate_application_jwt()
     
     def _generate_application_jwt(self):
-        return self._jwt_client.generate_application_jwt(self._jwt_claims)
+        try:
+            return self._jwt_client.generate_application_jwt(self._jwt_claims)
+        except AttributeError as err:
+            if '_jwt_client' in str(err):
+                raise ClientError(
+                    'JWT generation failed. Check that you passed in valid values for "application_id" and "private_key".'
+                )
+            else:
+                raise err
 
     def _create_header_auth_string(self):
         hash = base64.b64encode(f"{self.api_key}:{self.api_secret}".encode("utf-8")).decode("ascii")

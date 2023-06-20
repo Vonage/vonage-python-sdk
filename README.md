@@ -18,6 +18,7 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [NCCO Builder](#ncco-builder)
 - [Verify V2 API](#verify-v2-api)
 - [Verify V1 API](#verify-v1-api)
+- [Meetings API](#meetings-api)
 - [Number Insight API](#number-insight-api)
 - [Account API](#account-api)
 - [Subaccounts API](#subaccounts-api)
@@ -579,6 +580,144 @@ else:
     print("Error: %s" % response["error_text"])
 ```
 
+## Meetings API
+
+Full docs for the [Meetings API are available here](https://developer.vonage.com/en/meetings/overview).
+
+### Create a meeting room
+
+```python
+# Instant room
+params = {'display_name': 'my_test_room'}
+meeting = client.meetings.create_room(params)
+
+# Long term room
+params = {'display_name': 'test_long_term_room', 'type': 'long_term', 'expires_at': '2023-01-30T00:47:04+0000'}
+meeting = client.meetings.create_room(params)
+```
+
+### Get all meeting rooms
+
+```python
+client.meetings.list_rooms()
+```
+
+### Get a room by id
+
+```python
+client.meetings.get_room('MY_ROOM_ID')
+```
+
+### Update a long term room
+
+```python
+params = {
+    'update_details': {
+        "available_features": {
+            "is_recording_available": False,
+            "is_chat_available": False,
+        }
+    }
+}
+meeting = client.meetings.update_room('MY_ROOM_ID', params)
+```
+
+### Get all recordings for a session
+
+```python
+session = client.meetings.get_session_recordings('MY_SESSION_ID')
+```
+
+### Get a recording by id
+
+```python
+recording = client.meetings.get_recording('MY_RECORDING_ID')
+```
+
+### Delete a recording
+
+```python
+client.meetings.delete_recording('MY_RECORDING_ID')
+```
+
+### List dial-in numbers
+
+```python
+numbers = client.meetings.list_dial_in_numbers()
+```
+
+### Create a theme
+
+```python
+params = {
+    'theme_name': 'my_theme',
+    'main_color': '#12f64e',
+    'brand_text': 'My Company',
+    'short_company_url': 'my-company',
+}
+theme = client.meetings.create_theme(params)
+```
+
+### Add a theme to a room
+
+```python
+meetings.add_theme_to_room('MY_ROOM_ID', 'MY_THEME_ID')
+```
+
+### List themes
+
+```python
+themes = client.meetings.list_themes()
+```
+
+### Get theme information
+
+```python
+theme = client.meetings.get_theme('MY_THEME_ID')
+```
+
+### Delete a theme
+
+```python
+client.meetings.delete_theme('MY_THEME_ID')
+```
+
+### Update a theme
+
+```python
+params = {
+    'update_details': {
+        'theme_name': 'updated_theme',
+        'main_color': '#FF0000',
+        'brand_text': 'My Updated Company Name',
+        'short_company_url': 'updated_company_url',
+    }
+}
+theme = client.meetings.update_theme('MY_THEME_ID', params)
+```
+
+### List all rooms using a specified theme
+
+```python
+rooms = client.meetings.list_rooms_with_theme_id('MY_THEME_ID')
+```
+
+### Update the default theme for your application
+
+```python
+response = client.meetings.update_application_theme('MY_THEME_ID')
+```
+
+### Upload a logo to a theme
+
+```python
+response = client.meetings.upload_logo_to_theme(
+        theme_id='MY_THEME_ID',
+        path_to_image='path/to/my/image.png',
+        logo_type='white', # 'white', 'colored' or 'favicon'
+    )
+```
+
 ## Number Insight API
 
 ### Basic Number Insight
@@ -909,9 +1048,9 @@ from vonage import Client
 
 client = Client(key='YOUR_API_KEY', secret='YOUR_API_SECRET')
 print(client.host()) # return rest.nexmo.com
-client.host('mio.nexmo.com') # rewrites the host value to mio.nexmo.com
+client.host('newhost.vonage.com') # rewrites the host value to newhost.vonage.com
 print(client.api_host()) # returns api.vonage.com
-client.api_host('myapi.vonage.com') # rewrite the value of api_host
+client.api_host('myapi.vonage.com') # rewrite the value of api_host to myapi.vonage.com
 ```
 
 ## Frequently Asked Questions
@@ -930,6 +1069,7 @@ The following is a list of Vonage APIs and whether the Python SDK provides suppo
 | Dispatch API          |         Beta         |     ❌     |
 | External Accounts API |         Beta         |     ❌     |
 | Media API             |         Beta         |     ❌     |
+| Meetings API          | General Availability |     ✅     |
 | Messages API          | General Availability |     ✅     |
 | Number Insight API    | General Availability |     ✅     |
 | Number Management API | General Availability |     ✅     |

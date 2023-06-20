@@ -192,8 +192,7 @@ def test_authorization_with_private_key_object(voice, dummy_data):
 @responses.activate
 def test_get_recording(voice, dummy_data):
     stub_bytes(
-        responses.GET,
-        "https://api.nexmo.com/v1/files/d6e47a2e-3414-11e8-8c2c-2f8b643ed957",
+        responses.GET, "https://api.nexmo.com/v1/files/d6e47a2e-3414-11e8-8c2c-2f8b643ed957", body=b'THISISANMP3'
     )
 
     assert isinstance(

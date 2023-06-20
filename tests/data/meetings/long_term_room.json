@@ -1,0 +1,37 @@
+{
+    "id": "33791484-231c-421b-8349-96e1a44e27d2",
+    "display_name": "test_long_term_room",
+    "metadata": null,
+    "type": "long_term",
+    "expires_at": "2023-01-30T00:47:04.000Z",
+    "recording_options": {
+        "auto_record": false,
+        "record_only_owner": false
+    },
+    "meeting_code": "613804614",
+    "_links": {
+        "host_url": {
+            "href": "https://meetings.vonage.com/?room_token=613804614&participant_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjU5N2NmYTAzLTY3NTQtNGE0ZC1hYjU1LWZiMTdkNzc4NzRjMSJ9.eyJwYXJ0aWNpcGFudElkIjoiN2MwYTQyNWQtMGFhZS00YmUxLWE1Y2UtMDNlMTNmNmYyNThiIiwiaWF0IjoxNjc0NjA3ODM3fQ.fm7q551LKnZaUcvZ30AmU62jRnvL94Do2sJKU0mHUmE"
+        },
+        "guest_url": {
+            "href": "https://meetings.vonage.com/613804614"
+        }
+    },
+    "created_at": "2023-01-25T00:50:37.722Z",
+    "is_available": true,
+    "expire_after_use": false,
+    "theme_id": null,
+    "initial_join_options": {
+        "microphone_state": "default"
+    },
+    "join_approval_level": "none",
+    "ui_settings": {
+        "language": "default"
+    },
+    "available_features": {
+        "is_recording_available": true,
+        "is_chat_available": true,
+        "is_whiteboard_available": true,
+        "is_locale_switcher_available": false
+    }
+}

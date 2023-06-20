@@ -29,6 +29,12 @@ class Meetings:
             raise MeetingsError(
                 'You must include a value for display_name as a field in the params dict when creating a meeting room.'
             )
+        if 'type' not in params or 'type' in params and params['type'] != 'long_term':
+            if 'expires_at' in params:
+                raise MeetingsError('Cannot set "expires_at" for an instant room.')
+        elif params['type'] == 'long_term' and 'expires_at' not in params:
+            raise MeetingsError('You must set a value for "expires_at" for a long-term room.')
+
         return self._client.post(
             self._meetings_api_host, '/rooms', params, auth_type=Meetings._auth_type
         )

@@ -3,6 +3,7 @@ from vonage.errors import MeetingsError, ClientError, ServerError
 
 import responses
 import json
+from pytest import raises
 
 
 @responses.activate
@@ -22,6 +23,13 @@ def test_create_instant_room(meetings, dummy_data):
     assert meeting['display_name'] == 'my_test_room'
     assert meeting['expires_at'] == '2023-01-24T03:30:38.629Z'
     assert meeting['join_approval_level'] == 'none'
+
+
+def test_create_instant_room_error_expiry(meetings, dummy_data):
+    params = {'display_name': 'my_test_room', 'expires_at': '2023-01-24T03:30:38.629Z'}
+    with raises(MeetingsError) as err:
+        meetings.create_room(params)
+    assert str(err.value) == 'Cannot set "expires_at" for an instant room.'
 
 
 @responses.activate
@@ -47,12 +55,22 @@ def test_create_long_term_room(meetings, dummy_data):
 
 
 def test_create_room_error(meetings):
-    with pytest.raises(MeetingsError) as err:
+    with raises(MeetingsError) as err:
         meetings.create_room()
         assert (
             str(err.value)
             == 'You must include a value for display_name as a field in the params dict when creating a meeting room.'
         )
+
+
+def test_create_long_term_room_error(meetings):
+    params = {
+        'display_name': 'test_long_term_room',
+        'type': 'long_term',
+    }
+    with raises(MeetingsError) as err:
+        meetings.create_room(params)
+    assert str(err.value) == 'You must set a value for "expires_at" for a long-term room.'
 
 
 @responses.activate
@@ -75,7 +93,7 @@ def test_get_room(meetings):
 
 
 def test_get_room_error_no_room_specified(meetings):
-    with pytest.raises(TypeError):
+    with raises(TypeError):
         meetings.get_room()
 
 
@@ -111,6 +129,19 @@ def test_list_rooms_with_page_size(meetings):
     assert response['_embedded'][1]['id'] == 'de34416a-2a4c-4a59-a16a-8cd7d3121ea0'
     assert response['page_size'] == 2
     assert response['total_items'] == 2
+
+
+@responses.activate
+def test_error_unauthorized(meetings):
+    stub(
+        responses.GET,
+        'https://api-eu.vonage.com/beta/meetings/rooms',
+        fixture_path='meetings/unauthorized.json',
+        status_code=401,
+    )
+    with raises(ClientError) as err:
+        meetings.list_rooms()
+    assert str(err.value) == 'Authentication failed.'
 
 
 @responses.activate
@@ -163,7 +194,7 @@ def test_update_room_error_no_room_specified(meetings):
         fixture_path='meetings/update_room_type_error.json',
         status_code=400,
     )
-    with pytest.raises(ClientError) as err:
+    with raises(ClientError) as err:
         meetings.update_room(room_id='b3142c46-d1c1-4405-baa6-85683827ed69', params={})
     assert (
         str(err.value)
@@ -179,7 +210,7 @@ def test_update_room_error_no_params_specified(meetings):
         fixture_path='meetings/update_room_type_error.json',
         status_code=400,
     )
-    with pytest.raises(TypeError) as err:
+    with raises(TypeError) as err:
         meetings.update_room(room_id='33791484-231c-421b-8349-96e1a44e27d2')
     assert "update_room() missing 1 required positional argument: 'params'" in str(err.value)
 
@@ -210,7 +241,7 @@ def test_get_recording_not_found(meetings):
         status_code=404,
     )
 
-    with pytest.raises(ClientError) as err:
+    with raises(ClientError) as err:
         meetings.get_recording(recording_id='not-a-real-recording-id')
     assert (
         str(err.value)
@@ -235,25 +266,11 @@ def test_delete_recording_not_uploaded(meetings, client):
         responses.DELETE,
         'https://api-eu.vonage.com/beta/meetings/recordings/881f0dbe-3d91-4fd6-aeea-0eca4209b512',
         fixture_path='meetings/delete_recording_not_found.json',
-        status_code=500,
-    )
-
-    with pytest.raises(ServerError) as err:
-        meetings.delete_recording(recording_id='881f0dbe-3d91-4fd6-aeea-0eca4209b512')
-    assert str(err.value) == f'500 response from {client.meetings_api_host()}'
-
-
-@responses.activate
-def test_delete_recording_not_found(meetings):
-    stub(
-        responses.DELETE,
-        'https://api-eu.vonage.com/beta/meetings/recordings/not-a-real-recording-id',
-        fixture_path='meetings/delete_recording_not_found.json',
         status_code=404,
     )
 
-    with pytest.raises(ClientError) as err:
-        meetings.delete_recording(recording_id='not-a-real-recording-id')
+    with raises(ClientError) as err:
+        meetings.delete_recording(recording_id='881f0dbe-3d91-4fd6-aeea-0eca4209b512')
     assert str(err.value) == 'Status Code 404: NotFoundError: Could not find recording'
 
 
@@ -282,7 +299,7 @@ def test_get_session_recordings_not_found(meetings):
         status_code=404,
     )
 
-    with pytest.raises(ClientError) as err:
+    with raises(ClientError) as err:
         meetings.get_session_recordings(session_id='not-a-real-session-id')
     assert (
         str(err.value)
@@ -356,7 +373,7 @@ def test_create_theme(meetings):
 
 
 def test_create_theme_missing_required_params(meetings):
-    with pytest.raises(MeetingsError) as err:
+    with raises(MeetingsError) as err:
         meetings.create_theme({})
     assert str(err.value) == 'Values for "main_color" and "brand_text" must be specified'
 
@@ -376,7 +393,7 @@ def test_create_theme_name_already_in_use(meetings):
         'brand_text': 'My Company',
     }
 
-    with pytest.raises(ClientError) as err:
+    with raises(ClientError) as err:
         meetings.create_theme(params)
     assert (
         str(err.value) == 'Status Code 409: ConflictError: theme_name already exists in application'
@@ -405,7 +422,7 @@ def test_get_theme_not_found(meetings):
         status_code=404,
     )
 
-    with pytest.raises(ClientError) as err:
+    with raises(ClientError) as err:
         meetings.get_theme('90a21428-b74a-4221-adc3-783935d654dc')
     assert (
         str(err.value)
@@ -434,7 +451,7 @@ def test_delete_theme_not_found(meetings):
         status_code=404,
     )
 
-    with pytest.raises(ClientError) as err:
+    with raises(ClientError) as err:
         meetings.delete_theme('90a21428-b74a-4221-adc3-783935d654dc')
     assert (
         str(err.value)
@@ -451,7 +468,7 @@ def test_delete_theme_in_use(meetings):
         status_code=400,
     )
 
-    with pytest.raises(ClientError) as err:
+    with raises(ClientError) as err:
         meetings.delete_theme('90a21428-b74a-4221-adc3-783935d654db')
     assert (
         str(err.value)
@@ -492,7 +509,7 @@ def test_update_theme_no_keys(meetings):
         status_code=400,
     )
 
-    with pytest.raises(ClientError) as err:
+    with raises(ClientError) as err:
         meetings.update_theme('90a21428-b74a-4221-adc3-783935d654db', {'update_details': {}})
     assert (
         str(err.value)
@@ -509,7 +526,7 @@ def test_update_theme_not_found(meetings):
         status_code=404,
     )
 
-    with pytest.raises(ClientError) as err:
+    with raises(ClientError) as err:
         meetings.update_theme(
             '90a21428-b74a-4221-adc3-783935d654dc',
             {'update_details': {'theme_name': 'my_new_name'}},
@@ -529,7 +546,7 @@ def test_update_theme_name_already_exists(meetings):
         status_code=409,
     )
 
-    with pytest.raises(ClientError) as err:
+    with raises(ClientError) as err:
         meetings.update_theme(
             '90a21428-b74a-4221-adc3-783935d654db',
             {'update_details': {'theme_name': 'my_other_theme'}},
@@ -572,7 +589,7 @@ def test_list_rooms_with_theme_id_not_found(meetings):
         status_code=404,
     )
 
-    with pytest.raises(ClientError) as err:
+    with raises(ClientError) as err:
         meetings.list_rooms_with_theme_id(
             '90a21428-b74a-4221-adc3-783935d654dc', start_id=0, end_id=99999999
         )
@@ -605,7 +622,7 @@ def test_update_application_theme_bad_request(meetings):
         status_code=400,
     )
 
-    with pytest.raises(ClientError) as err:
+    with raises(ClientError) as err:
         meetings.update_application_theme(theme_id='not-a-real-theme-id')
     assert (
         str(err.value)
@@ -669,7 +686,7 @@ def test_get_logo_upload_url(meetings):
     )
     assert url_f['fields']['logoType'] == 'favicon'
 
-    with pytest.raises(MeetingsError) as err:
+    with raises(MeetingsError) as err:
         meetings._get_logo_upload_url('not-a-valid-option')
     assert str(err.value) == 'Cannot find the upload URL for the specified logo type.'
 
@@ -703,7 +720,7 @@ def test_upload_to_aws_error(meetings):
 
     params = urls[0]
     params['url'] = 'https://s3.amazonaws.com/not-a-valid-url'
-    with pytest.raises(MeetingsError) as err:
+    with raises(MeetingsError) as err:
         meetings._upload_to_aws(params, 'tests/data/meetings/transparent_logo.png')
     assert (
         str(err.value)
@@ -735,7 +752,7 @@ def test_add_logo_to_theme_key_error(meetings):
         status_code=400,
     )
 
-    with pytest.raises(ClientError) as err:
+    with raises(ClientError) as err:
         meetings._add_logo_to_theme(
             theme_id='90a21428-b74a-4221-adc3-783935d654dc',
             key='an-invalid-key',
@@ -755,7 +772,7 @@ def test_add_logo_to_theme_not_found_error(meetings):
         status_code=404,
     )
 
-    with pytest.raises(ClientError) as err:
+    with raises(ClientError) as err:
         meetings._add_logo_to_theme(
             theme_id='90a21428-b74a-4221-adc3-783935d654dc',
             key='auto-expiring-temp/logos/white/d92b31ae-fbf1-4709-a729-c0fa75368c25',

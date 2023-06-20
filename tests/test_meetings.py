@@ -322,10 +322,10 @@ def test_list_themes_no_themes(meetings):
     stub(
         responses.GET,
         'https://api-eu.vonage.com/beta/meetings/themes',
-        fixture_path='no_content.json',
+        fixture_path='meetings/empty_themes.json',
     )
 
-    assert meetings.list_themes() == None
+    assert meetings.list_themes() == {}
 
 
 @responses.activate

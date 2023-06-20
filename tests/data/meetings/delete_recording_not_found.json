@@ -1,1 +1,5 @@
-{"message":"Could not find recording","name":"NotFoundError","status":404}
+{
+    "message": "Could not find recording",
+    "name": "NotFoundError",
+    "status": 404
+}

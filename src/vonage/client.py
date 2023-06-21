@@ -365,14 +365,15 @@ class Client:
                     message = f"{title}: {detail} ({type}){self._add_individual_errors(error_data)}"
                 elif 'status' in error_data and 'message' in error_data and 'name' in error_data:
                     message = (
-                        f'Status Code {error_data["status"]}: {error_data["name"]}: {error_data["message"]}{self._add_individual_errors(error_data)}'
+                        f'Status Code {error_data["status"]}: {error_data["name"]}: {error_data["message"]}'
+                        f'{self._add_individual_errors(error_data)}'
                     )
                 else:
                     message = error_data
             except JSONDecodeError:
                 pass
             raise ClientError(message)
-        
+
         elif 500 <= response.status_code < 600:
             logger.warning(f"Server error: {response.status_code} {repr(response.content)}")
             message = f"{response.status_code} response from {host}"

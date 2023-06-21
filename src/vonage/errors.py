@@ -33,7 +33,11 @@ class RedactError(Error):
 
 
 class InvalidAuthenticationTypeError(Error):
-    """An authentication method was specified that is not allowed."""
+    """An authentication method was specified that is not allowed"""
+
+
+class MeetingsError(ClientError):
+    """An error related to the Meetings class which calls the Vonage Meetings API."""
 
 
 class Verify2Error(ClientError):
@@ -42,3 +46,7 @@ class Verify2Error(ClientError):
 
 class SubaccountsError(ClientError):
     """An error relating to the Subaccounts API."""
+
+
+class ProactiveConnectError(ClientError):
+    """An error relating to the Proactive Connect API."""

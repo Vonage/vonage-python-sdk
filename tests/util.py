@@ -42,8 +42,8 @@ def stub(method, url, fixture_path=None, status_code=200):
     responses.add(method, url, body=body, status=status_code, content_type="application/json")
 
 
-def stub_bytes(method, url):
-    responses.add(method, url, body=b"THISISANMP3", status=200)
+def stub_bytes(method, url, body):
+    responses.add(method, url, body, status=200)
 
 
 def assert_re(pattern, string):

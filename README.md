@@ -19,7 +19,8 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [Verify V2 API](#verify-v2-api)
 - [Verify V1 API](#verify-v1-api)
 - [Meetings API](#meetings-api)
-- [Number Insight API](#number-insight-api)
+- [Number Insight v2 API](#number-insight-v2-api)
+- [Number Insight v1 API](#number-insight-v1-api)
 - [Proactive Connect API](#proactive-connect-api)
 - [Account API](#account-api)
 - [Subaccounts API](#subaccounts-api)
@@ -719,7 +720,33 @@ response = client.meetings.upload_logo_to_theme(
     )
 ```
 
-## Number Insight API
+## Number Insight v2 API
+
+This API is used to gain fraud-related insight about phone numbers.
+
+### Get the fraud score for a number
+
+Returns a fraud score as a number from 0-100, as well as a label and risk recommendation.
+
+```python
+client.number_insight_v2.fraud_check(INSIGHT_NUMBER, 'fraud_score')
+```
+
+### Get the sim swap status for a number
+
+Returns whether the sim has been swapped in the last seven days.
+
+```python
+client.number_insight_v2.fraud_check(INSIGHT_NUMBER, 'sim_swap')
+```
+
+### Get both the fraud score and the sim swap status for a number
+
+```python
+client.number_insight_v2.fraud_check(INSIGHT_NUMBER, ['fraud_score', 'sim_swap'])
+```
+
+## Number Insight v1 API
 
 ### Basic Number Insight
 

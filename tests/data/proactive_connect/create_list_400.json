@@ -1,0 +1,10 @@
+{
+    "type": "https://developer.vonage.com/en/api-errors",
+    "title": "Request data did not validate",
+    "detail": "Bad Request",
+    "instance": "b6740287-41ad-41de-b950-f4e2d54cee86",
+    "errors": [
+        "name must be longer than or equal to 1 and shorter than or equal to 255 characters",
+        "name must be a string"
+    ]
+}

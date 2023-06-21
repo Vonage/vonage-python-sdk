@@ -46,3 +46,7 @@ class Verify2Error(ClientError):
 
 class SubaccountsError(ClientError):
     """An error relating to the Subaccounts API."""
+
+
+class ProactiveConnectError(ClientError):
+    """An error relating to the Proactive Connect API."""

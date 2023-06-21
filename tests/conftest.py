@@ -132,3 +132,10 @@ def meetings(client):
     import vonage
 
     return vonage.Meetings(client)
+
+
+@pytest.fixture
+def proc(client):
+    import vonage
+
+    return vonage.ProactiveConnect(client)

@@ -20,6 +20,7 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [Verify V1 API](#verify-v1-api)
 - [Meetings API](#meetings-api)
 - [Number Insight API](#number-insight-api)
+- [Proactive Connect API](#proactive-connect-api)
 - [Account API](#account-api)
 - [Subaccounts API](#subaccounts-api)
 - [Number Management API](#number-management-api)
@@ -743,6 +744,94 @@ client.number_insight.get_advanced_number_insight(number='447700900000')
 ```
 
 Docs: [https://developer.nexmo.com/api/number-insight#getNumberInsightAdvanced](https://developer.nexmo.com/api/number-insight?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#getNumberInsightAdvanced)
+
+## Proactive Connect API
+
+Full documentation for the [Proactive Connect API](https://developer.vonage.com/en/proactive-connect/overview) is available here.
+
+These methods help you manage lists of contacts when using the API:
+
+### Find all lists
+```python
+client.proactive_connect.list_all_lists()
+```
+
+### Create a list
+Lists can be created manually or imported from Salesforce.
+
+```python
+params = {'name': 'my list', 'description': 'my description', 'tags': ['vip']}
+client.proactive_connect.create_list(params)
+```
+
+### Get a list
+```python
+client.proactive_connect.get_list(LIST_ID)
+```
+
+### Update a list
+```python
+params = {'name': 'my list', 'tags': ['sport', 'football']}
+client.proactive_connect.update_list(LIST_ID, params)
+```
+
+### Delete a list
+```python
+client.proactive_connect.delete_list(LIST_ID)
+```
+
+### Sync a list from an external datasource
+```python
+params = {'name': 'my list', 'tags': ['sport', 'football']}
+client.proactive_connect.sync_list_from_datasource(LIST_ID)
+```
+
+These methods help you work with individual items in a list:
+### Find all items in a list
+```python
+client.proactive_connect.list_all_items(LIST_ID)
+```
+
+### Create a new list item
+```python
+data = {'firstName': 'John', 'lastName': 'Doe', 'phone': '123456789101'}
+client.proactive_connect.create_item(LIST_ID, data)
+```
+
+### Get a list item
+```python
+client.proactive_connect.get_item(LIST_ID, ITEM_ID)
+```
+
+### Update a list item
+```python
+data = {'firstName': 'John', 'lastName': 'Doe', 'phone': '447007000000'}
+client.proactive_connect.update_item(LIST_ID, ITEM_ID, data)
+```
+
+### Delete a list item
+```python
+client.proactive_connect.delete_item(LIST_ID, ITEM_ID)
+```
+
+### Download all items in a list as a .csv file
+```python
+FILE_PATH = 'path/to/the/downloaded/file/location'
+client.proactive_connect.download_list_items(LIST_ID, FILE_PATH)
+```
+
+### Upload items from a .csv file into a list
+```python
+FILE_PATH = 'path/to/the/file/to/upload/location'
+client.proactive_connect.upload_list_items(LIST_ID, FILE_PATH)
+```
+
+This method helps you work with events emitted by the Proactive Connect API when in use:
+
+### List all events
+```python
+client.proactive_connect.list_events()
+```
 
 ## Account API
 

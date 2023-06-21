@@ -1,0 +1,16 @@
+{
+    "items_count": 0,
+    "datasource": {
+        "type": "manual"
+    },
+    "id": "6994fd17-7691-4463-be16-172ab1430d97",
+    "sync_status": {
+        "value": "configured",
+        "metadata_modified": false,
+        "data_modified": false,
+        "dirty": false
+    },
+    "name": "my_list",
+    "created_at": "2023-04-28T13:42:49.031Z",
+    "updated_at": "2023-04-28T13:42:49.031Z"
+}

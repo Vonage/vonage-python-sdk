@@ -472,7 +472,7 @@ def test_delete_theme_in_use(meetings):
         meetings.delete_theme('90a21428-b74a-4221-adc3-783935d654db')
     assert (
         str(err.value)
-        == 'Status Code 400: BadRequestError: could not delete theme, error: Theme 90a21428-b74a-4221-adc3-783935d654db is used by 1 room'
+        == 'Status Code 400: BadRequestError: could not delete theme\nError: Theme 90a21428-b74a-4221-adc3-783935d654db is used by 1 room'
     )
 
 
@@ -759,7 +759,7 @@ def test_add_logo_to_theme_key_error(meetings):
         )
     assert (
         str(err.value)
-        == "Status Code 400: BadRequestError: could not finalize logos, error: {'logoKey': 'not-a-key', 'code': 'key_not_found'}"
+        == "Status Code 400: BadRequestError: could not finalize logos\nError: {'logoKey': 'not-a-key', 'code': 'key_not_found'}"
     )
 
 

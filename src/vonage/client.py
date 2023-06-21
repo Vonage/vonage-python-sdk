@@ -386,8 +386,8 @@ class Client:
     def _add_individual_errors(self, error_data):
         message = ''
         if 'errors' in error_data:
-            for error in error_data["errors"]:
-                message += f"\nError: {error}"
+            for error in error_data['errors']:
+                message += f'\nError: {error}'
         return message
 
     def _create_jwt_auth_string(self):

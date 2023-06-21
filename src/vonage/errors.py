@@ -50,3 +50,11 @@ class SubaccountsError(ClientError):
 
 class ProactiveConnectError(ClientError):
     """An error relating to the Proactive Connect API."""
+
+
+class NumberInsightV2Error(ClientError):
+    """An error relating to the Number Insight v2 API."""
+
+
+class InvalidPhoneNumberError(ClientError):
+    """An invalid phone number was supplied."""

@@ -1,0 +1,11 @@
+{
+    "request_id": "db5282b6-8046-4217-9c0e-d9c55d8696e9",
+    "type": "phone",
+    "phone": {
+        "phone": "12345678901"
+    },
+    "sim_swap": {
+        "status": "completed",
+        "swapped": false
+    }
+}

@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from .errors import InvalidPhoneNumberError
+
 if TYPE_CHECKING:
     from vonage import Client
 
@@ -29,3 +31,16 @@ def set_auth_type(client: Client) -> str:
         return 'jwt'
     else:
         return 'header'
+
+
+def validate_phone_number(number: str) -> None:
+    """Validates that a given phone number is a valid E.164 format string."""
+
+    from re import search
+
+    if search(r'^[1-9]\d{6,14}$', number):
+        return True
+    raise InvalidPhoneNumberError(
+        f'Invalid phone number provided. You provided: "{number}".\n'
+        "Use the E.164 format. Don't use a leading + or 00 when entering a phone number, start with the country code, e.g. 447700900000."
+    )

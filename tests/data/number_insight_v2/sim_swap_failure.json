@@ -1,0 +1,11 @@
+{
+    "request_id": "46e694c9-9b36-4bd5-8d33-3d8b2600a69b",
+    "type": "phone",
+    "phone": {
+        "phone": "12345678901"
+    },
+    "sim_swap": {
+        "status": "failed",
+        "reason": "Mobile Network Operator Not Supported"
+    }
+}

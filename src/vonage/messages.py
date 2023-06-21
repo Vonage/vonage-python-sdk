@@ -1,5 +1,5 @@
-from ._internal import set_auth_type
-from .errors import MessagesError
+from ._internal import set_auth_type, validate_phone_number
+from .errors import MessagesError, InvalidPhoneNumberError
 
 import re
 
@@ -64,10 +64,13 @@ class Messages:
     def _check_valid_recipient(self, params):
         if not isinstance(params['to'], str):
             raise MessagesError(f'Message recipient ("to={params["to"]}") not in a valid format.')
-        elif params['channel'] != 'messenger' and not re.search(r'^[1-9]\d{6,14}$', params['to']):
-            raise MessagesError(
-                f'Message recipient number ("to={params["to"]}") not in a valid format.'
-            )
+        elif params['channel'] != 'messenger':
+            try:
+                validate_phone_number(params['to'])
+            except InvalidPhoneNumberError:
+                raise MessagesError(
+                    f'Message recipient number ("to={params["to"]}") not in a valid format.'
+                )
         elif params['channel'] == 'messenger' and not 0 < len(params['to']) < 50:
             raise MessagesError(
                 f'Message recipient ID ("to={params["to"]}") not in a valid format.'

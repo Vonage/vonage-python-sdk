@@ -1,0 +1,6 @@
+{
+    "type": "https://developer.vonage.com/en/api-errors",
+    "title": "The requested resource does not exist",
+    "detail": "Not Found",
+    "instance": "3e661bd2-e429-4887-b0d4-8f37352ab1d3"
+}

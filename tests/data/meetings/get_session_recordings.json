@@ -1,0 +1,18 @@
+{
+    "_embedded": {
+        "recordings": [
+            {
+                "id": "e5b73c98-c087-4ee5-b61b-0ea08204fc65",
+                "session_id": "1_MX40NjMzOTg5Mn5-MTY3NDYxNDI4NjY5M35WM0xaVXBSc1lpT3hKWE1XQ2diM1B3cXB-fn4",
+                "started_at": "2023-01-25T02:38:31.000Z",
+                "ended_at": "2023-01-25T02:38:40.000Z",
+                "status": "uploaded",
+                "_links": {
+                    "url": {
+                        "href": "https://prod-meetings-recordings.s3.amazonaws.com/46339892/e5b73c98-c087-4ee5-b61b-0ea08204fc65/archive.mp4?AWSAccessKeyId=ASIA5NAYMMB6JPDOLPNO&Expires=1674688058&Signature=0IzgnyLJFMP1TDkOyoBT4M54Le8%3D&response-content-disposition=attachment%3B%20filename%3D%22test_recording_room_2023-01-25T02%253A38%253A31.000Z.mp4%22&response-content-type=video%2Fmp4&x-amz-security-token=IQoJb3JpZ2luX2VjEKL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIBE0ejVJPxkEDjAF6cMuDC9nIeOU%2BUnUTSnfhi2prlHtAiEA1wiXNTR96lN%2Bgsb2yeQPM%2BF%2F4e6%2BA6%2B5CylWsM1gW%2BMqiwQIGhAAGgw5MjEzMjE2Mjc3NzIiDHEAZDKegwDhiMhj3CroA1%2B2SNg3m%2B%2FCmq3ELZnnEx8t9oYXmlY0dDRovuKNBdy5n4d%2FUhhR5DaoxOj8cAY7Yu8xZRM1oYQCbO2Qrgiy2Nki7FgHNljLldhbMN6txOnf7%2BP8r2XWD6x0D7ZN8hhA4LAoeTGaF4N7ZT3Oabti%2F6z5qw%2Bp85dak9CMd%2BToeUzqcmKlRhB56SrMgTofr2B8BOXgxxmFfdmrKllmJxsi2og5iLwWWdHNExV87fPout%2FMlQ0u5D1vj3F%2FtQGfAjkPnf1RSol%2BIxwIHPmKEiqpUSu0hwtPai8Ra1l4tml2Zv9SGZ1E8AZEAtmROL2fM4rl%2BtUOEAXTUWGO3G%2BcjGs6cPZB4ihzo6TqIFyGJoQ95pPFu6yiRa%2F31Z5DEHcom5Ux4%2Fxs0TMimuLP2CJ%2BuqKRiAb9w20wchouM9MaGjVYvTXs%2BJsVXQIwdGdJACIkK9CKZXNkYAbKnYfAkz8bi7rfFoJT1mZ6hSxG%2BNGp%2FYr7Vk%2FTSvoLO4%2F4%2FpiSyJs2Y7r6QbohXgmCkZTejJW3KxC4tCRGheVwyVwRC%2F%2FCMQpm34wEb0FL0sEfqxhl7Kbkm0RT1HwOlb3N4GmLERJcEcIpmmegEIRPQcbM2ohGq%2BbMrWvD8lmu1qyfu01cSZkl9xe1NtLtEFpxoxVSMOPFxZ4GOqUB69If14rWCah8hqaxxteZbVoDSmXJo7CrMDc8uaRgFQbNR6tj4WC2t21q%2BhTBRd3C%2F5zYTAAbILP3jkDDRt3SanOamRICcOKqOJFlRa6aCz2G%2F175CWu0Bz1wDGokaGAwz3G1CL%2B2t91JH8aPUHQkX87%2FGxJliywZfL2od%2FbyCR6bM%2FGbVPRuPX8fSXsTQZPjCMCt4GJv5%2Fq%2F3h9t0lf0AfCG9Hx%2F"
+                    }
+                }
+            }
+        ]
+    }
+}

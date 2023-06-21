@@ -1,0 +1,6 @@
+{
+    "type": "https://developer.vonage.com/en/api-errors",
+    "title": "Request data did not validate",
+    "detail": "Cannot Fetch a manual list",
+    "instance": "4c34affd-df25-4bdc-b7c0-30076d3df003"
+}

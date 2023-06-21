@@ -1,0 +1,9 @@
+{
+    "type": "https://developer.vonage.com/en/api-errors",
+    "title": "Request data did not validate",
+    "detail": "Bad Request",
+    "instance": "8e2dd3f1-1718-48fc-98de-53e1d289d0b4",
+    "errors": [
+        "data must be an object"
+    ]
+}

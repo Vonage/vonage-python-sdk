@@ -1,0 +1,5 @@
+{
+    "message": "theme_name already exists in application",
+    "name": "ConflictError",
+    "status": 409
+}

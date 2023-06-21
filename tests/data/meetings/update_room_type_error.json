@@ -1,0 +1,5 @@
+{
+    "message": "The room with id: b3142c46-d1c1-4405-baa6-85683827ed69 could not be updated because of its type: temporary",
+    "name": "BadRequestError",
+    "status": 400
+}

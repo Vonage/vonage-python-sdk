@@ -1,0 +1,34 @@
+[
+    {
+        "theme_id": "1fc39568-bc50-464f-82dc-01e13bed0908",
+        "theme_name": "my_other_theme",
+        "domain": "VCP",
+        "account_id": "1234",
+        "application_id": "5678",
+        "main_color": "#FF0000",
+        "short_company_url": "my-other-company",
+        "brand_text": "My Other Company",
+        "brand_image_colored": null,
+        "brand_image_white": null,
+        "branded_favicon": null,
+        "brand_image_white_url": null,
+        "brand_image_colored_url": null,
+        "branded_favicon_url": null
+    },
+    {
+        "theme_id": "90a21428-b74a-4221-adc3-783935d654db",
+        "theme_name": "my_theme",
+        "domain": "VCP",
+        "account_id": "1234",
+        "application_id": "5678",
+        "main_color": "#12f64e",
+        "short_company_url": "my-company",
+        "brand_text": "My Company",
+        "brand_image_colored": null,
+        "brand_image_white": null,
+        "branded_favicon": null,
+        "brand_image_white_url": null,
+        "brand_image_colored_url": null,
+        "branded_favicon_url": null
+    }
+]

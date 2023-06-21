@@ -1,0 +1,5 @@
+{
+    "message": "Failed to get rooms because theme id 90a21428-b74a-4221-adc3-783935d654dc not found",
+    "name": "NotFoundError",
+    "status": 404
+}

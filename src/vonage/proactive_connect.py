@@ -110,9 +110,11 @@ class ProactiveConnect:
             auth_type=self._auth_type,
         )
 
-    def download_list_items(self, list_id: str, file_path) -> List[dict]:
+    def download_list_items(self, list_id: str, file_path: str) -> List[dict]:
         uri = f'https://{self._client.proactive_connect_host()}/v0.1/bulk/lists/{list_id}/items/download'
-        logger.debug(f"GET request sent to {repr(uri)}")
+        logger.debug(
+            f'GET request with Proactive Connect to {repr(uri)}, downloading items from list {list_id} to file {file_path}'
+        )
         headers = {**self._client.headers, 'Authorization': self._client._create_jwt_auth_string()}
         response = requests.get(
             uri,
@@ -127,7 +129,9 @@ class ProactiveConnect:
     def upload_list_items(self, list_id: str, file_path: str):
         uri = f'https://{self._client.proactive_connect_host()}/v0.1/bulk/lists/{list_id}/items/import'
         with open(file_path, 'rb') as csv_file:
-            logger.debug(f"POST request sent to {repr(uri)}")
+            logger.debug(
+                f'POST request with Proactive Connect uploading {file_path} to {repr(uri)}'
+            )
             headers = {
                 **self._client.headers,
                 'Authorization': self._client._create_jwt_auth_string(),

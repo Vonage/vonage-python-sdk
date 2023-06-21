@@ -1,3 +1,8 @@
+# 3.7.0
+- Adding support for the [Vonage Meetings API](https://developer.vonage.com/en/meetings/overview)
+- Adding partial support for the [Vonage Proactive Connect API](https://developer.vonage.com/en/proactive-connect/overview) - supporting API methods relating to `lists`, `items` and `events`
+- Returning a more descriptive (non-internal) error message if invalid values are provided for `application_id` and/or `private_key` when instantiating a Vonage client object
+
 # 3.6.0
 - Adding support for the [Vonage Subaccounts API](https://developer.vonage.com/en/account/subaccounts/overview)
 

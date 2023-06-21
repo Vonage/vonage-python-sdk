@@ -372,6 +372,7 @@ class Client:
             except JSONDecodeError:
                 pass
             raise ClientError(message)
+        
         elif 500 <= response.status_code < 600:
             logger.warning(f"Server error: {response.status_code} {repr(response.content)}")
             message = f"{response.status_code} response from {host}"

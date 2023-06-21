@@ -1,0 +1,14 @@
+{
+    "masterAccountId": "1234asdf",
+    "_links": {
+        "self": {
+            "href": "/accounts/1234asdf/balance-transfers/83c4da50-9d42-434d-aaa9-76cf3109e9a5"
+        }
+    },
+    "from": "1234asdf",
+    "to": "asdfzxcv",
+    "amount": 0.5,
+    "reference": "test balance transfer",
+    "id": "83c4da50-9d42-434d-aaa9-76cf3109e9a5",
+    "created_at": "2023-06-12T17:20:00.000Z"
+}

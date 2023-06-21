@@ -1,0 +1,47 @@
+[
+    {
+        "url": "https://s3.amazonaws.com/roomservice-whitelabel-logos-prod",
+        "fields": {
+            "Content-Type": "image/png",
+            "key": "auto-expiring-temp/logos/white/d92b31ae-fbf1-4709-a729-c0fa75368c25",
+            "logoType": "white",
+            "bucket": "roomservice-whitelabel-logos-prod",
+            "X-Amz-Algorithm": "AWS4-HMAC-SHA256",
+            "X-Amz-Credential": "some-credential",
+            "X-Amz-Date": "20230127T024303Z",
+            "X-Amz-Security-Token": "some-token",
+            "Policy": "some-policy",
+            "X-Amz-Signature": "some-signature"
+        }
+    },
+    {
+        "url": "https://s3.amazonaws.com/roomservice-whitelabel-logos-prod",
+        "fields": {
+            "Content-Type": "image/png",
+            "key": "auto-expiring-temp/logos/colored/c4e00bac-781b-4bf0-bd5f-b9ff2cbc1b6c",
+            "logoType": "colored",
+            "bucket": "roomservice-whitelabel-logos-prod",
+            "X-Amz-Algorithm": "AWS4-HMAC-SHA256",
+            "X-Amz-Credential": "some-credential",
+            "X-Amz-Date": "20230127T024303Z",
+            "X-Amz-Security-Token": "some-token",
+            "Policy": "some-policy",
+            "X-Amz-Signature": "some-signature"
+        }
+    },
+    {
+        "url": "https://s3.amazonaws.com/roomservice-whitelabel-logos-prod",
+        "fields": {
+            "Content-Type": "image/png",
+            "key": "auto-expiring-temp/logos/favicon/d7a81477-38f7-460c-b51f-1462b8426df5",
+            "logoType": "favicon",
+            "bucket": "roomservice-whitelabel-logos-prod",
+            "X-Amz-Algorithm": "AWS4-HMAC-SHA256",
+            "X-Amz-Credential": "some-credential",
+            "X-Amz-Date": "20230127T024303Z",
+            "X-Amz-Security-Token": "some-token",
+            "Policy": "some-policy",
+            "X-Amz-Signature": "some-signature"
+        }
+    }
+]

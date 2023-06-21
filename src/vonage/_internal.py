@@ -1,3 +1,10 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from vonage import Client
+
+
 def _format_date_param(params, key, format="%Y-%m-%d %H:%M:%S"):
     """
     Utility function to convert datetime values to strings.
@@ -12,3 +19,13 @@ def _format_date_param(params, key, format="%Y-%m-%d %H:%M:%S"):
         param = params[key]
         if hasattr(param, "strftime"):
             params[key] = param.strftime(format)
+
+
+def set_auth_type(client: Client) -> str:
+    """Sets the authentication type used. If a JWT Client has been created,
+    it will create a JWT and use JWT authentication."""
+
+    if hasattr(client, '_jwt_client'):
+        return 'jwt'
+    else:
+        return 'header'

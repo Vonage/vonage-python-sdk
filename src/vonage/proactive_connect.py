@@ -15,29 +15,42 @@ class ProactiveConnect:
     def list_all_lists(self, page: int = None, page_size: int = None):
         params = self._check_pagination_params(page, page_size)
         return self._client.get(
-            self._client.proactive_connect_host(), '/v0.1/bulk/lists', params, auth_type=self._auth_type
+            self._client.proactive_connect_host(),
+            '/v0.1/bulk/lists',
+            params,
+            auth_type=self._auth_type,
         )
 
     def create_list(self, params: dict):
         self._validate_list_params(params)
         return self._client.post(
-            self._client.proactive_connect_host(), '/v0.1/bulk/lists', params, auth_type=self._auth_type
+            self._client.proactive_connect_host(),
+            '/v0.1/bulk/lists',
+            params,
+            auth_type=self._auth_type,
         )
 
     def get_list(self, list_id: str):
         return self._client.get(
-            self._client.proactive_connect_host(), f'/v0.1/bulk/lists/{list_id}', auth_type=self._auth_type
+            self._client.proactive_connect_host(),
+            f'/v0.1/bulk/lists/{list_id}',
+            auth_type=self._auth_type,
         )
 
     def update_list(self, list_id: str, params: dict):
         self._validate_list_params(params)
         return self._client.put(
-            self._client.proactive_connect_host(), f'/v0.1/bulk/lists/{list_id}', params, auth_type=self._auth_type
+            self._client.proactive_connect_host(),
+            f'/v0.1/bulk/lists/{list_id}',
+            params,
+            auth_type=self._auth_type,
         )
 
     def delete_list(self, list_id: str):
         return self._client.delete(
-            self._client.proactive_connect_host(), f'/v0.1/bulk/lists/{list_id}', auth_type=self._auth_type
+            self._client.proactive_connect_host(),
+            f'/v0.1/bulk/lists/{list_id}',
+            auth_type=self._auth_type,
         )
 
     def clear_list(self, list_id: str):
@@ -100,9 +113,10 @@ class ProactiveConnect:
     def download_list_items(self, list_id: str, file_path) -> List[dict]:
         uri = f'https://{self._client.proactive_connect_host()}/v0.1/bulk/lists/{list_id}/items/download'
         logger.debug(f"GET request sent to {repr(uri)}")
+        headers = {**self._client.headers, 'Authorization': self._client._create_jwt_auth_string()}
         response = requests.get(
             uri,
-            headers=self._client._add_jwt_to_request_headers(),
+            headers=headers,
         )
         if 200 <= response.status_code < 300:
             with open(file_path, 'wb') as file:
@@ -114,9 +128,13 @@ class ProactiveConnect:
         uri = f'https://{self._client.proactive_connect_host()}/v0.1/bulk/lists/{list_id}/items/import'
         with open(file_path, 'rb') as csv_file:
             logger.debug(f"POST request sent to {repr(uri)}")
+            headers = {
+                **self._client.headers,
+                'Authorization': self._client._create_jwt_auth_string(),
+            }
             response = requests.post(
                 uri,
-                headers=self._client._add_jwt_to_request_headers(),
+                headers=headers,
                 files={'file': ('list_items.csv', csv_file, 'text/csv')},
             )
         return self._client.parse(self._client.proactive_connect_host(), response)
@@ -124,7 +142,10 @@ class ProactiveConnect:
     def list_events(self, page: int = None, page_size: int = None):
         params = self._check_pagination_params(page, page_size)
         return self._client.get(
-            self._client.proactive_connect_host(), '/v0.1/bulk/events', params, auth_type=self._auth_type
+            self._client.proactive_connect_host(),
+            '/v0.1/bulk/events',
+            params,
+            auth_type=self._auth_type,
         )
 
     def _check_pagination_params(self, page: int = None, page_size: int = None) -> dict:
@@ -144,7 +165,11 @@ class ProactiveConnect:
     def _validate_list_params(self, params: dict):
         if 'name' not in params:
             raise ProactiveConnectError('You must supply a name for the new list.')
-        if 'datasource' in params and 'type' in params['datasource'] and params['datasource']['type'] == 'salesforce':
+        if (
+            'datasource' in params
+            and 'type' in params['datasource']
+            and params['datasource']['type'] == 'salesforce'
+        ):
             self._check_salesforce_params_correct(params['datasource'])
 
     def _check_salesforce_params_correct(self, datasource):
@@ -153,4 +178,6 @@ class ProactiveConnect:
                 'You must supply a value for "integration_id" and "soql" when creating a list with Salesforce.'
             )
         if type(datasource['integration_id']) is not str or type(datasource['soql']) is not str:
-            raise ProactiveConnectError('You must supply values for "integration_id" and "soql" as strings.')
+            raise ProactiveConnectError(
+                'You must supply values for "integration_id" and "soql" as strings.'
+            )

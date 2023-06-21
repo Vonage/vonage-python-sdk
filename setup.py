@@ -9,7 +9,7 @@ with io.open(os.path.join(os.path.dirname(__file__), "README.md"), encoding="utf
 
 setup(
     name="vonage",
-    version="3.4.0",
+    version="3.6.0",
     description="Vonage Server SDK for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -21,8 +21,8 @@ setup(
     package_dir={"": "src"},
     platforms=["any"],
     install_requires=[
+        "vonage-jwt>=1.0.0",
         "requests>=2.4.2",
-        "PyJWT[crypto]>=1.6.4",
         "pytz>=2018.5",
         "Deprecated",
         "pydantic>=1.10.2",

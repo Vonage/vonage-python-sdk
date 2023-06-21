@@ -1,0 +1,8 @@
+{
+    "message": "could not delete theme",
+    "name": "BadRequestError",
+    "errors": [
+        "Theme 90a21428-b74a-4221-adc3-783935d654db is used by 1 room"
+    ],
+    "status": 400
+}

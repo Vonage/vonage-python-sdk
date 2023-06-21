@@ -229,7 +229,9 @@ def test_update_list_salesforce(proc):
 
 def test_update_list_name_error(proc):
     with raises(ProactiveConnectError) as err:
-        proc.update_list('9508e7b8-fe99-4fdf-b022-65d7e461db2d', {'description': 'my new description'})
+        proc.update_list(
+            '9508e7b8-fe99-4fdf-b022-65d7e461db2d', {'description': 'my new description'}
+        )
     assert str(err.value) == 'You must supply a name for the new list.'
 
 
@@ -438,8 +440,12 @@ def test_download_list_items(proc):
         fixture_path='proactive_connect/list_items.csv',
     )
 
-    proc.download_list_items(list_id, os.path.join(os.path.dirname(__file__), 'data/proactive_connect/list_items.csv'))
-    items = _read_csv_file(os.path.join(os.path.dirname(__file__), 'data/proactive_connect/list_items.csv'))
+    proc.download_list_items(
+        list_id, os.path.join(os.path.dirname(__file__), 'data/proactive_connect/list_items.csv')
+    )
+    items = _read_csv_file(
+        os.path.join(os.path.dirname(__file__), 'data/proactive_connect/list_items.csv')
+    )
     assert items[0]['favourite_number'] == '0'
     assert items[1]['least_favourite_number'] == '0'
 

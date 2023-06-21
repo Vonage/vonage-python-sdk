@@ -1,0 +1,6 @@
+{
+    "title": "Conflict",
+    "detail": "The current Verify workflow step does not support a code.",
+    "instance": "690c48de-c5d1-49f2-8712-b3b0a840f911",
+    "type": "https://developer.nexmo.com/api-errors#conflict"
+}

@@ -1,0 +1,11 @@
+{
+    "message": "could not finalize logos",
+    "name": "BadRequestError",
+    "errors": [
+        {
+            "logoKey": "not-a-key",
+            "code": "key_not_found"
+        }
+    ],
+    "status": 400
+}

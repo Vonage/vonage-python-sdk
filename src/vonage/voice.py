@@ -96,4 +96,6 @@ class Voice:
 
     def get_recording(self, url):
         hostname = urlparse(url).hostname
-        return self._client.parse(hostname, self._client.session.get(url, headers=self._client._add_jwt_to_request_headers()))
+        headers = self._client.headers
+        headers['Authorization'] = self._client._create_jwt_auth_string()
+        return self._client.parse(hostname, self._client.session.get(url, headers=headers))

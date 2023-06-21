@@ -1,0 +1,6 @@
+{
+    "type": "https://developer.nexmo.com/api-errors#bad-request",
+    "title": "Invalid Code",
+    "detail": "The code you provided does not match the expected value.",
+    "instance": "16d6bca6-c0dc-4add-94b2-0dbc12cba83b"
+}

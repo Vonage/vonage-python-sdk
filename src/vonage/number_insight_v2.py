@@ -18,12 +18,17 @@ class NumberInsightV2:
         params = {'type': 'phone', 'phone': number}
 
         if type(insights) == str:
-            self._validate_insight(insights)
-            params['insights'] = [insights]
+            insights_list = [insights]
         elif type(insights) == list:
-            for insight in insights:
-                self._validate_insight(insight)
-            params['insights'] = insights
+            insights_list = insights
+        else:
+            raise NumberInsightV2Error(
+                'You must pass in values for the "insights" parameter as a string or a list.'
+            )
+
+        for insight in insights_list:
+            self._validate_insight(insight)
+        params['insights'] = insights_list
 
         return self._client.post(
             self._client.api_host(), '/v2/ni', params, auth_type=self._auth_type

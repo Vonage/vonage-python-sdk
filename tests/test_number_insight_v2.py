@@ -76,6 +76,15 @@ def test_fraud_score_and_sim_swap():
     assert response['sim_swap']['swapped'] == False
 
 
+def test_error_insights_has_invalid_type():
+    with raises(NumberInsightV2Error) as err:
+        ni2.fraud_check(insight_number, 1234)
+    assert (
+        str(err.value)
+        == f'You must pass in values for the "insights" parameter as a string or a list.'
+    )
+
+
 def test_invalid_insight_error():
     with raises(NumberInsightV2Error) as err:
         ni2.fraud_check(insight_number, 'an_invalid_insight')

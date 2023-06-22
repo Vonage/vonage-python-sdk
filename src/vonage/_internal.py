@@ -35,6 +35,10 @@ def set_auth_type(client: Client) -> str:
 
 def validate_phone_number(number: str) -> None:
     """Validates that a given phone number is a valid E.164 format string."""
+    if type(number) is not str:
+        raise InvalidPhoneNumberError(
+            'Invalid phone number provided. You must pass in a string in the E.164 format.'
+        )
 
     from re import search
 

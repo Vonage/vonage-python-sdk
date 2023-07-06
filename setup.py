@@ -25,7 +25,7 @@ setup(
         "requests>=2.4.2",
         "pytz>=2018.5",
         "Deprecated",
-        "pydantic>=1.10.2",
+        "pydantic>=1.10,==1.*",
     ],
     python_requires=">=3.7",
     tests_require=["cryptography>=2.3.1"],

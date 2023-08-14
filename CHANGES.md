@@ -1,3 +1,6 @@
+# 3.8.0
+- Adding support for the [Users component of the Vonage Application API](https://developer.vonage.com/en/api/application.v2#User)
+
 # 3.7.1
 - Fixing dependency version to a specific major version
 

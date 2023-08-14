@@ -1,0 +1,43 @@
+{
+    "page_size": 10,
+    "_embedded": {
+        "users": [
+            {
+                "id": "USR-2af4d3c5-ec49-4c4a-b74c-ec13ab560af8",
+                "name": "NAM-6dd4ea1f-3841-47cb-a3d3-e271f5c1e33c",
+                "_links": {
+                    "self": {
+                        "href": "https://api-us-3.vonage.com/v1/users/USR-2af4d3c5-ec49-4c4a-b74c-ec13ab560af8"
+                    }
+                }
+            },
+            {
+                "id": "USR-d3cc6a55-aa7b-4916-8244-2fedb554afd5",
+                "name": "NAM-ecb938f2-13e0-40c1-9d3b-b16ebb4ef3d1",
+                "_links": {
+                    "self": {
+                        "href": "https://api-us-3.vonage.com/v1/users/USR-d3cc6a55-aa7b-4916-8244-2fedb554afd5"
+                    }
+                }
+            },
+            {
+                "id": "USR-5ab17d58-b8b3-427d-ac42-c31dab7ef422",
+                "name": "my_user_name",
+                "display_name": "My User Name",
+                "_links": {
+                    "self": {
+                        "href": "https://api-us-3.vonage.com/v1/users/USR-5ab17d58-b8b3-427d-ac42-c31dab7ef422"
+                    }
+                }
+            }
+        ]
+    },
+    "_links": {
+        "first": {
+            "href": "https://api-us-3.vonage.com/v1/users?order=asc&page_size=10"
+        },
+        "self": {
+            "href": "https://api-us-3.vonage.com/v1/users?order=asc&page_size=10&cursor=QAuYbTXFALruTxAIRAKiHvdCAqJQjTuYkDNhN9PYWcDajgUTgd9lQPo%3D"
+        }
+    }
+}

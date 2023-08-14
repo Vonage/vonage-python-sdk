@@ -1,0 +1,69 @@
+{
+    "id": "USR-5ab17d58-b8b3-427d-ac42-c31dab7ef422",
+    "name": "my_user_name",
+    "image_url": "https://example.com/image.png",
+    "display_name": "My User Name",
+    "properties": {
+        "custom_data": {
+            "custom_key": "custom_value"
+        }
+    },
+    "_links": {
+        "self": {
+            "href": "https://api-us-3.vonage.com/v1/users/USR-5ab17d58-b8b3-427d-ac42-c31dab7ef422"
+        }
+    },
+    "channels": {
+        "pstn": [
+            {
+                "number": 123457
+            }
+        ],
+        "sip": [
+            {
+                "uri": "sip:4442138907@sip.example.com;transport=tls",
+                "username": "New SIP",
+                "password": "Password"
+            }
+        ],
+        "vbc": [
+            {
+                "extension": "403"
+            }
+        ],
+        "websocket": [
+            {
+                "uri": "wss://example.com/socket",
+                "content-type": "audio/l16;rate=16000",
+                "headers": {
+                    "customer_id": "ABC123"
+                }
+            }
+        ],
+        "sms": [
+            {
+                "number": "447700900000"
+            }
+        ],
+        "mms": [
+            {
+                "number": "447700900000"
+            }
+        ],
+        "whatsapp": [
+            {
+                "number": "447700900000"
+            }
+        ],
+        "viber": [
+            {
+                "number": "447700900000"
+            }
+        ],
+        "messenger": [
+            {
+                "id": "12345abcd"
+            }
+        ]
+    }
+}

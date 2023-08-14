@@ -50,3 +50,7 @@ class SubaccountsError(ClientError):
 
 class ProactiveConnectError(ClientError):
     """An error relating to the Proactive Connect API."""
+
+
+class UsersError(ClientError):
+    """An error relating to the Users API."""

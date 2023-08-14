@@ -1,0 +1,13 @@
+{
+    "id": "USR-d3cc6a55-aa7b-4916-8244-2fedb554afd5",
+    "name": "NAM-ecb938f2-13e0-40c1-9d3b-b16ebb4ef3d1",
+    "properties": {
+        "custom_data": {}
+    },
+    "_links": {
+        "self": {
+            "href": "https://api-us-3.vonage.com/v1/users/USR-d3cc6a55-aa7b-4916-8244-2fedb554afd5"
+        }
+    },
+    "channels": {}
+}

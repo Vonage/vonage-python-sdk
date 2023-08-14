@@ -1,0 +1,13 @@
+{
+    "title": "Bad request.",
+    "type": "https://developer.nexmo.com/api/conversation#http:error:validation-fail",
+    "code": "http:error:validation-fail",
+    "detail": "Input validation failure.",
+    "instance": "00a5916655d650e920ccf0daf40ef4ee",
+    "invalid_parameters": [
+        {
+            "name": "name",
+            "reason": "\"name\" must be a string"
+        }
+    ]
+}

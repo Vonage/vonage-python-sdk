@@ -13,6 +13,7 @@ from .redact import Redact
 from .short_codes import ShortCodes
 from .sms import Sms
 from .subaccounts import Subaccounts
+from .users import Users
 from .ussd import Ussd
 from .voice import Voice
 from .verify import Verify
@@ -122,6 +123,7 @@ class Client:
         self.short_codes = ShortCodes(self)
         self.sms = Sms(self)
         self.subaccounts = Subaccounts(self)
+        self.users = Users(self)
         self.ussd = Ussd(self)
         self.verify = Verify(self)
         self.verify2 = Verify2(self)

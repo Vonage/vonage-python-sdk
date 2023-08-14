@@ -27,6 +27,7 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [Pricing API](#pricing-api)
 - [Managing Secrets](#managing-secrets)
 - [Application API](#application-api)
+- [Users API](#users-api)
 - [Validating Webhook Signatures](#validate-webhook-signatures)
 - [JWT Parameters](#jwt-parameters)
 - [Overriding API Attributes](#overriding-api-attributes)
@@ -1081,6 +1082,42 @@ response = client.application.delete_application(uuid)
 ```
 
 Docs: [https://developer.nexmo.com/api/application.v2#deleteApplication](https://developer.nexmo.com/api/application.v2#deleteApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#destroy-an-application)
+
+
+## Users API
+
+These API methods are part of the [Application (v2) API](https://developer.vonage.com/en/application/overview) but are a in separate module in the SDK. [See the API reference for more details](https://developer.vonage.com/en/api/application.v2#User).
+
+### List all Users
+
+```python
+client.users.list_users()
+```
+
+### Create a new user
+
+```python
+client.users.create_user() # Default values generated
+client.users.create_user(params={...}) # Specify custom values
+```
+
+### Get detailed information about a user
+
+```python
+client.users.get_user('USER_ID')
+```
+
+### Update user details
+
+```python
+client.users.update_user('USER_ID', params={...})
+```
+
+### Delete a user
+
+```python
+client.users.delete_user('USER_ID')
+```
 
 ## Validate webhook signatures
 

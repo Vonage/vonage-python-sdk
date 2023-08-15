@@ -1,0 +1,6 @@
+{
+  "settingsInheritedFrom": "Vonage/whitesource-config@main",
+  "scanSettings": {
+    "enableIaC": false
+  }
+}

@@ -1,6 +1,19 @@
 name: Mutation Test
 on: workflow_dispatch
 
+permissions:
+  actions: write
+  checks: write
+  contents: read
+  deployments: read
+  issues: write
+  discussions: write
+  packages: read
+  pages: write
+  pull-requests: write
+  security-events: write
+  statuses: write
+
 jobs:
   mutation:
     name: run mutation test

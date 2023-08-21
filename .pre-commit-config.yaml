@@ -3,9 +3,9 @@ repos:
     rev: v2.5.4
     hooks:
       - id: trailing-whitespace
-        language_version: python3.7
+        language_version: python3.11
   - repo: https://github.com/ambv/black
     rev: 18.6b4
     hooks:
       - id: black
-        language_version: python3.7
+        language_version: python3.11

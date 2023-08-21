@@ -1,3 +1,6 @@
+# 3.9.0
+- Dropped support for Python 3.7 as it's end-of-life and no longer receiving security updates
+
 # 3.8.0
 - Adding support for the [Users component of the Vonage Application API](https://developer.vonage.com/en/api/application.v2#User)
 

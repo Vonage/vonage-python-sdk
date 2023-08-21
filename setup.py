@@ -9,7 +9,7 @@ with io.open(os.path.join(os.path.dirname(__file__), "README.md"), encoding="utf
 
 setup(
     name="vonage",
-    version="3.8.0",
+    version="3.9.0",
     description="Vonage Server SDK for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -27,12 +27,11 @@ setup(
         "Deprecated",
         "pydantic>=1.10,==1.*",
     ],
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     tests_require=["cryptography>=2.3.1"],
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",

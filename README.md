@@ -1,6 +1,6 @@
 # Vonage Server SDK for Python
 
-<img src="https://developer.nexmo.com/assets/images/Vonage_Nexmo.svg" height="48px" alt="Nexmo is now known as Vonage" />
+<img src="https://developer.nexmo.com/images/logos/vbc-logo.svg" height="48px" alt="Vonage" />
 
 [![PyPI version](https://badge.fury.io/py/vonage.svg)](https://badge.fury.io/py/vonage)
 [![Build Status](https://github.com/Vonage/vonage-python-sdk/workflows/Build/badge.svg)](https://github.com/Vonage/vonage-python-sdk/actions)
@@ -1137,7 +1137,7 @@ your account before you can validate webhook signatures.
 
 ## JWT parameters
 
-By default, the library generates 15-minute tokens for JWT authentication.
+By default, the library generates tokens for JWT authentication that have an expiry time of 15 minutes. You should set the expiry time (`exp`) to an appropriate value for your organisation's own policies and/or your use case.
 
 Use the `auth` method of the client class to specify custom parameters:
 

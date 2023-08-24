@@ -1,5 +1,6 @@
 from util import *
 
+
 @responses.activate
 def test_send_ussd_push_message(ussd, dummy_data):
     stub(responses.POST, "https://rest.nexmo.com/ussd/json")
@@ -11,6 +12,7 @@ def test_send_ussd_push_message(ussd, dummy_data):
     assert "from=MyCompany20" in request_body()
     assert "to=447525856424" in request_body()
     assert "text=Hello" in request_body()
+
 
 @responses.activate
 def test_send_ussd_prompt_message(ussd, dummy_data):

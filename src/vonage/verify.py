@@ -23,7 +23,10 @@ class Verify:
 
     def search(self, request_id):
         return self._client.get(
-            self._client.api_host(), "/verify/search/json", {"request_id": request_id}, auth_type=Verify.auth_type
+            self._client.api_host(),
+            "/verify/search/json",
+            {"request_id": request_id},
+            auth_type=Verify.auth_type,
         )
 
     def cancel(self, request_id):

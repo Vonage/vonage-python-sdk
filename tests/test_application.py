@@ -3,6 +3,7 @@ from util import *
 
 import vonage
 
+
 @responses.activate
 def test_deprecated_list_applications(application_v2, dummy_data):
     stub(
@@ -112,9 +113,7 @@ def test_deprecated_client_error(application_v2):
     )
     with pytest.raises(vonage.ClientError) as exc_info:
         application_v2.delete_application("xx-xx-xx-xx")
-    assert (
-        str(exc_info.value) == "Nope: You really shouldn't have done that (nope_error)"
-    )
+    assert str(exc_info.value) == "Nope: You really shouldn't have done that (nope_error)"
 
 
 @responses.activate
@@ -139,7 +138,6 @@ def test_deprecated_server_error(application_v2):
     )
     with pytest.raises(vonage.ServerError):
         application_v2.delete_application("xx-xx-xx-xx")
-
 
 
 @responses.activate
@@ -251,9 +249,7 @@ def test_client_error(client):
     )
     with pytest.raises(vonage.ClientError) as exc_info:
         client.application.delete_application("xx-xx-xx-xx")
-    assert (
-        str(exc_info.value) == "Nope: You really shouldn't have done that (nope_error)"
-    )
+    assert str(exc_info.value) == "Nope: You really shouldn't have done that (nope_error)"
 
 
 @responses.activate

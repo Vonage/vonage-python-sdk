@@ -23,6 +23,7 @@ def test_invalid_auth_type_raises_error(client):
     with pytest.raises(InvalidAuthenticationTypeError):
         client.get(client.host(), 'my/request/uri', auth_type='magic')
 
+
 @responses.activate
 def test_timeout_is_set_on_client_calls(dummy_data):
     stub(responses.POST, "https://api.nexmo.com/v1/calls")

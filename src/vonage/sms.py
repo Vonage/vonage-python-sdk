@@ -2,12 +2,13 @@ import pytz
 from datetime import datetime
 from ._internal import _format_date_param
 
+
 class Sms:
     defaults = {'auth_type': 'params', 'body_is_json': False}
 
     def __init__(self, client):
         self._client = client
-    
+
     def send_message(self, params):
         """
         Send an SMS message.
@@ -15,13 +16,13 @@ class Sms:
         :param dict params: A dict of values described at `Send an SMS <https://developer.vonage.com/api/sms#send-an-sms>`_
         """
         return self._client.post(
-            self._client.host(), 
-            "/sms/json", 
-            params, 
+            self._client.host(),
+            "/sms/json",
+            params,
             supports_signature_auth=True,
             **Sms.defaults,
         )
-    
+
     def submit_sms_conversion(self, message_id, delivered=True, timestamp=None):
         """
         Notify Vonage that an SMS was successfully received.
@@ -37,8 +38,10 @@ class Sms:
         params = {
             "message-id": message_id,
             "delivered": delivered,
-            "timestamp": timestamp or datetime.now(pytz.utc)
+            "timestamp": timestamp or datetime.now(pytz.utc),
         }
         # Ensure timestamp is a string:
         _format_date_param(params, "timestamp")
-        return self._client.post(self._client.api_host(), "/conversions/sms", params, **Sms.defaults)
+        return self._client.post(
+            self._client.api_host(), "/conversions/sms", params, **Sms.defaults
+        )

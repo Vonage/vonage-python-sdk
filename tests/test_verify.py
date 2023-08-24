@@ -1,5 +1,6 @@
 from util import *
 
+
 @responses.activate
 def test_start_verification(verify, dummy_data):
     stub(responses.POST, "https://api.nexmo.com/verify/json")
@@ -65,8 +66,10 @@ def test_start_psd2_verification(verify, dummy_data):
 
 @responses.activate
 def test_start_verification_blacklisted_error_with_network(client, dummy_data):
-    stub(responses.POST, "https://api.nexmo.com/verify/json",
-        fixture_path="verify/blocked_with_network.json"
+    stub(
+        responses.POST,
+        "https://api.nexmo.com/verify/json",
+        fixture_path="verify/blocked_with_network.json",
     )
 
     params = {"number": "447525856424", "brand": "MyApp"}
@@ -78,13 +81,18 @@ def test_start_verification_blacklisted_error_with_network(client, dummy_data):
     assert "brand=MyApp" in request_body()
     assert response["status"] == "7"
     assert response["network"] == "25503"
-    assert response["error_text"] == "The number you are trying to verify is blacklisted for verification"
+    assert (
+        response["error_text"]
+        == "The number you are trying to verify is blacklisted for verification"
+    )
 
 
 @responses.activate
 def test_start_verification_blacklisted_error_with_request_id(client, dummy_data):
-    stub(responses.POST, "https://api.nexmo.com/verify/json",
-        fixture_path="verify/blocked_with_request_id.json"
+    stub(
+        responses.POST,
+        "https://api.nexmo.com/verify/json",
+        fixture_path="verify/blocked_with_request_id.json",
     )
 
     params = {"number": "447525856424", "brand": "MyApp"}
@@ -96,13 +104,18 @@ def test_start_verification_blacklisted_error_with_request_id(client, dummy_data
     assert "brand=MyApp" in request_body()
     assert response["status"] == "7"
     assert response["request_id"] == "12345678"
-    assert response["error_text"] == "The number you are trying to verify is blacklisted for verification"
+    assert (
+        response["error_text"]
+        == "The number you are trying to verify is blacklisted for verification"
+    )
 
 
 @responses.activate
 def test_start_verification_blacklisted_error_with_network_and_request_id(client, dummy_data):
-    stub(responses.POST, "https://api.nexmo.com/verify/json",
-        fixture_path="verify/blocked_with_network_and_request_id.json"
+    stub(
+        responses.POST,
+        "https://api.nexmo.com/verify/json",
+        fixture_path="verify/blocked_with_network_and_request_id.json",
     )
 
     params = {"number": "447525856424", "brand": "MyApp"}
@@ -115,12 +128,18 @@ def test_start_verification_blacklisted_error_with_network_and_request_id(client
     assert response["status"] == "7"
     assert response["network"] == "25503"
     assert response["request_id"] == "12345678"
-    assert response["error_text"] == "The number you are trying to verify is blacklisted for verification"
+    assert (
+        response["error_text"]
+        == "The number you are trying to verify is blacklisted for verification"
+    )
+
 
 @responses.activate
 def test_start_psd2_verification_blacklisted_error_with_network(client, dummy_data):
-    stub(responses.POST, "https://api.nexmo.com/verify/psd2/json",
-        fixture_path="verify/blocked_with_network.json"
+    stub(
+        responses.POST,
+        "https://api.nexmo.com/verify/psd2/json",
+        fixture_path="verify/blocked_with_network.json",
     )
 
     params = {"number": "447525856424", "brand": "MyApp"}
@@ -132,13 +151,18 @@ def test_start_psd2_verification_blacklisted_error_with_network(client, dummy_da
     assert "brand=MyApp" in request_body()
     assert response["status"] == "7"
     assert response["network"] == "25503"
-    assert response["error_text"] == "The number you are trying to verify is blacklisted for verification"
+    assert (
+        response["error_text"]
+        == "The number you are trying to verify is blacklisted for verification"
+    )
 
 
 @responses.activate
 def test_start_psd2_verification_blacklisted_error_with_request_id(client, dummy_data):
-    stub(responses.POST, "https://api.nexmo.com/verify/psd2/json",
-        fixture_path="verify/blocked_with_request_id.json"
+    stub(
+        responses.POST,
+        "https://api.nexmo.com/verify/psd2/json",
+        fixture_path="verify/blocked_with_request_id.json",
     )
 
     params = {"number": "447525856424", "brand": "MyApp"}
@@ -150,13 +174,18 @@ def test_start_psd2_verification_blacklisted_error_with_request_id(client, dummy
     assert "brand=MyApp" in request_body()
     assert response["status"] == "7"
     assert response["request_id"] == "12345678"
-    assert response["error_text"] == "The number you are trying to verify is blacklisted for verification"
+    assert (
+        response["error_text"]
+        == "The number you are trying to verify is blacklisted for verification"
+    )
 
 
 @responses.activate
 def test_start_psd2_verification_blacklisted_error_with_network_and_request_id(client, dummy_data):
-    stub(responses.POST, "https://api.nexmo.com/verify/psd2/json",
-        fixture_path="verify/blocked_with_network_and_request_id.json"
+    stub(
+        responses.POST,
+        "https://api.nexmo.com/verify/psd2/json",
+        fixture_path="verify/blocked_with_network_and_request_id.json",
     )
 
     params = {"number": "447525856424", "brand": "MyApp"}
@@ -169,4 +198,7 @@ def test_start_psd2_verification_blacklisted_error_with_network_and_request_id(c
     assert response["status"] == "7"
     assert response["network"] == "25503"
     assert response["request_id"] == "12345678"
-    assert response["error_text"] == "The number you are trying to verify is blacklisted for verification"
+    assert (
+        response["error_text"]
+        == "The number you are trying to verify is blacklisted for verification"
+    )

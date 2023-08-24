@@ -84,7 +84,10 @@ def test_connect_phone_endpoint_from_dict():
             "type": "phone",
             "number": "447000000000",
             "dtmfAnswer": "1p2p3p#**903#",
-            "onAnswer": {"url": "https://example.com/answer", "ringbackTone": "http://example.com/ringbackTone.wav"},
+            "onAnswer": {
+                "url": "https://example.com/answer",
+                "ringbackTone": "http://example.com/ringbackTone.wav",
+            },
         }
     )
     assert type(connect) is Ncco.Connect
@@ -142,7 +145,10 @@ def test_connect_random_from_number_error():
     with pytest.raises(ValueError) as err:
         Ncco.Connect(endpoint=endpoint, from_='447400000000', randomFromNumber=True)
 
-    assert 'Cannot set a "from" ("from_") field and also the "randomFromNumber" = True option' in str(err.value)
+    assert (
+        'Cannot set a "from" ("from_") field and also the "randomFromNumber" = True option'
+        in str(err.value)
+    )
 
 
 def test_connect_validation_errors():
@@ -168,7 +174,9 @@ def test_talk_basic():
 
 
 def test_talk_optional_params():
-    talk = Ncco.Talk(text='hello', bargeIn=True, loop=3, level=0.5, language='en-GB', style=1, premium=True)
+    talk = Ncco.Talk(
+        text='hello', bargeIn=True, loop=3, level=0.5, language='en-GB', style=1, premium=True
+    )
     assert json.dumps(_action_as_dict(talk)) == nas.talk_full
 
 
@@ -184,7 +192,9 @@ def test_stream_basic():
 
 
 def test_stream_full():
-    stream = Ncco.Stream(streamUrl='https://example.com/stream/music.mp3', level=0.1, bargeIn=True, loop=10)
+    stream = Ncco.Stream(
+        streamUrl='https://example.com/stream/music.mp3', level=0.1, bargeIn=True, loop=10
+    )
     assert json.dumps(_action_as_dict(stream)) == nas.stream_full
 
 
@@ -211,7 +221,11 @@ def test_input_dtmf_and_speech_options():
         saveAudio=True,
     )
     input = Ncco.Input(
-        type=['dtmf', 'speech'], dtmf=dtmf, speech=speech, eventUrl='http://example.com/speech', eventMethod='put'
+        type=['dtmf', 'speech'],
+        dtmf=dtmf,
+        speech=speech,
+        eventUrl='http://example.com/speech',
+        eventMethod='put',
     )
     assert json.dumps(_action_as_dict(input)) == nas.input_dtmf_and_speech_full
 
@@ -234,7 +248,9 @@ def test_notify_basic_str_in_event_url():
 
 
 def test_notify_full():
-    notify = Ncco.Notify(payload={'message': 'hello'}, eventUrl=['http://example.com'], eventMethod='POST')
+    notify = Ncco.Notify(
+        payload={'message': 'hello'}, eventUrl=['http://example.com'], eventMethod='POST'
+    )
     assert type(notify) == Ncco.Notify
     assert json.dumps(_action_as_dict(notify)) == nas.notify_full
 
@@ -252,7 +268,9 @@ def test_pay_voice_basic():
 
 def test_pay_voice_full():
     voice_settings = PayPrompts.VoicePrompt(language='en-GB', style=1)
-    pay = Ncco.Pay(amount=99.99, currency='gbp', eventUrl='https://example.com/payment', voice=voice_settings)
+    pay = Ncco.Pay(
+        amount=99.99, currency='gbp', eventUrl='https://example.com/payment', voice=voice_settings
+    )
     assert json.dumps(_action_as_dict(pay)) == nas.pay_voice_full
 
 
@@ -260,9 +278,15 @@ def test_pay_text():
     text_prompts = PayPrompts.TextPrompt(
         type='CardNumber',
         text='Enter your card number.',
-        errors={'InvalidCardType': {'text': 'The card you are trying to use is not valid for this purchase.'}},
+        errors={
+            'InvalidCardType': {
+                'text': 'The card you are trying to use is not valid for this purchase.'
+            }
+        },
     )
-    pay = Ncco.Pay(amount=12.345, currency='gbp', eventUrl='https://example.com/payment', prompts=text_prompts)
+    pay = Ncco.Pay(
+        amount=12.345, currency='gbp', eventUrl='https://example.com/payment', prompts=text_prompts
+    )
     assert json.dumps(_action_as_dict(pay)) == nas.pay_text
 
 
@@ -270,7 +294,11 @@ def test_pay_text_multiple_prompts():
     card_prompt = PayPrompts.TextPrompt(
         type='CardNumber',
         text='Enter your card number.',
-        errors={'InvalidCardType': {'text': 'The card you are trying to use is not valid for this purchase.'}},
+        errors={
+            'InvalidCardType': {
+                'text': 'The card you are trying to use is not valid for this purchase.'
+            }
+        },
     )
     expiration_date_prompt = PayPrompts.TextPrompt(
         type='ExpirationDate',

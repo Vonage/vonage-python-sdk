@@ -36,4 +36,7 @@ def test_send_whatsapp_image_with_messages_api(messages, dummy_data):
     assert request_user_agent() == dummy_data.user_agent
     assert b'"from": "440123456789"' in request_body()
     assert b'"to": "447123456789"' in request_body()
-    assert b'"image": {"url": "https://example.com/image.jpg", "caption": "fake test image"}' in request_body()
+    assert (
+        b'"image": {"url": "https://example.com/image.jpg", "caption": "fake test image"}'
+        in request_body()
+    )

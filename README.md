@@ -1237,6 +1237,8 @@ We use [Black](https://black.readthedocs.io/en/stable/index.html) for code forma
 pre-commit install
 ```
 
+Then when you commit code, if it's not in the right format, it will be automatically fixed for you. After that, just commit again and everything should work as expected!
+
 ## License
 
 This library is released under the [Apache License][license].

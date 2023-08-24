@@ -42,9 +42,3 @@ jobs:
       - name: Format commits
         uses: pre-commit-ci/lite-action@v1.0.1
         if: always()
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: psf/black@stable

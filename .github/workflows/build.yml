@@ -23,7 +23,6 @@ jobs:
       matrix:
         python: ["3.8", "3.9", "3.10", "3.11"]
         os: ["ubuntu-latest", "macos-latest"]
-
     steps:
       - uses: actions/setup-python@v4
         with:
@@ -36,3 +35,9 @@ jobs:
         run: make coverage
       - name: Run codecov
         uses: codecov/codecov-action@v3
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: psf/black@stable

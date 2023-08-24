@@ -14,7 +14,10 @@ def test_connect_all_endpoints_from_model():
     phone = ConnectEndpoints.PhoneEndpoint(
         number='447000000000',
         dtmfAnswer='1p2p3p#**903#',
-        onAnswer={"url": "https://example.com/answer", "ringbackTone": "http://example.com/ringbackTone.wav"},
+        onAnswer={
+            "url": "https://example.com/answer",
+            "ringbackTone": "http://example.com/ringbackTone.wav",
+        },
     )
     connect_phone = Ncco.Connect(endpoint=phone)
     assert json.dumps(_action_as_dict(connect_phone)) == nas.connect_phone
@@ -24,13 +27,16 @@ def test_connect_all_endpoints_from_model():
     assert json.dumps(_action_as_dict(connect_app)) == nas.connect_app
 
     websocket = ConnectEndpoints.WebsocketEndpoint(
-        uri='ws://example.com/socket', contentType='audio/l16;rate=8000', headers={"language": "en-GB"}
+        uri='ws://example.com/socket',
+        contentType='audio/l16;rate=8000',
+        headers={"language": "en-GB"},
     )
     connect_websocket = Ncco.Connect(endpoint=websocket)
     assert json.dumps(_action_as_dict(connect_websocket)) == nas.connect_websocket
 
     sip = ConnectEndpoints.SipEndpoint(
-        uri='sip:rebekka@sip.mcrussell.com', headers={"location": "New York City", "occupation": "developer"}
+        uri='sip:rebekka@sip.mcrussell.com',
+        headers={"location": "New York City", "occupation": "developer"},
     )
     connect_sip = Ncco.Connect(endpoint=sip)
     assert json.dumps(_action_as_dict(connect_sip)) == nas.connect_sip

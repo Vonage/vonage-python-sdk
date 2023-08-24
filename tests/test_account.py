@@ -70,9 +70,7 @@ def test_get_sms_pricing(account, dummy_data):
 
 @responses.activate
 def test_get_voice_pricing(account, dummy_data):
-    stub(
-        responses.GET, "https://rest.nexmo.com/account/get-phone-pricing/outbound/voice"
-    )
+    stub(responses.GET, "https://rest.nexmo.com/account/get-phone-pricing/outbound/voice")
 
     assert isinstance(account.get_voice_pricing("447525856424"), dict)
     assert request_user_agent() == dummy_data.user_agent
@@ -132,7 +130,8 @@ def test_list_secrets_missing(account):
         account.list_secrets("myaccountid")
     assert_basic_auth()
     assert (
-        str(ce.value) == """Invalid API Key: API key 'ABC123' does not exist, or you do not have access (https://developer.nexmo.com/api-errors#invalid-api-key)"""
+        str(ce.value)
+        == """Invalid API Key: API key 'ABC123' does not exist, or you do not have access (https://developer.nexmo.com/api-errors#invalid-api-key)"""
     )
 
 
@@ -175,7 +174,8 @@ def test_create_secret_max_secrets(account):
         account.create_secret("meaccountid", "mahsecret")
     assert_basic_auth()
     assert (
-        str(ce.value) == """Maxmimum number of secrets already met: This account has reached maximum number of '2' allowed secrets (https://developer.nexmo.com/api-errors/account/secret-management#maximum-secrets-allowed)"""
+        str(ce.value)
+        == """Maxmimum number of secrets already met: This account has reached maximum number of '2' allowed secrets (https://developer.nexmo.com/api-errors/account/secret-management#maximum-secrets-allowed)"""
     )
 
 
@@ -192,15 +192,14 @@ def test_create_secret_validation(account):
         account.create_secret("meaccountid", "mahsecret")
     assert_basic_auth()
     assert (
-        str(ce.value) == """Bad Request: The request failed due to validation errors (https://developer.nexmo.com/api-errors/account/secret-management#validation)"""
+        str(ce.value)
+        == """Bad Request: The request failed due to validation errors (https://developer.nexmo.com/api-errors/account/secret-management#validation)"""
     )
 
 
 @responses.activate
 def test_delete_secret(account):
-    stub(
-        responses.DELETE, "https://api.nexmo.com/accounts/meaccountid/secrets/mahsecret"
-    )
+    stub(responses.DELETE, "https://api.nexmo.com/accounts/meaccountid/secrets/mahsecret")
 
     account.revoke_secret("meaccountid", "mahsecret")
     assert_basic_auth()
@@ -218,5 +217,6 @@ def test_delete_secret_last_secret(account):
         account.revoke_secret("meaccountid", "mahsecret")
     assert_basic_auth()
     assert (
-        str(ce.value) == """Secret Deletion Forbidden: Can not delete the last secret. The account must always have at least 1 secret active at any time (https://developer.nexmo.com/api-errors/account/secret-management#delete-last-secret)"""
+        str(ce.value)
+        == """Secret Deletion Forbidden: Can not delete the last secret. The account must always have at least 1 secret active at any time (https://developer.nexmo.com/api-errors/account/secret-management#delete-last-secret)"""
     )

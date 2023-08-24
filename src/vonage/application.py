@@ -1,7 +1,11 @@
 from deprecated import deprecated
 
-@deprecated(version='3.0.0', reason='Renamed to Application as V1 is out of support and this new \
-    naming is in line with other APIs. Please use Application instead.')
+
+@deprecated(
+    version='3.0.0',
+    reason='Renamed to Application as V1 is out of support and this new \
+    naming is in line with other APIs. Please use Application instead.',
+)
 class ApplicationV2:
     auth_type = 'header'
 
@@ -82,6 +86,7 @@ class ApplicationV2:
             params=params,
             auth_type=ApplicationV2.auth_type,
         )
+
 
 class Application:
     auth_type = 'header'

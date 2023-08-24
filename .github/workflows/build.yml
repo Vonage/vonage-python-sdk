@@ -41,8 +41,5 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v4
-      with:
-        python-version: 3.11
-    - uses: pre-commit/action@v3.0.0
     - uses: pre-commit-ci/lite-action@v1.0.1
       if: always()

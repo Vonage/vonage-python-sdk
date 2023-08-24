@@ -36,6 +36,13 @@ jobs:
       - name: Run codecov
         uses: codecov/codecov-action@v3
 
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Format commits
+        uses: pre-commit-ci/lite-action@v1.0.1
+        if: always()
+
   lint:
     runs-on: ubuntu-latest
     steps:

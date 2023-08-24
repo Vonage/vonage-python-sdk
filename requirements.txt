@@ -7,3 +7,4 @@ pydantic>=1.10,==1.*
 bump2version
 build
 twine
+pre-commit

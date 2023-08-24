@@ -1,5 +1,5 @@
 name: Build
-on: [push]
+on: push
 
 permissions:
   actions: write
@@ -39,6 +39,6 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-      - name: Format commits
-        uses: pre-commit-ci/lite-action@v1.0.1
-        if: always()
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+    - uses: pre-commit/action@v3.0.0

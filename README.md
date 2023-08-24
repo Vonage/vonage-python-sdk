@@ -1231,7 +1231,7 @@ The tests are all written with pytest. You run them with:
 make test
 ```
 
-We use [Black](https://black.readthedocs.io/en/stable/index.html) for code formatting, with our config in the `pyproject.toml` file. Please make sure your PRs follow this format.
+We use [Black](https://black.readthedocs.io/en/stable/index.html) for code formatting, with our config in the `pyproject.toml` file.
 
 ## License
 

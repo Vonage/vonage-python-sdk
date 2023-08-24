@@ -41,5 +41,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v4
-    - uses: pre-commit-ci/lite-action@v1.0.1
-      if: always()
+    - uses: pre-commit/action@v3.0.0

@@ -5,7 +5,9 @@ from vonage.errors import MessagesError
 def test_invalid_send_message_params_object(messages):
     with pytest.raises(MessagesError) as err:
         messages.send_message('hi')
-    assert str(err.value) == 'Parameters to the send_message method must be specified as a dictionary.'
+    assert (
+        str(err.value) == 'Parameters to the send_message method must be specified as a dictionary.'
+    )
 
 
 def test_invalid_message_channel(messages):
@@ -25,7 +27,13 @@ def test_invalid_message_channel(messages):
 def test_invalid_message_type(messages):
     with pytest.raises(MessagesError) as err:
         messages.send_message(
-            {'channel': 'sms', 'message_type': 'video', 'to': '12345678', 'from': 'vonage', 'video': 'my_url.com'}
+            {
+                'channel': 'sms',
+                'message_type': 'video',
+                'to': '12345678',
+                'from': 'vonage',
+                'video': 'my_url.com',
+            }
         )
     assert '"video" is not a valid message type for channel "sms".' in str(err.value)
 
@@ -33,7 +41,13 @@ def test_invalid_message_type(messages):
 def test_invalid_recipient_not_string(messages):
     with pytest.raises(MessagesError) as err:
         messages.send_message(
-            {'channel': 'sms', 'message_type': 'text', 'to': 12345678, 'from': 'vonage', 'text': 'my important message'}
+            {
+                'channel': 'sms',
+                'message_type': 'text',
+                'to': 12345678,
+                'from': 'vonage',
+                'text': 'my important message',
+            }
         )
     assert str(err.value) == 'Message recipient ("to=12345678") not in a valid format.'
 
@@ -55,7 +69,13 @@ def test_invalid_recipient_number(messages):
 def test_invalid_messenger_recipient(messages):
     with pytest.raises(MessagesError) as err:
         messages.send_message(
-            {'channel': 'messenger', 'message_type': 'text', 'to': '', 'from': 'vonage', 'text': 'my important message'}
+            {
+                'channel': 'messenger',
+                'message_type': 'text',
+                'to': '',
+                'from': 'vonage',
+                'text': 'my important message',
+            }
         )
     assert str(err.value) == 'Message recipient ID ("to=") not in a valid format.'
 
@@ -71,7 +91,10 @@ def test_invalid_sender(messages):
                 'text': 'my important message',
             }
         )
-    assert str(err.value) == 'Message sender ("frm=1234") set incorrectly. Set a valid name or number for the sender.'
+    assert (
+        str(err.value)
+        == 'Message sender ("frm=1234") set incorrectly. Set a valid name or number for the sender.'
+    )
 
 
 def test_set_client_ref(messages):
@@ -154,7 +177,12 @@ def test_viber_service_video(messages):
                 'caption': 'Look at this video',
                 'thumb_url': 'https://example.com/thumbnail.jpg',
             },
-            'viber_service': {'category': 'transaction', 'duration': '120', 'ttl': 30, 'type': 'string'},
+            'viber_service': {
+                'category': 'transaction',
+                'duration': '120',
+                'ttl': 30,
+                'type': 'string',
+            },
         }
     )
 
@@ -197,7 +225,10 @@ def test_viber_service_image_action_button(messages):
             'message_type': 'image',
             'to': '44123456789',
             'from': 'vonage',
-            'image': {'url': 'https://example.com/image.jpg', 'caption': 'Check out this new promotion'},
+            'image': {
+                'url': 'https://example.com/image.jpg',
+                'caption': 'Check out this new promotion',
+            },
             'viber_service': {
                 'category': 'transaction',
                 'ttl': 30,
@@ -219,7 +250,10 @@ def test_incomplete_input(messages):
                 'text': 'my important message',
             }
         )
-    assert str(err.value) == 'You must specify all required properties for message channel "viber_service".'
+    assert (
+        str(err.value)
+        == 'You must specify all required properties for message channel "viber_service".'
+    )
 
 
 def test_whatsapp_sticker_id(messages):
@@ -257,7 +291,9 @@ def test_whatsapp_sticker_invalid_input_error(messages):
                 'from': 'vonage',
             }
         )
-    assert str(err.value) == 'Must specify one, and only one, of "id" or "url" in the "sticker" field.'
+    assert (
+        str(err.value) == 'Must specify one, and only one, of "id" or "url" in the "sticker" field.'
+    )
 
 
 def test_whatsapp_sticker_exclusive_keys_error(messages):
@@ -266,9 +302,14 @@ def test_whatsapp_sticker_exclusive_keys_error(messages):
             {
                 'channel': 'whatsapp',
                 'message_type': 'sticker',
-                'sticker': {'id': '13aaecab-2485-4255-a0a7-97a2be6906b9', 'url': 'https://example.com/sticker1.webp'},
+                'sticker': {
+                    'id': '13aaecab-2485-4255-a0a7-97a2be6906b9',
+                    'url': 'https://example.com/sticker1.webp',
+                },
                 'to': '44123456789',
                 'from': 'vonage',
             }
         )
-    assert str(err.value) == 'Must specify one, and only one, of "id" or "url" in the "sticker" field.'
+    assert (
+        str(err.value) == 'Must specify one, and only one, of "id" or "url" in the "sticker" field.'
+    )

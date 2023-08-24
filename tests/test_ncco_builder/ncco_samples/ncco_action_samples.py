@@ -38,11 +38,11 @@ input_basic_dtmf_speech = '{"action": "input", "type": ["dtmf", "speech"]}'
 
 input_dtmf_and_speech_full = '{"action": "input", "type": ["dtmf", "speech"], "dtmf": {"timeOut": 5, "maxDigits": 12, "submitOnHash": true}, "speech": {"uuid": "my-uuid", "endOnSilence": 2.5, "language": "en-GB", "context": ["sales", "billing"], "startTimeout": 20, "maxDuration": 30, "saveAudio": true}, "eventUrl": ["http://example.com/speech"], "eventMethod": "PUT"}'
 
-notify_basic = '{"action": "notify", "payload": {"message": "hello"}, "eventUrl": ["http://example.com"]}'
-
-notify_full = (
-    '{"action": "notify", "payload": {"message": "hello"}, "eventUrl": ["http://example.com"], "eventMethod": "POST"}'
+notify_basic = (
+    '{"action": "notify", "payload": {"message": "hello"}, "eventUrl": ["http://example.com"]}'
 )
+
+notify_full = '{"action": "notify", "payload": {"message": "hello"}, "eventUrl": ["http://example.com"], "eventMethod": "POST"}'
 
 pay_basic = '{"action": "pay", "amount": 10.0}'
 

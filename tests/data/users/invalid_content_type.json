@@ -1,0 +1,13 @@
+{
+    "title": "Bad request.",
+    "type": "https://developer.nexmo.com/api/conversation#http:error:validation-fail",
+    "code": "http:error:validation-fail",
+    "detail": "Invalid Content-Type.",
+    "instance": "9d0e245d-fac0-450e-811f-52343041df61",
+    "invalid_parameters": [
+        {
+            "name": "content-type",
+            "reason": "content-type \"application/octet-stream\" is not supported. Supported versions are [application/json]"
+        }
+    ]
+}

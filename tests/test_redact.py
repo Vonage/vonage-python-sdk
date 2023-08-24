@@ -6,6 +6,7 @@ def test_redact_invalid_product_name(redact):
     with pytest.raises(RedactError):
         redact.redact_transaction(id='not-a-real-id', product='fake-product')
 
+
 @responses.activate
 def test_redact_transaction(redact, dummy_data):
     responses.add(

@@ -45,7 +45,10 @@ def test_create_jwt_auth_string(client):
 
 def test_create_jwt_error_no_application_id_or_private_key():
     empty_client = Client()
-    
+
     with raises(ClientError) as err:
         empty_client._generate_application_jwt()
-    assert str(err.value) == 'JWT generation failed. Check that you passed in valid values for "application_id" and "private_key".'
+    assert (
+        str(err.value)
+        == 'JWT generation failed. Check that you passed in valid values for "application_id" and "private_key".'
+    )

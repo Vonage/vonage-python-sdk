@@ -40,4 +40,8 @@ def test_create_speech_model_from_dict():
     speech_dict = {'uuid': 'my-uuid', 'endOnSilence': 2.5, 'maxDuration': 30}
     speech_model = InputTypes.create_speech_model(speech_dict)
     assert type(speech_model) == InputTypes.Speech
-    assert speech_model.dict(exclude_none=True) == {'uuid': 'my-uuid', 'endOnSilence': 2.5, 'maxDuration': 30}
+    assert speech_model.dict(exclude_none=True) == {
+        'uuid': 'my-uuid',
+        'endOnSilence': 2.5,
+        'maxDuration': 30,
+    }

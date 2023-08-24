@@ -1,3 +1,12 @@
+# 3.9.0
+- Dropped support for Python 3.7 as it's end-of-life and no longer receiving security updates
+
+# 3.8.0
+- Adding support for the [Users component of the Vonage Application API](https://developer.vonage.com/en/api/application.v2#User)
+
+# 3.7.1
+- Fixing dependency version to a specific major version
+
 # 3.7.0
 - Adding support for the [Vonage Meetings API](https://developer.vonage.com/en/meetings/overview)
 - Adding partial support for the [Vonage Proactive Connect API](https://developer.vonage.com/en/proactive-connect/overview) - supporting API methods relating to `lists`, `items` and `events`

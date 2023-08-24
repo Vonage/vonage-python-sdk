@@ -1,0 +1,7 @@
+{
+    "title": "Too Many Requests.",
+    "type": "https://developer.nexmo.com/api/conversation#http:error:too-many-request",
+    "code": "http:error:too-many-request",
+    "detail": "You have exceeded your request limit. You can try again shortly.",
+    "instance": "00a5916655d650e920ccf0daf40ef4ee"
+}

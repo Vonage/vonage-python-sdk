@@ -25,9 +25,13 @@ connect_advancedMachineDetection = Ncco.Connect(
 
 talk_minimal = Ncco.Talk(text='hello')
 
-talk = Ncco.Talk(text='hello', bargeIn=True, loop=3, level=0.5, language='en-GB', style=1, premium=True)
+talk = Ncco.Talk(
+    text='hello', bargeIn=True, loop=3, level=0.5, language='en-GB', style=1, premium=True
+)
 
-stream = Ncco.Stream(streamUrl='https://example.com/stream/music.mp3', level=0.1, bargeIn=True, loop=10)
+stream = Ncco.Stream(
+    streamUrl='https://example.com/stream/music.mp3', level=0.1, bargeIn=True, loop=10
+)
 
 input = Ncco.Input(
     type=['dtmf', 'speech'],
@@ -45,7 +49,9 @@ input = Ncco.Input(
     eventMethod='put',
 )
 
-notify = Ncco.Notify(payload={"message": "world"}, eventUrl=["http://example.com"], eventMethod='PUT')
+notify = Ncco.Notify(
+    payload={"message": "world"}, eventUrl=["http://example.com"], eventMethod='PUT'
+)
 
 pay_voice_prompt = Ncco.Pay(
     amount=99.99,
@@ -61,7 +67,11 @@ pay_text_prompt = Ncco.Pay(
     prompts=PayPrompts.TextPrompt(
         type='CardNumber',
         text='Enter your card number.',
-        errors={'InvalidCardType': {'text': 'The card you are trying to use is not valid for this purchase.'}},
+        errors={
+            'InvalidCardType': {
+                'text': 'The card you are trying to use is not valid for this purchase.'
+            }
+        },
     ),
 )
 
@@ -134,7 +144,12 @@ insane_ncco = [
         },
         'type': ['dtmf', 'speech'],
     },
-    {'action': 'notify', 'eventMethod': 'PUT', 'eventUrl': ['http://example.com'], 'payload': {'message': 'world'}},
+    {
+        'action': 'notify',
+        'eventMethod': 'PUT',
+        'eventUrl': ['http://example.com'],
+        'payload': {'message': 'world'},
+    },
     {
         'action': 'pay',
         'amount': 99.99,
@@ -149,7 +164,9 @@ insane_ncco = [
         'eventUrl': ['https://example.com/payment'],
         'prompts': {
             'errors': {
-                'InvalidCardType': {'text': 'The card you are trying ' 'to use is not valid for ' 'this purchase.'}
+                'InvalidCardType': {
+                    'text': 'The card you are trying ' 'to use is not valid for ' 'this purchase.'
+                }
             },
             'text': 'Enter your card number.',
             'type': 'CardNumber',

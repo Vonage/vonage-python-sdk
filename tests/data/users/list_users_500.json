@@ -1,0 +1,7 @@
+{
+    "title": "Internal Error.",
+    "type": "https://developer.nexmo.com/api/conversation#system:error:internal-error",
+    "code": "system:error:internal-error",
+    "detail": "Something went wrong.",
+    "instance": "00a5916655d650e920ccf0daf40ef4ee"
+}

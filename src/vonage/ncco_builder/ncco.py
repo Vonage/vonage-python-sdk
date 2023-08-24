@@ -107,9 +107,13 @@ class Ncco:
         @validator('advancedMachineDetection')
         def validate_advancedMachineDetection(cls, v):
             if 'behavior' in v and v['behavior'] not in ('continue', 'hangup'):
-                raise ValueError('advancedMachineDetection["behavior"] must be one of: "continue", "hangup".')
+                raise ValueError(
+                    'advancedMachineDetection["behavior"] must be one of: "continue", "hangup".'
+                )
             if 'mode' in v and v['mode'] not in ('detect, detect_beep'):
-                raise ValueError('advancedMachineDetection["mode"] must be one of: "detect", "detect_beep".')
+                raise ValueError(
+                    'advancedMachineDetection["mode"] must be one of: "detect", "detect_beep".'
+                )
             return v
 
         class Config:
@@ -145,7 +149,10 @@ class Ncco:
 
         action = Field('input', const=True)
         type: Union[
-            Literal['dtmf', 'speech'], List[Literal['dtmf']], List[Literal['speech']], List[Literal['dtmf', 'speech']]
+            Literal['dtmf', 'speech'],
+            List[Literal['dtmf']],
+            List[Literal['speech']],
+            List[Literal['dtmf', 'speech']],
         ]
         dtmf: Optional[Union[InputTypes.Dtmf, dict]]
         speech: Optional[Union[InputTypes.Speech, dict]]

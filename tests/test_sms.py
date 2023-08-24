@@ -43,9 +43,7 @@ def test_server_error(sms):
 
 @responses.activate
 def test_submit_sms_conversion(sms):
-    responses.add(
-        responses.POST, "https://api.nexmo.com/conversions/sms", status=200, body=b"OK"
-    )
+    responses.add(responses.POST, "https://api.nexmo.com/conversions/sms", status=200, body=b"OK")
 
     sms.submit_sms_conversion("a-message-id")
     assert "message-id=a-message-id" in request_body()

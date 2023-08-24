@@ -14,6 +14,7 @@ from .redact import Redact
 from .short_codes import ShortCodes
 from .sms import Sms
 from .subaccounts import Subaccounts
+from .users import Users
 from .ussd import Ussd
 from .voice import Voice
 from .verify import Verify
@@ -94,7 +95,12 @@ class Client:
         self.signature_secret = signature_secret or os.environ.get("VONAGE_SIGNATURE_SECRET", None)
         self.signature_method = signature_method or os.environ.get("VONAGE_SIGNATURE_METHOD", None)
 
-        if self.signature_method in {"md5", "sha1", "sha256", "sha512"}:
+        if self.signature_method in {
+            "md5",
+            "sha1",
+            "sha256",
+            "sha512",
+        }:
             self.signature_method = getattr(hashlib, signature_method)
 
         if private_key is not None and application_id is not None:
@@ -111,7 +117,10 @@ class Client:
         if app_name and app_version:
             user_agent += f" {app_name}/{app_version}"
 
-        self.headers = {"User-Agent": user_agent, "Accept": "application/json"}
+        self.headers = {
+            "User-Agent": user_agent,
+            "Accept": "application/json",
+        }
 
         self.account = Account(self)
         self.application = Application(self)
@@ -124,6 +133,7 @@ class Client:
         self.short_codes = ShortCodes(self)
         self.sms = Sms(self)
         self.subaccounts = Subaccounts(self)
+        self.users = Users(self)
         self.ussd = Ussd(self)
         self.verify = Verify(self)
         self.verify2 = Verify2(self)
@@ -175,7 +185,10 @@ class Client:
 
     def signature(self, params):
         if self.signature_method:
-            hasher = hmac.new(self.signature_secret.encode(), digestmod=self.signature_method)
+            hasher = hmac.new(
+                self.signature_secret.encode(),
+                digestmod=self.signature_method,
+            )
         else:
             hasher = hashlib.md5()
 
@@ -203,7 +216,11 @@ class Client:
         if auth_type == 'jwt':
             self._request_headers['Authorization'] = self._create_jwt_auth_string()
         elif auth_type == 'params':
-            params = dict(params or {}, api_key=self.api_key, api_secret=self.api_secret)
+            params = dict(
+                params or {},
+                api_key=self.api_key,
+                api_secret=self.api_secret,
+            )
         elif auth_type == 'header':
             self._request_headers['Authorization'] = self._create_header_auth_string()
         else:
@@ -217,7 +234,10 @@ class Client:
         return self.parse(
             host,
             self.session.get(
-                uri, params=params, headers=self._request_headers, timeout=self.timeout
+                uri,
+                params=params,
+                headers=self._request_headers,
+                timeout=self.timeout,
             ),
         )
 
@@ -247,7 +267,11 @@ class Client:
         elif auth_type == 'jwt':
             self._request_headers['Authorization'] = self._create_jwt_auth_string()
         elif auth_type == 'params':
-            params = dict(params, api_key=self.api_key, api_secret=self.api_secret)
+            params = dict(
+                params,
+                api_key=self.api_key,
+                api_secret=self.api_secret,
+            )
         elif auth_type == 'header':
             self._request_headers['Authorization'] = self._create_header_auth_string()
         else:
@@ -262,14 +286,20 @@ class Client:
             return self.parse(
                 host,
                 self.session.post(
-                    uri, json=params, headers=self._request_headers, timeout=self.timeout
+                    uri,
+                    json=params,
+                    headers=self._request_headers,
+                    timeout=self.timeout,
                 ),
             )
         else:
             return self.parse(
                 host,
                 self.session.post(
-                    uri, data=params, headers=self._request_headers, timeout=self.timeout
+                    uri,
+                    data=params,
+                    headers=self._request_headers,
+                    timeout=self.timeout,
                 ),
             )
 
@@ -292,7 +322,12 @@ class Client:
         # All APIs that currently use put methods require a json-formatted body so don't need to check this
         return self.parse(
             host,
-            self.session.put(uri, json=params, headers=self._request_headers, timeout=self.timeout),
+            self.session.put(
+                uri,
+                json=params,
+                headers=self._request_headers,
+                timeout=self.timeout,
+            ),
         )
 
     def patch(self, host, request_uri, params, auth_type=None):
@@ -310,7 +345,14 @@ class Client:
             f"PATCH to {repr(uri)} with params {repr(params)}, headers {repr(self._request_headers)}"
         )
         # Only newer APIs (that expect json-bodies) currently use this method, so we will always send a json-formatted body
-        return self.parse(host, self.session.patch(uri, json=params, headers=self._request_headers))
+        return self.parse(
+            host,
+            self.session.patch(
+                uri,
+                json=params,
+                headers=self._request_headers,
+            ),
+        )
 
     def delete(self, host, request_uri, params=None, auth_type=None):
         uri = f"https://{host}{request_uri}"
@@ -331,7 +373,10 @@ class Client:
         return self.parse(
             host,
             self.session.delete(
-                uri, headers=self._request_headers, timeout=self.timeout, params=params
+                uri,
+                headers=self._request_headers,
+                timeout=self.timeout,
+                params=params,
             ),
         )
 

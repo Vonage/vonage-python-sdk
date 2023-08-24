@@ -12,7 +12,13 @@ class PayPrompts:
         type: Literal['CardNumber', 'ExpirationDate', 'SecurityCode']
         text: str
         errors: Dict[
-            Literal['InvalidCardType', 'InvalidCardNumber', 'InvalidExpirationDate', 'InvalidSecurityCode', 'Timeout'],
+            Literal[
+                'InvalidCardType',
+                'InvalidCardNumber',
+                'InvalidExpirationDate',
+                'InvalidSecurityCode',
+                'Timeout',
+            ],
             Dict[Literal['text'], str],
         ]
 
@@ -32,7 +38,9 @@ class PayPrompts:
         def check_allowed_values(errors, allowed_values, prompt_type):
             for key in errors:
                 if key not in allowed_values:
-                    raise ValueError(f'Value "{key}" is not a valid error for the "{prompt_type}" prompt type.')
+                    raise ValueError(
+                        f'Value "{key}" is not a valid error for the "{prompt_type}" prompt type.'
+                    )
 
     @classmethod
     def create_voice_model(cls, dict) -> VoicePrompt:

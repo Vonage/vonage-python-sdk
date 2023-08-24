@@ -1,6 +1,6 @@
 # Vonage Server SDK for Python
 
-<img src="https://developer.nexmo.com/assets/images/Vonage_Nexmo.svg" height="48px" alt="Nexmo is now known as Vonage" />
+<img src="https://developer.nexmo.com/images/logos/vbc-logo.svg" height="48px" alt="Vonage" />
 
 [![PyPI version](https://badge.fury.io/py/vonage.svg)](https://badge.fury.io/py/vonage)
 [![Build Status](https://github.com/Vonage/vonage-python-sdk/workflows/Build/badge.svg)](https://github.com/Vonage/vonage-python-sdk/actions)
@@ -28,6 +28,7 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [Pricing API](#pricing-api)
 - [Managing Secrets](#managing-secrets)
 - [Application API](#application-api)
+- [Users API](#users-api)
 - [Validating Webhook Signatures](#validate-webhook-signatures)
 - [JWT Parameters](#jwt-parameters)
 - [Overriding API Attributes](#overriding-api-attributes)
@@ -164,7 +165,7 @@ The delivery receipt URL can be unset by sending an empty string.
 
 ## Messages API
 
-The Messages API is an API that allows you to send messages via SMS, MMS, WhatsApp, Messenger and Viber. Call the API from your Python code by 
+The Messages API is an API that allows you to send messages via SMS, MMS, WhatsApp, Messenger and Viber. Call the API from your Python code by
 passing a dict of parameters into the `client.messages.send_message()` method.
 
 It accepts JWT or API key/secret authentication.
@@ -174,9 +175,9 @@ Some basic samples are below. For more detailed information and code snippets, p
 ### Send an SMS
 ```python
 responseData = client.messages.send_message({
-        'channel': 'sms', 
-        'message_type': 'text', 
-        'to': '447123456789', 
+        'channel': 'sms',
+        'message_type': 'text',
+        'to': '447123456789',
         'from': 'Vonage',
         'text': 'Hello from Vonage'
     })
@@ -187,9 +188,9 @@ Note: only available in the US. You will need a 10DLC number to send an MMS mess
 
 ```python
 client.messages.send_message({
-        'channel': 'mms', 
-        'message_type': 'image', 
-        'to': '11112223333', 
+        'channel': 'mms',
+        'message_type': 'image',
+        'to': '11112223333',
         'from': '1223345567',
         'image': {'url': 'https://example.com/image.jpg', 'caption': 'Test Image'}
     })
@@ -203,9 +204,9 @@ type to a user if they have messaged your business number in the last 24 hours.
 
 ```python
 client.messages.send_message({
-        'channel': 'whatsapp', 
-        'message_type': 'audio', 
-        'to': '447123456789', 
+        'channel': 'whatsapp',
+        'message_type': 'audio',
+        'to': '447123456789',
         'from': '440123456789',
         'audio': {'url': 'https://example.com/audio.mp3'}
     })
@@ -218,9 +219,9 @@ You will need to link your Facebook business page to your Vonage account in the 
 
 ```python
 client.messages.send_message({
-        'channel': 'messenger', 
-        'message_type': 'video', 
-        'to': '594123123123123', 
+        'channel': 'messenger',
+        'message_type': 'video',
+        'to': '594123123123123',
         'from': '1012312312312',
         'video': {'url': 'https://example.com/video.mp4'}
     })
@@ -420,7 +421,7 @@ You can also verify a user by WhatsApp Interactive Message or by Silent Authenti
 
 ```python
 params = {
-    'brand': 'ACME, Inc', 
+    'brand': 'ACME, Inc',
     'workflow': [{'channel': 'sms', 'to': '447700900000'}]
 }
 verify_request = verify2.new_request(params)
@@ -430,7 +431,7 @@ verify_request = verify2.new_request(params)
 
 ```python
 params = {
-    'brand': 'ACME, Inc', 
+    'brand': 'ACME, Inc',
     'workflow': [
         {'channel': 'silent_auth', 'to': '447700900000'},
         {'channel': 'email', 'to': 'customer@example.com', 'from': 'business@example.com'}
@@ -459,8 +460,8 @@ This feature is only enabled if you have requested for it to be added to your ac
 
 ```python
 params = {
-    'brand': 'ACME, Inc', 
-    'fraud_check': False, 
+    'brand': 'ACME, Inc',
+    'fraud_check': False,
     'workflow': [{'channel': 'sms', 'to': '447700900000'}]
 }
 verify_request = verify2.new_request(params)
@@ -871,7 +872,7 @@ client.account.get_balance()
 This feature is only enabled when you enable auto-reload for your account in the dashboard.
 ```python
 # trx is the reference from when auto-reload was enabled and money was added
-client.account.topup(trx=transaction_reference) 
+client.account.topup(trx=transaction_reference)
 ```
 
 ## Subaccounts API
@@ -893,8 +894,8 @@ client.subaccounts.create_subaccount(name='my subaccount')
 
 # With options
 client.subaccounts.create_subaccount(
-    name='my subaccount', 
-    secret='Password123', 
+    name='my subaccount',
+    secret='Password123',
     use_primary_account_balance=False,
 )
 ```
@@ -924,7 +925,7 @@ All fields are optional. If `start_date` or `end_date` are used, the dates must 
 client.subaccounts.list_credit_transfers(
     start_date='2022-03-29T14:16:56Z',
     end_date='2023-06-12T17:20:01Z',
-    subaccount=SUBACCOUNT_API_KEY, # Use to show only the results that contain this key 
+    subaccount=SUBACCOUNT_API_KEY, # Use to show only the results that contain this key
 )
 ```
 
@@ -934,9 +935,9 @@ Transferring credit is only possible for postpaid accounts, i.e. accounts that c
 
 ```python
 client.subaccounts.transfer_credit(
-    from_=FROM_ACCOUNT, 
-    to=TO_ACCOUNT, 
-    amount=0.50, 
+    from_=FROM_ACCOUNT,
+    to=TO_ACCOUNT,
+    amount=0.50,
     reference='test credit transfer',
 )
 ```
@@ -949,7 +950,7 @@ All fields are optional. If `start_date` or `end_date` are used, the dates must 
 client.subaccounts.list_balance_transfers(
     start_date='2022-03-29T14:16:56Z',
     end_date='2023-06-12T17:20:01Z',
-    subaccount=SUBACCOUNT_API_KEY, # Use to show only the results that contain this key 
+    subaccount=SUBACCOUNT_API_KEY, # Use to show only the results that contain this key
 )
 ```
 
@@ -957,9 +958,9 @@ client.subaccounts.list_balance_transfers(
 
 ```python
 client.subaccounts.transfer_balance(
-    from_=FROM_ACCOUNT, 
-    to=TO_ACCOUNT, 
-    amount=0.50, 
+    from_=FROM_ACCOUNT,
+    to=TO_ACCOUNT,
+    amount=0.50,
     reference='test balance transfer',
 )
 ```
@@ -968,9 +969,9 @@ client.subaccounts.transfer_balance(
 
 ```python
 client.subaccounts.transfer_balance(
-    from_=FROM_ACCOUNT, 
-    to=TO_ACCOUNT, 
-    number=NUMBER_TO_TRANSFER, 
+    from_=FROM_ACCOUNT,
+    to=TO_ACCOUNT,
+    number=NUMBER_TO_TRANSFER,
     country='US',
 )
 ```
@@ -1109,6 +1110,42 @@ response = client.application.delete_application(uuid)
 
 Docs: [https://developer.nexmo.com/api/application.v2#deleteApplication](https://developer.nexmo.com/api/application.v2#deleteApplication?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library#destroy-an-application)
 
+
+## Users API
+
+These API methods are part of the [Application (v2) API](https://developer.vonage.com/en/application/overview) but are a in separate module in the SDK. [See the API reference for more details](https://developer.vonage.com/en/api/application.v2#User).
+
+### List all Users
+
+```python
+client.users.list_users()
+```
+
+### Create a new user
+
+```python
+client.users.create_user() # Default values generated
+client.users.create_user(params={...}) # Specify custom values
+```
+
+### Get detailed information about a user
+
+```python
+client.users.get_user('USER_ID')
+```
+
+### Update user details
+
+```python
+client.users.update_user('USER_ID', params={...})
+```
+
+### Delete a user
+
+```python
+client.users.delete_user('USER_ID')
+```
+
 ## Validate webhook signatures
 
 ```python
@@ -1127,7 +1164,7 @@ your account before you can validate webhook signatures.
 
 ## JWT parameters
 
-By default, the library generates 15-minute tokens for JWT authentication.
+By default, the library generates tokens for JWT authentication that have an expiry time of 15 minutes. You should set the expiry time (`exp`) to an appropriate value for your organisation's own policies and/or your use case.
 
 Use the `auth` method of the client class to specify custom parameters:
 
@@ -1190,11 +1227,13 @@ The following is a list of Vonage APIs and whether the Python SDK provides suppo
 | Number Insight API    | General Availability |     ✅     |
 | Number Management API | General Availability |     ✅     |
 | Pricing API           | General Availability |     ✅     |
+| Procative Connect API | General Availability |     ✅  (partially supported) |
 | Redact API            |   Developer Preview  |     ❌     |
 | Reports API           |         Beta         |     ❌     |
 | SMS API               | General Availability |     ✅     |
 | Subaccounts API       | General Availability |     ✅     |
-| Verify API            | General Availability |     ✅     |
+| Verify API v2         | General Availability |     ✅     |
+| Verify API v1 (Legacy)| General Availability |     ✅     |
 | Voice API             | General Availability |     ✅     |
 
 ### asyncio Support
@@ -1205,7 +1244,7 @@ We don't currently support asyncio in the Python SDK but we are planning to do s
 
 ## Contributing
 
-We :heart: contributions! But if you plan to work on something big or controversial, please [contact us](mailto:devrel@vonage.com) first!
+We :heart: contributions! But if you plan to work on something big or controversial, please contact us by raising an issue first!
 
 We recommend working on `vonage-python-sdk` with a [virtualenv][virtualenv]. The following command will install all the Python dependencies you need to run the tests:
 
@@ -1218,6 +1257,14 @@ The tests are all written with pytest. You run them with:
 ```bash
 make test
 ```
+
+We use [Black](https://black.readthedocs.io/en/stable/index.html) for code formatting, with our config in the `pyproject.toml` file. To ensure a PR follows the right format, you can set up and use our pre-commit settings with
+
+```bash
+pre-commit install
+```
+
+Then when you commit code, if it's not in the right format, it will be automatically fixed for you. After that, just commit again and everything should work as expected!
 
 ## License
 

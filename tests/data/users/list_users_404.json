@@ -1,0 +1,7 @@
+{
+    "title": "Not found.",
+    "type": "https://developer.nexmo.com/api/conversation#user:error:not-found",
+    "code": "user:error:not-found",
+    "detail": "User does not exist, or you do not have access.",
+    "instance": "29c78817-eeb9-4de0-b2f9-a5ca816bc907"
+}

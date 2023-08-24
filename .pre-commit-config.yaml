@@ -1,11 +1,11 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.5.4
+    rev: v4.4.0
     hooks:
+      - id: check-yaml
       - id: trailing-whitespace
-        language_version: python3.7
   - repo: https://github.com/ambv/black
-    rev: 18.6b4
+    rev: 23.7.0
     hooks:
       - id: black
-        language_version: python3.7
+        language_version: python3.11

@@ -1,5 +1,5 @@
 from util import *
-from vonage.errors import MeetingsError, ClientError, ServerError
+from vonage.errors import MeetingsError, ClientError
 
 import responses
 import json
@@ -10,7 +10,7 @@ from pytest import raises
 def test_create_instant_room(meetings, dummy_data):
     stub(
         responses.POST,
-        "https://api-eu.vonage.com/beta/meetings/rooms",
+        "https://api-eu.vonage.com/v1/meetings/rooms",
         fixture_path='meetings/meeting_room.json',
     )
 
@@ -36,7 +36,7 @@ def test_create_instant_room_error_expiry(meetings, dummy_data):
 def test_create_long_term_room(meetings, dummy_data):
     stub(
         responses.POST,
-        "https://api-eu.vonage.com/beta/meetings/rooms",
+        "https://api-eu.vonage.com/v1/meetings/rooms",
         fixture_path='meetings/long_term_room.json',
     )
 
@@ -77,7 +77,7 @@ def test_create_long_term_room_error(meetings):
 def test_get_room(meetings):
     stub(
         responses.GET,
-        'https://api-eu.vonage.com/beta/meetings/rooms/b3142c46-d1c1-4405-baa6-85683827ed69',
+        'https://api-eu.vonage.com/v1/meetings/rooms/b3142c46-d1c1-4405-baa6-85683827ed69',
         fixture_path='meetings/meeting_room.json',
     )
     meeting = meetings.get_room(room_id='b3142c46-d1c1-4405-baa6-85683827ed69')
@@ -101,7 +101,7 @@ def test_get_room_error_no_room_specified(meetings):
 def test_list_rooms(meetings):
     stub(
         responses.GET,
-        'https://api-eu.vonage.com/beta/meetings/rooms',
+        'https://api-eu.vonage.com/v1/meetings/rooms',
         fixture_path='meetings/multiple_rooms.json',
     )
     response = meetings.list_rooms()
@@ -119,7 +119,7 @@ def test_list_rooms(meetings):
 def test_list_rooms_with_page_size(meetings):
     stub(
         responses.GET,
-        'https://api-eu.vonage.com/beta/meetings/rooms',
+        'https://api-eu.vonage.com/v1/meetings/rooms',
         fixture_path='meetings/multiple_fewer_rooms.json',
     )
     response = meetings.list_rooms(page_size=2)
@@ -135,7 +135,7 @@ def test_list_rooms_with_page_size(meetings):
 def test_error_unauthorized(meetings):
     stub(
         responses.GET,
-        'https://api-eu.vonage.com/beta/meetings/rooms',
+        'https://api-eu.vonage.com/v1/meetings/rooms',
         fixture_path='meetings/unauthorized.json',
         status_code=401,
     )
@@ -148,7 +148,7 @@ def test_error_unauthorized(meetings):
 def test_update_room(meetings):
     stub(
         responses.PATCH,
-        'https://api-eu.vonage.com/beta/meetings/rooms/b3142c46-d1c1-4405-baa6-85683827ed69',
+        'https://api-eu.vonage.com/v1/meetings/rooms/b3142c46-d1c1-4405-baa6-85683827ed69',
         fixture_path='meetings/update_room.json',
     )
 
@@ -173,7 +173,7 @@ def test_update_room(meetings):
 def test_add_theme_to_room(meetings):
     stub(
         responses.PATCH,
-        'https://api-eu.vonage.com/beta/meetings/rooms/33791484-231c-421b-8349-96e1a44e27d2',
+        'https://api-eu.vonage.com/v1/meetings/rooms/33791484-231c-421b-8349-96e1a44e27d2',
         fixture_path='meetings/long_term_room_with_theme.json',
     )
 
@@ -190,7 +190,7 @@ def test_add_theme_to_room(meetings):
 def test_update_room_error_no_room_specified(meetings):
     stub(
         responses.PATCH,
-        'https://api-eu.vonage.com/beta/meetings/rooms/b3142c46-d1c1-4405-baa6-85683827ed69',
+        'https://api-eu.vonage.com/v1/meetings/rooms/b3142c46-d1c1-4405-baa6-85683827ed69',
         fixture_path='meetings/update_room_type_error.json',
         status_code=400,
     )
@@ -206,7 +206,7 @@ def test_update_room_error_no_room_specified(meetings):
 def test_update_room_error_no_params_specified(meetings):
     stub(
         responses.PATCH,
-        'https://api-eu.vonage.com/beta/meetings/rooms/33791484-231c-421b-8349-96e1a44e27d2',
+        'https://api-eu.vonage.com/v1/meetings/rooms/33791484-231c-421b-8349-96e1a44e27d2',
         fixture_path='meetings/update_room_type_error.json',
         status_code=400,
     )
@@ -219,7 +219,7 @@ def test_update_room_error_no_params_specified(meetings):
 def test_get_recording(meetings):
     stub(
         responses.GET,
-        'https://api-eu.vonage.com/beta/meetings/recordings/e5b73c98-c087-4ee5-b61b-0ea08204fc65',
+        'https://api-eu.vonage.com/v1/meetings/recordings/e5b73c98-c087-4ee5-b61b-0ea08204fc65',
         fixture_path='meetings/get_recording.json',
     )
 
@@ -236,7 +236,7 @@ def test_get_recording(meetings):
 def test_get_recording_not_found(meetings):
     stub(
         responses.GET,
-        'https://api-eu.vonage.com/beta/meetings/recordings/not-a-real-recording-id',
+        'https://api-eu.vonage.com/v1/meetings/recordings/not-a-real-recording-id',
         fixture_path='meetings/get_recording_not_found.json',
         status_code=404,
     )
@@ -253,7 +253,7 @@ def test_get_recording_not_found(meetings):
 def test_delete_recording(meetings):
     stub(
         responses.DELETE,
-        'https://api-eu.vonage.com/beta/meetings/recordings/e5b73c98-c087-4ee5-b61b-0ea08204fc65',
+        'https://api-eu.vonage.com/v1/meetings/recordings/e5b73c98-c087-4ee5-b61b-0ea08204fc65',
         fixture_path='no_content.json',
     )
 
@@ -264,7 +264,7 @@ def test_delete_recording(meetings):
 def test_delete_recording_not_uploaded(meetings, client):
     stub(
         responses.DELETE,
-        'https://api-eu.vonage.com/beta/meetings/recordings/881f0dbe-3d91-4fd6-aeea-0eca4209b512',
+        'https://api-eu.vonage.com/v1/meetings/recordings/881f0dbe-3d91-4fd6-aeea-0eca4209b512',
         fixture_path='meetings/delete_recording_not_found.json',
         status_code=404,
     )
@@ -278,7 +278,7 @@ def test_delete_recording_not_uploaded(meetings, client):
 def test_get_session_recordings(meetings):
     stub(
         responses.GET,
-        'https://api-eu.vonage.com/beta/meetings/sessions/1_MX40NjMzOTg5Mn5-MTY3NDYxNDI4NjY5M35WM0xaVXBSc1lpT3hKWE1XQ2diM1B3cXB-fn4/recordings',
+        'https://api-eu.vonage.com/v1/meetings/sessions/1_MX40NjMzOTg5Mn5-MTY3NDYxNDI4NjY5M35WM0xaVXBSc1lpT3hKWE1XQ2diM1B3cXB-fn4/recordings',
         fixture_path='meetings/get_session_recordings.json',
     )
 
@@ -294,7 +294,7 @@ def test_get_session_recordings(meetings):
 def test_get_session_recordings_not_found(meetings):
     stub(
         responses.GET,
-        'https://api-eu.vonage.com/beta/meetings/sessions/not-a-real-session-id/recordings',
+        'https://api-eu.vonage.com/v1/meetings/sessions/not-a-real-session-id/recordings',
         fixture_path='meetings/get_session_recordings_not_found.json',
         status_code=404,
     )
@@ -311,7 +311,7 @@ def test_get_session_recordings_not_found(meetings):
 def test_list_dial_in_numbers(meetings):
     stub(
         responses.GET,
-        'https://api-eu.vonage.com/beta/meetings/dial-in-numbers',
+        'https://api-eu.vonage.com/v1/meetings/dial-in-numbers',
         fixture_path='meetings/list_dial_in_numbers.json',
     )
 
@@ -326,7 +326,7 @@ def test_list_dial_in_numbers(meetings):
 def test_list_themes(meetings):
     stub(
         responses.GET,
-        'https://api-eu.vonage.com/beta/meetings/themes',
+        'https://api-eu.vonage.com/v1/meetings/themes',
         fixture_path='meetings/list_themes.json',
     )
 
@@ -343,7 +343,7 @@ def test_list_themes(meetings):
 def test_list_themes_no_themes(meetings):
     stub(
         responses.GET,
-        'https://api-eu.vonage.com/beta/meetings/themes',
+        'https://api-eu.vonage.com/v1/meetings/themes',
         fixture_path='meetings/empty_themes.json',
     )
 
@@ -354,7 +354,7 @@ def test_list_themes_no_themes(meetings):
 def test_create_theme(meetings):
     stub(
         responses.POST,
-        "https://api-eu.vonage.com/beta/meetings/themes",
+        "https://api-eu.vonage.com/v1/meetings/themes",
         fixture_path='meetings/theme.json',
     )
 
@@ -382,7 +382,7 @@ def test_create_theme_missing_required_params(meetings):
 def test_create_theme_name_already_in_use(meetings):
     stub(
         responses.POST,
-        "https://api-eu.vonage.com/beta/meetings/themes",
+        "https://api-eu.vonage.com/v1/meetings/themes",
         fixture_path='meetings/theme_name_in_use.json',
         status_code=409,
     )
@@ -404,7 +404,7 @@ def test_create_theme_name_already_in_use(meetings):
 def test_get_theme(meetings):
     stub(
         responses.GET,
-        "https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654db",
+        "https://api-eu.vonage.com/v1/meetings/themes/90a21428-b74a-4221-adc3-783935d654db",
         fixture_path='meetings/theme.json',
     )
 
@@ -417,7 +417,7 @@ def test_get_theme(meetings):
 def test_get_theme_not_found(meetings):
     stub(
         responses.GET,
-        "https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654dc",
+        "https://api-eu.vonage.com/v1/meetings/themes/90a21428-b74a-4221-adc3-783935d654dc",
         fixture_path='meetings/theme_not_found.json',
         status_code=404,
     )
@@ -434,7 +434,7 @@ def test_get_theme_not_found(meetings):
 def test_delete_theme(meetings):
     stub(
         responses.DELETE,
-        "https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654db",
+        "https://api-eu.vonage.com/v1/meetings/themes/90a21428-b74a-4221-adc3-783935d654db",
         fixture_path='no_content.json',
     )
 
@@ -446,7 +446,7 @@ def test_delete_theme(meetings):
 def test_delete_theme_not_found(meetings):
     stub(
         responses.DELETE,
-        "https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654dc",
+        "https://api-eu.vonage.com/v1/meetings/themes/90a21428-b74a-4221-adc3-783935d654dc",
         fixture_path='meetings/theme_not_found.json',
         status_code=404,
     )
@@ -463,7 +463,7 @@ def test_delete_theme_not_found(meetings):
 def test_delete_theme_in_use(meetings):
     stub(
         responses.DELETE,
-        "https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654db",
+        "https://api-eu.vonage.com/v1/meetings/themes/90a21428-b74a-4221-adc3-783935d654db",
         fixture_path='meetings/delete_theme_in_use.json',
         status_code=400,
     )
@@ -480,7 +480,7 @@ def test_delete_theme_in_use(meetings):
 def test_update_theme(meetings):
     stub(
         responses.PATCH,
-        "https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654db",
+        "https://api-eu.vonage.com/v1/meetings/themes/90a21428-b74a-4221-adc3-783935d654db",
         fixture_path='meetings/updated_theme.json',
     )
 
@@ -504,7 +504,7 @@ def test_update_theme(meetings):
 def test_update_theme_no_keys(meetings):
     stub(
         responses.PATCH,
-        "https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654db",
+        "https://api-eu.vonage.com/v1/meetings/themes/90a21428-b74a-4221-adc3-783935d654db",
         fixture_path='meetings/update_no_keys.json',
         status_code=400,
     )
@@ -521,7 +521,7 @@ def test_update_theme_no_keys(meetings):
 def test_update_theme_not_found(meetings):
     stub(
         responses.PATCH,
-        "https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654dc",
+        "https://api-eu.vonage.com/v1/meetings/themes/90a21428-b74a-4221-adc3-783935d654dc",
         fixture_path='meetings/theme_not_found.json',
         status_code=404,
     )
@@ -541,7 +541,7 @@ def test_update_theme_not_found(meetings):
 def test_update_theme_name_already_exists(meetings):
     stub(
         responses.PATCH,
-        'https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654db',
+        'https://api-eu.vonage.com/v1/meetings/themes/90a21428-b74a-4221-adc3-783935d654db',
         fixture_path='meetings/update_theme_already_exists.json',
         status_code=409,
     )
@@ -560,7 +560,7 @@ def test_update_theme_name_already_exists(meetings):
 def test_list_rooms_with_options(meetings):
     stub(
         responses.GET,
-        'https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654db/rooms',
+        'https://api-eu.vonage.com/v1/meetings/themes/90a21428-b74a-4221-adc3-783935d654db/rooms',
         fixture_path='meetings/list_rooms_with_theme_id.json',
     )
 
@@ -584,7 +584,7 @@ def test_list_rooms_with_options(meetings):
 def test_list_rooms_with_theme_id_not_found(meetings):
     stub(
         responses.GET,
-        'https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654dc/rooms',
+        'https://api-eu.vonage.com/v1/meetings/themes/90a21428-b74a-4221-adc3-783935d654dc/rooms',
         fixture_path='meetings/list_rooms_theme_id_not_found.json',
         status_code=404,
     )
@@ -603,7 +603,7 @@ def test_list_rooms_with_theme_id_not_found(meetings):
 def test_update_application_theme(meetings):
     stub(
         responses.PATCH,
-        'https://api-eu.vonage.com/beta/meetings/applications',
+        'https://api-eu.vonage.com/v1/meetings/applications',
         fixture_path='meetings/update_application_theme.json',
     )
 
@@ -617,7 +617,7 @@ def test_update_application_theme(meetings):
 def test_update_application_theme_bad_request(meetings):
     stub(
         responses.PATCH,
-        'https://api-eu.vonage.com/beta/meetings/applications',
+        'https://api-eu.vonage.com/v1/meetings/applications',
         fixture_path='meetings/update_application_theme_id_not_found.json',
         status_code=400,
     )
@@ -634,7 +634,7 @@ def test_update_application_theme_bad_request(meetings):
 def test_upload_logo_to_theme(meetings):
     stub(
         responses.GET,
-        'https://api-eu.vonage.com/beta/meetings/themes/logos-upload-urls',
+        'https://api-eu.vonage.com/v1/meetings/themes/logos-upload-urls',
         fixture_path='meetings/list_logo_upload_urls.json',
     )
     stub(
@@ -645,7 +645,7 @@ def test_upload_logo_to_theme(meetings):
     )
     stub_bytes(
         responses.PUT,
-        'https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654db/finalizeLogos',
+        'https://api-eu.vonage.com/v1/meetings/themes/90a21428-b74a-4221-adc3-783935d654db/finalizeLogos',
         body=b'OK',
     )
 
@@ -661,7 +661,7 @@ def test_upload_logo_to_theme(meetings):
 def test_get_logo_upload_url(meetings):
     stub(
         responses.GET,
-        'https://api-eu.vonage.com/beta/meetings/themes/logos-upload-urls',
+        'https://api-eu.vonage.com/v1/meetings/themes/logos-upload-urls',
         fixture_path='meetings/list_logo_upload_urls.json',
     )
 
@@ -732,7 +732,7 @@ def test_upload_to_aws_error(meetings):
 def test_add_logo_to_theme(meetings):
     stub_bytes(
         responses.PUT,
-        'https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654db/finalizeLogos',
+        'https://api-eu.vonage.com/v1/meetings/themes/90a21428-b74a-4221-adc3-783935d654db/finalizeLogos',
         body=b'OK',
     )
 
@@ -747,7 +747,7 @@ def test_add_logo_to_theme(meetings):
 def test_add_logo_to_theme_key_error(meetings):
     stub(
         responses.PUT,
-        'https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654dc/finalizeLogos',
+        'https://api-eu.vonage.com/v1/meetings/themes/90a21428-b74a-4221-adc3-783935d654dc/finalizeLogos',
         fixture_path='meetings/logo_key_error.json',
         status_code=400,
     )
@@ -767,7 +767,7 @@ def test_add_logo_to_theme_key_error(meetings):
 def test_add_logo_to_theme_not_found_error(meetings):
     stub(
         responses.PUT,
-        'https://api-eu.vonage.com/beta/meetings/themes/90a21428-b74a-4221-adc3-783935d654dc/finalizeLogos',
+        'https://api-eu.vonage.com/v1/meetings/themes/90a21428-b74a-4221-adc3-783935d654dc/finalizeLogos',
         fixture_path='meetings/theme_not_found.json',
         status_code=404,
     )

@@ -109,7 +109,7 @@ class Client:
         self._jwt_claims = {}
         self._host = "rest.nexmo.com"
         self._api_host = "api.nexmo.com"
-        self._meetings_api_host = "api-eu.vonage.com/beta/meetings"
+        self._meetings_api_host = "api-eu.vonage.com/v1/meetings"
         self._proactive_connect_host = "api-eu.vonage.com"
 
         user_agent = f"vonage-python/{vonage.__version__} python/{python_version()}"

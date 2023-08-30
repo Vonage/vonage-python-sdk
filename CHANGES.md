@@ -1,3 +1,6 @@
+# 3.9.1
+- Updating Meetings API url to a `/v1` endpoint
+
 # 3.9.0
 - Dropped support for Python 3.7 as it's end-of-life and no longer receiving security updates
 
@@ -83,7 +86,7 @@ Enhancements:
 - Added Messages API v1.0 support. Messages API can now be used by calling the `client.messages.send_message()` method.
 
 # 2.7.0
-- Moved some client methods into their own classes: `account.py, application.py, 
+- Moved some client methods into their own classes: `account.py, application.py,
 message_search.py, number_insight.py, numbers.py, short_codes.py, ussd.py`
 - Deprecated the corresponding client methods. These will be removed in a major release that's coming soon.
 - Client now instantiates a class object for each API when it is created, e.g. `vonage.Client(key="mykey", secret="mysecret")`

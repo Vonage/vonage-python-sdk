@@ -37,5 +37,5 @@ class NumberInsightV2:
     def _validate_insight(self, insight: str):
         if insight not in ('fraud_score', 'sim_swap'):
             raise NumberInsightV2Error(
-                f'The only insights that can be requested are "fraud_score" and "sim_swap. You requested: "{insight}".'
+                f'The only insights that can be requested are "fraud_score" and "sim_swap". You requested: "{insight}".'
             )

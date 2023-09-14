@@ -90,7 +90,7 @@ def test_invalid_insight_error():
         ni2.fraud_check(insight_number, 'an_invalid_insight')
     assert (
         str(err.value)
-        == f'The only insights that can be requested are "fraud_score" and "sim_swap. You requested: "an_invalid_insight".'
+        == f'The only insights that can be requested are "fraud_score" and "sim_swap". You requested: "an_invalid_insight".'
     )
 
 

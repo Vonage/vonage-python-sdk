@@ -1,3 +1,6 @@
+# 3.10.0
+- Indicating support for Python 3.12
+
 # 3.9.1
 - Updating Meetings API url to a `/v1` endpoint
 

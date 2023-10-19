@@ -1,5 +1,5 @@
 -e .
-pytest==7.2.0
+pytest==7.4.2
 responses==0.22.0
 coverage
 pydantic>=1.10,==1.*

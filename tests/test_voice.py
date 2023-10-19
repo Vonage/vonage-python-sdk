@@ -1,10 +1,9 @@
 import os.path
 import time
-
 import jwt
+from unittest.mock import patch
 
-import vonage
-from vonage import Ncco
+from vonage import Client, Voice, Ncco
 from util import *
 
 
@@ -149,7 +148,7 @@ def test_user_provided_authorization(dummy_data):
     stub(responses.GET, "https://api.nexmo.com/v1/calls/xx-xx-xx-xx")
 
     application_id = "different-application-id"
-    client = vonage.Client(application_id=application_id, private_key=dummy_data.private_key)
+    client = Client(application_id=application_id, private_key=dummy_data.private_key)
 
     nbf = int(time.time())
     exp = nbf + 3600
@@ -172,13 +171,13 @@ def test_authorization_with_private_key_path(dummy_data):
 
     private_key = os.path.join(os.path.dirname(__file__), "data/private_key.txt")
 
-    client = vonage.Client(
+    client = Client(
         key=dummy_data.api_key,
         secret=dummy_data.api_secret,
         application_id=dummy_data.application_id,
         private_key=private_key,
     )
-    voice = vonage.Voice(client)
+    voice = Voice(client)
     voice.get_call("xx-xx-xx-xx")
 
     token = jwt.decode(
@@ -212,3 +211,15 @@ def test_get_recording(voice, dummy_data):
         bytes,
     )
     assert request_user_agent() == dummy_data.user_agent
+
+
+def test_verify_jwt_signature(voice: Voice):
+    with patch('vonage.Voice.verify_signature') as mocked_verify_signature:
+        mocked_verify_signature.return_value = True
+        assert voice.verify_signature('valid_token', 'valid_signature')
+
+
+def test_verify_jwt_invalid_signature(voice: Voice):
+    with patch('vonage.Voice.verify_signature') as mocked_verify_signature:
+        mocked_verify_signature.return_value = False
+        assert voice.verify_signature('token', 'invalid_signature') is False

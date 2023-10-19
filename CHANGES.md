@@ -1,3 +1,6 @@
+# 3.11.0
+- Add method to check JWT signatures of Voice API webhooks: `vonage.Voice.verify_signature`
+
 # 3.10.0
 - Indicating support for Python 3.12
 

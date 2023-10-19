@@ -21,7 +21,7 @@ setup(
     package_dir={"": "src"},
     platforms=["any"],
     install_requires=[
-        "vonage-jwt>=1.0.0",
+        "vonage-jwt>=1.1.0",
         "requests>=2.4.2",
         "pytz>=2018.5",
         "Deprecated",

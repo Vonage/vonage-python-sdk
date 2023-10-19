@@ -347,6 +347,18 @@ client.voice.send_dtmf(response['uuid'], digits='1234')
 response = client.get_recording(RECORDING_URL)
 ```
 
+### Verify the Signature of a Webhook Sent by Vonage
+
+If signed webhooks are enabled (the default), Vonage will sign webhooks with the signature secret found in the [API Settings](https://dashboard.nexmo.com/settings) section of the Vonage Developer Dashboard.
+
+```python
+if client.voice.verify_signature('JWT_RECEIVED_FROM_VONAGE', 'MY_VONAGE_SIGNATURE_SECRET'):
+    print('Signature is valid!')
+else:
+    print('Signature is invalid!')
+```
+
+
 ## NCCO Builder
 
 The SDK contains a builder to help you create Call Control Objects (NCCOs) for use with the Vonage Voice API.

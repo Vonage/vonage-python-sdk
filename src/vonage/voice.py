@@ -1,4 +1,5 @@
 from urllib.parse import urlparse
+from vonage_jwt.verify_jwt import verify_signature
 
 
 class Voice:
@@ -94,3 +95,6 @@ class Voice:
         headers = self._client.headers
         headers['Authorization'] = self._client._create_jwt_auth_string()
         return self._client.parse(hostname, self._client.session.get(url, headers=headers))
+
+    def verify_signature(self, token: str, signature: str) -> bool:
+        return verify_signature(token, signature)

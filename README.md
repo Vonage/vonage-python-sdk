@@ -1212,7 +1212,7 @@ The following is a list of Vonage APIs and whether the Python SDK provides suppo
 | Number Insight API    | General Availability |     ✅     |
 | Number Management API | General Availability |     ✅     |
 | Pricing API           | General Availability |     ✅     |
-| Procative Connect API | General Availability |     ✅  (partially supported) |
+| Proactive Connect API | General Availability |     ✅  (partially supported) |
 | Redact API            |   Developer Preview  |     ❌     |
 | Reports API           |         Beta         |     ❌     |
 | SMS API               | General Availability |     ✅     |

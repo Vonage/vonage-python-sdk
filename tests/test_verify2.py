@@ -147,7 +147,7 @@ def test_new_request_code_length_error():
 def test_new_request_to_error():
     params = {
         'brand': 'ACME, Inc',
-        'workflow': [{'channel': 'sms', 'to': '123'}],
+        'workflow': [{'channel': 'sms'}],
     }
 
     with raises(Verify2Error) as err:
@@ -233,7 +233,7 @@ def test_new_request_whatsapp_from_field():
 
 
 @responses.activate
-def test_new_request_whatsapp_invalid_sender_error():
+def test_new_request_whatsapp_invalid_sender_phone_number_error():
     stub(
         responses.POST,
         'https://api.nexmo.com/v2/verify',
@@ -247,7 +247,10 @@ def test_new_request_whatsapp_invalid_sender_error():
     }
     with pytest.raises(ClientError) as err:
         verify2.new_request(params)
-    assert str(err.value) == 'You must specify a valid "from" value if included.'
+    assert (
+        str(err.value)
+        == 'Invalid phone number provided. You provided: "asdfghjkl".\nUse the E.164 format. Don\'t use a leading + or 00 when entering a phone number, start with the country code, e.g. 447700900000.'
+    )
 
 
 @responses.activate

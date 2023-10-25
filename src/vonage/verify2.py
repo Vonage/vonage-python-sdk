@@ -10,7 +10,7 @@ from typing import Optional, List
 import copy
 import re
 
-from ._internal import set_auth_type
+from ._internal import set_auth_type, validate_phone_number
 from .errors import Verify2Error
 
 
@@ -83,7 +83,7 @@ class Verify2:
                 Verify2._check_valid_recipient(workflow)
                 Verify2._check_app_hash(workflow)
                 if workflow['channel'] == 'whatsapp' and 'from' in workflow:
-                    Verify2._check_whatsapp_sender(workflow)
+                    validate_phone_number(workflow['from'])
 
     def _check_valid_channel(workflow):
         if 'channel' not in workflow or workflow['channel'] not in Verify2.valid_channels:
@@ -92,12 +92,12 @@ class Verify2:
             )
 
     def _check_valid_recipient(workflow):
-        if 'to' not in workflow or (
-            workflow['channel'] != 'email' and not re.search(r'^[1-9]\d{6,14}$', workflow['to'])
-        ):
+        if 'to' not in workflow:
             raise Verify2Error(
                 f'You must specify a valid "to" value for channel "{workflow["channel"]}"'
             )
+        if workflow['channel'] != 'email':
+            validate_phone_number(workflow['to'])
 
     def _check_app_hash(workflow):
         if workflow['channel'] == 'sms' and 'app_hash' in workflow:
@@ -110,7 +110,3 @@ class Verify2:
             raise Verify2Error(
                 'Cannot specify a value for "app_hash" unless using SMS for authentication.'
             )
-
-    def _check_whatsapp_sender(workflow):
-        if not re.search(r'^[1-9]\d{6,14}$', workflow['from']):
-            raise Verify2Error(f'You must specify a valid "from" value if included.')

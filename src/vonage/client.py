@@ -7,6 +7,7 @@ from .errors import *
 from .meetings import Meetings
 from .messages import Messages
 from .number_insight import NumberInsight
+from .number_insight_v2 import NumberInsightV2
 from .number_management import Numbers
 from .proactive_connect import ProactiveConnect
 from .redact import Redact
@@ -126,6 +127,7 @@ class Client:
         self.meetings = Meetings(self)
         self.messages = Messages(self)
         self.number_insight = NumberInsight(self)
+        self.number_insight_v2 = NumberInsightV2(self)
         self.numbers = Numbers(self)
         self.proactive_connect = ProactiveConnect(self)
         self.short_codes = ShortCodes(self)
@@ -429,8 +431,8 @@ class Client:
     def _add_individual_errors(self, error_data):
         message = ''
         if 'errors' in error_data:
-            for error in error_data["errors"]:
-                message += f"\nError: {error}"
+            for error in error_data['errors']:
+                message += f'\nError: {error}'
         return message
 
     def _create_jwt_auth_string(self):

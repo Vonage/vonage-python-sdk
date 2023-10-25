@@ -1,0 +1,15 @@
+{
+    "request_id": "870139b3-0c0f-4641-8423-ea608fcbc2e3",
+    "type": "phone",
+    "phone": {
+        "phone": "12345678901",
+        "carrier": "Verizon Wireless",
+        "type": "MOBILE"
+    },
+    "fraud_score": {
+        "risk_score": "50",
+        "risk_recommendation": "flag",
+        "label": "medium",
+        "status": "completed"
+    }
+}

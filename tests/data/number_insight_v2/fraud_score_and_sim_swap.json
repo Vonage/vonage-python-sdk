@@ -1,0 +1,19 @@
+{
+    "request_id": "2c2f5d3f-93ac-42b1-9083-4b14f0d583d3",
+    "type": "phone",
+    "phone": {
+        "phone": "12345678901",
+        "carrier": "Verizon Wireless",
+        "type": "MOBILE"
+    },
+    "fraud_score": {
+        "risk_score": "0",
+        "risk_recommendation": "allow",
+        "label": "low",
+        "status": "completed"
+    },
+    "sim_swap": {
+        "status": "completed",
+        "swapped": false
+    }
+}

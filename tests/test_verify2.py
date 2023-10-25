@@ -392,14 +392,18 @@ def test_new_request_silent_auth():
     stub(
         responses.POST,
         'https://api.nexmo.com/v2/verify',
-        fixture_path='verify2/create_request.json',
+        fixture_path='verify2/create_request_silent_auth.json',
         status_code=202,
     )
 
     params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'silent_auth', 'to': '447700900000'}]}
     verify_request = verify2.new_request(params)
 
-    assert verify_request['request_id'] == 'c11236f4-00bf-4b89-84ba-88b25df97315'
+    assert verify_request['request_id'] == 'b3a2f4bd-7bda-4e5e-978a-81514702d2ce'
+    assert (
+        verify_request['check_url']
+        == 'https://api-eu-3.vonage.com/v2/verify/b3a2f4bd-7bda-4e5e-978a-81514702d2ce/silent-auth/redirect'
+    )
 
 
 @responses.activate

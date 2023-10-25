@@ -449,6 +449,7 @@ params = {
     ]
 }
 verify_request = verify2.new_request(params)
+check_url = verify_request['check_url'] # URL to continue with the silent auth workflow
 ```
 
 ### Send a verification code with custom options, including a custom code

@@ -84,6 +84,8 @@ class Verify2:
                 Verify2._check_app_hash(workflow)
                 if workflow['channel'] == 'whatsapp' and 'from' in workflow:
                     Verify2._check_whatsapp_sender(workflow)
+                if workflow['channel'] == 'silent_auth':
+                    Verify2._check_silent_auth_workflow(workflow)
 
     def _check_valid_channel(workflow):
         if 'channel' not in workflow or workflow['channel'] not in Verify2.valid_channels:
@@ -113,4 +115,12 @@ class Verify2:
 
     def _check_whatsapp_sender(workflow):
         if not re.search(r'^[1-9]\d{6,14}$', workflow['from']):
-            raise Verify2Error(f'You must specify a valid "from" value if included.')
+            raise Verify2Error('You must specify a valid "from" value if included.')
+
+    def _check_silent_auth_workflow(workflow):
+        if 'redirect_url' in workflow:
+            if type(workflow['redirect_url']) != str:
+                raise Verify2Error('"redirect_url" must be a string if specified.')
+        if 'sandbox' in workflow:
+            if type(workflow['sandbox']) != bool:
+                raise Verify2Error('"sandbox" must be a boolean if specified.')

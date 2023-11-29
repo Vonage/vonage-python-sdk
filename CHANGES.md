@@ -1,3 +1,6 @@
+# 3.11.1
+- Add checks for silent auth workflow optional parameters `redirect_url` and `sandbox`
+
 # 3.11.0
 - Add method to check JWT signatures of Voice API webhooks: `vonage.Voice.verify_signature`
 

@@ -396,7 +396,17 @@ def test_new_request_silent_auth():
         status_code=202,
     )
 
-    params = {'brand': 'ACME, Inc', 'workflow': [{'channel': 'silent_auth', 'to': '447700900000'}]}
+    params = {
+        'brand': 'ACME, Inc',
+        'workflow': [
+            {
+                'channel': 'silent_auth',
+                'to': '447000000000',
+                'redirect_url': 'https://acme-app.com/sa/redirect',
+                'sandbox': False,
+            }
+        ],
+    }
     verify_request = verify2.new_request(params)
 
     assert verify_request['request_id'] == 'b3a2f4bd-7bda-4e5e-978a-81514702d2ce'
@@ -404,6 +414,38 @@ def test_new_request_silent_auth():
         verify_request['check_url']
         == 'https://api-eu-3.vonage.com/v2/verify/b3a2f4bd-7bda-4e5e-978a-81514702d2ce/silent-auth/redirect'
     )
+
+
+def test_silent_auth_redirect_url_error():
+    params = {
+        'brand': 'ACME, Inc',
+        'workflow': [
+            {
+                'channel': 'silent_auth',
+                'to': '447000000000',
+                'redirect_url': ['https://acme-app.com/sa/redirect'],
+            }
+        ],
+    }
+    with raises(Verify2Error) as err:
+        verify2.new_request(params)
+    assert str(err.value) == '"redirect_url" must be a string if specified.'
+
+
+def test_silent_auth_sandbox_error():
+    params = {
+        'brand': 'ACME, Inc',
+        'workflow': [
+            {
+                'channel': 'silent_auth',
+                'to': '447000000000',
+                'sandbox': 'true',
+            }
+        ],
+    }
+    with raises(Verify2Error) as err:
+        verify2.new_request(params)
+    assert str(err.value) == '"sandbox" must be a boolean if specified.'
 
 
 @responses.activate

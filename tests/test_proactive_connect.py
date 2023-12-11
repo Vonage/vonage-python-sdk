@@ -241,7 +241,7 @@ def test_delete_list(proc):
     stub(
         responses.DELETE,
         f'https://api-eu.vonage.com/v0.1/bulk/lists/{list_id}',
-        fixture_path='null.json',
+        fixture_path='no_content.json',
         status_code=204,
     )
 
@@ -271,7 +271,7 @@ def test_clear_list(proc):
     stub(
         responses.POST,
         f'https://api-eu.vonage.com/v0.1/bulk/lists/{list_id}/clear',
-        fixture_path='null.json',
+        fixture_path='no_content.json',
         status_code=202,
     )
 
@@ -301,7 +301,7 @@ def test_sync_list_from_datasource(proc):
     stub(
         responses.POST,
         f'https://api-eu.vonage.com/v0.1/bulk/lists/{list_id}/fetch',
-        fixture_path='null.json',
+        fixture_path='no_content.json',
         status_code=202,
     )
 
@@ -567,7 +567,7 @@ def test_delete_item(proc):
     stub(
         responses.DELETE,
         f'https://api-eu.vonage.com/v0.1/bulk/lists/{list_id}/items/{item_id}',
-        fixture_path='null.json',
+        fixture_path='no_content.json',
         status_code=204,
     )
 

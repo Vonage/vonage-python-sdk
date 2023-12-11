@@ -52,5 +52,21 @@ class ProactiveConnectError(ClientError):
     """An error relating to the Proactive Connect API."""
 
 
+class VideoError(ClientError):
+    """An error relating to the Video API."""
+
+
 class UsersError(ClientError):
     """An error relating to the Users API."""
+
+
+class InvalidRoleError(ClientError):
+    """The specified role was invalid."""
+
+
+class TokenExpiryError(ClientError):
+    """The specified token expiry time was invalid."""
+
+
+class SipError(ClientError):
+    """Error related to usage of SIP calls."""

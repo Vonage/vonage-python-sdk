@@ -1,0 +1,15 @@
+{
+    "createdAt" : 1384221730555,
+    "duration" : 60,
+    "hasAudio" : true,
+    "hasVideo" : true,
+    "id" : "b40ef09b-3811-4726-b508-e41a0f96c68f",
+    "name" : "my_new_archive",
+    "projectId" : 234567,
+    "reason" : "",
+    "resolution" : "640x480",
+    "sessionId" : "flR1ZSBPY3QgMjkgMTI6MTM6MjMgUERUIDIwMTN",
+    "size" : 0,
+    "status" : "stopped",
+    "url" : null
+}

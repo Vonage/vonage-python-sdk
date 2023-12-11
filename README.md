@@ -18,6 +18,7 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [NCCO Builder](#ncco-builder)
 - [Verify V2 API](#verify-v2-api)
 - [Verify V1 API](#verify-v1-api)
+- [Video API](#video-api)
 - [Meetings API](#meetings-api)
 - [Number Insight API](#number-insight-api)
 - [Proactive Connect API](#proactive-connect-api)
@@ -594,6 +595,10 @@ if response["status"] == "0":
 else:
     print("Error: %s" % response["error_text"])
 ```
+
+## Video API
+
+You can make calls to the Vonage Video API from this SDK. See the [Vonage Video API documentation](https://developer.vonage.com/en/video/overview) for detailed information and instructions on how to use the Vonage Python SDK with the Vonage Video API. Have a look at the SDK's [OpenTok to Vonage migration guide](OPENTOK_TO_VONAGE_MIGRATION.md) if you've previously used OpenTok.
 
 ## Meetings API
 

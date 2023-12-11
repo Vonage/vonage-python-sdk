@@ -1,0 +1,28 @@
+{
+  "count": 1,
+  "items": [
+    {
+      "createdAt": 1384221730000,
+      "duration": 5049,
+      "hasAudio": true,
+      "hasVideo": true,
+      "id": "b40ef09b-3811-4726-b508-e41a0f96c68f",
+      "name": "Foo",
+      "applicationId": "78d335fa-323d-0114-9c3d-d6f0d48968cf",
+      "reason": "",
+      "resolution": "abc123",
+      "sessionId": "my_session_id",
+      "size": 247748791,
+      "status": "available",
+      "streamMode": "manual",
+      "streams": [
+        {
+          "streamId": "abc123",
+          "hasAudio": true,
+          "hasVideo": true
+        }
+      ],
+      "url": "https://tokbox.com.archive2.s3.amazonaws.com/123456/09141e29-8770-439b-b180-337d7e637545/archive.mp4"
+    }
+  ]
+}

@@ -442,7 +442,7 @@ def test_play_dtmf(client):
     stub(
         responses.POST,
         f'https://video.api.vonage.com/v2/project/{client.application_id}/session/{session_id}/play-dtmf',
-        fixture_path='video/null.json',
+        fixture_path='no_content.json',
     )
 
     assert client.video.play_dtmf(session_id, '1234') == None
@@ -453,7 +453,7 @@ def test_play_dtmf_specific_connection(client):
     stub(
         responses.POST,
         f'https://video.api.vonage.com/v2/project/{client.application_id}/session/{session_id}/connection/my-connection-id/play-dtmf',
-        fixture_path='video/null.json',
+        fixture_path='no_content.json',
     )
 
     assert client.video.play_dtmf(session_id, '1234', connection_id='my-connection-id') == None
@@ -474,7 +474,7 @@ def test_play_dtmf_invalid_session_id_error(client):
 
 
 def test_play_dtmf_invalid_input_error(client):
-    with pytest.raises(InvalidInputError) as err:
+    with pytest.raises(VideoError) as err:
         client.video.play_dtmf(session_id, '!@£$%^&()asdfghjkl;')
 
     assert str(err.value) == 'Only digits 0-9, *, #, and "p" are allowed.'
@@ -632,7 +632,7 @@ def test_change_broadcast_layout(client):
     stub(
         responses.PUT,
         f'https://video.api.vonage.com/v2/project/{client.application_id}/broadcast/{broadcast_id}/layout',
-        fixture_path='video/null.json',
+        fixture_path='no_content.json',
     )
 
     params = {

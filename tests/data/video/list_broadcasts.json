@@ -1,0 +1,44 @@
+{
+    "count": "1",
+    "items": [
+        {
+            "id": "1748b7070a81464c9759c46ad10d3734",
+            "sessionId": "2_MX4xMDBfjE0Mzc2NzY1NDgwMTJ-TjMzfn4",
+            "multiBroadcastTag": "broadcast_tag_provided",
+            "applicationId": "abc123",
+            "createdAt": 1437676551000,
+            "updatedAt": 1437676551000,
+            "maxDuration": 5400,
+            "maxBitrate": 2000000,
+            "broadcastUrls": {
+                "hls": "hlsurl",
+                "rtmp": [
+                    {
+                        "id": "abc123",
+                        "status": "abc123",
+                        "serverUrl": "abc123",
+                        "streamName": "abc123"
+                    }
+                ]
+            },
+            "settings": {
+                "hls": {
+                    "lowLatency": false,
+                    "dvr": false
+                }
+            },
+            "resolution": "abc123",
+            "hasAudio": false,
+            "hasVideo": false,
+            "streamMode": "manual",
+            "status": "abc123",
+            "streams": [
+                {
+                    "streamId": "abc123",
+                    "hasAudio": "abc123",
+                    "hasVideo": "abc123"
+                }
+            ]
+        }
+    ]
+}

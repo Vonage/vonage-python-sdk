@@ -1,0 +1,18 @@
+{
+    "createdAt" : 1384221730000,
+    "duration" : 5049,
+    "hasAudio" : true,
+    "hasVideo" : true,
+    "id" : "b40ef09b-3811-4726-b508-e41a0f96c68f",
+    "name" : "Foo",
+    "outputMode" : "composed",
+    "projectId" : 123456,
+    "reason" : "",
+    "resolution" : "640x480",
+    "sessionId" : "2_MX40NzIwMzJ-flR1ZSBPY3QgMjkgMTI6MTM6MjMgUERUIDIwMTN-MC45NDQ2MzE2NH4",
+    "size" : 247748791,
+    "status" : "available",
+    "streamMode" : "auto",
+    "streams" : [],
+    "url" : "https://tokbox.com.archive2.s3.amazonaws.com/123456/09141e29-8770-439b-b180-337d7e637545/archive.mp4"
+}

@@ -1,0 +1,19 @@
+[
+    {
+        "session_id": "my_session_id",
+        "project_id": "29f760f8-7ce1-46c9-ade3-f2dedee4ed5f",
+        "partner_id": "29f760f8-7ce1-46c9-ade3-f2dedee4ed5f",
+        "create_dt": "Tue Aug 09 09:10:17 PDT 2022",
+        "session_status": null,
+        "status_invalid": null,
+        "media_server_hostname": null,
+        "messaging_server_url": null,
+        "messaging_url": null,
+        "symphony_address": null,
+        "properties": null,
+        "ice_server": null,
+        "session_segment_id": "b8c32a6d-faf9-4ec4-a648-a6d382cd650b",
+        "ice_servers": null,
+        "ice_credential_expiration": 86100
+    }
+]

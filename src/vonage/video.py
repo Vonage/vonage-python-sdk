@@ -62,7 +62,7 @@ class Video:
             '/session/create',
             params,
             auth_type=Video.auth_type,
-            sent_data_type='data',
+            body_is_json=False,
         )[0]
 
         media_mode = self.get_media_mode(params['p2p.preference'])
@@ -341,7 +341,7 @@ class Video:
 
         self.validate_client_token_options(claims)
         self._client.auth(claims)
-        return self._client.generate_application_jwt()
+        return self._client._generate_application_jwt()
 
     def validate_client_token_options(self, claims):
         now = int(time())

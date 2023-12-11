@@ -1,3 +1,6 @@
+# 3.12.0
+- Add support for the [Vonage Video API](https://developer.vonage.com/en/video/overview)
+
 # 3.11.1
 - Add checks for silent auth workflow optional parameters `redirect_url` and `sandbox`
 

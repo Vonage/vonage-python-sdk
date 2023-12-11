@@ -15,6 +15,7 @@ from .sms import Sms
 from .subaccounts import Subaccounts
 from .users import Users
 from .ussd import Ussd
+from .video import Video
 from .voice import Voice
 from .verify import Verify
 from .verify2 import Verify2
@@ -91,6 +92,8 @@ class Client:
         self.api_key = key or os.environ.get("VONAGE_API_KEY", None)
         self.api_secret = secret or os.environ.get("VONAGE_API_SECRET", None)
 
+        self.application_id = application_id
+
         self.signature_secret = signature_secret or os.environ.get("VONAGE_SIGNATURE_SECRET", None)
         self.signature_method = signature_method or os.environ.get("VONAGE_SIGNATURE_METHOD", None)
 
@@ -108,6 +111,7 @@ class Client:
         self._jwt_claims = {}
         self._host = "rest.nexmo.com"
         self._api_host = "api.nexmo.com"
+        self._video_host = "video.api.vonage.com"
         self._meetings_api_host = "api-eu.vonage.com/v1/meetings"
         self._proactive_connect_host = "api-eu.vonage.com"
 
@@ -135,6 +139,7 @@ class Client:
         self.ussd = Ussd(self)
         self.verify = Verify(self)
         self.verify2 = Verify2(self)
+        self.video = Video(self)
         self.voice = Voice(self)
 
         self.timeout = timeout
@@ -159,6 +164,12 @@ class Client:
             return self._api_host
         else:
             self._api_host = value
+
+    def video_host(self, value=None):
+        if value is None:
+            return self._video_host
+        else:
+            self._video_host = value
 
     # Gets and sets _meetings_api_host attribute
     def meetings_api_host(self, value=None):

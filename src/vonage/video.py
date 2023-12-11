@@ -7,9 +7,8 @@ if TYPE_CHECKING:
 from .errors import (
     InvalidRoleError,
     TokenExpiryError,
-    InvalidOptionsError,
     SipError,
-    InvalidInputError,
+    VideoError,
 )
 
 import re
@@ -35,7 +34,7 @@ class Video:
             'archive_mode' in session_options
             and session_options['archive_mode'] not in Video.archive_mode_values
         ):
-            raise InvalidOptionsError(
+            raise VideoError(
                 f'Invalid archive_mode value. Must be one of {Video.archive_mode_values}.'
             )
         elif 'archive_mode' in session_options:
@@ -44,15 +43,13 @@ class Video:
             'media_mode' in session_options
             and session_options['media_mode'] not in Video.media_mode_values
         ):
-            raise InvalidOptionsError(
-                f'Invalid media_mode value. Must be one of {Video.media_mode_values}.'
-            )
+            raise VideoError(f'Invalid media_mode value. Must be one of {Video.media_mode_values}.')
         elif 'media_mode' in session_options:
             if session_options['media_mode'] == 'routed':
                 params['p2p.preference'] = 'disabled'
             elif session_options['media_mode'] == 'relayed':
                 if params['archiveMode'] == 'always':
-                    raise InvalidOptionsError(
+                    raise VideoError(
                         'Invalid combination: cannot specify "archive_mode": "always" and "media_mode": "relayed".'
                     )
                 else:
@@ -228,7 +225,7 @@ class Video:
 
     def play_dtmf(self, session_id: str, digits: str, connection_id: str = None):
         if not re.search('^[0-9*#p]+$', digits):
-            raise InvalidInputError('Only digits 0-9, *, #, and "p" are allowed.')
+            raise VideoError('Only digits 0-9, *, #, and "p" are allowed.')
 
         params = {'digits': digits}
 
@@ -249,9 +246,9 @@ class Video:
 
     def list_broadcasts(self, offset: int = None, count: int = None, session_id: str = None):
         if offset is not None and (type(offset) != int or offset < 0):
-            raise InvalidOptionsError('Offset must be an int >= 0.')
+            raise VideoError('Offset must be an int >= 0.')
         if count is not None and (type(count) != int or count < 0 or count > 1000):
-            raise InvalidOptionsError('Count must be an int between 0 and 1000.')
+            raise VideoError('Count must be an int between 0 and 1000.')
 
         params = {'offset': str(offset), 'count': str(count), 'sessionId': session_id}
 

@@ -1,4 +1,5 @@
-from pydantic import BaseModel, HttpUrl, AnyUrl, Field, constr
+from pydantic import BaseModel, HttpUrl, AnyUrl, Field
+from pydantic.types import  conint, constr, AnyType
 from typing import Optional, Dict
 from typing_extensions import Literal
 
@@ -8,28 +9,28 @@ class ConnectEndpoints:
         type: str = None
 
     class PhoneEndpoint(Endpoint):
-        type = Field('phone', const=True)
-        number: constr(regex=r'^[1-9]\d{6,14}$')
-        dtmfAnswer: Optional[constr(regex='^[0-9*#p]+$')]
+        type: AnyType = Field('phone', Literal=True)
+        number: constr(pattern=r'^[1-9]\d{6,14}$')
+        dtmfAnswer: Optional[constr(pattern='^[0-9*#p]+$')]
         onAnswer: Optional[Dict[str, HttpUrl]]
 
     class AppEndpoint(Endpoint):
-        type = Field('app', const=True)
+        type: AnyType = Field('app', Literal=True)
         user: str
 
     class WebsocketEndpoint(Endpoint):
-        type = Field('websocket', const=True)
+        type: AnyType = Field('websocket', Literal=True)
         uri: AnyUrl
         contentType: Literal['audio/l16;rate=16000', 'audio/l16;rate=8000']
         headers: Optional[dict]
 
     class SipEndpoint(Endpoint):
-        type = Field('sip', const=True)
+        type: AnyType = Field('sip', Literal=True)
         uri: str
         headers: Optional[dict]
 
     class VbcEndpoint(Endpoint):
-        type = Field('vbc', const=True)
+        type: AnyType = Field('vbc', Literal=True)
         extension: str
 
     @classmethod

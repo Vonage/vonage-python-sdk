@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field, validator, constr, confloat, conint
+from pydantic import BaseModel, Field, validator
+from pydantic.types import  conint, constr, confloat, AnyType
 from typing import Optional, Union, List
 from typing_extensions import Literal
 
@@ -16,12 +17,12 @@ class Ncco:
     class Record(Action):
         """Use the record action to record a call or part of a call."""
 
-        action = Field('record', const=True)
+        action: AnyType = Field('record', Literal=True)
         format: Optional[Literal['mp3', 'wav', 'ogg']]
         split: Optional[Literal['conversation']]
         channels: Optional[conint(ge=1, le=32)]
         endOnSilence: Optional[conint(ge=3, le=10)]
-        endOnKey: Optional[constr(regex='^[0-9*#]$')]
+        endOnKey: Optional[constr(pattern='^[0-9*#]$')]
         timeOut: Optional[conint(ge=3, le=7200)]
         beepStart: Optional[bool]
         eventUrl: Optional[Union[List[str], str]]
@@ -42,7 +43,7 @@ class Ncco:
         while preserving the communication context.
         Using conversation with the same name reuses the same persisted conversation."""
 
-        action = Field('conversation', const=True)
+        action: AnyType = Field('conversation', Literal=True)
         name: str
         musicOnHoldUrl: Optional[Union[List[str], str]]
         startOnEnter: Optional[bool]
@@ -65,9 +66,9 @@ class Ncco:
     class Connect(Action):
         """You can use the connect action to connect a call to endpoints such as phone numbers or a VBC extension."""
 
-        action = Field('connect', const=True)
+        action: AnyType = Field('connect', Literal=True)
         endpoint: Union[dict, ConnectEndpoints.Endpoint, List[dict]]
-        from_: Optional[constr(regex=r'^[1-9]\d{6,14}$')]
+        from_: Optional[constr(pattern=r'^[1-9]\d{6,14}$')]
         randomFromNumber: Optional[bool]
         eventType: Optional[Literal['synchronous']]
         timeout: Optional[int]
@@ -122,7 +123,7 @@ class Ncco:
     class Talk(Action):
         """The talk action sends synthesized speech to a Conversation."""
 
-        action = Field('talk', const=True)
+        action: AnyType = Field('talk', Literal=True)
         text: constr(max_length=1500)
         bargeIn: Optional[bool]
         loop: Optional[conint(ge=0)]
@@ -134,7 +135,7 @@ class Ncco:
     class Stream(Action):
         """The stream action allows you to send an audio stream to a Conversation."""
 
-        action = Field('stream', const=True)
+        action: AnyType = Field('stream', Literal=True)
         streamUrl: Union[List[str], str]
         level: Optional[confloat(ge=-1, le=1)]
         bargeIn: Optional[bool]
@@ -147,7 +148,7 @@ class Ncco:
     class Input(Action):
         """Collect digits or speech input by the person you are are calling."""
 
-        action = Field('input', const=True)
+        action: AnyType = Field('input', Literal=True)
         type: Union[
             Literal['dtmf', 'speech'],
             List[Literal['dtmf']],
@@ -180,7 +181,7 @@ class Ncco:
     class Notify(Action):
         """Use the notify action to send a custom payload to your event URL."""
 
-        action = Field('notify', const=True)
+        action: AnyType = Field('notify', Literal=True)
         payload: dict
         eventUrl: Union[List[str], str]
         eventMethod: Optional[constr(to_upper=True)]
@@ -193,7 +194,7 @@ class Ncco:
     class Pay(Action):
         """The pay action collects credit card information with DTMF input in a secure (PCI-DSS compliant) way."""
 
-        action = Field('pay', const=True)
+        action: AnyType = Field('pay', Literal=True)
         amount: confloat(ge=0)
         currency: Optional[constr(to_lower=True)]
         eventUrl: Optional[Union[List[str], str]]

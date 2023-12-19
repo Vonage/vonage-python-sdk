@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from vonage import Client
 
-from pydantic import BaseModel, ValidationError, validator, conint, constr
+from pydantic import BaseModel, ValidationError, validator
+from pydantic.types import  conint, constr
 from typing import Optional, List
 
 import copy
@@ -73,7 +74,7 @@ class Verify2:
         code_length: Optional[conint(ge=4, le=10)]
         fraud_check: Optional[bool]
         code: Optional[
-            constr(min_length=4, max_length=10, regex='^(?=[a-zA-Z0-9]{4,10}$)[a-zA-Z0-9]*$')
+            constr(min_length=4, max_length=10, pattern=r'^[a-zA-Z0-9]{4,10}$')
         ]
 
         @validator('workflow')

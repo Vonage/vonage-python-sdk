@@ -5,9 +5,8 @@ import json
 import pytest
 from pydantic import ValidationError
 
-
 def _action_as_dict(action: Ncco.Action):
-    return action.dict(exclude_none=True)
+    return action.model_dump(exclude_none=True)
 
 
 def test_connect_all_endpoints_from_model():

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, SerializeAsAny, validator
 from pydantic.types import  conint, constr, confloat, AnyType
 from typing import Optional, Union, List
 from typing_extensions import Literal
@@ -18,15 +18,15 @@ class Ncco:
         """Use the record action to record a call or part of a call."""
 
         action: AnyType = Field('record', Literal=True)
-        format: Optional[Literal['mp3', 'wav', 'ogg']]
-        split: Optional[Literal['conversation']]
-        channels: Optional[conint(ge=1, le=32)]
-        endOnSilence: Optional[conint(ge=3, le=10)]
-        endOnKey: Optional[constr(pattern='^[0-9*#]$')]
-        timeOut: Optional[conint(ge=3, le=7200)]
-        beepStart: Optional[bool]
-        eventUrl: Optional[Union[List[str], str]]
-        eventMethod: Optional[constr(to_upper=True)]
+        format: Optional[Literal['mp3', 'wav', 'ogg']] = None
+        split: Optional[Literal['conversation']] = None
+        channels: Optional[conint(ge=1, le=32)] = None
+        endOnSilence: Optional[conint(ge=3, le=10)] = None
+        endOnKey: Optional[constr(pattern='^[0-9*#]$')] = None
+        timeOut: Optional[conint(ge=3, le=7200)] = None
+        beepStart: Optional[bool] = None
+        eventUrl: Optional[Union[List[str], str]] = None
+        eventMethod: Optional[constr(to_upper=True)] = None
 
         @validator('channels')
         def enable_split(cls, v, values):
@@ -45,13 +45,13 @@ class Ncco:
 
         action: AnyType = Field('conversation', Literal=True)
         name: str
-        musicOnHoldUrl: Optional[Union[List[str], str]]
-        startOnEnter: Optional[bool]
-        endOnExit: Optional[bool]
-        record: Optional[bool]
-        canSpeak: Optional[List[str]]
-        canHear: Optional[List[str]]
-        mute: Optional[bool]
+        musicOnHoldUrl: Optional[Union[List[str], str]] = None
+        startOnEnter: Optional[bool] = None
+        endOnExit: Optional[bool] = None
+        record: Optional[bool] = None
+        canSpeak: Optional[List[str]] = None
+        canHear: Optional[List[str]] = None
+        mute: Optional[bool] = None
 
         @validator('musicOnHoldUrl')
         def ensure_url_in_list(cls, v):
@@ -68,16 +68,16 @@ class Ncco:
 
         action: AnyType = Field('connect', Literal=True)
         endpoint: Union[dict, ConnectEndpoints.Endpoint, List[dict]]
-        from_: Optional[constr(pattern=r'^[1-9]\d{6,14}$')]
-        randomFromNumber: Optional[bool]
-        eventType: Optional[Literal['synchronous']]
-        timeout: Optional[int]
-        limit: Optional[conint(le=7200)]
-        machineDetection: Optional[Literal['continue', 'hangup']]
-        advancedMachineDetection: Optional[dict]
-        eventUrl: Optional[Union[List[str], str]]
-        eventMethod: Optional[constr(to_upper=True)]
-        ringbackTone: Optional[str]
+        from_: Optional[constr(pattern=r'^[1-9]\d{6,14}$')] = None
+        randomFromNumber: Optional[bool] = None
+        eventType: Optional[Literal['synchronous']] = None
+        timeout: Optional[int] = None
+        limit: Optional[conint(le=7200)] = None
+        machineDetection: Optional[Literal['continue', 'hangup']] = None
+        advancedMachineDetection: Optional[dict] = None
+        eventUrl: Optional[Union[List[str], str]] = None
+        eventMethod: Optional[constr(to_upper=True)] = None
+        ringbackTone: Optional[str] = None
 
         @validator('endpoint')
         def validate_endpoint(cls, v):
@@ -125,21 +125,21 @@ class Ncco:
 
         action: AnyType = Field('talk', Literal=True)
         text: constr(max_length=1500)
-        bargeIn: Optional[bool]
-        loop: Optional[conint(ge=0)]
-        level: Optional[confloat(ge=-1, le=1)]
-        language: Optional[str]
-        style: Optional[int]
-        premium: Optional[bool]
+        bargeIn: Optional[bool] = None
+        loop: Optional[conint(ge=0)] = None
+        level: Optional[confloat(ge=-1, le=1)] = None
+        language: Optional[str] = None
+        style: Optional[int] = None
+        premium: Optional[bool] = None
 
     class Stream(Action):
         """The stream action allows you to send an audio stream to a Conversation."""
 
         action: AnyType = Field('stream', Literal=True)
         streamUrl: Union[List[str], str]
-        level: Optional[confloat(ge=-1, le=1)]
-        bargeIn: Optional[bool]
-        loop: Optional[conint(ge=0)]
+        level: Optional[confloat(ge=-1, le=1)] = None
+        bargeIn: Optional[bool] = None
+        loop: Optional[conint(ge=0)] = None
 
         @validator('streamUrl')
         def ensure_url_in_list(cls, v):
@@ -155,10 +155,10 @@ class Ncco:
             List[Literal['speech']],
             List[Literal['dtmf', 'speech']],
         ]
-        dtmf: Optional[Union[InputTypes.Dtmf, dict]]
-        speech: Optional[Union[InputTypes.Speech, dict]]
-        eventUrl: Optional[Union[List[str], str]]
-        eventMethod: Optional[constr(to_upper=True)]
+        dtmf: Optional[Union[InputTypes.Dtmf, dict]] = None
+        speech: Optional[Union[InputTypes.Speech, dict]] = None
+        eventUrl: Optional[Union[List[str], str]] = None
+        eventMethod: Optional[constr(to_upper=True)] = None
 
         @validator('type', 'eventUrl')
         def ensure_value_in_list(cls, v):
@@ -184,7 +184,7 @@ class Ncco:
         action: AnyType = Field('notify', Literal=True)
         payload: dict
         eventUrl: Union[List[str], str]
-        eventMethod: Optional[constr(to_upper=True)]
+        eventMethod: Optional[constr(to_upper=True)] = None
 
         @validator('eventUrl')
         def ensure_url_in_list(cls, v):
@@ -196,10 +196,10 @@ class Ncco:
 
         action: AnyType = Field('pay', Literal=True)
         amount: confloat(ge=0)
-        currency: Optional[constr(to_lower=True)]
-        eventUrl: Optional[Union[List[str], str]]
-        prompts: Optional[Union[List[PayPrompts.TextPrompt], PayPrompts.TextPrompt, dict]]
-        voice: Optional[Union[PayPrompts.VoicePrompt, dict]]
+        currency: Optional[constr(to_lower=True)] = None
+        eventUrl: Optional[Union[List[str], str]] = None
+        prompts: Optional[Union[List[PayPrompts.TextPrompt], PayPrompts.TextPrompt, dict]] = None
+        voice: Optional[Union[PayPrompts.VoicePrompt, dict]] = None
 
         @validator('amount')
         def round_amount(cls, v):

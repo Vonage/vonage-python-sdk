@@ -9,13 +9,13 @@ class InputTypes:
         submitOnHash: Optional[bool]
 
     class Speech(BaseModel):
-        uuid: Optional[str]
-        endOnSilence: Optional[confloat(ge=0.4, le=10.0)]
-        language: Optional[str]
-        context: Optional[List[str]]
-        startTimeout: Optional[conint(ge=1, le=60)]
-        maxDuration: Optional[conint(ge=1, le=60)]
-        saveAudio: Optional[bool]
+        uuid: Optional[str] = None
+        endOnSilence: Optional[confloat(ge=0.4, le=10.0)] = None
+        language: Optional[str] = None
+        context: Optional[List[str]] = None
+        startTimeout: Optional[conint(ge=1, le=60)] = None
+        maxDuration: Optional[conint(ge=1, le=60)] = None
+        saveAudio: Optional[bool] = None
 
     @classmethod
     def create_dtmf_model(cls, dict) -> Dtmf:

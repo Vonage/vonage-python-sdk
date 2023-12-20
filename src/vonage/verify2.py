@@ -33,7 +33,7 @@ class Verify2:
         self._remove_unnecessary_fraud_check(params)
         try:
             params_to_verify = copy.deepcopy(params)
-            Verify2.VerifyRequest.parse_obj(params_to_verify)
+            Verify2.VerifyRequest.model_validate(params_to_verify)
         except (ValidationError, Verify2Error) as err:
             raise err
 
@@ -68,14 +68,14 @@ class Verify2:
     class VerifyRequest(BaseModel):
         brand: str
         workflow: List[dict]
-        locale: Optional[str]
-        channel_timeout: Optional[conint(ge=60, le=900)]
-        client_ref: Optional[str]
-        code_length: Optional[conint(ge=4, le=10)]
-        fraud_check: Optional[bool]
+        locale: Optional[str] = None
+        channel_timeout: Optional[conint(ge=60, le=900)] = None
+        client_ref: Optional[str] = None
+        code_length: Optional[conint(ge=4, le=10)] = None
+        fraud_check: Optional[bool] = None
         code: Optional[
             constr(min_length=4, max_length=10, pattern=r'^[a-zA-Z0-9]{4,10}$')
-        ]
+        ] = None
 
         @validator('workflow')
         def check_valid_workflow(cls, v):

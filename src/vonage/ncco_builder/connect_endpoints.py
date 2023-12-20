@@ -1,8 +1,7 @@
-from pydantic import BaseModel, HttpUrl, AnyUrl, Field
+from pydantic import BaseModel, HttpUrl, AnyUrl, Field, SerializeAsAny
 from pydantic.types import  conint, constr, AnyType
 from typing import Optional, Dict
 from typing_extensions import Literal
-
 
 class ConnectEndpoints:
     class Endpoint(BaseModel):
@@ -11,8 +10,8 @@ class ConnectEndpoints:
     class PhoneEndpoint(Endpoint):
         type: AnyType = Field('phone', Literal=True)
         number: constr(pattern=r'^[1-9]\d{6,14}$')
-        dtmfAnswer: Optional[constr(pattern='^[0-9*#p]+$')]
-        onAnswer: Optional[Dict[str, HttpUrl]]
+        dtmfAnswer: Optional[constr(pattern='^[0-9*#p]+$')] = None
+        onAnswer: Optional[Dict[str, HttpUrl]] = None
 
     class AppEndpoint(Endpoint):
         type: AnyType = Field('app', Literal=True)

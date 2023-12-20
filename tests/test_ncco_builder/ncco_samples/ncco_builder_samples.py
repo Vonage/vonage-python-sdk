@@ -104,7 +104,6 @@ insane_ncco = [
         'eventMethod': 'PUT',
         'eventType': 'synchronous',
         'eventUrl': ['http://example.com'],
-        'from': '447400000000',
         'limit': 1000,
         'machineDetection': 'hangup',
         'randomFromNumber': False,

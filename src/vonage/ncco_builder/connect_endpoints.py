@@ -1,5 +1,5 @@
 from pydantic import BaseModel, HttpUrl, AnyUrl, constr, field_serializer
-from typing import Optional, Dict
+from typing import Dict
 from typing_extensions import Literal
 
 
@@ -11,11 +11,11 @@ class ConnectEndpoints:
         type: Literal['phone'] = 'phone'
 
         number: constr(pattern=r'^[1-9]\d{6,14}$')
-        dtmfAnswer: Optional[constr(pattern='^[0-9*#p]+$')] = None
-        onAnswer: Optional[Dict[str, HttpUrl]] = None
+        dtmfAnswer: constr(pattern='^[0-9*#p]+$') = None
+        onAnswer: Dict[str, HttpUrl] = None
 
         @field_serializer('onAnswer')
-        def serialize_dt(self, oa: Optional[Dict[str, HttpUrl]], _info):
+        def serialize_dt(self, oa: Dict[str, HttpUrl], _info):
             if oa is None:
                 return oa
 
@@ -30,7 +30,7 @@ class ConnectEndpoints:
 
         uri: AnyUrl
         contentType: Literal['audio/l16;rate=16000', 'audio/l16;rate=8000']
-        headers: Optional[dict]
+        headers: dict
 
         @field_serializer('uri')
         def serialize_uri(self, uri: AnyUrl, _info):
@@ -39,7 +39,7 @@ class ConnectEndpoints:
     class SipEndpoint(Endpoint):
         type: Literal['sip'] = 'sip'
         uri: str
-        headers: Optional[dict]
+        headers: dict
 
     class VbcEndpoint(Endpoint):
         type: Literal['vbc'] = 'vbc'

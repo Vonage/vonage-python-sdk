@@ -1,21 +1,21 @@
 from pydantic import BaseModel, confloat, conint
-from typing import Optional, List
+from typing import List
 
 
 class InputTypes:
     class Dtmf(BaseModel):
-        timeOut: Optional[conint(ge=0, le=10)] = None
-        maxDigits: Optional[conint(ge=1, le=20)] = None
-        submitOnHash: Optional[bool] = None
+        timeOut: conint(ge=0, le=10) = None
+        maxDigits: conint(ge=1, le=20) = None
+        submitOnHash: bool = None
 
     class Speech(BaseModel):
-        uuid: Optional[str] = None
-        endOnSilence: Optional[confloat(ge=0.4, le=10.0)] = None
-        language: Optional[str] = None
-        context: Optional[List[str]] = None
-        startTimeout: Optional[conint(ge=1, le=60)] = None
-        maxDuration: Optional[conint(ge=1, le=60)] = None
-        saveAudio: Optional[bool] = None
+        uuid: str = None
+        endOnSilence: confloat(ge=0.4, le=10.0) = None
+        language: str = None
+        context: List[str] = None
+        startTimeout: conint(ge=1, le=60) = None
+        maxDuration: conint(ge=1, le=60) = None
+        saveAudio: bool = None
 
     @classmethod
     def create_dtmf_model(cls, dict) -> Dtmf:

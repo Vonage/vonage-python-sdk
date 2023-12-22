@@ -5,8 +5,8 @@ from typing_extensions import Annotated
 if TYPE_CHECKING:
     from vonage import Client
 
-from pydantic import BaseModel, Field, StringConstraints, ValidationError, field_validator, validator, conint, constr
-from typing import Optional, List
+from pydantic import BaseModel, StringConstraints, ValidationError, field_validator, conint
+from typing import List
 
 import copy
 import re
@@ -33,7 +33,6 @@ class Verify2:
         self._remove_unnecessary_fraud_check(params)
         try:
             params_to_verify = copy.deepcopy(params)
-            # Verify2.VerifyRequest.parse_obj(params_to_verify)
             Verify2.VerifyRequest.model_validate(params_to_verify)
         except (ValidationError, Verify2Error) as err:
             raise err
@@ -69,14 +68,14 @@ class Verify2:
     class VerifyRequest(BaseModel):
         brand: str
         workflow: List[dict]
-        locale: Optional[str] = None
-        channel_timeout: Optional[conint(ge=60, le=900)] = None
-        client_ref: Optional[str] = None
-        code_length: Optional[conint(ge=4, le=10)] = None
-        fraud_check: Optional[bool] = None
-        code: Optional[Annotated[str, StringConstraints(
+        locale: str = None
+        channel_timeout: conint(ge=60, le=900) = None
+        client_ref: str = None
+        code_length: conint(ge=4, le=10) = None
+        fraud_check: bool = None
+        code: Annotated[str, StringConstraints(
             min_length=4, max_length=10
-        )]] = None
+        )] = None
 
         @field_validator('code')
         @classmethod
@@ -87,7 +86,8 @@ class Verify2:
                 raise ValueError("string does not match regex")
             return c
 
-        @validator('workflow')
+        @field_validator('workflow')
+        @classmethod
         def check_valid_workflow(cls, v):
             for workflow in v:
                 Verify2._check_valid_channel(workflow)

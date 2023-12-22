@@ -1,12 +1,12 @@
-from pydantic import BaseModel, validator
-from typing import Optional, Dict
+from pydantic import BaseModel, ValidationInfo, field_validator, validator
+from typing import Dict
 from typing_extensions import Literal
 
 
 class PayPrompts:
     class VoicePrompt(BaseModel):
-        language: Optional[str]
-        style: Optional[int]
+        language: str
+        style: int
 
     class TextPrompt(BaseModel):
         type: Literal['CardNumber', 'ExpirationDate', 'SecurityCode']
@@ -22,8 +22,11 @@ class PayPrompts:
             Dict[Literal['text'], str],
         ]
 
-        @validator('errors')
-        def check_valid_error_format(cls, v, values):
+        @field_validator('errors')
+        @classmethod
+        def check_valid_error_format(cls, v, info: ValidationInfo):
+            values = info.data
+
             if values['type'] == 'CardNumber':
                 allowed_values = {'InvalidCardType', 'InvalidCardNumber', 'Timeout'}
                 cls.check_allowed_values(v, allowed_values, values['type'])
@@ -44,8 +47,8 @@ class PayPrompts:
 
     @classmethod
     def create_voice_model(cls, dict) -> VoicePrompt:
-        return cls.VoicePrompt.parse_obj(dict)
+        return cls.VoicePrompt.model_validate(dict)
 
     @classmethod
     def create_text_model(cls, dict) -> TextPrompt:
-        return cls.TextPrompt.parse_obj(dict)
+        return cls.TextPrompt.model_validate(dict)

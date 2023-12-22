@@ -1,3 +1,4 @@
+import pytest
 from vonage import Ncco, ConnectEndpoints, InputTypes, PayPrompts
 
 record = Ncco.Record(eventUrl='http://example.com/events')
@@ -53,27 +54,34 @@ notify = Ncco.Notify(
     payload={"message": "world"}, eventUrl=["http://example.com"], eventMethod='PUT'
 )
 
-pay_voice_prompt = Ncco.Pay(
-    amount=99.99,
-    currency='gbp',
-    eventUrl='https://example.com/payment',
-    voice=PayPrompts.VoicePrompt(language='en-GB', style=1),
-)
 
-pay_text_prompt = Ncco.Pay(
-    amount=12.345,
-    currency='gbp',
-    eventUrl='https://example.com/payment',
-    prompts=PayPrompts.TextPrompt(
-        type='CardNumber',
-        text='Enter your card number.',
-        errors={
-            'InvalidCardType': {
-                'text': 'The card you are trying to use is not valid for this purchase.'
-            }
-        },
-    ),
-)
+def get_pay_voice_prompt():
+    with pytest.deprecated_call():
+        return Ncco.Pay(
+            amount=99.99,
+            currency='gbp',
+            eventUrl='https://example.com/payment',
+            voice=PayPrompts.VoicePrompt(language='en-GB', style=1),
+        )
+
+
+def get_pay_text_prompt():
+    with pytest.deprecated_call():
+        return Ncco.Pay(
+            amount=12.345,
+            currency='gbp',
+            eventUrl='https://example.com/payment',
+            prompts=PayPrompts.TextPrompt(
+                type='CardNumber',
+                text='Enter your card number.',
+                errors={
+                    'InvalidCardType': {
+                        'text': 'The card you are trying to use is not valid for this purchase.'
+                    }
+                },
+            ),
+        )
+
 
 basic_ncco = [{"action": "talk", "text": "hello"}]
 

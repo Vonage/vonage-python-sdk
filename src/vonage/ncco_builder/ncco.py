@@ -243,14 +243,11 @@ class Ncco:
 
     @staticmethod
     def build_ncco(*args: Action, actions: List[Action] = None) -> str:
-        print('here!')
         ncco = []
         if actions is not None:
             for action in actions:
-                print(action)
                 ncco.append(action.model_dump(exclude_none=True, by_alias=True))
         for action in args:
-            print(action)
             ncco.append(action.model_dump(exclude_none=True, by_alias=True))
         return ncco
 

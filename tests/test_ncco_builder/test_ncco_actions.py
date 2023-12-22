@@ -7,7 +7,7 @@ from pydantic import ValidationError
 
 
 def _action_as_dict(action: Ncco.Action):
-    return action.dict(exclude_none=True)
+    return action.model_dump(exclude_none=True, by_alias=True)
 
 
 def test_record_full():

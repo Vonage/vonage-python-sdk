@@ -2,7 +2,7 @@
 pytest==7.4.2
 responses==0.22.0
 coverage
-pydantic>=1.10,==1.*
+pydantic==2.5.2
 
 bump2version
 build

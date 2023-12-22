@@ -30,7 +30,7 @@ class ConnectEndpoints:
 
         uri: AnyUrl
         contentType: Literal['audio/l16;rate=16000', 'audio/l16;rate=8000']
-        headers: dict
+        headers: dict = None
 
         @field_serializer('uri')
         def serialize_uri(self, uri: AnyUrl, _info):
@@ -39,7 +39,7 @@ class ConnectEndpoints:
     class SipEndpoint(Endpoint):
         type: Literal['sip'] = 'sip'
         uri: str
-        headers: dict
+        headers: dict = None
 
     class VbcEndpoint(Endpoint):
         type: Literal['vbc'] = 'vbc'

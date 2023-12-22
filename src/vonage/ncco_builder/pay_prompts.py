@@ -5,8 +5,8 @@ from typing_extensions import Literal
 
 class PayPrompts:
     class VoicePrompt(BaseModel):
-        language: str
-        style: int
+        language: str = None
+        style: int = None
 
     class TextPrompt(BaseModel):
         type: Literal['CardNumber', 'ExpirationDate', 'SecurityCode']

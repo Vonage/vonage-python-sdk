@@ -1,49 +1,62 @@
-from pydantic import BaseModel, HttpUrl, AnyUrl, Field, constr
-from typing import Optional, Dict
+from pydantic import BaseModel, HttpUrl, AnyUrl, constr, field_serializer
+from typing import Dict
 from typing_extensions import Literal
 
 
 class ConnectEndpoints:
     class Endpoint(BaseModel):
-        type: str = None
+        type: Literal['phone', 'app', 'websocket', 'sip', 'vbc'] = None
 
     class PhoneEndpoint(Endpoint):
-        type = Field('phone', const=True)
-        number: constr(regex=r'^[1-9]\d{6,14}$')
-        dtmfAnswer: Optional[constr(regex='^[0-9*#p]+$')]
-        onAnswer: Optional[Dict[str, HttpUrl]]
+        type: Literal['phone'] = 'phone'
+
+        number: constr(pattern=r'^[1-9]\d{6,14}$')
+        dtmfAnswer: constr(pattern='^[0-9*#p]+$') = None
+        onAnswer: Dict[str, HttpUrl] = None
+
+        @field_serializer('onAnswer')
+        def serialize_dt(self, oa: Dict[str, HttpUrl], _info):
+            if oa is None:
+                return oa
+
+            return {k: str(v) for k, v in oa.items()}
 
     class AppEndpoint(Endpoint):
-        type = Field('app', const=True)
+        type: Literal['app'] = 'app'
         user: str
 
     class WebsocketEndpoint(Endpoint):
-        type = Field('websocket', const=True)
+        type: Literal['websocket'] = 'websocket'
+
         uri: AnyUrl
         contentType: Literal['audio/l16;rate=16000', 'audio/l16;rate=8000']
-        headers: Optional[dict]
+        headers: dict = None
+
+        @field_serializer('uri')
+        def serialize_uri(self, uri: AnyUrl, _info):
+            return str(uri)
 
     class SipEndpoint(Endpoint):
-        type = Field('sip', const=True)
+        type: Literal['sip'] = 'sip'
         uri: str
-        headers: Optional[dict]
+        headers: dict = None
 
     class VbcEndpoint(Endpoint):
-        type = Field('vbc', const=True)
+        type: Literal['vbc'] = 'vbc'
         extension: str
 
     @classmethod
     def create_endpoint_model_from_dict(cls, d) -> Endpoint:
         if d['type'] == 'phone':
-            return cls.PhoneEndpoint.parse_obj(d)
+            return cls.PhoneEndpoint.model_validate(d)
         elif d['type'] == 'app':
-            return cls.AppEndpoint.parse_obj(d)
+            return cls.AppEndpoint.model_validate(d)
         elif d['type'] == 'websocket':
-            return cls.WebsocketEndpoint.parse_obj(d)
+            return cls.WebsocketEndpoint.model_validate(d)
         elif d['type'] == 'sip':
-            return cls.WebsocketEndpoint.parse_obj(d)
+            return cls.WebsocketEndpoint.model_validate(d)
         elif d['type'] == 'vbc':
-            return cls.WebsocketEndpoint.parse_obj(d)
+            return cls.WebsocketEndpoint.model_validate(d)
         else:
             raise ValueError(
                 'Invalid "type" specified for endpoint object. Cannot create a ConnectEndpoints.Endpoint model.'

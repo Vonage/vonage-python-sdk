@@ -33,8 +33,8 @@ def test_build_insane_ncco():
         nbs.stream,
         nbs.input,
         nbs.notify,
-        nbs.pay_voice_prompt,
-        nbs.pay_text_prompt,
+        nbs.get_pay_voice_prompt(),
+        nbs.get_pay_text_prompt(),
     ]
     ncco = Ncco.build_ncco(actions=action_list)
     assert ncco == nbs.insane_ncco

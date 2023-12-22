@@ -7,7 +7,7 @@ from pydantic import ValidationError
 
 
 def _action_as_dict(action: Ncco.Action):
-    return action.dict(exclude_none=True)
+    return action.model_dump(exclude_none=True, by_alias=True)
 
 
 def test_record_full():
@@ -261,17 +261,19 @@ def test_notify_validation_error():
 
 
 def test_pay_voice_basic():
-    pay = Ncco.Pay(amount='10.00')
-    assert type(pay) == Ncco.Pay
-    assert json.dumps(_action_as_dict(pay)) == nas.pay_basic
+    with pytest.deprecated_call():
+        pay = Ncco.Pay(amount='10.00')
+        assert type(pay) == Ncco.Pay
+        assert json.dumps(_action_as_dict(pay)) == nas.pay_basic
 
 
 def test_pay_voice_full():
     voice_settings = PayPrompts.VoicePrompt(language='en-GB', style=1)
-    pay = Ncco.Pay(
-        amount=99.99, currency='gbp', eventUrl='https://example.com/payment', voice=voice_settings
-    )
-    assert json.dumps(_action_as_dict(pay)) == nas.pay_voice_full
+    with pytest.deprecated_call():
+        pay = Ncco.Pay(
+            amount=99.99, currency='gbp', eventUrl='https://example.com/payment', voice=voice_settings
+        )
+        assert json.dumps(_action_as_dict(pay)) == nas.pay_voice_full
 
 
 def test_pay_text():
@@ -284,10 +286,11 @@ def test_pay_text():
             }
         },
     )
-    pay = Ncco.Pay(
-        amount=12.345, currency='gbp', eventUrl='https://example.com/payment', prompts=text_prompts
-    )
-    assert json.dumps(_action_as_dict(pay)) == nas.pay_text
+    with pytest.deprecated_call():
+        pay = Ncco.Pay(
+            amount=12.345, currency='gbp', eventUrl='https://example.com/payment', prompts=text_prompts
+        )
+        assert json.dumps(_action_as_dict(pay)) == nas.pay_text
 
 
 def test_pay_text_multiple_prompts():
@@ -318,10 +321,12 @@ def test_pay_text_multiple_prompts():
     )
 
     text_prompts = [card_prompt, expiration_date_prompt, security_code_prompt]
-    pay = Ncco.Pay(amount=12, prompts=text_prompts)
-    assert json.dumps(_action_as_dict(pay)) == nas.pay_text_multiple_prompts
+    with pytest.deprecated_call():
+        pay = Ncco.Pay(amount=12, prompts=text_prompts)
+        assert json.dumps(_action_as_dict(pay)) == nas.pay_text_multiple_prompts
 
 
 def test_pay_validation_error():
     with pytest.raises(ValidationError):
-        Ncco.Pay(amount='not-valid')
+        with pytest.deprecated_call():
+            Ncco.Pay(amount='not-valid')

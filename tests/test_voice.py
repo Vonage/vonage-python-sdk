@@ -159,7 +159,6 @@ def test_user_provided_authorization(dummy_data):
     token = request_authorization().split()[1]
 
     token = jwt.decode(token, dummy_data.public_key, algorithms="RS256")
-    print(token)
     assert token["application_id"] == application_id
     assert token["nbf"] == nbf
     assert token["exp"] == exp

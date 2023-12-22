@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Union
 
 from .errors import SubaccountsError
 
@@ -28,8 +28,8 @@ class Subaccounts:
     def create_subaccount(
         self,
         name: str,
-        secret: Optional[str] = None,
-        use_primary_account_balance: Optional[bool] = None,
+        secret: str = None,
+        use_primary_account_balance: bool = None,
     ):
         params = {'name': name, 'secret': secret}
         if self._is_boolean(use_primary_account_balance):
@@ -52,9 +52,9 @@ class Subaccounts:
     def modify_subaccount(
         self,
         subaccount_key: str,
-        suspended: Optional[bool] = None,
-        use_primary_account_balance: Optional[bool] = None,
-        name: Optional[str] = None,
+        suspended: bool = None,
+        use_primary_account_balance: bool = None,
+        name: str = None,
     ):
         params = {'name': name}
         if self._is_boolean(suspended):
@@ -72,8 +72,8 @@ class Subaccounts:
     def list_credit_transfers(
         self,
         start_date: str = default_start_date,
-        end_date: Optional[str] = None,
-        subaccount: Optional[str] = None,
+        end_date: str = None,
+        subaccount: str = None,
     ):
         params = {
             'start_date': start_date,
@@ -112,8 +112,8 @@ class Subaccounts:
     def list_balance_transfers(
         self,
         start_date: str = default_start_date,
-        end_date: Optional[str] = None,
-        subaccount: Optional[str] = None,
+        end_date: str = None,
+        subaccount: str = None,
     ):
         params = {
             'start_date': start_date,

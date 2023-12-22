@@ -1,11 +1,12 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+from typing_extensions import Annotated
 
 if TYPE_CHECKING:
     from vonage import Client
 
-from pydantic import BaseModel, ValidationError, validator, conint, constr
-from typing import Optional, List
+from pydantic import BaseModel, StringConstraints, ValidationError, field_validator, conint
+from typing import List
 
 import copy
 import re
@@ -32,7 +33,7 @@ class Verify2:
         self._remove_unnecessary_fraud_check(params)
         try:
             params_to_verify = copy.deepcopy(params)
-            Verify2.VerifyRequest.parse_obj(params_to_verify)
+            Verify2.VerifyRequest.model_validate(params_to_verify)
         except (ValidationError, Verify2Error) as err:
             raise err
 
@@ -67,16 +68,26 @@ class Verify2:
     class VerifyRequest(BaseModel):
         brand: str
         workflow: List[dict]
-        locale: Optional[str]
-        channel_timeout: Optional[conint(ge=60, le=900)]
-        client_ref: Optional[str]
-        code_length: Optional[conint(ge=4, le=10)]
-        fraud_check: Optional[bool]
-        code: Optional[
-            constr(min_length=4, max_length=10, regex='^(?=[a-zA-Z0-9]{4,10}$)[a-zA-Z0-9]*$')
-        ]
+        locale: str = None
+        channel_timeout: conint(ge=60, le=900) = None
+        client_ref: str = None
+        code_length: conint(ge=4, le=10) = None
+        fraud_check: bool = None
+        code: Annotated[str, StringConstraints(
+            min_length=4, max_length=10
+        )] = None
 
-        @validator('workflow')
+        @field_validator('code')
+        @classmethod
+        def regex_check(cls, c: str):
+            re_for_code: re.Pattern[str] = re.compile('^(?=[a-zA-Z0-9]{4,10}$)[a-zA-Z0-9]*$')
+
+            if not re_for_code.match(c):
+                raise ValueError("string does not match regex")
+            return c
+
+        @field_validator('workflow')
+        @classmethod
         def check_valid_workflow(cls, v):
             for workflow in v:
                 Verify2._check_valid_channel(workflow)

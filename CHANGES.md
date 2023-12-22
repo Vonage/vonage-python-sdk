@@ -1,3 +1,6 @@
+# 3.13.0
+- Migrating to use Pydantic v2 as a dependency
+
 # 3.12.0
 - Add support for the [Vonage Video API](https://developer.vonage.com/en/video/overview)
 

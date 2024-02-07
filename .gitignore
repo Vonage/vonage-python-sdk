@@ -111,3 +111,8 @@ ENV*
 .pytest_cache
 html/
 .mutmut-cache
+
+# Pants workspace files
+/.pants.*
+/dist/
+/.pids

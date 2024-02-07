@@ -1,10 +1,6 @@
--e .
-pytest==7.4.2
-responses==0.22.0
-coverage
-pydantic==2.5.2
-
-bump2version
-build
-twine
-pre-commit
+pytest>=8.0.0
+requests>=2.31.0
+responses>=0.24.1
+pydantic>=2.5.2
+typing_extensions>=4.8.0
+vonage-jwt>=1.1.0

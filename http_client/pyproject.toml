@@ -1,0 +1,9 @@
+[project]
+name = 'vonage-http-client'
+description = 'An asynchronous HTTP client for making requests to Vonage APIs.'
+version = '0.1.0'
+dependencies = ['vonage-jwt', 'requests']
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"

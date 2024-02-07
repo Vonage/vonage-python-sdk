@@ -1,0 +1,39 @@
+[GLOBAL]
+pants_version = '2.19.0'
+
+backend_packages = [
+  'pants.backend.python',
+  'pants.backend.python.lint.autoflake',
+  'pants.backend.build_files.fmt.black',
+  'pants.backend.python.lint.isort',
+  'pants.backend.python.lint.black',
+  'pants.backend.python.lint.docformatter',
+  'pants.backend.tools.taplo',
+  "pants.backend.experimental.python",
+]
+
+[anonymous-telemetry]
+enabled = false
+
+[source]
+root_patterns = ['/', 'src/', 'tests/', 'libs/']
+
+[python]
+interpreter_constraints = ['==3.11.*']
+
+[pytest]
+args = ['-vv', '--no-header']
+
+[coverage-py]
+interpreter_constraints = ['>=3.8']
+report = ['html', 'console']
+filter = ['vonage/src', 'http_client/src', 'ni2/src', 'libs']
+
+[black]
+args = ['--line-length=90', '--skip-string-normalization']
+
+[isort]
+args = ['--profile=black', '--line-length=90']
+
+[docformatter]
+args = ['--wrap-summaries=100', '--wrap-descriptions=100']

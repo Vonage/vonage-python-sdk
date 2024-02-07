@@ -1,0 +1,9 @@
+[project]
+name = 'vonage-number-insight-v2'
+description = 'Vonage Number Insight v2 package'
+version = '0.1.0'
+dependencies = ['vonage-http-client']
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"

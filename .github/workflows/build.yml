@@ -1,5 +1,5 @@
 name: Build
-on: push
+on: [push, pull_request]
 
 permissions:
   actions: write
@@ -14,6 +14,9 @@ permissions:
   security-events: write
   statuses: write
 
+env:
+  PANTS_CONFIG_FILES: "pants.ci.toml"
+
 jobs:
   test:
     name: Test
@@ -22,16 +25,25 @@ jobs:
       fail-fast: false
       matrix:
         python: ["3.8", "3.9", "3.10", "3.11", "3.12"]
-        os: ["ubuntu-latest", "macos-latest"]
+        os: ["ubuntu-latest"]
     steps:
-      - uses: actions/setup-python@v4
+      - name: Clone repo
+        uses: actions/checkout@v4
+      - name: Setup python
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Clone repo
-        uses: actions/checkout@v3
-      - name: Install dependencies
-        run: make install
+      - name: Initialize pants
+        uses: pantsbuild/actions/init-pants@main
+        with:
+          gha-cache-key: cache0-py${{ matrix.python }}
+          named-caches-hash: ${{ hashFiles('requirements.txt') }}
+      - name: Check BUILD files
+        run: |
+          pants tailor --check update-build-files --check ::
+      - name: Lint
+        run: |
+          pants lint ::
       - name: Run tests
-        run: make coverage
-      - name: Run codecov
-        uses: codecov/codecov-action@v3
+        run: |
+          pants test --use-coverage ::

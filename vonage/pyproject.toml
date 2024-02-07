@@ -1,0 +1,9 @@
+[project]
+name = 'vonage'
+description = 'Python Server SDK for using Vonage APIs'
+version = '4.0.0b1'
+
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"

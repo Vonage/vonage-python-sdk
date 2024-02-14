@@ -1,6 +1,6 @@
 from dataclasses import asdict, dataclass
 
-from utils import remove_none_values
+from utils.utils import remove_none_values
 
 
 @dataclass

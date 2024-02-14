@@ -5,8 +5,6 @@ import responses
 from http_client.auth import Auth
 from pydantic import ValidationError
 from pytest import raises
-from testing_utils import build_response
-from utils import remove_none_values
 
 from http_client.http_client import HttpClient
 from number_insight_v2.number_insight_v2 import (
@@ -14,6 +12,8 @@ from number_insight_v2.number_insight_v2 import (
     FraudCheckResponse,
     NumberInsightV2,
 )
+from testing_utils import build_response
+from utils import remove_none_values
 
 path = abspath(__file__)
 

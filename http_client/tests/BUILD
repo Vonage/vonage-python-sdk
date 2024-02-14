@@ -1,1 +1,1 @@
-python_tests(dependencies=['http_client', 'libs'])
+python_tests(dependencies=['http_client', 'utils'])

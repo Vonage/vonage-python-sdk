@@ -12,9 +12,9 @@ from http_client.errors import (
 )
 from pytest import raises
 from requests import Response
-from testing_utils import build_response
 
 from http_client.http_client import HttpClient
+from testing_utils import build_response
 
 path = abspath(__file__)
 

@@ -1,8 +1,0 @@
-[project]
-name = 'vonage-lib'
-description = 'lib functions for use with Vonage APIs'
-version = '0.1.0'
-
-[build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"

@@ -1,7 +1,7 @@
 from json import JSONDecodeError
 
-from errors import VonageError
 from requests import Response
+from utils.errors import VonageError
 
 
 class JWTGenerationError(VonageError):

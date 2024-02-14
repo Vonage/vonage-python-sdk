@@ -1,7 +1,7 @@
 [project]
 name = 'vonage'
 description = 'Python Server SDK for using Vonage APIs'
-version = '4.0.0b1'
+version = '4.0.1a0'
 
 
 [build-system]

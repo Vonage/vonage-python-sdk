@@ -1,5 +1,5 @@
 from json import loads
-from os.path import abspath
+from os.path import abspath, dirname, join
 
 import responses
 from http_client.auth import Auth
@@ -17,6 +17,15 @@ from testing_utils import build_response
 from http_client.http_client import HttpClient
 
 path = abspath(__file__)
+
+
+def read_file(path):
+    with open(join(dirname(__file__), path)) as input_file:
+        return input_file.read()
+
+
+application_id = 'asdfzxcv'
+private_key = read_file('data/dummy_private_key.txt')
 
 
 def test_create_http_client():
@@ -48,12 +57,12 @@ def test_create_http_client_invalid_options_error():
 def test_make_get_request():
     build_response(path, 'GET', 'https://example.com/get_json', 'example_get.json')
     client = HttpClient(
-        Auth('asdfqwer', 'asdfqwer1234'),
+        Auth(application_id=application_id, private_key=private_key),
         http_client_options={'api_host': 'example.com'},
     )
     res = client.get(host='example.com', request_path='/get_json')
-    assert res['hello'] == 'world'
 
+    assert res['hello'] == 'world'
     assert responses.calls[0].request.headers['User-Agent'] == client._user_agent
 
 
@@ -64,7 +73,7 @@ def test_make_get_request_no_content():
         Auth('asdfqwer', 'asdfqwer1234'),
         http_client_options={'api_host': 'example.com'},
     )
-    res = client.get(host='example.com', request_path='/get_json')
+    res = client.get(host='example.com', request_path='/get_json', auth_type='basic')
     assert res == None
 
 
@@ -72,7 +81,7 @@ def test_make_get_request_no_content():
 def test_make_post_request():
     build_response(path, 'POST', 'https://example.com/post_json', 'example_post.json')
     client = HttpClient(
-        Auth('asdfqwer', 'asdfqwer1234'),
+        Auth(application_id=application_id, private_key=private_key),
         http_client_options={'api_host': 'example.com'},
     )
     params = {
@@ -92,7 +101,7 @@ def test_http_response_general_error():
 
     client = HttpClient(Auth())
     try:
-        client.get(host='example.com', request_path='/get_json')
+        client.get(host='example.com', request_path='/get_json', auth_type='basic')
     except HttpRequestError as err:
         assert err.response.json()['Error'] == 'Bad Request'
         assert '400 response from https://example.com/get_json.' in err.message
@@ -104,7 +113,7 @@ def test_http_response_general_text_error():
 
     client = HttpClient(Auth())
     try:
-        client.get(host='example.com', request_path='/get')
+        client.get(host='example.com', request_path='/get', auth_type='basic')
     except HttpRequestError as err:
         assert err.response.text == 'Error: Bad Request'
         assert '400 response from https://example.com/get.' in err.message
@@ -114,11 +123,11 @@ def test_http_response_general_text_error():
 def test_authentication_error():
     build_response(path, 'GET', 'https://example.com/get_json', '401.json', 401)
 
-    client = HttpClient(Auth())
+    client = HttpClient(Auth(application_id=application_id, private_key=private_key))
     try:
         client.get(host='example.com', request_path='/get_json')
     except AuthenticationError as err:
-        assert err.response.json()['Error'] == 'Authentication Failed'
+        assert err.response.json()['title'] == 'Unauthorized'
 
 
 @responses.activate
@@ -127,7 +136,7 @@ def test_authentication_error_no_content():
 
     client = HttpClient(Auth())
     try:
-        client.get(host='example.com', request_path='/get_json')
+        client.get(host='example.com', request_path='/get_json', auth_type='basic')
     except AuthenticationError as err:
         assert type(err.response) == Response
 
@@ -138,17 +147,23 @@ def test_rate_limited_error():
 
     client = HttpClient(Auth())
     try:
-        client.get(host='example.com', request_path='/get_json')
+        client.get(host='example.com', request_path='/get_json', auth_type='basic')
     except RateLimitedError as err:
-        assert err.response.json()['Error'] == 'Too Many Requests'
+        assert err.response.json()['title'] == 'Rate Limit Hit'
 
 
 @responses.activate
 def test_server_error():
     build_response(path, 'GET', 'https://example.com/get_json', '500.json', 500)
 
-    client = HttpClient(Auth())
+    client = HttpClient(Auth(application_id=application_id, private_key=private_key))
     try:
         client.get(host='example.com', request_path='/get_json')
     except ServerError as err:
-        assert err.response.json()['Error'] == 'Internal Server Error'
+        assert err.response.json()['title'] == 'Internal Server Error'
+
+
+def test_append_to_user_agent():
+    client = HttpClient(Auth())
+    client.append_to_user_agent('TestAgent')
+    assert 'TestAgent' in client.user_agent

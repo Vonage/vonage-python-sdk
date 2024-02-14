@@ -4,4 +4,7 @@ test:
 	pants test ::
 
 coverage:
+	pants test --use-coverage ::
+
+coverage-report:
 	pants test --use-coverage --open-coverage ::

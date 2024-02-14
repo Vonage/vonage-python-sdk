@@ -1,1 +1,5 @@
-{"Error": "Internal Server Error"}
+{
+    "type": "https://developer.vonage.com/api-errors",
+    "title": "Internal Server Error",
+    "instance": "272c5fa3-c02a-4451-b33c-d01e8de74023"
+}

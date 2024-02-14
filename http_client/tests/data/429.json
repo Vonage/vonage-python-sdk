@@ -1,1 +1,6 @@
-{"Error": "Too Many Requests"}
+{
+    "title": "Rate Limit Hit",
+    "type": "https://developer.vonage.com/api-errors#rate-limit",
+    "detail": "Please wait, then retry your request",
+    "instance": "bf0ca0bf927b3b52e3cb03217e1a1ddf"
+}

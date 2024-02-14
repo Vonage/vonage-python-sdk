@@ -34,3 +34,17 @@ def format_phone_number(number: Union[str, int]) -> str:
         f'Invalid phone number provided. You provided: "{number}".\n'
         'Use the E.164 format and start with the country code, e.g. "447700900000".'
     )
+
+
+def remove_none_values(my_dataclass) -> dict:
+    """A dict_factory that can be passed into the dataclass.asdict() method to remove None values
+    from a dict serialized from the dataclass my_dataclass.
+
+    Args:
+        my_dataclass (dataclass): A dataclass instance
+
+    Returns:
+        A dict based on the dataclass, excluding any key-value pairs where the
+        value is None.
+    """
+    return {k: v for (k, v) in my_dataclass if v is not None}

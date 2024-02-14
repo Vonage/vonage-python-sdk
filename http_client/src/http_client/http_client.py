@@ -1,6 +1,6 @@
 from logging import getLogger
 from platform import python_version
-from typing import Literal, Optional
+from typing import Literal, Optional, Union
 
 from http_client.auth import Auth
 from http_client.errors import (
@@ -32,8 +32,9 @@ class HttpClient:
     """A synchronous HTTP client used to send authenticated requests to Vonage APIs.
 
     Args:
-        auth (:class: Auth): An instance of the Auth class containing credentials to use when making HTTP requests.
+        auth (Auth): An instance of the Auth class containing credentials to use when making HTTP requests.
         http_client_options (dict, optional): Customization options for the HTTP Client.
+        sdk_version (str, optional): The SDK version used.
 
         The http_client_options dict can have any of the following fields:
             api_host (str, optional): The API host to use for HTTP requests. Defaults to 'api.nexmo.com'.
@@ -44,7 +45,12 @@ class HttpClient:
             max_retries (int, optional): The maximum number of retries for HTTP requests. Must be >= 0. Default is 3.
     """
 
-    def __init__(self, auth: Auth, http_client_options: HttpClientOptions = None):
+    def __init__(
+        self,
+        auth: Auth,
+        http_client_options: HttpClientOptions = None,
+        sdk_version: str = None,
+    ):
         self._auth = auth
         try:
             if http_client_options is not None:
@@ -70,7 +76,7 @@ class HttpClient:
         )
         self._session.mount('https://', self._adapter)
 
-        self._user_agent = f'vonage-python-sdk python/{python_version()}'
+        self._user_agent = f'vonage-python-sdk/{sdk_version} python/{python_version()}'
         self._headers = {'User-Agent': self._user_agent, 'Accept': 'application/json'}
 
     @property
@@ -89,11 +95,27 @@ class HttpClient:
     def rest_host(self):
         return self._rest_host
 
-    def post(self, host: str, request_path: str = '', params: dict = None):
-        return self.make_request('POST', host, request_path, params)
+    @property
+    def user_agent(self):
+        return self._user_agent
 
-    def get(self, host: str, request_path: str = '', params: dict = None):
-        return self.make_request('GET', host, request_path, params)
+    def post(
+        self,
+        host: str,
+        request_path: str = '',
+        params: dict = None,
+        auth_type: str = 'jwt',
+    ):
+        return self.make_request('POST', host, request_path, params, auth_type)
+
+    def get(
+        self,
+        host: str,
+        request_path: str = '',
+        params: dict = None,
+        auth_type: str = 'jwt',
+    ):
+        return self.make_request('GET', host, request_path, params, auth_type)
 
     @validate_call
     def make_request(
@@ -102,11 +124,17 @@ class HttpClient:
         host: str,
         request_path: str = '',
         params: Optional[dict] = None,
+        auth_type: Literal['jwt', 'basic'] = 'jwt',
     ):
         url = f'https://{host}{request_path}'
         logger.debug(
             f'{request_type} request to {url}, with data: {params}; headers: {self._headers}'
         )
+        if auth_type == 'jwt':
+            self._headers['Authorization'] = self._auth.create_jwt_auth_string()
+        elif auth_type == 'basic':
+            self._headers['Authorization'] = self._auth.create_basic_auth_string()
+
         with self._session.request(
             request_type,
             url,
@@ -116,7 +144,10 @@ class HttpClient:
         ) as response:
             return self._parse_response(response)
 
-    def _parse_response(self, response: Response):
+    def append_to_user_agent(self, string: str):
+        self._user_agent += f' {string}'
+
+    def _parse_response(self, response: Response) -> Union[dict, None]:
         logger.debug(
             f'Response received from {response.url} with status code: {response.status_code}; headers: {response.headers}'
         )

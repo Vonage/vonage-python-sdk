@@ -1,5 +1,5 @@
 from http_client.http_client import HttpClient
-from vonage.vonage import Auth, Vonage
+from vonage.vonage import Auth, Vonage, __version__
 
 
 def test_create_vonage_class_instance():
@@ -11,3 +11,4 @@ def test_create_vonage_class_instance():
         vonage.http_client.auth.create_basic_auth_string() == 'Basic YXNkZjpxd2VyYXNkZg=='
     )
     assert type(vonage.http_client) == HttpClient
+    assert f'vonage-python-sdk/{__version__}' in vonage.http_client._user_agent

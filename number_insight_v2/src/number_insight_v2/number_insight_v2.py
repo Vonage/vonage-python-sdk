@@ -1,6 +1,6 @@
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List, Literal, Optional, Union
 
 from pydantic import BaseModel
 
@@ -8,36 +8,70 @@ from http_client.http_client import HttpClient
 
 
 class FraudCheckRequest(BaseModel):
-    """"""
-
-    number: str
-    insights: Union[str, List[str]]
+    phone: Union[str, int]
+    insights: Union[
+        Literal['fraud_score', 'sim_swap'], List[Literal['fraud_score', 'sim_swap']]
+    ] = ['fraud_score', 'sim_swap']
+    type: Literal['phone'] = 'phone'
 
 
 @dataclass
+class Phone:
+    phone: str
+    carrier: Optional[str] = None
+    type: Optional[str] = None
+
+
+@dataclass
+class FraudScore:
+    risk_score: str
+    risk_recommendation: str
+    label: str
+    status: str
+
+
+@dataclass()
+class SimSwap:
+    status: str
+    swapped: Optional[bool] = None
+    reason: Optional[str] = None
+
+
+@dataclass()
 class FraudCheckResponse:
-    ...
+    request_id: str
+    type: str
+    phone: Phone
+    fraud_score: Optional[FraudScore]
+    sim_swap: Optional[SimSwap]
 
 
-#     phone: Phone
-#     sim: SimSwap
-
-
-class NumberInsightv2:
+class NumberInsightV2:
     """Number Insight API V2."""
 
     def __init__(self, http_client: HttpClient) -> None:
         self._http_client = deepcopy(http_client)
-        self._http_client._parse_response = self.response_parser
-        self._auth_type = 'header'
-
-    def fraud_check(self, number: str, insights: Union[str, List[str]]):
-        """"""
+        self._auth_type = 'basic'
 
     def fraud_check(self, request: FraudCheckRequest) -> FraudCheckResponse:
-        """"""
-        response = self._http_client.post('/ni/fraud', request.model_dump())
-        return FraudCheckResponse(response)
+        """Initiate a fraud check request."""
+        response = self._http_client.post(
+            self._http_client.api_host,
+            '/v2/ni',
+            request.model_dump(),
+            self._auth_type,
+        )
 
-    def response_parser(self, response):
-        """"""
+        phone = Phone(**response['phone'])
+        fraud_score = (
+            FraudScore(**response['fraud_score']) if 'fraud_score' in response else None
+        )
+        sim_swap = SimSwap(**response['sim_swap']) if 'sim_swap' in response else None
+
+        return FraudCheckResponse(
+            request_id=response['request_id'],
+            type=response['type'],
+            phone=phone,
+            fraud_score=fraud_score,
+            sim_swap=sim_swap,
+        )

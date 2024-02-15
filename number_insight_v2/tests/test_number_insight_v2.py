@@ -13,7 +13,7 @@ from number_insight_v2.number_insight_v2 import (
     NumberInsightV2,
 )
 from testing_utils import build_response
-from utils import remove_none_values
+from utils.utils import remove_none_values
 
 path = abspath(__file__)
 

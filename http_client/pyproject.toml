@@ -1,8 +1,30 @@
 [project]
 name = 'vonage-http-client'
-description = 'An asynchronous HTTP client for making requests to Vonage APIs.'
 version = '0.1.0'
-dependencies = ['vonage-jwt', 'requests']
+description = 'An HTTP client for making requests to Vonage APIs.'
+readme = "README.md"
+authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
+requires-python = ">=3.8"
+dependencies = [
+  "vonage-utils>=0.1.0",
+  "vonage-jwt>=1.1.0",
+  "requests==2.*",
+  "pydantic>=2.6.1",
+  "typing_extensions>=4.9.0",
+]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: Apache Software License",
+]
+
+[project.urls]
+homepage = "https://github.com/Vonage/vonage-python-sdk"
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]

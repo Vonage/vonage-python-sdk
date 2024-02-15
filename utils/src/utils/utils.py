@@ -1,7 +1,7 @@
 from re import search
 from typing import Union
 
-from errors import InvalidPhoneNumberError, InvalidPhoneNumberTypeError
+from utils.errors import InvalidPhoneNumberError, InvalidPhoneNumberTypeError
 
 
 def format_phone_number(number: Union[str, int]) -> str:

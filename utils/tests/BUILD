@@ -1,1 +1,1 @@
-python_tests(dependencies=['utils'])
+python_tests(dependencies=['utils/src/utils'])

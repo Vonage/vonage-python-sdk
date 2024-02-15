@@ -1,4 +1,4 @@
-from errors import VonageError
+from utils.errors import VonageError
 
 
 class NumberInsightV2Error(VonageError):

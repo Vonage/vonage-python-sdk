@@ -1,11 +1,15 @@
 [project]
 name = 'vonage-number-insight-v2'
-description = 'Vonage Number Insight v2 package'
 version = '0.1.0'
+description = 'Vonage Number Insight v2 package'
 readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
-license = "Apache"
-homepage = "https://github.com/Vonage/vonage-python-sdk"
+requires-python = ">=3.8"
+dependencies = [
+  "vonage-http-client>=0.1.0",
+  "vonage-utils>=0.1.0",
+  "pydantic>=2.6.1",
+]
 classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
@@ -14,10 +18,11 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: Apache Software License",
 ]
 
-[project.python-requires]
-python_version = ">=3.8"
+[project.urls]
+homepage = "https://github.com/Vonage/vonage-python-sdk"
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]

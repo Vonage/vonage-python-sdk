@@ -1,7 +1,7 @@
-from errors import InvalidPhoneNumberError, InvalidPhoneNumberTypeError
 from pytest import raises
+from utils.errors import InvalidPhoneNumberError, InvalidPhoneNumberTypeError
 
-from utils import format_phone_number
+from utils.utils import format_phone_number
 
 
 def test_format_phone_numbers():

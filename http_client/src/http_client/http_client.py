@@ -16,7 +16,7 @@ from requests.adapters import HTTPAdapter
 from requests.sessions import Session
 from typing_extensions import Annotated
 
-logger = getLogger('vonage-http-client-v2')
+logger = getLogger('vonage')
 
 
 class HttpClientOptions(BaseModel):

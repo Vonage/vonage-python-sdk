@@ -1,8 +1,28 @@
 [project]
 name = 'vonage'
-description = 'Python Server SDK for using Vonage APIs'
 version = '4.0.1a0'
+description = 'Python Server SDK for using Vonage APIs'
+readme = "README.md"
+authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
+requires-python = ">=3.8"
+dependencies = [
+  "vonage-utils>=0.1.0",
+  "vonage-http-client>=0.1.0",
+  "vonage-number-insight-v2>=0.1.0",
+]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: Apache Software License",
+]
 
+[project.urls]
+homepage = "https://github.com/Vonage/vonage-python-sdk"
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]

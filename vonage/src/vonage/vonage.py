@@ -1,10 +1,10 @@
 from typing import Optional
 
-from http_client.auth import Auth
+from vonage_http_client.auth import Auth
+from vonage_http_client.http_client import HttpClient, HttpClientOptions
+from vonage_number_insight_v2.number_insight_v2 import NumberInsightV2
 
-from http_client.http_client import HttpClient, HttpClientOptions
-from number_insight_v2.number_insight_v2 import NumberInsightV2
-from vonage import __version__
+from ._version import __version__
 
 
 class Vonage:

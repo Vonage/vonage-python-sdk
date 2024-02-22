@@ -2,19 +2,19 @@ from logging import getLogger
 from platform import python_version
 from typing import Literal, Optional, Union
 
-from http_client.auth import Auth
-from http_client.errors import (
+from pydantic import BaseModel, Field, ValidationError, validate_call
+from requests import Response
+from requests.adapters import HTTPAdapter
+from requests.sessions import Session
+from typing_extensions import Annotated
+from vonage_http_client.auth import Auth
+from vonage_http_client.errors import (
     AuthenticationError,
     HttpRequestError,
     InvalidHttpClientOptionsError,
     RateLimitedError,
     ServerError,
 )
-from pydantic import BaseModel, Field, ValidationError, validate_call
-from requests import Response
-from requests.adapters import HTTPAdapter
-from requests.sessions import Session
-from typing_extensions import Annotated
 
 logger = getLogger('vonage')
 

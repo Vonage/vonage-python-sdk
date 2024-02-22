@@ -2,18 +2,19 @@ from dataclasses import asdict
 from os.path import abspath
 
 import responses
-from http_client.auth import Auth
 from pydantic import ValidationError
 from pytest import raises
-
-from http_client.http_client import HttpClient
-from number_insight_v2.number_insight_v2 import (
+from vonage_http_client.auth import Auth
+from vonage_http_client.http_client import HttpClient
+from vonage_number_insight_v2.number_insight_v2 import (
     FraudCheckRequest,
     FraudCheckResponse,
     NumberInsightV2,
 )
-from testing_utils import build_response
-from utils.utils import remove_none_values
+from vonage_utils.errors import InvalidPhoneNumberError
+from vonage_utils.utils import remove_none_values
+
+from testutils import build_response
 
 path = abspath(__file__)
 
@@ -32,6 +33,15 @@ def test_fraud_check_request_custom_insights():
     assert request.type == 'phone'
     assert request.phone == '1234567890'
     assert request.insights == ['fraud_score']
+
+
+def test_fraud_check_request_invalid_phone():
+    with raises(InvalidPhoneNumberError):
+        FraudCheckRequest(phone='invalid_phone')
+    with raises(InvalidPhoneNumberError):
+        FraudCheckRequest(phone='123')
+    with raises(InvalidPhoneNumberError):
+        FraudCheckRequest(phone='12345678901234567890')
 
 
 def test_fraud_check_request_invalid_insights():

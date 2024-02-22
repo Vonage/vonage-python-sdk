@@ -1,17 +1,60 @@
-# Need to redo this to be about the client!
+# Vonage HTTP Client Package
 
-Vonage Authentication Package
+This Python package provides a synchronous HTTP client for sending authenticated requests to Vonage APIs.
 
-`vonage-auth` provides a convenient way to handle authentication related to Vonage APIs in your Python projects. This package includes an `Auth` class that allows you to manage API key- and secret-based authentication as well as JSON Web Token (JWT) authentication.
+This package (`vonage-http-client`) is used by the `vonage` Python package and SDK so doesn't require manual installation or config unless you're using this package independently of a SDK.
 
-This package (`vonage-auth`) is used by the `vonage` Python package so doesn't require manual installation unless you're not using that.
+The `HttpClient` class is initialized with an instance of the `Auth` class for credentials, an optional class of HTTP client options, and an optional SDK version (this is provided automatically when using this module via an SDK).
+
+The `HttpClientOptions` class defines the options for the HTTP client, including the API and REST hosts, timeout, pool connections, pool max size, and max retries.
+
+This package also includes an `Auth` class that allows you to manage API key- and secret-based authentication as well as JSON Web Token (JWT) authentication.
 
 For full API documentation refer to the [Vonage Developer documentation](https://developer.vonage.com).
 
-## Installation
+## Installation (if not using via an SDK)
 
 You can install the package using pip:
 
 ```bash
-pip install vonage-auth
+pip install vonage-http-client
+```
+
+## Usage
+
+```python
+from vonage_http_client import HttpClient, HttpClientOptions
+from vonage_http_client.auth import Auth
+
+# Create an Auth instance
+auth = Auth(api_key='your_api_key', api_secret='your_api_secret')
+
+# Create HttpClientOptions instance
+options = HttpClientOptions(api_host='api.nexmo.com', timeout=30)
+
+# Create a HttpClient instance
+client = HttpClient(auth=auth, http_client_options=options)
+
+# Make a GET request
+response = client.get(host='api.nexmo.com', request_path='/v1/messages')
+
+# Make a POST request
+response = client.post(host='api.nexmo.com', request_path='/v1/messages', params={'key': 'value'})
+```
+
+### Appending to the User-Agent Header
+
+The HttpClient class also supports appending additional information to the User-Agent header via the append_to_user_agent method:
+
+```python
+client.append_to_user_agent('additional_info')
+```
+
+### Changing the Authentication Method Used
+
+The `HttpClient` class automatically handles JWT and basic authentication based on the Auth instance provided. It uses JWT authentication by default, but you can specify the authentication type when making a request:
+
+```python
+# Use basic authentication for this request
+response = client.get(host='api.nexmo.com', request_path='/v1/messages', auth_type='basic')
 ```

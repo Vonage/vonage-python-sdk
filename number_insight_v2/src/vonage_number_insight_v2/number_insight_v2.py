@@ -2,9 +2,10 @@ from copy import deepcopy
 from dataclasses import dataclass
 from typing import List, Literal, Optional, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator, validate_call
+from vonage_http_client.http_client import HttpClient
 
-from http_client.http_client import HttpClient
+from vonage_utils import format_phone_number
 
 
 class FraudCheckRequest(BaseModel):
@@ -13,6 +14,11 @@ class FraudCheckRequest(BaseModel):
         Literal['fraud_score', 'sim_swap'], List[Literal['fraud_score', 'sim_swap']]
     ] = ['fraud_score', 'sim_swap']
     type: Literal['phone'] = 'phone'
+
+    @field_validator('phone')
+    @classmethod
+    def format_phone_number(cls, value):
+        return format_phone_number(value)
 
 
 @dataclass
@@ -30,14 +36,14 @@ class FraudScore:
     status: str
 
 
-@dataclass()
+@dataclass
 class SimSwap:
     status: str
     swapped: Optional[bool] = None
     reason: Optional[str] = None
 
 
-@dataclass()
+@dataclass
 class FraudCheckResponse:
     request_id: str
     type: str
@@ -53,6 +59,7 @@ class NumberInsightV2:
         self._http_client = deepcopy(http_client)
         self._auth_type = 'basic'
 
+    @validate_call
     def fraud_check(self, request: FraudCheckRequest) -> FraudCheckResponse:
         """Initiate a fraud check request."""
         response = self._http_client.post(

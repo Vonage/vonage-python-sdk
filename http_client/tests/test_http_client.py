@@ -2,19 +2,19 @@ from json import loads
 from os.path import abspath, dirname, join
 
 import responses
-from http_client.auth import Auth
-from http_client.errors import (
+from pytest import raises
+from requests import Response
+from vonage_http_client.auth import Auth
+from vonage_http_client.errors import (
     AuthenticationError,
     HttpRequestError,
     InvalidHttpClientOptionsError,
     RateLimitedError,
     ServerError,
 )
-from pytest import raises
-from requests import Response
+from vonage_http_client.http_client import HttpClient
 
-from http_client.http_client import HttpClient
-from testing_utils import build_response
+from testutils import build_response
 
 path = abspath(__file__)
 

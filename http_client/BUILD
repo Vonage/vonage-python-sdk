@@ -1,11 +1,16 @@
 resource(name='pyproject', source='pyproject.toml')
+file(name='readme', source='README.md')
 
 files(sources=['tests/data/*'])
 
 python_distribution(
     name='vonage-http-client',
-    dependencies=[':pyproject', 'http_client/src/http_client', 'utils/src/utils'],
+    dependencies=[
+        ':pyproject',
+        ':readme',
+        'http_client/src/vonage_http_client:http_client',
+    ],
     provides=python_artifact(),
     generate_setup=False,
-    repositories=['https://test.pypi.org/legacy/'],
+    repositories=['@pypi'],
 )

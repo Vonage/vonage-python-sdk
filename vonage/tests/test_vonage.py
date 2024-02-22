@@ -1,4 +1,5 @@
-from http_client.http_client import HttpClient
+from vonage_http_client.http_client import HttpClient
+
 from vonage.vonage import Auth, Vonage, __version__
 
 

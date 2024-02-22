@@ -1,7 +1,6 @@
 from pytest import raises
-from utils.errors import InvalidPhoneNumberError, InvalidPhoneNumberTypeError
-
-from utils.utils import format_phone_number
+from vonage_utils.errors import InvalidPhoneNumberError, InvalidPhoneNumberTypeError
+from vonage_utils.utils import format_phone_number
 
 
 def test_format_phone_numbers():

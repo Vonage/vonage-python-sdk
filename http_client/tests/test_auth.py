@@ -1,10 +1,10 @@
 from os.path import dirname, join
 from unittest.mock import patch
 
-from http_client.auth import Auth
-from http_client.errors import InvalidAuthError, JWTGenerationError
 from pydantic import ValidationError
 from pytest import raises
+from vonage_http_client.auth import Auth
+from vonage_http_client.errors import InvalidAuthError, JWTGenerationError
 from vonage_jwt.jwt import JwtClient
 
 
@@ -81,14 +81,14 @@ def vonage_jwt_mock(self):
 
 def test_generate_application_jwt():
     auth = Auth(application_id=application_id, private_key=private_key)
-    with patch('http_client.auth.Auth.generate_application_jwt', vonage_jwt_mock):
+    with patch('vonage_http_client.auth.Auth.generate_application_jwt', vonage_jwt_mock):
         jwt = auth.generate_application_jwt()
     assert jwt == test_jwt
 
 
 def test_create_jwt_auth_string():
     auth = Auth(application_id=application_id, private_key=private_key)
-    with patch('http_client.auth.Auth.generate_application_jwt', vonage_jwt_mock):
+    with patch('vonage_http_client.auth.Auth.generate_application_jwt', vonage_jwt_mock):
         header_auth_string = auth.create_jwt_auth_string()
         assert header_auth_string == b'Bearer ' + test_jwt
 

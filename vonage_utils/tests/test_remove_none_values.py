@@ -1,6 +1,6 @@
 from dataclasses import asdict, dataclass
 
-from utils.utils import remove_none_values
+from vonage_utils.utils import remove_none_values
 
 
 @dataclass

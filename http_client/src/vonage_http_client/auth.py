@@ -27,6 +27,8 @@ class Auth:
         api_secret: Optional[str] = None,
         application_id: Optional[str] = None,
         private_key: Optional[str] = None,
+        signature: Optional[str] = None,
+        signature_method: Optional[str] = None,
     ) -> None:
         self._validate_input_combinations(
             api_key, api_secret, application_id, private_key

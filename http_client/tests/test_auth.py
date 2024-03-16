@@ -1,5 +1,7 @@
 from os.path import dirname, join
 from unittest.mock import patch
+import hashlib
+
 
 from pydantic import ValidationError
 from pytest import raises
@@ -102,3 +104,55 @@ def test_create_jwt_error_no_application_id_or_private_key():
 def test_create_basic_auth_string():
     auth = Auth(api_key=api_key, api_secret=api_secret)
     assert auth.create_basic_auth_string() == 'Basic cXdlcmFzZGY6MTIzNHF3ZXJhc2Rmenhjdg=='
+
+
+def test_auth_init_with_valid_combinations():
+    api_key = 'qwerasdf'
+    api_secret = '1234qwerasdfzxcv'
+    application_id = 'asdfzxcv'
+    private_key = 'dummy_private_key'
+    signature_secret = 'signature_secret'
+    signature_method = 'sha256'
+
+    auth = Auth(
+        api_key=api_key,
+        api_secret=api_secret,
+        application_id=application_id,
+        private_key=private_key,
+        signature_secret=signature_secret,
+        signature_method=signature_method,
+    )
+
+    assert auth._api_key == api_key
+    assert auth._api_secret == api_secret
+    assert auth._jwt_client.application_id == application_id
+    assert auth._jwt_client.private_key == private_key
+    assert auth._signature_secret == signature_secret
+    assert auth._signature_method == hashlib.sha256
+
+
+def test_auth_init_with_invalid_combinations():
+    api_key = 'qwerasdf'
+    api_secret = '1234qwerasdfzxcv'
+    application_id = 'asdfzxcv'
+    private_key = 'dummy_private_key'
+    signature_secret = 'signature_secret'
+    signature_method = 'invalid_method'
+
+    with patch('vonage_http_client.auth.hashlib') as mock_hashlib:
+        mock_hashlib.sha256.side_effect = AttributeError
+
+        auth = Auth(
+            api_key=api_key,
+            api_secret=api_secret,
+            application_id=application_id,
+            private_key=private_key,
+            signature_secret=signature_secret,
+            signature_method=signature_method,
+        )
+
+        assert auth._api_key == api_key
+        assert auth._api_secret == api_secret
+        assert auth._jwt_client is None
+        assert auth._signature_secret == signature_secret
+        assert auth._signature_method is None

@@ -105,7 +105,7 @@ class HttpClient:
         request_path: str = '',
         params: dict = None,
         auth_type: str = 'jwt',
-    ):
+    ) -> Union[dict, None]:
         return self.make_request('POST', host, request_path, params, auth_type)
 
     def get(
@@ -114,7 +114,7 @@ class HttpClient:
         request_path: str = '',
         params: dict = None,
         auth_type: str = 'jwt',
-    ):
+    ) -> Union[dict, None]:
         return self.make_request('GET', host, request_path, params, auth_type)
 
     @validate_call
@@ -124,7 +124,7 @@ class HttpClient:
         host: str,
         request_path: str = '',
         params: Optional[dict] = None,
-        auth_type: Literal['jwt', 'basic'] = 'jwt',
+        auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
     ):
         url = f'https://{host}{request_path}'
         logger.debug(
@@ -134,6 +134,16 @@ class HttpClient:
             self._headers['Authorization'] = self._auth.create_jwt_auth_string()
         elif auth_type == 'basic':
             self._headers['Authorization'] = self._auth.create_basic_auth_string()
+        elif auth_type == 'signature':
+            params = self._auth.sign_params(params)
+            with self._session.request(
+                request_type,
+                url,
+                params=params,
+                headers=self._headers,
+                timeout=self._timeout,
+            ) as response:
+                return self._parse_response(response)
 
         with self._session.request(
             request_type,

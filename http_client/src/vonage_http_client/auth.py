@@ -1,5 +1,8 @@
 from base64 import b64encode
-from typing import Optional
+from typing import Literal, Optional
+import hashlib
+import hmac
+from time import time
 
 from pydantic import validate_call
 from vonage_jwt.jwt import JwtClient
@@ -10,11 +13,17 @@ from .errors import InvalidAuthError, JWTGenerationError
 class Auth:
     """Deals with Vonage API authentication.
 
+    Some Vonage APIs require an API key and secret for authentication. Others require an application ID and JWT.
+    It is also possible to use a message signature with the SMS API.
+
     Args:
     - api_key (str): The API key for authentication.
     - api_secret (str): The API secret for authentication.
     - application_id (str): The application ID for JWT authentication.
     - private_key (str): The private key for JWT authentication.
+    - signature_secret (str): The signature secret for authentication.
+    - signature_method (str): The signature method for authentication.
+        This should be one of `md5`, `sha1`, `sha256`, or `sha512` if using HMAC digests. If you want to use a simple MD5 hash, leave this as `None`.
 
     Note:
     To use JWT authentication, provide values for both `application_id` and `private_key`.
@@ -27,8 +36,8 @@ class Auth:
         api_secret: Optional[str] = None,
         application_id: Optional[str] = None,
         private_key: Optional[str] = None,
-        signature: Optional[str] = None,
-        signature_method: Optional[str] = None,
+        signature_secret: Optional[str] = None,
+        signature_method: Optional[Literal['md5', 'sha1', 'sha256', 'sha512']] = None,
     ) -> None:
         self._validate_input_combinations(
             api_key, api_secret, application_id, private_key
@@ -39,6 +48,9 @@ class Auth:
 
         if application_id is not None and private_key is not None:
             self._jwt_client = JwtClient(application_id, private_key)
+
+        self._signature_secret = signature_secret
+        self._signature_method = getattr(hashlib, signature_method)
 
     @property
     def api_key(self):
@@ -64,6 +76,42 @@ class Auth:
             'ascii'
         )
         return f'Basic {hash}'
+
+    def sign_params(self, params: dict) -> dict:
+        """
+        Signs the provided message parameters using the signature secret provided to the `Auth` class.
+        If no signature secret is provided, the message parameters are signed using a simple MD5 hash.
+
+        Args:
+            params (dict): The message parameters to be signed.
+
+        Returns:
+            dict: The signed message parameters.
+        """
+
+        if self._signature_method:
+            hasher = hmac.new(
+                self._signature_secret.encode(),
+                digestmod=self._signature_method,
+            )
+        else:
+            hasher = hashlib.md5()
+
+        if not params.get("timestamp"):
+            params["timestamp"] = int(time())
+
+        for key in sorted(params):
+            value = params[key]
+
+            if isinstance(value, str):
+                value = value.replace("&", "_").replace("=", "_")
+
+            hasher.update(f"&{key}={value}".encode("utf-8"))
+
+        if self._signature_method is None:
+            hasher.update(self._signature_secret.encode())
+
+        return hasher.hexdigest()
 
     def _validate_input_combinations(
         self, api_key, api_secret, application_id, private_key

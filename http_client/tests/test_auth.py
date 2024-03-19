@@ -19,6 +19,8 @@ api_key = 'qwerasdf'
 api_secret = '1234qwerasdfzxcv'
 application_id = 'asdfzxcv'
 private_key = read_file('data/dummy_private_key.txt')
+signature_secret = 'signature_secret'
+signature_method = 'sha256'
 
 
 def test_create_auth_class_and_get_objects():
@@ -27,6 +29,8 @@ def test_create_auth_class_and_get_objects():
         api_secret=api_secret,
         application_id=application_id,
         private_key=private_key,
+        signature_secret=signature_secret,
+        signature_method=signature_method,
     )
 
     assert auth.api_key == api_key

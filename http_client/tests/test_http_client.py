@@ -96,6 +96,33 @@ def test_make_post_request():
 
 
 @responses.activate
+def test_make_post_request_with_signature():
+    build_response(
+        path, 'POST', 'https://example.com/post_signed_params', 'example_post.json'
+    )
+    client = HttpClient(
+        Auth(
+            api_key='asdfzxcv', signature_secret='qwerasdfzxcv', signature_method='sha256'
+        ),
+        http_client_options={'api_host': 'example.com'},
+    )
+    params = {
+        'test': 'post request',
+        'testing': 'http client',
+    }
+
+    res = client.post(
+        host='example.com',
+        request_path='/post_signed_params',
+        params=params,
+        auth_type='signature',
+    )
+    assert res['hello'] == 'world!'
+
+    assert loads(responses.calls[0].request.body) == params
+
+
+@responses.activate
 def test_http_response_general_error():
     build_response(path, 'GET', 'https://example.com/get_json', '400.json', 400)
 

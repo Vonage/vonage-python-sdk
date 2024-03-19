@@ -37,10 +37,10 @@ class Auth:
         application_id: Optional[str] = None,
         private_key: Optional[str] = None,
         signature_secret: Optional[str] = None,
-        signature_method: Optional[Literal['md5', 'sha1', 'sha256', 'sha512']] = None,
+        signature_method: Optional[Literal['md5', 'sha1', 'sha256', 'sha512']] = 'md5',
     ) -> None:
         self._validate_input_combinations(
-            api_key, api_secret, application_id, private_key
+            api_key, api_secret, application_id, private_key, signature_secret
         )
 
         self._api_key = api_key
@@ -110,18 +110,27 @@ class Auth:
 
         if self._signature_method is None:
             hasher.update(self._signature_secret.encode())
-
         return hasher.hexdigest()
 
+    def check_signature(self, params) -> bool:
+        params = dict(params)
+        signature = params.pop('sig', '').lower()
+        return hmac.compare_digest(signature, self.signature(params))
+
     def _validate_input_combinations(
-        self, api_key, api_secret, application_id, private_key
+        self, api_key, api_secret, application_id, private_key, signature_secret
     ):
-        if (api_key and not api_secret) or (not api_key and api_secret):
+        if (api_secret or signature_secret) and not api_key:
             raise InvalidAuthError(
-                'Both api_key and api_secret must be set or both must be None.'
+                '`api_key` must be set when `api_secret` or `signature_secret` is set.'
+            )
+
+        if api_key and not (api_secret or signature_secret):
+            raise InvalidAuthError(
+                'At least one of `api_secret` and `signature_secret` must be set if `api_key` is set.'
             )
 
         if (application_id and not private_key) or (not application_id and private_key):
             raise InvalidAuthError(
-                'Both application_id and private_key must be set or both must be None.'
+                'Both `application_id` and `private_key` must be set or both must be None.'
             )

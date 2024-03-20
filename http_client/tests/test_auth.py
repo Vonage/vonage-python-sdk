@@ -1,7 +1,7 @@
 from os.path import dirname, join
 from unittest.mock import patch
 import hashlib
-
+import hmac
 
 from pydantic import ValidationError
 from pytest import raises
@@ -160,3 +160,63 @@ def test_auth_init_with_invalid_combinations():
         assert auth._jwt_client is None
         assert auth._signature_secret == signature_secret
         assert auth._signature_method is None
+
+
+def test_sign_params():
+    auth = Auth(signature_secret='signature_secret', signature_method='sha256')
+
+    params = {'param1': 'value1', 'param2': 'value2', 'timestamp': 1234567890}
+
+    signed_params = auth.sign_params(params)
+
+    assert signed_params == 'asdf'
+
+
+def test_sign_params_default_sig_method():
+    auth = Auth()
+
+    params = {'param1': 'value1', 'param2': 'value2', 'timestamp': 1234567890}
+
+    signed_params = auth.sign_params(params)
+
+    assert signed_params == 'asdf'
+
+
+def test_sign_params_with_special_characters():
+    auth = Auth(signature_secret='signature_secret', signature_method='sha1')
+
+    params = {'param1': 'value&1', 'param2': 'value=2', 'timestamp': 1234567890}
+
+    signed_params = auth.sign_params(params)
+
+    assert signed_params == 'asdf'
+
+
+# def test_check_signature_with_valid_signature():
+#     auth = Auth(signature_secret='signature_secret')
+#     params = {'param1': 'value1', 'param2': 'value2', 'sig': 'valid_signature'}
+#     expected_signature = hmac.new(
+#         b'signature_secret', b'param1value1param2value2', hashlib.sha256
+#     ).hexdigest()
+
+#     assert auth.check_signature(params) == True
+
+
+# def test_check_signature_with_invalid_signature():
+#     auth = Auth(signature_secret='signature_secret')
+#     params = {'param1': 'value1', 'param2': 'value2', 'sig': 'invalid_signature'}
+#     expected_signature = hmac.new(
+#         b'signature_secret', b'param1value1param2value2', hashlib.sha256
+#     ).hexdigest()
+
+#     assert auth.check_signature(params) == False
+
+
+# def test_check_signature_with_empty_signature():
+#     auth = Auth(signature_secret='signature_secret')
+#     params = {'param1': 'value1', 'param2': 'value2', 'sig': ''}
+#     expected_signature = hmac.new(
+#         b'signature_secret', b'param1value1param2value2', hashlib.sha256
+#     ).hexdigest()
+
+#     assert auth.check_signature(params) == False

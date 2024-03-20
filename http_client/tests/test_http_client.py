@@ -118,8 +118,8 @@ def test_make_post_request_with_signature():
         auth_type='signature',
     )
     assert res['hello'] == 'world!'
-
-    assert loads(responses.calls[0].request.body) == params
+    print(responses.calls[0].request.url)
+    assert responses.calls[0].request.body == params
 
 
 @responses.activate

@@ -89,33 +89,30 @@ class Auth:
             dict: The signed message parameters.
         """
 
-        if self._signature_method:
-            hasher = hmac.new(
-                self._signature_secret.encode(),
-                digestmod=self._signature_method,
-            )
-        else:
-            hasher = hashlib.md5()
+        hasher = hmac.new(
+            self._signature_secret.encode(),
+            digestmod=self._signature_method,
+        )
 
-        if not params.get("timestamp"):
-            params["timestamp"] = int(time())
+        if not params.get('timestamp'):
+            params['timestamp'] = int(time())
 
         for key in sorted(params):
             value = params[key]
 
             if isinstance(value, str):
-                value = value.replace("&", "_").replace("=", "_")
+                value = value.replace('&', '_').replace('=', '_')
 
-            hasher.update(f"&{key}={value}".encode("utf-8"))
+            hasher.update(f'&{key}={value}'.encode('utf-8'))
 
         if self._signature_method is None:
             hasher.update(self._signature_secret.encode())
         return hasher.hexdigest()
 
-    def check_signature(self, params) -> bool:
-        params = dict(params)
+    @validate_call
+    def check_signature(self, params: dict) -> bool:
         signature = params.pop('sig', '').lower()
-        return hmac.compare_digest(signature, self.signature(params))
+        return hmac.compare_digest(signature, self._signature_secret(params))
 
     def _validate_input_combinations(
         self, api_key, api_secret, application_id, private_key, signature_secret

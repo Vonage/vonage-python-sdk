@@ -135,11 +135,8 @@ class HttpClient:
         elif auth_type == 'basic':
             self._headers['Authorization'] = self._auth.create_basic_auth_string()
         elif auth_type == 'signature':
-            params = self._auth.sign_params(params)
-
-            print(params)
-            print(self._auth.check_signature(params))
-
+            params['api_key'] = self._auth.api_key
+            params['sig'] = self._auth.sign_params(params)
             with self._session.request(
                 request_type,
                 url,
@@ -165,7 +162,6 @@ class HttpClient:
         logger.debug(
             f'Response received from {response.url} with status code: {response.status_code}; headers: {response.headers}'
         )
-        print(response.request.headers)
         content_type = response.headers['Content-Type'].split(';', 1)[0]
         if 200 <= response.status_code < 300:
             if response.status_code == 204:

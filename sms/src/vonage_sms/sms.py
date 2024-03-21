@@ -5,7 +5,7 @@ from typing import List, Literal, Optional
 from pydantic import BaseModel, Field, field_validator, validate_call
 from vonage_http_client.http_client import HttpClient
 
-from .errors import SmsError, PartialFailureError
+from .errors import PartialFailureError, SmsError
 
 
 class SmsMessage(BaseModel):

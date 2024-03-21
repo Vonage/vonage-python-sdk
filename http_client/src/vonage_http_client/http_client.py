@@ -140,7 +140,7 @@ class HttpClient:
             with self._session.request(
                 request_type,
                 url,
-                params=params,
+                data=params,
                 headers=self._headers,
                 timeout=self._timeout,
             ) as response:

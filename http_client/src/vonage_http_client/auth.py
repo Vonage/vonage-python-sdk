@@ -1,8 +1,9 @@
-from base64 import b64encode
-from typing import Literal, Optional
 import hashlib
 import hmac
+from base64 import b64encode
+
 from time import time
+from typing import Literal, Optional
 
 from pydantic import validate_call
 from vonage_jwt.jwt import JwtClient
@@ -77,16 +78,16 @@ class Auth:
         )
         return f'Basic {hash}'
 
-    def sign_params(self, params: dict) -> dict:
-        """
-        Signs the provided message parameters using the signature secret provided to the `Auth` class.
-        If no signature secret is provided, the message parameters are signed using a simple MD5 hash.
+    def sign_params(self, params: dict) -> str:
+        """Signs the provided message parameters using the signature secret provided to the `Auth`
+        class. If no signature secret is provided, the message parameters are signed using a simple
+        MD5 hash.
 
         Args:
             params (dict): The message parameters to be signed.
 
         Returns:
-            dict: The signed message parameters.
+            str: A hexadecimal digest of the signed message parameters.
         """
 
         hasher = hmac.new(
@@ -96,6 +97,7 @@ class Auth:
 
         if not params.get('timestamp'):
             params['timestamp'] = int(time())
+            print(params['timestamp'])
 
         for key in sorted(params):
             value = params[key]
@@ -105,14 +107,23 @@ class Auth:
 
             hasher.update(f'&{key}={value}'.encode('utf-8'))
 
-        if self._signature_method is None:
-            hasher.update(self._signature_secret.encode())
         return hasher.hexdigest()
 
     @validate_call
     def check_signature(self, params: dict) -> bool:
+        """
+        Checks the signature hash of the given parameters.
+
+        Args:
+            params (dict): The parameters to check the signature for.
+                This should include the `sig` parameter which contains the
+                signature hash of the other parameters.
+
+        Returns:
+            bool: True if the signature is valid, False otherwise.
+        """
         signature = params.pop('sig', '').lower()
-        return hmac.compare_digest(signature, self._signature_secret(params))
+        return hmac.compare_digest(signature, self.sign_params(params))
 
     def _validate_input_combinations(
         self, api_key, api_secret, application_id, private_key, signature_secret

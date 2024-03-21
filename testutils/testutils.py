@@ -10,6 +10,10 @@ def _load_mock_data(caller_file_path: str, mock_path: str):
         return file.read()
 
 
+def _filter_none_values(data: dict) -> dict:
+    return {k: v for (k, v) in data.items() if v is not None}
+
+
 @validate_call
 def build_response(
     file_path: str,
@@ -18,7 +22,18 @@ def build_response(
     mock_path: str = None,
     status_code: int = 200,
     content_type: str = 'application/json',
+    match: list = None,
 ):
-    print('file_path', file_path)
     body = _load_mock_data(file_path, mock_path) if mock_path else None
-    responses.add(method, url, body=body, status=status_code, content_type=content_type)
+    responses.add(
+        **_filter_none_values(
+            {
+                'method': method,
+                'url': url,
+                'body': body,
+                'status': status_code,
+                'content_type': content_type,
+                'match': match,
+            }
+        )
+    )

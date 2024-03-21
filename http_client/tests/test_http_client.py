@@ -4,6 +4,7 @@ from os.path import abspath, dirname, join
 import responses
 from pytest import raises
 from requests import Response
+from responses import matchers
 from vonage_http_client.auth import Auth
 from vonage_http_client.errors import (
     AuthenticationError,
@@ -97,8 +98,26 @@ def test_make_post_request():
 
 @responses.activate
 def test_make_post_request_with_signature():
+    params = {
+        'test': 'post request',
+        'testing': 'http client',
+        'timestamp': '1234567890',
+    }
+
     build_response(
-        path, 'POST', 'https://example.com/post_signed_params', 'example_post.json'
+        path,
+        'POST',
+        'https://example.com/post_signed_params',
+        'example_post.json',
+        match=[
+            matchers.urlencoded_params_matcher(
+                {
+                    **params,
+                    'api_key': 'asdfzxcv',
+                    'sig': '237b06fd1f994a9ec2f3283a4a0239f35b56d64639d6485b45cffedcb385b033',
+                }
+            )
+        ],
     )
     client = HttpClient(
         Auth(
@@ -106,10 +125,6 @@ def test_make_post_request_with_signature():
         ),
         http_client_options={'api_host': 'example.com'},
     )
-    params = {
-        'test': 'post request',
-        'testing': 'http client',
-    }
 
     res = client.post(
         host='example.com',
@@ -118,8 +133,6 @@ def test_make_post_request_with_signature():
         auth_type='signature',
     )
     assert res['hello'] == 'world!'
-    print(responses.calls[0].request.url)
-    assert responses.calls[0].request.body == params
 
 
 @responses.activate

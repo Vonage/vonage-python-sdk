@@ -1,7 +1,6 @@
+import hashlib
 from os.path import dirname, join
 from unittest.mock import patch
-import hashlib
-import hmac
 
 from pydantic import ValidationError
 from pytest import raises
@@ -36,6 +35,8 @@ def test_create_auth_class_and_get_objects():
     assert auth.api_key == api_key
     assert auth.api_secret == api_secret
     assert type(auth._jwt_client) == JwtClient
+    assert auth._signature_secret == signature_secret
+    assert auth._signature_method == hashlib.sha256
 
 
 def test_create_new_auth_invalid_type():
@@ -63,6 +64,10 @@ def test_auth_init_with_invalid_combinations():
         Auth(api_secret=api_secret, application_id=application_id)
     with raises(InvalidAuthError):
         Auth(api_secret=api_secret, private_key=private_key)
+    with raises(InvalidAuthError):
+        Auth(application_id=application_id, signature_secret=signature_secret)
+    with raises(InvalidAuthError):
+        Auth(private_key=private_key, signature_secret=signature_secret)
 
 
 def test_auth_init_with_valid_api_key_and_api_secret():
@@ -110,96 +115,64 @@ def test_create_basic_auth_string():
     assert auth.create_basic_auth_string() == 'Basic cXdlcmFzZGY6MTIzNHF3ZXJhc2Rmenhjdg=='
 
 
-def test_auth_init_with_valid_combinations():
-    api_key = 'qwerasdf'
-    api_secret = '1234qwerasdfzxcv'
-    application_id = 'asdfzxcv'
-    private_key = 'dummy_private_key'
-    signature_secret = 'signature_secret'
-    signature_method = 'sha256'
-
+def test_sign_params():
     auth = Auth(
         api_key=api_key,
-        api_secret=api_secret,
-        application_id=application_id,
-        private_key=private_key,
         signature_secret=signature_secret,
         signature_method=signature_method,
     )
 
-    assert auth._api_key == api_key
-    assert auth._api_secret == api_secret
-    assert auth._jwt_client.application_id == application_id
-    assert auth._jwt_client.private_key == private_key
-    assert auth._signature_secret == signature_secret
-    assert auth._signature_method == hashlib.sha256
-
-
-def test_auth_init_with_invalid_combinations():
-    api_key = 'qwerasdf'
-    api_secret = '1234qwerasdfzxcv'
-    application_id = 'asdfzxcv'
-    private_key = 'dummy_private_key'
-    signature_secret = 'signature_secret'
-    signature_method = 'invalid_method'
-
-    with patch('vonage_http_client.auth.hashlib') as mock_hashlib:
-        mock_hashlib.sha256.side_effect = AttributeError
-
-        auth = Auth(
-            api_key=api_key,
-            api_secret=api_secret,
-            application_id=application_id,
-            private_key=private_key,
-            signature_secret=signature_secret,
-            signature_method=signature_method,
-        )
-
-        assert auth._api_key == api_key
-        assert auth._api_secret == api_secret
-        assert auth._jwt_client is None
-        assert auth._signature_secret == signature_secret
-        assert auth._signature_method is None
-
-
-def test_sign_params():
-    auth = Auth(signature_secret='signature_secret', signature_method='sha256')
-
     params = {'param1': 'value1', 'param2': 'value2', 'timestamp': 1234567890}
 
-    signed_params = auth.sign_params(params)
+    signed_params_hash = auth.sign_params(params)
 
-    assert signed_params == 'asdf'
+    assert (
+        signed_params_hash
+        == '280c4320703dbc98bfa22db676655ed2acfbfe8792b062ff7622e67f1183c287'
+    )
 
 
 def test_sign_params_default_sig_method():
-    auth = Auth()
+    auth = Auth(api_key=api_key, signature_secret=signature_secret)
 
     params = {'param1': 'value1', 'param2': 'value2', 'timestamp': 1234567890}
 
-    signed_params = auth.sign_params(params)
+    signed_params_hash = auth.sign_params(params)
 
-    assert signed_params == 'asdf'
+    assert signed_params_hash == '724c2bf6ca423c36e20631b11d1c5753'
 
 
 def test_sign_params_with_special_characters():
-    auth = Auth(signature_secret='signature_secret', signature_method='sha1')
+    auth = Auth(api_key=api_key, signature_secret=signature_secret)
 
     params = {'param1': 'value&1', 'param2': 'value=2', 'timestamp': 1234567890}
 
     signed_params = auth.sign_params(params)
 
-    assert signed_params == 'asdf'
+    assert signed_params == '2bbf0abafb2c55e5af6231513896a2ac'
 
 
-# def test_check_signature_with_valid_signature():
-#     auth = Auth(signature_secret='signature_secret')
-#     params = {'param1': 'value1', 'param2': 'value2', 'sig': 'valid_signature'}
-#     expected_signature = hmac.new(
-#         b'signature_secret', b'param1value1param2value2', hashlib.sha256
-#     ).hexdigest()
+@patch('vonage_http_client.auth.time', return_value=12345)
+def test_sign_params_with_dynamic_timestamp(mock_time):
+    auth = Auth(api_key=api_key, signature_secret=signature_secret)
 
-#     assert auth.check_signature(params) == True
+    params = {'param1': 'value1', 'param2': 'value2'}
+
+    signed_params = auth.sign_params(params)
+
+    assert signed_params == 'bc7e95bb4e341090b3a202a2885903a5'
+
+
+def test_check_signature_with_valid_signature():
+    auth = Auth(api_key=api_key, signature_secret=signature_secret)
+    params = {
+        'param1': 'value1',
+        'param2': 'value2',
+        'sig': 'valid_signature',
+        'timestamp': 1234567890,
+    }
+
+    assert auth.check_signature(params) == True
 
 
 # def test_check_signature_with_invalid_signature():

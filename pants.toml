@@ -31,6 +31,7 @@ filter = [
   'vonage/src',
   'http_client/src',
   'number_insight_v2/src',
+  'sms/src',
   'utils/src',
   'testutils',
 ]

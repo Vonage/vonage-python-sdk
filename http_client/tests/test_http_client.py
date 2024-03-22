@@ -131,6 +131,7 @@ def test_make_post_request_with_signature():
         request_path='/post_signed_params',
         params=params,
         auth_type='signature',
+        body_type='data',
     )
     assert res['hello'] == 'world!'
 

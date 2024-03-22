@@ -163,33 +163,21 @@ def test_sign_params_with_dynamic_timestamp(mock_time):
     assert signed_params == 'bc7e95bb4e341090b3a202a2885903a5'
 
 
-def test_check_signature_with_valid_signature():
+def test_check_signature_valid_signature():
     auth = Auth(api_key=api_key, signature_secret=signature_secret)
     params = {
-        'param1': 'value1',
-        'param2': 'value2',
-        'sig': 'valid_signature',
+        'param': 'value',
         'timestamp': 1234567890,
+        'sig': '655a4d0b7f064dff438defc52b012cf5',
     }
-
     assert auth.check_signature(params) == True
 
 
-# def test_check_signature_with_invalid_signature():
-#     auth = Auth(signature_secret='signature_secret')
-#     params = {'param1': 'value1', 'param2': 'value2', 'sig': 'invalid_signature'}
-#     expected_signature = hmac.new(
-#         b'signature_secret', b'param1value1param2value2', hashlib.sha256
-#     ).hexdigest()
-
-#     assert auth.check_signature(params) == False
-
-
-# def test_check_signature_with_empty_signature():
-#     auth = Auth(signature_secret='signature_secret')
-#     params = {'param1': 'value1', 'param2': 'value2', 'sig': ''}
-#     expected_signature = hmac.new(
-#         b'signature_secret', b'param1value1param2value2', hashlib.sha256
-#     ).hexdigest()
-
-#     assert auth.check_signature(params) == False
+def test_check_signature_invalid_signature():
+    auth = Auth(api_key=api_key, signature_secret=signature_secret)
+    params = {
+        'param': 'value',
+        'timestamp': 1234567890,
+        'sig': 'invalid_signature',
+    }
+    assert auth.check_signature(params) == False

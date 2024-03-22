@@ -104,18 +104,20 @@ class HttpClient:
         host: str,
         request_path: str = '',
         params: dict = None,
-        auth_type: str = 'jwt',
+        auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
+        body_type: Literal['json', 'data'] = 'json',
     ) -> Union[dict, None]:
-        return self.make_request('POST', host, request_path, params, auth_type)
+        return self.make_request('POST', host, request_path, params, auth_type, body_type)
 
     def get(
         self,
         host: str,
         request_path: str = '',
         params: dict = None,
-        auth_type: str = 'jwt',
+        auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
+        body_type: Literal['json', 'data'] = 'json',
     ) -> Union[dict, None]:
-        return self.make_request('GET', host, request_path, params, auth_type)
+        return self.make_request('GET', host, request_path, params, auth_type, body_type)
 
     @validate_call
     def make_request(
@@ -125,6 +127,7 @@ class HttpClient:
         request_path: str = '',
         params: Optional[dict] = None,
         auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
+        body_type: Literal['json', 'data'] = 'json',
     ):
         url = f'https://{host}{request_path}'
         logger.debug(
@@ -137,22 +140,20 @@ class HttpClient:
         elif auth_type == 'signature':
             params['api_key'] = self._auth.api_key
             params['sig'] = self._auth.sign_params(params)
-            with self._session.request(
-                request_type,
-                url,
-                data=params,
-                headers=self._headers,
-                timeout=self._timeout,
-            ) as response:
-                return self._parse_response(response)
 
-        with self._session.request(
-            request_type,
-            url,
-            json=params,
-            headers=self._headers,
-            timeout=self._timeout,
-        ) as response:
+        request_params = {
+            'method': request_type,
+            'url': url,
+            'headers': self._headers,
+            'timeout': self._timeout,
+        }
+
+        if body_type == 'json':
+            request_params['json'] = params
+        else:
+            request_params['data'] = params
+
+        with self._session.request(**request_params) as response:
             return self._parse_response(response)
 
     def append_to_user_agent(self, string: str):

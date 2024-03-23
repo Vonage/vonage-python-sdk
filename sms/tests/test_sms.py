@@ -1,5 +1,4 @@
 from os.path import abspath
-import stat
 
 import responses
 from pydantic import ValidationError

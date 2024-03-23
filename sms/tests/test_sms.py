@@ -1,15 +1,17 @@
 from os.path import abspath
+import stat
 
+import responses
 from pydantic import ValidationError
 from pytest import raises
-import responses
-
-from testutils import build_response
 from vonage_http_client.auth import Auth
+from vonage_http_client.errors import HttpRequestError
 from vonage_http_client.http_client import HttpClient
 from vonage_sms import Sms
-from vonage_sms.models import SmsMessage
+from vonage_sms.errors import PartialFailureError, SmsError
+from vonage_sms.requests import SmsMessage
 
+from testutils import build_response
 
 path = abspath(__file__)
 
@@ -78,19 +80,85 @@ def test_create_invalid_SmsMessage():
         SmsMessage(**invalid_message)
 
 
-# @responses.activate
+@responses.activate
 def test_send_message():
-    sms = Sms(HttpClient(Auth(api_key='', api_secret='')))
     build_response(path, 'POST', 'https://rest.nexmo.com/sms/json', 'send_sms.json')
-    message = SmsMessage(to='', from_='Acme Inc.', text='Hello, World!')
+    message = SmsMessage(to='1234567890', from_='Acme Inc.', text='Hello, World!')
     response = sms.send(message)
-    print(response)
-    assert response.message_count == 1
+    assert response.message_count == '1'
+    assert response.messages[0].to == '1234567890'
+    assert response.messages[0].message_id == '3295d748-4e14-4681-af78-166dca3c5aab'
+    assert response.messages[0].status == '0'
+    assert response.messages[0].remaining_balance == '38.07243628'
+    assert response.messages[0].message_price == '0.04120000'
+    assert response.messages[0].network == '23420'
+
+
+@responses.activate
+def test_send_message_with_signature():
+    sms = Sms(
+        HttpClient(
+            Auth(
+                api_key=api_key,
+                signature_secret=signature_secret,
+                signature_method=signature_method,
+            )
+        )
+    )
+    build_response(path, 'POST', 'https://rest.nexmo.com/sms/json', 'send_sms.json')
+    message = SmsMessage(to='1234567890', from_='Acme Inc.', text='Hello, World!')
+    response = sms.send(message)
+    assert response.message_count == '1'
     assert response.messages[0].status == '0'
 
-    # assert response.status == '0'
-    # assert response.to == '1234567890'
-    # assert response.message_id
-    # assert response.remaining_balance
-    # assert response.message_price
-    # assert response.network
+
+@responses.activate
+def test_send_message_partial_failure():
+    build_response(
+        path, 'POST', 'https://rest.nexmo.com/sms/json', 'send_sms_partial_error.json'
+    )
+    message = SmsMessage(to='1234567890', from_='Acme Inc.', text='Hello, World!')
+    try:
+        sms.send(message)
+    except PartialFailureError as err:
+        assert err.response['message-count'] == '2'
+        assert err.response['messages'][1]['error-text'] == 'Throttled'
+
+
+@responses.activate
+def test_send_message_error():
+    build_response(path, 'POST', 'https://rest.nexmo.com/sms/json', 'send_sms_error.json')
+    message = SmsMessage(to='1234567890', from_='Acme Inc.', text='Hello, World!')
+    try:
+        sms.send(message)
+    except SmsError as err:
+        assert (
+            str(err) == 'Sms.send_message method failed with error code 7: Number barred.'
+        )
+
+
+@responses.activate
+def test_submit_sms_conversion():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/conversions/sms',
+        'null',
+    )
+    response = sms.submit_sms_conversion('3295d748-4e14-4681-af78-166dca3c5aab')
+    assert response is None
+
+
+@responses.activate
+def test_submit_sms_conversion_402():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/conversions/sms',
+        'conversion_not_enabled.html',
+        status_code=402,
+    )
+    try:
+        sms.submit_sms_conversion('3295d748-4e14-4681-af78-166dca3c5aab')
+    except HttpRequestError as err:
+        assert err.message == '402 response from https://api.nexmo.com/conversions/sms.'

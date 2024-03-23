@@ -12,6 +12,8 @@ backend_packages = [
   "pants.backend.experimental.python",
 ]
 
+pants_ignore.add = ['!_test_scripts/']
+
 [anonymous-telemetry]
 enabled = false
 

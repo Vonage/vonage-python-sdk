@@ -1,7 +1,6 @@
 import hashlib
 import hmac
 from base64 import b64encode
-
 from time import time
 from typing import Literal, Optional
 
@@ -111,8 +110,7 @@ class Auth:
 
     @validate_call
     def check_signature(self, params: dict) -> bool:
-        """
-        Checks the signature hash of the given parameters.
+        """Checks the signature hash of the given parameters.
 
         Args:
             params (dict): The parameters to check the signature for.

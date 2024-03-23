@@ -1,4 +1,7 @@
-# 4.0.0
+# 3.99.0a1
+- Add support for the Vonage SMS API
+
+# 3.99.0a0
 Created new monorepo structure - this package `vonage` is now a way to depend on the functionality of all Vonage APIs, which has been moved into separate packages. Additionally, there are many breaking changes.
 
 # 3.11.0

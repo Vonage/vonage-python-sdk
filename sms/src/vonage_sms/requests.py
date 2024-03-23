@@ -1,12 +1,6 @@
 from typing import Literal, Optional
 
-from pydantic import (
-    BaseModel,
-    Field,
-    ValidationInfo,
-    field_validator,
-    model_validator,
-)
+from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
 
 
 class SmsMessage(BaseModel):

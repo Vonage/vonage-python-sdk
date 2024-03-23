@@ -1,18 +1,18 @@
-from copy import deepcopy
+from datetime import datetime, timezone
 
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 
 from .errors import PartialFailureError, SmsError
-from .models import SmsMessage
-from .responses import MessageResponse, SmsResponse
+from .requests import SmsMessage
+from .responses import SmsResponse
 
 
 class Sms:
     """Calls Vonage's SMS API."""
 
     def __init__(self, http_client: HttpClient) -> None:
-        self._http_client = deepcopy(http_client)
+        self._http_client = http_client
         self._body_type = 'data'
         if self._http_client._auth._signature_secret:
             self._auth_type = 'signature'
@@ -31,17 +31,12 @@ class Sms:
         )
 
         if int(response['message-count']) > 1:
-            self.check_for_partial_failure(response)
+            self._check_for_partial_failure(response)
         else:
-            self.check_for_error(response)
+            self._check_for_error(response)
+        return SmsResponse(**response)
 
-        messages = []
-        for message in response['messages']:
-            messages.append(MessageResponse(**message))
-
-        return SmsResponse(message_count=response['message-count'], messages=messages)
-
-    def check_for_partial_failure(self, response_data):
+    def _check_for_partial_failure(self, response_data):
         successful_messages = 0
         total_messages = int(response_data['message-count'])
 
@@ -51,9 +46,41 @@ class Sms:
         if successful_messages < total_messages:
             raise PartialFailureError(response_data)
 
-    def check_for_error(self, response_data):
+    def _check_for_error(self, response_data):
         message = response_data['messages'][0]
         if int(message['status']) != 0:
             raise SmsError(
                 f'Sms.send_message method failed with error code {message["status"]}: {message["error-text"]}'
             )
+
+    @validate_call
+    def submit_sms_conversion(
+        self, message_id: str, delivered: bool = True, timestamp: datetime = None
+    ):
+        """
+        Note: Not available without having this feature manually enabled on your account.
+
+        Notifies Vonage that an SMS was successfully received.
+
+        This method is used to submit conversion data about SMS messages that were successfully delivered.
+        If you are using the Verify API for two-factor authentication (2FA), this information is sent to Vonage automatically,
+        so you do not need to use this method for 2FA messages.
+
+        Args:
+            message_id (str): The `message-id` returned by the `Sms.send` call.
+            delivered (bool, optional): Set to `True` if the user replied to the message you sent. Otherwise, set to `False`.
+            timestamp (datetime, optional): A `datetime` object containing the time the SMS arrived.
+        """
+        params = {
+            'message-id': message_id,
+            'delivered': delivered,
+            'timestamp': (timestamp or datetime.now(timezone.utc)).strftime(
+                '%Y-%m-%d %H:%M:%S'
+            ),
+        }
+        self._http_client.get(
+            self._http_client.api_host,
+            '/conversions/sms',
+            params,
+            self._auth_type,
+        )

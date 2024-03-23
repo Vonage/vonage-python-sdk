@@ -12,5 +12,5 @@ python_distribution(
     ],
     provides=python_artifact(),
     generate_setup=False,
-    repositories=['@testpypi'],
+    repositories=['@pypi'],
 )

@@ -1,3 +1,4 @@
+from json import JSONDecodeError
 from logging import getLogger
 from platform import python_version
 from typing import Literal, Optional, Union
@@ -167,7 +168,10 @@ class HttpClient:
         if 200 <= response.status_code < 300:
             if response.status_code == 204:
                 return None
-            return response.json()
+            try:
+                return response.json()
+            except JSONDecodeError:
+                return None
         if response.status_code >= 400:
             logger.warning(
                 f'Http Response Error! Status code: {response.status_code}; content: {repr(response.text)}; from url: {response.url}'

@@ -1,5 +1,5 @@
 {
-    "message-count": "1",
+    "message-count": "2",
     "messages": [
         {
             "to": "1234567890",
@@ -8,6 +8,10 @@
             "remaining-balance": "38.07243628",
             "message-price": "0.04120000",
             "network": "23420"
+        },
+        {
+            "status": "1",
+            "error-text": "Throttled"
         }
     ]
 }

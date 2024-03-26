@@ -1,0 +1,23 @@
+{
+    "message-count": "2",
+    "messages": [
+        {
+            "to": "1234567890",
+            "message-id": "62dfdf68-6c7c-479a-a190-5c52f798a787",
+            "status": "0",
+            "remaining-balance": "37.43563628",
+            "message-price": "0.04120000",
+            "network": "23420",
+            "client-ref": "ref123"
+        },
+        {
+            "to": "1234567890",
+            "message-id": "72ff9536-62d6-455a-9f0b-65f3c265b423",
+            "status": "0",
+            "remaining-balance": "37.43563628",
+            "message-price": "0.04120000",
+            "network": "23420",
+            "client-ref": "ref123"
+        }
+    ]
+}

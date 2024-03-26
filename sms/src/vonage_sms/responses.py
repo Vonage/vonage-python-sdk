@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 
 class MessageResponse(BaseModel):
@@ -16,12 +16,4 @@ class MessageResponse(BaseModel):
 
 class SmsResponse(BaseModel):
     message_count: str = Field(..., validation_alias='message-count')
-    messages: List[dict]
-
-    @field_validator('messages')
-    @classmethod
-    def create_message_response(cls, value):
-        messages = []
-        for message in value:
-            messages.append(MessageResponse(**message))
-        return messages
+    messages: List[MessageResponse]

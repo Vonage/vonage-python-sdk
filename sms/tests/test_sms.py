@@ -94,6 +94,16 @@ def test_send_message():
 
 
 @responses.activate
+def test_send_long_message():
+    build_response(path, 'POST', 'https://rest.nexmo.com/sms/json', 'send_long_sms.json')
+    message = SmsMessage(to='1234567890', from_='Acme Inc.', text='Hello, World!')
+    response = sms.send(message)
+    assert response.message_count == '2'
+    assert response.messages[0].message_id == '62dfdf68-6c7c-479a-a190-5c52f798a787'
+    assert response.messages[1].message_id == '72ff9536-62d6-455a-9f0b-65f3c265b423'
+
+
+@responses.activate
 def test_send_message_with_signature():
     sms = Sms(
         HttpClient(

@@ -1,5 +1,5 @@
 [GLOBAL]
-pants_version = '2.19.0'
+pants_version = '2.19.1'
 
 backend_packages = [
   'pants.backend.python',
@@ -34,6 +34,7 @@ filter = [
   'http_client/src',
   'number_insight_v2/src',
   'sms/src',
+  'users/src',
   'utils/src',
   'testutils',
 ]

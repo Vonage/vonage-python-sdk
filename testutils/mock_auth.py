@@ -1,4 +1,4 @@
-from os.path import join, dirname
+from os.path import dirname, join
 
 from vonage_http_client.auth import Auth
 

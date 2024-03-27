@@ -1,12 +1,12 @@
 from typing import Literal, Optional
 
-from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
+from pydantic import BaseModel, Field
 
 
 class ListUsersRequest(BaseModel):
     """Request object for listing users."""
 
-    page_size: Optional[int] = Field(None, ge=1, le=100)
+    page_size: Optional[int] = Field(10, ge=1, le=100)
     order: Optional[Literal['asc', 'desc', 'ASC', 'DESC']] = None
     cursor: Optional[str] = Field(
         None,

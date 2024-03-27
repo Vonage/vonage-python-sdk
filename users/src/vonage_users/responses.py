@@ -35,6 +35,13 @@ class ListUsersResponse(BaseModel):
     links: Links = Field(..., validation_alias='_links')
 
 
+class CreateUserResponse(BaseModel):
+    id: str
+    name: str
+    display_name: str
+    links: UserLinks = Field(..., validation_alias='_links')
+
+
 # class MessageResponse(BaseModel):
 #     to: str
 #     message_id: str = Field(..., validation_alias='message-id')

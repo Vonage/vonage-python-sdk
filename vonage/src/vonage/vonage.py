@@ -4,6 +4,7 @@ from vonage_http_client.auth import Auth
 from vonage_http_client.http_client import HttpClient, HttpClientOptions
 from vonage_number_insight_v2.number_insight_v2 import NumberInsightV2
 from vonage_sms.sms import Sms
+from vonage_users.users import Users
 
 from ._version import __version__
 
@@ -23,6 +24,7 @@ class Vonage:
 
         self.number_insight_v2 = NumberInsightV2(self._http_client)
         self.sms = Sms(self._http_client)
+        self.users = Users(self._http_client)
 
     @property
     def http_client(self):

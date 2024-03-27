@@ -1,0 +1,23 @@
+{
+    "id": "USR-87e3e6b0-cd7b-45ef-a0a7-bcd5566a672b",
+    "name": "new name!",
+    "display_name": "My New Renamed User Name",
+    "properties": {},
+    "_links": {
+        "self": {
+            "href": "https://api-us-3.vonage.com/v1/users/USR-87e3e6b0-cd7b-45ef-a0a7-bcd5566a672b"
+        }
+    },
+    "channels": {
+        "sms": [
+            {
+                "number": "1234567890"
+            }
+        ],
+        "pstn": [
+            {
+                "number": 123456
+            }
+        ]
+    }
+}

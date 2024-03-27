@@ -4,7 +4,7 @@ from platform import python_version
 from typing import Literal, Optional, Union
 
 from pydantic import BaseModel, Field, ValidationError, validate_call
-from requests import Response
+from requests import Response, delete
 from requests.adapters import HTTPAdapter
 from requests.sessions import Session
 from typing_extensions import Annotated
@@ -13,6 +13,7 @@ from vonage_http_client.errors import (
     AuthenticationError,
     HttpRequestError,
     InvalidHttpClientOptionsError,
+    NotFoundError,
     RateLimitedError,
     ServerError,
 )
@@ -120,10 +121,34 @@ class HttpClient:
     ) -> Union[dict, None]:
         return self.make_request('GET', host, request_path, params, auth_type, body_type)
 
+    def patch(
+        self,
+        host: str,
+        request_path: str = '',
+        params: dict = None,
+        auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
+        body_type: Literal['json', 'data'] = 'json',
+    ) -> Union[dict, None]:
+        return self.make_request(
+            'PATCH', host, request_path, params, auth_type, body_type
+        )
+
+    def delete(
+        self,
+        host: str,
+        request_path: str = '',
+        params: dict = None,
+        auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
+        body_type: Literal['json', 'data'] = 'json',
+    ) -> Union[dict, None]:
+        return self.make_request(
+            'DELETE', host, request_path, params, auth_type, body_type
+        )
+
     @validate_call
     def make_request(
         self,
-        request_type: Literal['GET', 'POST'],
+        request_type: Literal['GET', 'POST', 'PATCH', 'DELETE'],
         host: str,
         request_path: str = '',
         params: Optional[dict] = None,
@@ -150,6 +175,7 @@ class HttpClient:
         }
 
         if body_type == 'json':
+            self._headers['Content-Type'] = 'application/json'
             request_params['json'] = params
         else:
             request_params['data'] = params
@@ -178,6 +204,8 @@ class HttpClient:
             )
             if response.status_code == 401 or response.status_code == 403:
                 raise AuthenticationError(response, content_type)
+            elif response.status_code == 404:
+                raise NotFoundError(response, content_type)
             elif response.status_code == 429:
                 raise RateLimitedError(response, content_type)
             elif response.status_code == 500:

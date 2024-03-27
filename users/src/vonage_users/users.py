@@ -1,25 +1,12 @@
-from typing import Generator, Literal, Optional
+from typing import List, Optional, Tuple
 
-from pydantic import BaseModel, validate_call
+from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
+from urllib.parse import urlparse, parse_qs
 
 from .common import User
 from .requests import ListUsersRequest
-from .responses import CreateUserResponse, ListUsersResponse
-
-
-class Filters(BaseModel):
-    order: Optional[Literal['asc', 'desc', 'ASC', 'DESC']] = None
-
-
-import urllib.parse
-
-
-def parse_cursor_from_url(url: str) -> Optional[str]:
-    """Extract the cursor from the "next" URL."""
-    query_string = urllib.parse.urlparse(url).query
-    params = urllib.parse.parse_qs(query_string)
-    return params.get('cursor', [None])[0]
+from .responses import ListUsersResponse, UserSummary
 
 
 class Users:
@@ -35,35 +22,94 @@ class Users:
 
     @validate_call
     def list_users(
-        self,
-        order: Literal['asc', 'desc', 'ASC', 'DESC'] = None,
-        name: str = None,
-    ) -> Generator:
-        """List all users with pagination handled by a generator."""
-        cursor = None
-        while True:
-            params = ListUsersRequest(order=order, cursor=cursor, name=name)
-            response = self._http_client.get(
-                self._http_client.api_host,
-                '/v1/users',
-                # need to send the right stuff to the api
-                params.model_dump() if params is not None else None,
-                self._auth_type,
-            )
-            users = ListUsersResponse(**response)
-            for user in users.embedded.users:
-                yield user
-            if not users.links.next:
-                break
-            cursor = parse_cursor_from_url(users.links.next.href)
+        self, params: ListUsersRequest = ListUsersRequest()
+    ) -> Tuple[List[UserSummary], str]:
+        """List all users.
+
+        If you want to see more information about a specific user, you can use the `Users.get_user` method.
+        Gets the first 100 users by default."""
+        response = self._http_client.get(
+            self._http_client.api_host,
+            '/v1/users',
+            params.model_dump(exclude_none=True),
+            self._auth_type,
+        )
+        print(params.model_dump(exclude_none=True))
+
+        users_response = ListUsersResponse(**response)
+        if users_response.links.next is None:
+            return users_response.embedded.users, None
+
+        parsed_url = urlparse(users_response.links.next.href)
+        query_params = parse_qs(parsed_url.query)
+        next_cursor = query_params.get('cursor', [None])[0]
+        return users_response.embedded.users, next_cursor
 
     @validate_call
-    def create_user(self, params: Optional[User]):
-        """Create a user."""
+    def create_user(self, params: Optional[User] = None) -> User:
+        """
+        Create a new user.
+
+        Args:
+            params (Optional[User]): An optional `User` object containing the parameters for creating a new user.
+
+        Returns:
+            User: A `User` object representing the newly created user.
+        """
         response = self._http_client.post(
             self._http_client.api_host,
             '/v1/users',
-            params.model_dump() if params is not None else None,
+            params.model_dump(exclude_none=True) if params is not None else None,
             self._auth_type,
         )
-        return CreateUserResponse(**response)
+        return User(**response)
+
+    @validate_call
+    def get_user(self, id: str) -> User:
+        """
+        Get a user by ID.
+
+        Args:
+            id (str): The ID of the user to retrieve.
+
+        Returns:
+            User: The user object.
+        """
+        response = self._http_client.get(
+            self._http_client.api_host, f'/v1/users/{id}', None, self._auth_type
+        )
+        return User(**response)
+
+    @validate_call
+    def update_user(self, id: str, params: User) -> User:
+        """Update a user.
+
+        Args:
+            id (str): The ID of the user to update.
+            params (User): The updated user object.
+
+        Returns:
+            User: The updated user object.
+        """
+        response = self._http_client.patch(
+            self._http_client.api_host,
+            f'/v1/users/{id}',
+            params.model_dump(exclude_none=True),
+            self._auth_type,
+        )
+        return User(**response)
+
+    @validate_call
+    def delete_user(self, id: str) -> None:
+        """Delete a user.
+
+        Args:
+            id (str): The ID of the user to delete.
+
+        Returns:
+            None
+        """
+        self._http_client.delete(
+            self._http_client.api_host, f'/v1/users/{id}', None, self._auth_type
+        )
+        return None

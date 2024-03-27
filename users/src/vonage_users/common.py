@@ -1,9 +1,26 @@
-from typing import Dict, List, Optional
+from dataclasses import field
+from typing import List, Optional
 
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import (
+    BaseModel,
+    Field,
+    ValidationInfo,
+    field_validator,
+    model_validator,
+    root_validator,
+)
 from typing_extensions import Annotated
 
-PhoneNumber = Annotated[str, Field(pattern='^[1-9]\d{6,14}$')]
+
+PhoneNumber = Annotated[str, Field(pattern=r'^[1-9]\d{6,14}$')]
+
+
+class Link(BaseModel):
+    href: str
+
+
+class ResourceLink(BaseModel):
+    self: Link
 
 
 class PstnChannel(BaseModel):
@@ -11,7 +28,7 @@ class PstnChannel(BaseModel):
 
 
 class SipChannel(BaseModel):
-    uri: str = Field(..., pattern='^(sip|sips):\+?([\w|:.\-@;,=%&]+)')
+    uri: str = Field(..., pattern=r'^(sip|sips):\+?([\w|:.\-@;,=%&]+)')
     username: str = None
     password: str = None
 
@@ -21,9 +38,11 @@ class VbcChannel(BaseModel):
 
 
 class WebsocketChannel(BaseModel):
-    uri: str = Field(pattern='^(ws|wss)://[a-zA-Z0-9~#%@&-_?\/.,:;)(][]*$')
-    content_type: str = Field(pattern="^audio/l16;rate=(8000|16000)$")
-    headers: Optional[Dict[str, str]] = None
+    uri: str = Field(pattern=r'^(ws|wss):\/\/[a-zA-Z0-9~#%@&-_?\/.,:;)(\]\[]*$')
+    content_type: Optional[str] = Field(
+        None, alias='content-type', pattern='^audio/l16;rate=(8000|16000)$'
+    )
+    headers: Optional[dict] = None
 
 
 class SmsChannel(BaseModel):
@@ -47,24 +66,34 @@ class MessengerChannel(BaseModel):
 
 
 class Channels(BaseModel):
-    pstn: Optional[List[PstnChannel]] = None
-    sip: Optional[List[SipChannel]] = None
-    vbc: Optional[List[VbcChannel]] = None
-    websocket: Optional[List[WebsocketChannel]] = None
     sms: Optional[List[SmsChannel]] = None
     mms: Optional[List[MmsChannel]] = None
     whatsapp: Optional[List[WhatsappChannel]] = None
     viber: Optional[List[ViberChannel]] = None
     messenger: Optional[List[MessengerChannel]] = None
+    pstn: Optional[List[PstnChannel]] = None
+    sip: Optional[List[SipChannel]] = None
+    websocket: Optional[List[WebsocketChannel]] = None
+    vbc: Optional[List[VbcChannel]] = None
 
 
 class Properties(BaseModel):
-    custom_data: Optional[Dict[str, str]]
+    custom_data: Optional[dict] = None
 
 
 class User(BaseModel):
-    name: Optional[str] = Field(None, example="my_user_name")
-    display_name: Optional[str] = Field(None, example="My User Name")
-    image_url: Optional[HttpUrl] = Field(None, example="https://example.com/image.png")
-    properties: Optional[Properties]
-    channels: Optional[Channels]
+    name: Optional[str] = None
+    display_name: Optional[str] = None
+    image_url: Optional[str] = None
+    channels: Optional[Channels] = None
+    properties: Optional[Properties] = None
+    links: Optional[ResourceLink] = Field(None, validation_alias='_links', exclude=True)
+    link: Optional[str] = None
+    id: Optional[str] = None
+
+    @model_validator(mode='after')
+    @classmethod
+    def get_link(cls, data):
+        if data.links is not None:
+            data.link = data.links.self.href
+        return data

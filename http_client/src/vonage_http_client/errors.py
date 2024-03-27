@@ -1,4 +1,4 @@
-from json import JSONDecodeError
+from json import dumps, JSONDecodeError
 
 from requests import Response
 from vonage_utils.errors import VonageError
@@ -37,14 +37,14 @@ class HttpRequestError(VonageError):
         body = None
         if content_type == 'application/json':
             try:
-                body = response.json()
+                body = dumps(response.json(), indent=4)
             except JSONDecodeError:
                 pass
         else:
             body = response.text
 
         if body:
-            self.message = f'{response.status_code} response from {response.url}. Error response body: {body}'
+            self.message = f'{response.status_code} response from {response.url}. Error response body: \n{body}'
         else:
             self.message = f'{response.status_code} response from {response.url}.'
 
@@ -53,6 +53,24 @@ class AuthenticationError(HttpRequestError):
     """Exception indicating authentication failure in a Vonage SDK request.
 
     This error is raised when the HTTP response status code is 401 (Unauthorized).
+
+    Args:
+        response (requests.Response): The HTTP response object.
+        content_type (str): The response content type.
+
+    Attributes (inherited from HttpRequestError parent exception):
+        response (requests.Response): The HTTP response object.
+        message (str): The returned error message.
+    """
+
+    def __init__(self, response: Response, content_type: str):
+        super().__init__(response, content_type)
+
+
+class NotFoundError(HttpRequestError):
+    """Exception indicating a resource was not found in a Vonage SDK request.
+
+    This error is raised when the HTTP response status code is 404 (Not Found).
 
     Args:
         response (requests.Response): The HTTP response object.

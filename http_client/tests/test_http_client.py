@@ -183,6 +183,17 @@ def test_authentication_error_no_content():
 
 
 @responses.activate
+def test_not_found_error():
+    build_response(path, 'GET', 'https://example.com/get_json', '404.json', 404)
+
+    client = HttpClient(Auth())
+    try:
+        client.get(host='example.com', request_path='/get_json', auth_type='basic')
+    except HttpRequestError as err:
+        assert err.response.json()['title'] == 'Not found.'
+
+
+@responses.activate
 def test_rate_limited_error():
     build_response(path, 'GET', 'https://example.com/get_json', '429.json', 429)
 

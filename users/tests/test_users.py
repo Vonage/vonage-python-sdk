@@ -4,8 +4,8 @@ import responses
 from vonage_http_client.errors import NotFoundError
 from vonage_http_client.http_client import HttpClient
 from vonage_users import Users
-from vonage_users.requests import ListUsersRequest
 from vonage_users.common import *
+from vonage_users.requests import ListUsersRequest
 
 from testutils import build_response, get_mock_jwt_auth
 
@@ -30,13 +30,46 @@ def test_create_list_users_request():
 def test_list_users():
     build_response(path, 'GET', 'https://api.nexmo.com/v1/users', 'list_users.json')
     users_list, _ = users.list_users()
-    assert len(users_list) == 1
-    assert users_list[0].id == 'USR-82e028d9-5201-4f1e-8188-604b2d3471fd'
-    assert users_list[0].name == 'my_user_name'
-    assert users_list[0].display_name == 'My User Name'
+    assert len(users_list) == 7
+    assert users_list[0].id == 'USR-2af4d3c5-ec49-4c4a-b74c-ec13ab560af9'
+    assert users_list[0].name == 'NAM-6dd4ea1f-3841-47cb-a3d3-e271f5c1e33d'
+    assert users_list[3].id == 'USR-5ab17d58-b8b3-427d-ac42-c31dab7ef423'
+    assert users_list[3].name == 'my_user_name'
+    assert users_list[3].display_name == 'My User Name'
     assert (
-        users_list[0].links.self.href
-        == 'https://api.nexmo.com/v1/users/USR-82e028d9-5201-4f1e-8188-604b2d3471fd'
+        users_list[0].link
+        == 'https://api-us-3.vonage.com/v1/users/USR-2af4d3c5-ec49-4c4a-b74c-ec13ab560af9'
+    )
+    assert (
+        users_list[6].link
+        == 'https://api-us-3.vonage.com/v1/users/USR-c4ef37cd-26d3-4b05-bbf3-a70d56d074e2'
+    )
+
+
+@responses.activate
+def test_list_users_options():
+    build_response(
+        path, 'GET', 'https://api.nexmo.com/v1/users', 'list_users_options.json'
+    )
+
+    params = ListUsersRequest(
+        page_size=2,
+        order='asc',
+        cursor='zAmuSchIBsUF1QaaohGdaf32NgHOkP130XeQrZkoOPEuGPnIxFb0Xj3iqCfOzxSSq9Es/S/2h+HYumKt3HS0V9ewjis+j74oMcsvYBLN1PwFEupI6ENEWHYC7lk=',
+    )
+    users_list, next = users.list_users(params)
+
+    assert users_list[0].id == 'USR-37a8299f-eaad-417c-a0b3-431b6555c4be'
+    assert users_list[0].name == 'my_other_user_name'
+    assert users_list[0].display_name == 'My Other User Name'
+    assert (
+        users_list[0].link
+        == 'https://api-us-3.vonage.com/v1/users/USR-37a8299f-eaad-417c-a0b3-431b6555c4be'
+    )
+    assert users_list[1].id == 'USR-5ab17d58-b8b3-427d-ac42-c31dab7ef422'
+    assert (
+        next
+        == 'Rv1d7qE3lDuOuwSFjRGHJ2JpKG28CdI1iNjSKNwy0NIr7uicrn7SGpIyaDtvkEEBfyH5xyjSonpeoYNLdw19SQ=='
     )
 
 

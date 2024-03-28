@@ -13,7 +13,7 @@ class Sms:
 
     def __init__(self, http_client: HttpClient) -> None:
         self._http_client = http_client
-        self._body_type = 'data'
+        self._sent_data_type = 'form'
         if self._http_client._auth._signature_secret:
             self._auth_type = 'signature'
         else:
@@ -27,7 +27,7 @@ class Sms:
             '/sms/json',
             message.model_dump(by_alias=True),
             self._auth_type,
-            self._body_type,
+            self._sent_data_type,
         )
 
         if int(response['message-count']) > 1:
@@ -78,9 +78,10 @@ class Sms:
                 '%Y-%m-%d %H:%M:%S'
             ),
         }
-        self._http_client.get(
+        self._http_client.post(
             self._http_client.api_host,
             '/conversions/sms',
             params,
             self._auth_type,
+            self._sent_data_type,
         )

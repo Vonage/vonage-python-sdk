@@ -1,16 +1,7 @@
-from dataclasses import field
 from typing import List, Optional
 
-from pydantic import (
-    BaseModel,
-    Field,
-    ValidationInfo,
-    field_validator,
-    model_validator,
-    root_validator,
-)
+from pydantic import BaseModel, Field, model_validator
 from typing_extensions import Annotated
-
 
 PhoneNumber = Annotated[str, Field(pattern=r'^[1-9]\d{6,14}$')]
 

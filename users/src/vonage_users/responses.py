@@ -1,7 +1,6 @@
 from typing import List, Optional
 
 from pydantic import BaseModel, Field, model_validator
-
 from vonage_users.common import Link, ResourceLink
 
 

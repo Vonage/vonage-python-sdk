@@ -1,6 +1,6 @@
 [project]
 name = "vonage-http-client"
-version = "1.1.0"
+version = "1.1.1"
 description = "An HTTP client for making requests to Vonage APIs."
 readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]

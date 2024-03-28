@@ -150,7 +150,7 @@ def test_send_message_error():
 def test_submit_sms_conversion():
     build_response(
         path,
-        'GET',
+        'POST',
         'https://api.nexmo.com/conversions/sms',
         'null',
     )
@@ -162,7 +162,7 @@ def test_submit_sms_conversion():
 def test_submit_sms_conversion_402():
     build_response(
         path,
-        'GET',
+        'POST',
         'https://api.nexmo.com/conversions/sms',
         'conversion_not_enabled.html',
         status_code=402,

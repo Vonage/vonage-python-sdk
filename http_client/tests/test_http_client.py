@@ -56,12 +56,19 @@ def test_create_http_client_invalid_options_error():
 
 @responses.activate
 def test_make_get_request():
-    build_response(path, 'GET', 'https://example.com/get_json', 'example_get.json')
+    build_response(
+        path, 'GET', 'https://example.com/get_json?key=value', 'example_get.json'
+    )
     client = HttpClient(
         Auth(application_id=application_id, private_key=private_key),
         http_client_options={'api_host': 'example.com'},
     )
-    res = client.get(host='example.com', request_path='/get_json')
+    res = client.get(
+        host='example.com',
+        request_path='/get_json',
+        params={'key': 'value'},
+        sent_data_type='query_params',
+    )
 
     assert res['hello'] == 'world'
     assert responses.calls[0].request.headers['User-Agent'] == client._user_agent
@@ -131,7 +138,7 @@ def test_make_post_request_with_signature():
         request_path='/post_signed_params',
         params=params,
         auth_type='signature',
-        body_type='data',
+        sent_data_type='form',
     )
     assert res['hello'] == 'world!'
 

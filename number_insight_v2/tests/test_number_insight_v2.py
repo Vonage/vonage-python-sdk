@@ -4,7 +4,6 @@ from os.path import abspath
 import responses
 from pydantic import ValidationError
 from pytest import raises
-from vonage_http_client.auth import Auth
 from vonage_http_client.http_client import HttpClient
 from vonage_number_insight_v2.number_insight_v2 import (
     FraudCheckRequest,
@@ -14,11 +13,11 @@ from vonage_number_insight_v2.number_insight_v2 import (
 from vonage_utils.errors import InvalidPhoneNumberError
 from vonage_utils.utils import remove_none_values
 
-from testutils import build_response
+from testutils import build_response, get_mock_api_key_auth
 
 path = abspath(__file__)
 
-ni2 = NumberInsightV2(HttpClient(Auth('key', 'secret')))
+ni2 = NumberInsightV2(HttpClient(get_mock_api_key_auth()))
 
 
 def test_fraud_check_request_defaults():

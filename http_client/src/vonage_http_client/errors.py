@@ -1,4 +1,4 @@
-from json import dumps, JSONDecodeError
+from json import JSONDecodeError, dumps
 
 from requests import Response
 from vonage_utils.errors import VonageError

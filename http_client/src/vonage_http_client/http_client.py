@@ -4,7 +4,7 @@ from platform import python_version
 from typing import Literal, Optional, Union
 
 from pydantic import BaseModel, Field, ValidationError, validate_call
-from requests import Response, delete
+from requests import Response
 from requests.adapters import HTTPAdapter
 from requests.sessions import Session
 from typing_extensions import Annotated
@@ -107,9 +107,11 @@ class HttpClient:
         request_path: str = '',
         params: dict = None,
         auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
-        body_type: Literal['json', 'data'] = 'json',
+        sent_data_type: Literal['json', 'data'] = 'json',
     ) -> Union[dict, None]:
-        return self.make_request('POST', host, request_path, params, auth_type, body_type)
+        return self.make_request(
+            'POST', host, request_path, params, auth_type, sent_data_type
+        )
 
     def get(
         self,
@@ -117,9 +119,11 @@ class HttpClient:
         request_path: str = '',
         params: dict = None,
         auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
-        body_type: Literal['json', 'data'] = 'json',
+        sent_data_type: Literal['json', 'form', 'query_params'] = 'json',
     ) -> Union[dict, None]:
-        return self.make_request('GET', host, request_path, params, auth_type, body_type)
+        return self.make_request(
+            'GET', host, request_path, params, auth_type, sent_data_type
+        )
 
     def patch(
         self,
@@ -127,10 +131,10 @@ class HttpClient:
         request_path: str = '',
         params: dict = None,
         auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
-        body_type: Literal['json', 'data'] = 'json',
+        sent_data_type: Literal['json', 'form', 'query_params'] = 'json',
     ) -> Union[dict, None]:
         return self.make_request(
-            'PATCH', host, request_path, params, auth_type, body_type
+            'PATCH', host, request_path, params, auth_type, sent_data_type
         )
 
     def delete(
@@ -139,10 +143,10 @@ class HttpClient:
         request_path: str = '',
         params: dict = None,
         auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
-        body_type: Literal['json', 'data'] = 'json',
+        sent_data_type: Literal['json', 'form', 'query_params'] = 'json',
     ) -> Union[dict, None]:
         return self.make_request(
-            'DELETE', host, request_path, params, auth_type, body_type
+            'DELETE', host, request_path, params, auth_type, sent_data_type
         )
 
     @validate_call
@@ -153,7 +157,7 @@ class HttpClient:
         request_path: str = '',
         params: Optional[dict] = None,
         auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
-        body_type: Literal['json', 'data'] = 'json',
+        sent_data_type: Literal['json', 'form', 'query_params'] = 'json',
     ):
         url = f'https://{host}{request_path}'
         logger.debug(
@@ -174,10 +178,12 @@ class HttpClient:
             'timeout': self._timeout,
         }
 
-        if body_type == 'json':
+        if sent_data_type == 'json':
             self._headers['Content-Type'] = 'application/json'
             request_params['json'] = params
-        else:
+        elif sent_data_type == 'query_params':
+            request_params['params'] = params
+        elif sent_data_type == 'form':
             request_params['data'] = params
 
         with self._session.request(**request_params) as response:

@@ -1,5 +1,11 @@
+# 3.99.0a3
+- Add support for the [Vonage Users API](https://developer.vonage.com/en/api/application.v2#User).
+
+# 3.99.0a2
+- Internal refactoring
+
 # 3.99.0a1
-- Add support for the Vonage SMS API
+- Add support for the [Vonage SMS API](https://developer.vonage.com/en/messaging/sms/overview).
 
 # 3.99.0a0
 Created new monorepo structure - this package `vonage` is now a way to depend on the functionality of all Vonage APIs, which has been moved into separate packages. Additionally, there are many breaking changes.

@@ -1,8 +1,8 @@
 from typing import List, Optional, Tuple
+from urllib.parse import parse_qs, urlparse
 
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
-from urllib.parse import urlparse, parse_qs
 
 from .common import User
 from .requests import ListUsersRequest
@@ -26,15 +26,22 @@ class Users:
     ) -> Tuple[List[UserSummary], str]:
         """List all users.
 
+        Retrieves a list of all users. Gets 100 users by default.
         If you want to see more information about a specific user, you can use the `Users.get_user` method.
-        Gets the first 100 users by default."""
+
+        Args:
+            params (ListUsersRequest, optional): An instance of the ListUsersRequest class that allows you to specify additional parameters for the user listing.
+
+        Returns:
+            Tuple[List[UserSummary], str]: A tuple containing a list of UserSummary objects representing the users and a string representing the next cursor for pagination.
+        """
         response = self._http_client.get(
             self._http_client.api_host,
             '/v1/users',
             params.model_dump(exclude_none=True),
             self._auth_type,
+            'query_params',
         )
-        print(params.model_dump(exclude_none=True))
 
         users_response = ListUsersResponse(**response)
         if users_response.links.next is None:
@@ -47,8 +54,7 @@ class Users:
 
     @validate_call
     def create_user(self, params: Optional[User] = None) -> User:
-        """
-        Create a new user.
+        """Create a new user.
 
         Args:
             params (Optional[User]): An optional `User` object containing the parameters for creating a new user.
@@ -66,8 +72,7 @@ class Users:
 
     @validate_call
     def get_user(self, id: str) -> User:
-        """
-        Get a user by ID.
+        """Get a user by ID.
 
         Args:
             id (str): The ID of the user to retrieve.
@@ -112,4 +117,3 @@ class Users:
         self._http_client.delete(
             self._http_client.api_host, f'/v1/users/{id}', None, self._auth_type
         )
-        return None

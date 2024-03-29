@@ -1,3 +1,6 @@
+# 3.99.0a4
+- Add support for the [Vonage Verify API](https://developer.vonage.com/en/api/verify).
+
 # 3.99.0a3
 - Add support for the [Vonage Users API](https://developer.vonage.com/en/api/application.v2#User).
 

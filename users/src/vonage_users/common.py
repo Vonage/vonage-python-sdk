@@ -1,9 +1,7 @@
 from typing import List, Optional
 
 from pydantic import BaseModel, Field, model_validator
-from typing_extensions import Annotated
-
-PhoneNumber = Annotated[str, Field(pattern=r'^[1-9]\d{6,14}$')]
+from vonage_utils.types.phone_number import PhoneNumber
 
 
 class Link(BaseModel):

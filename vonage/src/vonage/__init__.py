@@ -1,6 +1,6 @@
 from vonage_utils import VonageError
 
-from .vonage import Auth, HttpClientOptions, NumberInsightV2, Sms, Users, Vonage
+from .vonage import Auth, HttpClientOptions, NumberInsightV2, Sms, Users, Verify, Vonage
 
 __all__ = [
     'Vonage',
@@ -9,5 +9,6 @@ __all__ = [
     'NumberInsightV2',
     'Sms',
     'Users',
+    'Verify',
     'VonageError',
 ]

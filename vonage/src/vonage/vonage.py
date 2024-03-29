@@ -5,12 +5,18 @@ from vonage_http_client.http_client import HttpClient, HttpClientOptions
 from vonage_number_insight_v2.number_insight_v2 import NumberInsightV2
 from vonage_sms.sms import Sms
 from vonage_users.users import Users
+from vonage_verify.verify import Verify
 
 from ._version import __version__
 
 
 class Vonage:
     """Main Server SDK class for using Vonage APIs.
+
+    When creating an instance, it will create the authentication objects and
+    an HTTP Client needed for using Vonage APIs.
+    Use an instance of this class to access the Vonage APIs, e.g. to access
+    methods associated with the Vonage SMS API, call `vonage.sms.method_name()`.
 
     Args:
         auth (Auth): Class dealing with authentication objects and methods.
@@ -25,6 +31,7 @@ class Vonage:
         self.number_insight_v2 = NumberInsightV2(self._http_client)
         self.sms = Sms(self._http_client)
         self.users = Users(self._http_client)
+        self.verify = Verify(self._http_client)
 
     @property
     def http_client(self):

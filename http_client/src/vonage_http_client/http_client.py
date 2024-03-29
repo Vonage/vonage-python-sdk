@@ -106,7 +106,7 @@ class HttpClient:
         host: str,
         request_path: str = '',
         params: dict = None,
-        auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
+        auth_type: Literal['jwt', 'basic', 'body', 'signature'] = 'jwt',
         sent_data_type: Literal['json', 'data'] = 'json',
     ) -> Union[dict, None]:
         return self.make_request(
@@ -118,7 +118,7 @@ class HttpClient:
         host: str,
         request_path: str = '',
         params: dict = None,
-        auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
+        auth_type: Literal['jwt', 'basic', 'body', 'signature'] = 'jwt',
         sent_data_type: Literal['json', 'form', 'query_params'] = 'json',
     ) -> Union[dict, None]:
         return self.make_request(
@@ -130,7 +130,7 @@ class HttpClient:
         host: str,
         request_path: str = '',
         params: dict = None,
-        auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
+        auth_type: Literal['jwt', 'basic', 'body', 'signature'] = 'jwt',
         sent_data_type: Literal['json', 'form', 'query_params'] = 'json',
     ) -> Union[dict, None]:
         return self.make_request(
@@ -142,7 +142,7 @@ class HttpClient:
         host: str,
         request_path: str = '',
         params: dict = None,
-        auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
+        auth_type: Literal['jwt', 'basic', 'body', 'signature'] = 'jwt',
         sent_data_type: Literal['json', 'form', 'query_params'] = 'json',
     ) -> Union[dict, None]:
         return self.make_request(
@@ -156,7 +156,7 @@ class HttpClient:
         host: str,
         request_path: str = '',
         params: Optional[dict] = None,
-        auth_type: Literal['jwt', 'basic', 'signature'] = 'jwt',
+        auth_type: Literal['jwt', 'basic', 'body', 'signature'] = 'jwt',
         sent_data_type: Literal['json', 'form', 'query_params'] = 'json',
     ):
         url = f'https://{host}{request_path}'
@@ -167,6 +167,9 @@ class HttpClient:
             self._headers['Authorization'] = self._auth.create_jwt_auth_string()
         elif auth_type == 'basic':
             self._headers['Authorization'] = self._auth.create_basic_auth_string()
+        elif auth_type == 'body':
+            params['api_key'] = self._auth.api_key
+            params['api_secret'] = self._auth.api_secret
         elif auth_type == 'signature':
             params['api_key'] = self._auth.api_key
             params['sig'] = self._auth.sign_params(params)

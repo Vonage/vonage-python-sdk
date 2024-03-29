@@ -37,6 +37,7 @@ filter = [
   'users/src',
   'utils/src',
   'testutils',
+  'verify/src',
 ]
 
 [black]

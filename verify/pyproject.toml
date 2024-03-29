@@ -1,11 +1,15 @@
 [project]
-name = 'vonage-utils'
+name = 'vonage-verify'
 version = '1.0.0'
-description = 'Utils package containing objects for use with Vonage APIs'
+description = 'Vonage verify package'
 readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
-dependencies = ["pydantic>=2.6.1"]
 requires-python = ">=3.8"
+dependencies = [
+  "vonage-http-client>=1.1.1",
+  "vonage-utils>=1.0.0",
+  "pydantic>=2.6.1",
+]
 classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
@@ -18,7 +22,7 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Vonage/vonage-python-sdk"
+homepage = "https://github.com/Vonage/vonage-python-sdk"
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]

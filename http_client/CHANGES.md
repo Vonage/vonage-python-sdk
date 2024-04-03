@@ -1,3 +1,6 @@
+# 1.2.0
+- Add `last_request` and `last_response` properties
+
 # 1.1.1
 - Add new Patch method
 - New input fields for different ways to pass data in a request

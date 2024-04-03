@@ -20,11 +20,12 @@ def test_format_phone_number_invalid_type():
     number = ['1234567890']
     with raises(InvalidPhoneNumberTypeError) as e:
         format_phone_number(number)
-    assert '"<class \'list\'>"' in str(e.value)
+
+    assert e.match('"<class \'list\'>"')
 
 
 def test_format_phone_number_invalid_format():
     number = 'not a phone number'
     with raises(InvalidPhoneNumberError) as e:
         format_phone_number(number)
-    assert '"not a phone number"' in str(e.value)
+    assert e.match('"not a phone number"')

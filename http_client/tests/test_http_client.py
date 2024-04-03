@@ -3,7 +3,7 @@ from os.path import abspath, dirname, join
 
 import responses
 from pytest import raises
-from requests import Response
+from requests import PreparedRequest, Response
 from responses import matchers
 from vonage_http_client.auth import Auth
 from vonage_http_client.errors import (
@@ -55,7 +55,7 @@ def test_create_http_client_invalid_options_error():
 
 
 @responses.activate
-def test_make_get_request():
+def test_make_get_request_and_last_request_and_response():
     build_response(
         path, 'GET', 'https://example.com/get_json?key=value', 'example_get.json'
     )
@@ -64,14 +64,21 @@ def test_make_get_request():
         http_client_options={'api_host': 'example.com'},
     )
     res = client.get(
-        host='example.com',
-        request_path='/get_json',
-        params={'key': 'value'},
-        sent_data_type='query_params',
+        host='example.com', request_path='/get_json', params={'key': 'value'}
     )
 
     assert res['hello'] == 'world'
     assert responses.calls[0].request.headers['User-Agent'] == client._user_agent
+
+    assert type(client.last_request) == PreparedRequest
+    assert client.last_request.method == 'GET'
+    assert client.last_request.url == 'https://example.com/get_json?key=value'
+    assert client.last_request.body == None
+
+    assert type(client.last_response) == Response
+    assert client.last_response.status_code == 200
+    assert client.last_response.json() == res
+    assert client.last_response.headers == {'Content-Type': 'application/json'}
 
 
 @responses.activate

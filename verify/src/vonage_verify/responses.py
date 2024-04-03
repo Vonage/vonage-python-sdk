@@ -1,9 +1,20 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
-class VerifyResponse(BaseModel):
+class StartVerificationResponse(BaseModel):
     request_id: str
     status: str
+
+
+class CheckCodeResponse(BaseModel):
+    request_id: str
+    status: str
+    event_id: str
+    price: str
+    currency: str
+    estimated_price_messages_sent: Optional[str] = None
 
 
 # class MessageResponse(BaseModel):

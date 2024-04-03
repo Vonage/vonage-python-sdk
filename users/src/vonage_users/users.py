@@ -40,7 +40,6 @@ class Users:
             '/v1/users',
             params.model_dump(exclude_none=True),
             self._auth_type,
-            'query_params',
         )
 
         users_response = ListUsersResponse(**response)

@@ -1,107 +1,115 @@
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 
+from .errors import VerifyError
 from .requests import BaseVerifyRequest, Psd2Request, VerifyRequest
-from .responses import VerifyResponse
+from .responses import CheckCodeResponse, StartVerificationResponse
 
 
 class Verify:
-    """Calls Vonage's Verify API."""
+    """Calls Vonage's Verify API.
+
+    This class provides methods to interact with Vonage's Verify API for starting verification
+    processes.
+    """
 
     def __init__(self, http_client: HttpClient) -> None:
         self._http_client = http_client
-        self._sent_post_data_type = 'form'
-        self._sent_get_data_type = 'query_params'
+        self._sent_data_type = 'form'
         self._auth_type = 'body'
 
     @validate_call
-    def start_verification(self, verify_request: VerifyRequest) -> VerifyResponse:
-        """Start a verification process."""
+    def start_verification(
+        self, verify_request: VerifyRequest
+    ) -> StartVerificationResponse:
+        """Start a verification process.
+
+        Args:
+            verify_request (VerifyRequest): The verification request object.
+
+        Returns:
+            StartVerificationResponse: The response object containing the verification result.
+        """
         return self._make_verify_request(verify_request)
 
     @validate_call
-    def start_psd2_verification(self, verify_request: Psd2Request) -> VerifyResponse:
-        """Start a PSD2 verification process."""
+    def start_psd2_verification(
+        self, verify_request: Psd2Request
+    ) -> StartVerificationResponse:
+        """Start a PSD2 verification process.
+
+        Args:
+            verify_request (Psd2Request): The PSD2 verification request object.
+
+        Returns:
+            StartVerificationResponse: The response object containing the verification result.
+        """
         return self._make_verify_request(verify_request)
 
-    def _make_verify_request(self, verify_request: BaseVerifyRequest) -> VerifyResponse:
+    @validate_call
+    def check_code(self, request_id: str, code: str) -> CheckCodeResponse:
+        """Check a verification code.
+
+        Args:
+            request_id (str): The request ID.
+            code (str): The verification code.
+
+        Returns:
+            CheckCodeResponse: The response object containing the verification result.
+        """
+        response = self._http_client.post(
+            self._http_client.api_host,
+            '/verify/check/json',
+            {'request_id': request_id, 'code': code},
+            self._auth_type,
+            self._sent_data_type,
+        )
+        self._check_for_error(response)
+        return CheckCodeResponse(**response)
+
+    def _make_verify_request(
+        self, verify_request: BaseVerifyRequest
+    ) -> StartVerificationResponse:
+        """Make a verify request.
+
+        This method makes a verify request to the Vonage Verify API.
+
+        Args:
+            verify_request (BaseVerifyRequest): The verify request object.
+
+        Returns:
+            VerifyResponse: The response object containing the verification result.
+        """
         if type(verify_request) == VerifyRequest:
             request_path = '/verify/json'
         elif type(verify_request) == Psd2Request:
             request_path = '/verify/psd2/json'
-
         response = self._http_client.post(
             self._http_client.api_host,
             request_path,
-            verify_request.model_dump(by_alias=True),
+            verify_request.model_dump(by_alias=True, exclude_none=True),
             self._auth_type,
-            self._sent_post_data_type,
+            self._sent_data_type,
         )
-        return VerifyResponse(**response)
+        self._check_for_error(response)
+        parsed_response = StartVerificationResponse(**response)
 
-    # @validate_call
-    # def send(self, message: SmsMessage) -> SmsResponse:
-    #     """Send an SMS message."""
-    #     response = self._http_client.post(
-    #         self._http_client.rest_host,
-    #         '/sms/json',
-    #         message.model_dump(by_alias=True),
-    #         self._auth_type,
-    #         self._sent_data_type,
-    #     )
+        return parsed_response
 
-    #     if int(response['message-count']) > 1:
-    #         self._check_for_partial_failure(response)
-    #     else:
-    #         self._check_for_error(response)
-    #     return SmsResponse(**response)
+    def _check_for_error(self, response: dict) -> None:
+        """Check for error in the response.
 
-    # def _check_for_partial_failure(self, response_data):
-    #     successful_messages = 0
-    #     total_messages = int(response_data['message-count'])
+        This method checks if the response contains an error and raises a VerifyError if an error is found.
 
-    #     for message in response_data['messages']:
-    #         if message['status'] == '0':
-    #             successful_messages += 1
-    #     if successful_messages < total_messages:
-    #         raise PartialFailureError(response_data)
+        Args:
+            response (dict): The response object.
 
-    # def _check_for_error(self, response_data):
-    #     message = response_data['messages'][0]
-    #     if int(message['status']) != 0:
-    #         raise SmsError(
-    #             f'Sms.send_message method failed with error code {message["status"]}: {message["error-text"]}'
-    #         )
-
-    # @validate_call
-    # def submit_sms_conversion(
-    #     self, message_id: str, delivered: bool = True, timestamp: datetime = None
-    # ):
-    #     """
-    #     Note: Not available without having this feature manually enabled on your account.
-
-    #     Notifies Vonage that an SMS was successfully received.
-
-    #     This method is used to submit conversion data about SMS messages that were successfully delivered.
-    #     If you are using the Verify API for two-factor authentication (2FA), this information is sent to Vonage automatically,
-    #     so you do not need to use this method for 2FA messages.
-
-    #     Args:
-    #         message_id (str): The `message-id` returned by the `Sms.send` call.
-    #         delivered (bool, optional): Set to `True` if the user replied to the message you sent. Otherwise, set to `False`.
-    #         timestamp (datetime, optional): A `datetime` object containing the time the SMS arrived.
-    #     """
-    #     params = {
-    #         'message-id': message_id,
-    #         'delivered': delivered,
-    #         'timestamp': (timestamp or datetime.now(timezone.utc)).strftime(
-    #             '%Y-%m-%d %H:%M:%S'
-    #         ),
-    #     }
-    #     self._http_client.post(
-    #         self._http_client.api_host,
-    #         '/conversions/sms',
-    #         params,
-    #         self._auth_type,
-    #         self._sent_data_type,
-    #     )
+        Raises:
+            VerifyError: If an error is found in the response.
+        """
+        print(self._http_client.last_request.body)
+        if int(response['status']) != 0:
+            error_message = f'Error with Vonage status code {response["status"]}: {response["error_text"]}.'
+            if 'network' in response:
+                error_message += f' Network ID: {response["network"]}'
+            raise VerifyError(error_message)

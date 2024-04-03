@@ -14,20 +14,20 @@ class BaseVerifyRequest(BaseModel):
 
     number: PhoneNumber
     country: Optional[str] = Field(None, max_length=2)
-    code_length: Optional[Literal[4, 6]] = 4
+    code_length: Optional[Literal[4, 6]] = None
     pin_expiry: Optional[int] = Field(None, ge=60, le=3600)
     next_event_wait: Optional[int] = Field(None, ge=60, le=900)
-    workflow_id: Optional[Literal[1, 2, 3, 4, 5, 6, 7]] = None
+    workflow_id: Optional[int] = Field(None, ge=1, le=7)
 
     @model_validator(mode='after')
     def check_expiry_and_next_event_timing(self):
         if self.pin_expiry is None or self.next_event_wait is None:
             return self
         if self.pin_expiry % self.next_event_wait != 0:
-            logger.debug(
+            logger.warning(
                 f'The pin_expiry should be a multiple of next_event_wait.'
-                f'The current values are: pin_expiry={self.pin_expiry}, next_event_wait={self.next_event_wait}.'
-                f'The value of pin_expiry will be set to next_event_wait.'
+                f'\nThe current values are: pin_expiry={self.pin_expiry}, next_event_wait={self.next_event_wait}.'
+                f'\nThe value of pin_expiry will be set to next_event_wait.'
             )
             self.pin_expiry = self.next_event_wait
         return self
@@ -40,7 +40,7 @@ class VerifyRequest(BaseVerifyRequest):
     """
 
     brand: str = Field(..., max_length=18)
-    sender_id: Optional[str] = Field('VERIFY', max_length=11)
+    sender_id: Optional[str] = Field(None, max_length=11)
     lg: Optional[LanguageCode] = None
     pin_code: Optional[str] = Field(None, min_length=4, max_length=10)
 

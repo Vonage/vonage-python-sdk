@@ -4,7 +4,7 @@ from platform import python_version
 from typing import Literal, Optional, Union
 
 from pydantic import BaseModel, Field, ValidationError, validate_call
-from requests import Response
+from requests import PreparedRequest, Response
 from requests.adapters import HTTPAdapter
 from requests.sessions import Session
 from typing_extensions import Annotated
@@ -81,6 +81,9 @@ class HttpClient:
         self._user_agent = f'vonage-python-sdk/{sdk_version} python/{python_version()}'
         self._headers = {'User-Agent': self._user_agent, 'Accept': 'application/json'}
 
+        self._last_request = None
+        self._last_response = None
+
     @property
     def auth(self):
         return self._auth
@@ -101,6 +104,24 @@ class HttpClient:
     def user_agent(self):
         return self._user_agent
 
+    @property
+    def last_request(self) -> Optional[PreparedRequest]:
+        """The last request sent to the server.
+
+        Returns:
+            Optional[PreparedRequest]: The exact bytes of the request sent to the server.
+        """
+        return self._last_response.request
+
+    @property
+    def last_response(self) -> Optional[Response]:
+        """The last response received from the server.
+
+        Returns:
+            Optional[Response]: The response object received from the server.
+        """
+        return self._last_response
+
     def post(
         self,
         host: str,
@@ -119,7 +140,7 @@ class HttpClient:
         request_path: str = '',
         params: dict = None,
         auth_type: Literal['jwt', 'basic', 'body', 'signature'] = 'jwt',
-        sent_data_type: Literal['json', 'form', 'query_params'] = 'json',
+        sent_data_type: Literal['json', 'form', 'query_params'] = 'query_params',
     ) -> Union[dict, None]:
         return self.make_request(
             'GET', host, request_path, params, auth_type, sent_data_type
@@ -199,6 +220,8 @@ class HttpClient:
         logger.debug(
             f'Response received from {response.url} with status code: {response.status_code}; headers: {response.headers}'
         )
+        self._last_response = response
+
         content_type = response.headers['Content-Type'].split(';', 1)[0]
         if 200 <= response.status_code < 300:
             if response.status_code == 204:

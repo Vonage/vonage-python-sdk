@@ -1,0 +1,6 @@
+{
+    "type": "https://developer.vonage.com/api-errors#forbidden",
+    "title": "Forbidden",
+    "detail": "Your account does not have permission to perform this action.",
+    "instance": "bf0ca0bf927b3b52e3cb03217e1a1ddf"
+}

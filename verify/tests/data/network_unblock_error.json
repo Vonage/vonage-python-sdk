@@ -1,0 +1,6 @@
+{
+    "type": "https://developer.vonage.com/api-errors#bad-request",
+    "title": "Not Found",
+    "detail": "The network you provided does not have an active block.",
+    "instance": "bf0ca0bf927b3b52e3cb03217e1a1ddf"
+}

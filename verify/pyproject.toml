@@ -6,8 +6,8 @@ readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
 requires-python = ">=3.8"
 dependencies = [
-  "vonage-http-client>=1.1.1",
-  "vonage-utils>=1.0.0",
+  "vonage-http-client>=1.2.0",
+  "vonage-utils>=1.0.1",
   "pydantic>=2.6.1",
 ]
 classifiers = [

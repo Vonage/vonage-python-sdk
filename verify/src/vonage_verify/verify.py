@@ -1,12 +1,13 @@
-from typing import List, Union
+from typing import List, Optional, Union
 
-from pydantic import validate_call
+from pydantic import Field, validate_call
 from vonage_http_client.http_client import HttpClient
 
 from .errors import VerifyError
 from .requests import BaseVerifyRequest, Psd2Request, VerifyRequest
 from .responses import (
     CheckCodeResponse,
+    NetworkUnblockStatus,
     StartVerificationResponse,
     VerifyControlStatus,
     VerifyStatus,
@@ -152,6 +153,28 @@ class Verify:
         self._check_for_error(response)
 
         return VerifyControlStatus(**response)
+
+    @validate_call
+    def request_network_unblock(
+        self, network: str, unblock_duration: Optional[int] = Field(None, ge=0, le=86400)
+    ) -> NetworkUnblockStatus:
+        """Request to unblock a network that has been blocked due to potential fraud detection.
+
+        Note: The network unblock feature is switched off by default.
+            Please contact Sales to enable the Network Unblock API for your account.
+
+        Args:
+            network (str): The network code of the network to unblock.
+            unblock_duration (int, optional): How long (in seconds) to unblock the network for.
+        """
+        response = self._http_client.post(
+            self._http_client.api_host,
+            '/verify/network-unblock',
+            {'network': network, 'duration': unblock_duration},
+            self._auth_type,
+        )
+
+        return NetworkUnblockStatus(**response)
 
     def _make_verify_request(
         self, verify_request: BaseVerifyRequest

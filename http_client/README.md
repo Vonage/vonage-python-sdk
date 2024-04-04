@@ -42,9 +42,21 @@ response = client.get(host='api.nexmo.com', request_path='/v1/messages')
 response = client.post(host='api.nexmo.com', request_path='/v1/messages', params={'key': 'value'})
 ```
 
+## Get the Last Request and Last Response from the HTTP Client
+
+The `HttpClient` class exposes two properties, `last_request` and `last_response` that cache the last sent request and response.
+
+```python
+# Get last request, has type requests.PreparedRequest
+request = client.last_request
+
+# Get last response, has type requests.Response
+response = client.last_response
+```
+
 ### Appending to the User-Agent Header
 
-The HttpClient class also supports appending additional information to the User-Agent header via the append_to_user_agent method:
+The `HttpClient` class also supports appending additional information to the User-Agent header via the append_to_user_agent method:
 
 ```python
 client.append_to_user_agent('additional_info')

@@ -8,6 +8,7 @@ from responses import matchers
 from vonage_http_client.auth import Auth
 from vonage_http_client.errors import (
     AuthenticationError,
+    ForbiddenError,
     HttpRequestError,
     InvalidHttpClientOptionsError,
     RateLimitedError,
@@ -194,6 +195,21 @@ def test_authentication_error_no_content():
         client.get(host='example.com', request_path='/get_json', auth_type='basic')
     except AuthenticationError as err:
         assert type(err.response) == Response
+
+
+@responses.activate
+def test_forbidden_error():
+    build_response(path, 'GET', 'https://example.com/get_json', '403.json', 403)
+
+    client = HttpClient(Auth())
+    try:
+        client.get(host='example.com', request_path='/get_json', auth_type='basic')
+    except ForbiddenError as err:
+        assert err.response.json()['title'] == 'Forbidden'
+        assert (
+            err.response.json()['detail']
+            == 'Your account does not have permission to perform this action.'
+        )
 
 
 @responses.activate

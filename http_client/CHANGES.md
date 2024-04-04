@@ -1,5 +1,6 @@
 # 1.2.0
 - Add `last_request` and `last_response` properties
+- Add new `Forbidden` error
 
 # 1.1.1
 - Add new Patch method

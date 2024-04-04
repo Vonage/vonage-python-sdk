@@ -11,6 +11,7 @@ from typing_extensions import Annotated
 from vonage_http_client.auth import Auth
 from vonage_http_client.errors import (
     AuthenticationError,
+    ForbiddenError,
     HttpRequestError,
     InvalidHttpClientOptionsError,
     NotFoundError,
@@ -109,7 +110,8 @@ class HttpClient:
         """The last request sent to the server.
 
         Returns:
-            Optional[PreparedRequest]: The exact bytes of the request sent to the server.
+            Optional[PreparedRequest]: The exact bytes of the request sent to the server,
+                or None if no request has been sent.
         """
         return self._last_response.request
 
@@ -118,7 +120,8 @@ class HttpClient:
         """The last response received from the server.
 
         Returns:
-            Optional[Response]: The response object received from the server.
+            Optional[Response]: The response object received from the server,
+                or None if no response has been received.
         """
         return self._last_response
 
@@ -221,7 +224,6 @@ class HttpClient:
             f'Response received from {response.url} with status code: {response.status_code}; headers: {response.headers}'
         )
         self._last_response = response
-        print(response.content)
         content_type = response.headers['Content-Type'].split(';', 1)[0]
         if 200 <= response.status_code < 300:
             if response.status_code == 204:
@@ -234,8 +236,10 @@ class HttpClient:
             logger.warning(
                 f'Http Response Error! Status code: {response.status_code}; content: {repr(response.text)}; from url: {response.url}'
             )
-            if response.status_code == 401 or response.status_code == 403:
+            if response.status_code == 401:
                 raise AuthenticationError(response, content_type)
+            if response.status_code == 403:
+                raise ForbiddenError(response, content_type)
             elif response.status_code == 404:
                 raise NotFoundError(response, content_type)
             elif response.status_code == 429:

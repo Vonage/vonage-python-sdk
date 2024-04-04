@@ -67,6 +67,24 @@ class AuthenticationError(HttpRequestError):
         super().__init__(response, content_type)
 
 
+class ForbiddenError(HttpRequestError):
+    """Exception indicating a forbidden request in a Vonage SDK request.
+
+    This error is raised when the HTTP response status code is 403 (Forbidden).
+
+    Args:
+        response (requests.Response): The HTTP response object.
+        content_type (str): The response content type.
+
+    Attributes (inherited from HttpRequestError parent exception):
+        response (requests.Response): The HTTP response object.
+        message (str): The returned error message.
+    """
+
+    def __init__(self, response: Response, content_type: str):
+        super().__init__(response, content_type)
+
+
 class NotFoundError(HttpRequestError):
     """Exception indicating a resource was not found in a Vonage SDK request.
 

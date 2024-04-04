@@ -2,11 +2,12 @@ from os.path import abspath
 
 import responses
 from pytest import raises
+from vonage_http_client.errors import NotFoundError
 from vonage_http_client.http_client import HttpClient
 from vonage_verify.errors import VerifyError
 from vonage_verify.language_codes import LanguageCode, Psd2LanguageCode
 from vonage_verify.requests import Psd2Request, VerifyRequest
-from vonage_verify.responses import VerifyControlStatus
+from vonage_verify.responses import NetworkUnblockStatus, VerifyControlStatus
 from vonage_verify.verify import Verify
 
 from testutils import build_response, get_mock_api_key_auth
@@ -227,3 +228,72 @@ def test_cancel_verification_error():
     assert e.match(
         "The requestId 'cc121958d8fb4368aa3bb762bb9a0f75' does not exist or its no longer active."
     )
+
+
+@responses.activate
+def test_trigger_next_event():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/verify/control/json',
+        'trigger_next_event.json',
+    )
+    response = verify.trigger_next_event('c5037cb8b47449158ed6611afde58990')
+
+    assert type(response) == VerifyControlStatus
+    assert response.status == '0'
+    assert response.command == 'trigger_next_event'
+
+
+@responses.activate
+def test_trigger_next_event_error():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/verify/control/json',
+        'trigger_next_event_error.json',
+    )
+
+    with raises(VerifyError) as e:
+        verify.trigger_next_event('2c021d25cf2e47a9b277a996f4325b81')
+
+    assert e.match("'status': '19")
+    assert e.match('No more events are left to execute for the request')
+
+
+@responses.activate
+def test_request_network_unblock():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/verify/network-unblock',
+        'network_unblock.json',
+        202,
+    )
+
+    response = verify.request_network_unblock('23410')
+
+    assert verify._http_client.last_response.status_code == 202
+    assert type(response) == NetworkUnblockStatus
+    assert response.network == '23410'
+    assert response.unblocked_until == '2024-04-22T08:34:58Z'
+
+
+@responses.activate
+def test_request_network_unblock_error():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/verify/network-unblock',
+        'network_unblock_error.json',
+        404,
+    )
+
+    try:
+        verify.request_network_unblock('23410')
+    except NotFoundError as e:
+        assert (
+            e.response.json()['detail']
+            == 'The network you provided does not have an active block.'
+        )
+        assert e.response.json()['title'] == 'Not Found'

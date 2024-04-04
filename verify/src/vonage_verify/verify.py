@@ -1,13 +1,12 @@
-import re
-from typing import List, Optional, Union
-from pydantic import Field, validate_call
+from typing import List, Union
+
+from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 
 from .errors import VerifyError
 from .requests import BaseVerifyRequest, Psd2Request, VerifyRequest
 from .responses import (
     CheckCodeResponse,
-    NetworkUnblockStatus,
     StartVerificationResponse,
     VerifyControlStatus,
     VerifyStatus,

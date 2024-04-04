@@ -96,7 +96,6 @@ class Auth:
 
         if not params.get('timestamp'):
             params['timestamp'] = int(time())
-            print(params['timestamp'])
 
         for key in sorted(params):
             value = params[key]

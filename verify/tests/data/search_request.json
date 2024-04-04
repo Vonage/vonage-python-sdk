@@ -1,0 +1,32 @@
+{
+    "request_id": "cc121958d8fb4368aa3bb762bb9a0f74",
+    "account_id": "abcdef01",
+    "status": "EXPIRED",
+    "number": "1234567890",
+    "price": "0",
+    "currency": "EUR",
+    "sender_id": "Acme Inc.",
+    "date_submitted": "2024-04-03 02:22:37",
+    "date_finalized": "2024-04-03 02:27:38",
+    "first_event_date": "2024-04-03 02:22:37",
+    "last_event_date": "2024-04-03 02:24:38",
+    "checks": [
+        {
+            "date_received": "2024-04-03 02:23:04",
+            "code": "1234",
+            "status": "INVALID",
+            "ip_address": ""
+        }
+    ],
+    "events": [
+        {
+            "type": "sms",
+            "id": "23f3a13d-6d03-4262-8f4d-67f12a56e1c8"
+        },
+        {
+            "type": "sms",
+            "id": "09ef3984-3f62-453d-8f9c-1a161b373dba"
+        }
+    ],
+    "estimated_price_messages_sent": "0.09350"
+}

@@ -221,7 +221,7 @@ class HttpClient:
             f'Response received from {response.url} with status code: {response.status_code}; headers: {response.headers}'
         )
         self._last_response = response
-
+        print(response.content)
         content_type = response.headers['Content-Type'].split(';', 1)[0]
         if 200 <= response.status_code < 300:
             if response.status_code == 204:

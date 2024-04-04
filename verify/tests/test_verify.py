@@ -6,6 +6,7 @@ from vonage_http_client.http_client import HttpClient
 from vonage_verify.errors import VerifyError
 from vonage_verify.language_codes import LanguageCode, Psd2LanguageCode
 from vonage_verify.requests import Psd2Request, VerifyRequest
+from vonage_verify.responses import VerifyControlStatus
 from vonage_verify.verify import Verify
 
 from testutils import build_response, get_mock_api_key_auth
@@ -86,7 +87,7 @@ def test_verify_request_error():
         verify.start_verification(request)
 
     assert e.match(
-        'Error with Vonage status code 10: Concurrent verifications to the same number are not allowed'
+        "'error_text': 'Concurrent verifications to the same number are not allowed'"
     )
 
 
@@ -104,7 +105,7 @@ def test_verify_request_error_with_network():
     with raises(VerifyError) as e:
         verify.start_verification(request)
 
-    assert e.match('Network ID: 244523')
+    assert e.match("'network': '244523'")
 
 
 @responses.activate
@@ -113,10 +114,116 @@ def test_check_code():
         path, 'POST', 'https://api.nexmo.com/verify/check/json', 'check_code.json'
     )
     response = verify.check_code(
-        request_id='abcdef0123456789abcdef0123456789', code='1234'
+        request_id='c5037cb8b47449158ed6611afde58990', code='1234'
     )
-    assert response.request_id == 'abcdef0123456789abcdef0123456789'
+    assert response.request_id == 'c5037cb8b47449158ed6611afde58990'
     assert response.status == '0'
-    assert response.event_id == 'abcdef0123456789abcdef0123456789'
-    assert response.price == '0.10000000'
+    assert response.event_id == '390f7296-aeff-45ba-8931-84a13f3f76d7'
+    assert response.price == '0.05000000'
     assert response.currency == 'EUR'
+    assert response.estimated_price_messages_sent == '0.04675'
+
+
+@responses.activate
+def test_check_code_error():
+    build_response(
+        path, 'POST', 'https://api.nexmo.com/verify/check/json', 'check_code_error.json'
+    )
+
+    with raises(VerifyError) as e:
+        verify.check_code(request_id='c5037cb8b47449158ed6611afde58990', code='1234')
+
+    assert e.match(
+        "'status': '16', 'error_text': 'The code provided does not match the expected value'"
+    )
+
+
+@responses.activate
+def test_search():
+    build_response(
+        path, 'GET', 'https://api.nexmo.com/verify/search/json', 'search_request.json'
+    )
+    response = verify.search('c5037cb8b47449158ed6611afde58990')
+
+    assert response.request_id == 'cc121958d8fb4368aa3bb762bb9a0f74'
+    assert response.account_id == 'abcdef01'
+    assert response.status == 'EXPIRED'
+    assert response.number == '1234567890'
+    assert response.price == '0'
+    assert response.currency == 'EUR'
+    assert response.sender_id == 'Acme Inc.'
+    assert response.date_submitted == '2024-04-03 02:22:37'
+    assert response.date_finalized == '2024-04-03 02:27:38'
+    assert response.first_event_date == '2024-04-03 02:22:37'
+    assert response.last_event_date == '2024-04-03 02:24:38'
+    assert response.estimated_price_messages_sent == '0.09350'
+    assert response.checks[0].date_received == '2024-04-03 02:23:04'
+    assert response.checks[0].code == '1234'
+    assert response.checks[0].status == 'INVALID'
+    assert response.checks[0].ip_address == ''
+    assert response.events[0].type == 'sms'
+    assert response.events[0].id == '23f3a13d-6d03-4262-8f4d-67f12a56e1c8'
+
+
+@responses.activate
+def test_search_list_of_ids():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/verify/search/json',
+        'search_request_list.json',
+    )
+    response0, response1 = verify.search(
+        ['cc121958d8fb4368aa3bb762bb9a0f75', 'c5037cb8b47449158ed6611afde58990']
+    )
+    assert response0.request_id == 'cc121958d8fb4368aa3bb762bb9a0f74'
+    assert response1.request_id == 'c5037cb8b47449158ed6611afde58990'
+    assert response1.status == 'SUCCESS'
+    assert response1.checks[0].status == 'VALID'
+
+
+@responses.activate
+def test_search_error():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/verify/search/json',
+        'search_request_error.json',
+    )
+
+    with raises(VerifyError) as e:
+        verify.search('c5037cb8b47449158ed6611afde58990')
+
+    assert e.match("{'status': '101', 'error_text': 'No response found'}")
+
+
+@responses.activate
+def test_cancel_verification():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/verify/control/json',
+        'cancel_verification.json',
+    )
+    response = verify.cancel_verification('c5037cb8b47449158ed6611afde58990')
+
+    assert type(response) == VerifyControlStatus
+    assert response.status == '0'
+    assert response.command == 'cancel'
+
+
+@responses.activate
+def test_cancel_verification_error():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/verify/control/json',
+        'cancel_verification_error.json',
+    )
+
+    with raises(VerifyError) as e:
+        verify.cancel_verification('c5037cb8b47449158ed6611afde58990')
+
+    assert e.match(
+        "The requestId 'cc121958d8fb4368aa3bb762bb9a0f75' does not exist or its no longer active."
+    )

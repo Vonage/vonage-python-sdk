@@ -1,9 +1,17 @@
-from pydantic import validate_call
+import re
+from typing import List, Optional, Union
+from pydantic import Field, validate_call
 from vonage_http_client.http_client import HttpClient
 
 from .errors import VerifyError
 from .requests import BaseVerifyRequest, Psd2Request, VerifyRequest
-from .responses import CheckCodeResponse, StartVerificationResponse
+from .responses import (
+    CheckCodeResponse,
+    NetworkUnblockStatus,
+    StartVerificationResponse,
+    VerifyControlStatus,
+    VerifyStatus,
+)
 
 
 class Verify:
@@ -67,6 +75,85 @@ class Verify:
         self._check_for_error(response)
         return CheckCodeResponse(**response)
 
+    @validate_call
+    def search(
+        self, request: Union[str, List[str]]
+    ) -> Union[VerifyStatus, List[VerifyStatus]]:
+        """Search for past or current verification requests.
+
+        Args:
+            request (str | list[str]): The request ID, or a list of request IDs.
+
+        Returns:
+            Union[VerifyStatus, List[VerifyStatus]]: Either the response object
+                containing the verification result, or a list of response objects.
+        """
+        params = {}
+        if type(request) == str:
+            params['request_id'] = request
+        elif type(request) == list:
+            params['request_ids'] = request
+
+        response = self._http_client.get(
+            self._http_client.api_host, '/verify/search/json', params, self._auth_type
+        )
+
+        if 'verification_requests' in response:
+            parsed_response = []
+            for verification_request in response['verification_requests']:
+                parsed_response.append(VerifyStatus(**verification_request))
+            return parsed_response
+        elif 'error_text' in response:
+            error_message = f'Error with the following details: {response}'
+            raise VerifyError(error_message)
+        else:
+            parsed_response = VerifyStatus(**response)
+            return parsed_response
+
+    @validate_call
+    def cancel_verification(self, request_id: str) -> VerifyControlStatus:
+        """Cancel a verification request.
+
+        Args:
+            request_id (str): The request ID.
+
+        Returns:
+            VerifyControlStatus: The response object containing details of the submitted
+                verification control.
+        """
+        response = self._http_client.post(
+            self._http_client.api_host,
+            '/verify/control/json',
+            {'request_id': request_id, 'cmd': 'cancel'},
+            self._auth_type,
+            self._sent_data_type,
+        )
+        self._check_for_error(response)
+
+        return VerifyControlStatus(**response)
+
+    @validate_call
+    def trigger_next_event(self, request_id: str) -> VerifyControlStatus:
+        """Trigger the next event in the verification process.
+
+        Args:
+            request_id (str): The request ID.
+
+        Returns:
+            VerifyControlStatus: The response object containing details of the submitted
+                verification control.
+        """
+        response = self._http_client.post(
+            self._http_client.api_host,
+            '/verify/control/json',
+            {'request_id': request_id, 'cmd': 'trigger_next_event'},
+            self._auth_type,
+            self._sent_data_type,
+        )
+        self._check_for_error(response)
+
+        return VerifyControlStatus(**response)
+
     def _make_verify_request(
         self, verify_request: BaseVerifyRequest
     ) -> StartVerificationResponse:
@@ -84,6 +171,7 @@ class Verify:
             request_path = '/verify/json'
         elif type(verify_request) == Psd2Request:
             request_path = '/verify/psd2/json'
+
         response = self._http_client.post(
             self._http_client.api_host,
             request_path,
@@ -92,14 +180,14 @@ class Verify:
             self._sent_data_type,
         )
         self._check_for_error(response)
-        parsed_response = StartVerificationResponse(**response)
 
-        return parsed_response
+        return StartVerificationResponse(**response)
 
     def _check_for_error(self, response: dict) -> None:
         """Check for error in the response.
 
-        This method checks if the response contains an error and raises a VerifyError if an error is found.
+        This method checks if the response contains a non-zero status code
+            and raises a VerifyError if this is found.
 
         Args:
             response (dict): The response object.
@@ -107,9 +195,6 @@ class Verify:
         Raises:
             VerifyError: If an error is found in the response.
         """
-        print(self._http_client.last_request.body)
         if int(response['status']) != 0:
-            error_message = f'Error with Vonage status code {response["status"]}: {response["error_text"]}.'
-            if 'network' in response:
-                error_message += f' Network ID: {response["network"]}'
+            error_message = f'Error with the following details: {response}'
             raise VerifyError(error_message)

@@ -72,7 +72,6 @@ def test_ni2_fraud_score_only():
     assert response.sim_swap is None
 
     clear_response = asdict(response, dict_factory=remove_none_values)
-    print(clear_response)
     assert 'fraud_score' in clear_response
     assert 'sim_swap' not in clear_response
 

@@ -1,26 +1,11 @@
-from typing import List, Optional, Union
-
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 
-from .errors import VerifyError
-from .requests import (
-    VerifyRequest,
-    SilentAuthWorkflow,
-    SmsWorkflow,
-    WhatsappWorkflow,
-    VoiceWorkflow,
-    EmailWorkflow,
-)
-from .responses import (
-    CheckCodeResponse,
-    StartVerificationResponse,
-    VerifyControlStatus,
-    VerifyStatus,
-)
+from .requests import VerifyRequest
+from .responses import CheckCodeResponse, StartVerificationResponse
 
 
-class Verify:
+class VerifyV2:
     """Calls Vonage's Verify V2 API."""
 
     def __init__(self, http_client: HttpClient) -> None:
@@ -47,14 +32,6 @@ class Verify:
 
         return StartVerificationResponse(**response)
 
-    ####################################################################################################
-
-    ####################################################################################################
-
-    ####################################################################################################
-
-    ####################################################################################################
-
     @validate_call
     def check_code(self, request_id: str, code: str) -> CheckCodeResponse:
         """Check a verification code.
@@ -67,55 +44,26 @@ class Verify:
             CheckCodeResponse: The response object containing the verification result.
         """
         response = self._http_client.post(
-            self._http_client.api_host,
-            '/verify/check/json',
-            {'request_id': request_id, 'code': code},
-            self._auth_type,
-            self._sent_data_type,
+            self._http_client.api_host, f'/v2/verify/{request_id}', {'code': code}
         )
-        self._check_for_error(response)
         return CheckCodeResponse(**response)
 
     @validate_call
-    def cancel_verification(self, request_id: str) -> VerifyControlStatus:
+    def cancel_verification(self, request_id: str) -> None:
         """Cancel a verification request.
 
         Args:
             request_id (str): The request ID.
-
-        Returns:
-            VerifyControlStatus: The response object containing details of the submitted
-                verification control.
         """
-        response = self._http_client.post(
-            self._http_client.api_host,
-            '/verify/control/json',
-            {'request_id': request_id, 'cmd': 'cancel'},
-            self._auth_type,
-            self._sent_data_type,
-        )
-        self._check_for_error(response)
-
-        return VerifyControlStatus(**response)
+        self._http_client.delete(self._http_client.api_host, f'/v2/verify/{request_id}')
 
     @validate_call
-    def trigger_next_workflow(self, request_id: str) -> VerifyControlStatus:
+    def trigger_next_workflow(self, request_id: str) -> None:
         """Trigger the next workflow event in the verification process.
 
         Args:
             request_id (str): The request ID.
-
-        Returns:
-            VerifyControlStatus: The response object containing details of the submitted
-                verification control.
         """
         response = self._http_client.post(
-            self._http_client.api_host,
-            '/verify/control/json',
-            {'request_id': request_id, 'cmd': 'trigger_next_event'},
-            self._auth_type,
-            self._sent_data_type,
+            self._http_client.api_host, f'/v2/verify/{request_id}'
         )
-        self._check_for_error(response)
-
-        return VerifyControlStatus(**response)

@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class VerifyChannel(Enum):
+class ChannelType(str, Enum):
     SILENT_AUTH = 'silent_auth'
     SMS = 'sms'
     WHATSAPP = 'whatsapp'
@@ -9,7 +9,7 @@ class VerifyChannel(Enum):
     EMAIL = 'email'
 
 
-class VerifyLocale(Enum):
+class Locale(str, Enum):
     EN_US = 'en-us'
     EN_GB = 'en-gb'
     ES_ES = 'es-es'

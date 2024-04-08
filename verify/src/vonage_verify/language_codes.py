@@ -43,7 +43,7 @@ class LanguageCode(str, Enum):
     zh_tw = 'zh-tw'
 
 
-class Psd2LanguageCode(Enum):
+class Psd2LanguageCode(str, Enum):
     en_gb = 'en-gb'
     bg_bg = 'bg-bg'
     cs_cz = 'cs-cz'

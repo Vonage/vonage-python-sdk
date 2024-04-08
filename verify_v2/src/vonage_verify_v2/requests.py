@@ -1,33 +1,29 @@
-from typing import List, Optional, Union
 from re import search
+from typing import List, Optional, Union
 
-from pydantic import (
-    BaseModel,
-    Field,
-    field_validator,
-    model_validator,
-)
+from pydantic import BaseModel, Field, field_validator, model_validator
 from vonage_utils.types.phone_number import PhoneNumber
 
-from .enums import VerifyChannel, VerifyLocale
+from .enums import ChannelType, Locale
 from .errors import VerifyError
 
 
-class Workflow(BaseModel):
-    channel: VerifyChannel
+class Channel(BaseModel):
     to: PhoneNumber
 
 
-class SilentAuthWorkflow(Workflow):
+class SilentAuthChannel(Channel):
     redirect_url: Optional[str] = None
     sandbox: Optional[bool] = None
+    channel: ChannelType = ChannelType.SILENT_AUTH
 
 
-class SmsWorkflow(Workflow):
+class SmsChannel(Channel):
     from_: Optional[Union[PhoneNumber, str]] = Field(None, serialization_alias='from')
     entity_id: Optional[str] = Field(None, pattern=r'^[0-9]{1,20}$')
     content_id: Optional[str] = Field(None, pattern=r'^[0-9]{1,20}$')
     app_hash: Optional[str] = Field(None, min_length=11, max_length=11)
+    channel: ChannelType = ChannelType.SMS
 
     @field_validator('from_')
     @classmethod
@@ -37,35 +33,52 @@ class SmsWorkflow(Workflow):
             and type(v) is not PhoneNumber
             and not search(r'^[a-zA-Z0-9]{1,15}$', v)
         ):
-            raise VerifyError(f'You must specify a valid "from" value if included.')
+            raise VerifyError(
+                'You must specify a valid "from_" value if included. '
+                'It must be a valid phone number without the leading +, or a string of 1-15 alphanumeric characters. '
+                f'You set "from_": "{v}".'
+            )
+        return v
 
 
-class WhatsappWorkflow(Workflow):
+class WhatsappChannel(Channel):
     from_: Union[PhoneNumber, str] = Field(..., serialization_alias='from')
+    channel: ChannelType = ChannelType.WHATSAPP
 
     @field_validator('from_')
     @classmethod
     def check_valid_sender(cls, v):
         if type(v) is not PhoneNumber and not search(r'^[a-zA-Z0-9]{1,15}$', v):
-            raise VerifyError(f'You must specify a valid "from" value.')
+            raise VerifyError(
+                f'You must specify a valid "from_" value. '
+                'It must be a valid phone number without the leading +, or a string of 1-15 alphanumeric characters. '
+                f'You set "from_": "{v}".'
+            )
+        return v
 
 
-class VoiceWorkflow(Workflow):
-    @model_validator(mode='after')
-    def remove_from_field_from_voice(self):
-        self.from_ = None
-        return self
+class VoiceChannel(Channel):
+    channel: ChannelType = ChannelType.VOICE
 
 
-class EmailWorkflow(Workflow):
+class EmailChannel(Channel):
     to: str
     from_: Optional[str] = Field(None, serialization_alias='from')
+    channel: ChannelType = ChannelType.EMAIL
 
 
 class VerifyRequest(BaseModel):
     brand: str = Field(..., min_length=1, max_length=16)
-    workflow: List[Workflow]
-    locale: Optional[VerifyLocale] = None
+    workflow: List[
+        Union[
+            SilentAuthChannel,
+            SmsChannel,
+            WhatsappChannel,
+            VoiceChannel,
+            EmailChannel,
+        ]
+    ]
+    locale: Optional[Locale] = None
     channel_timeout: Optional[int] = Field(None, ge=60, le=900)
     client_ref: Optional[str] = Field(None, min_length=1, max_length=16)
     code_length: Optional[int] = Field(None, ge=4, le=10)
@@ -73,9 +86,18 @@ class VerifyRequest(BaseModel):
 
     @model_validator(mode='after')
     def remove_fields_if_only_silent_auth(self):
-        if len(self.workflow) == 1 and isinstance(self.workflow[0], SilentAuthWorkflow):
+        if len(self.workflow) == 1 and isinstance(self.workflow[0], SilentAuthChannel):
             self.locale = None
-            self.client_ref = None
             self.code_length = None
             self.code = None
+        return self
+
+    @model_validator(mode='after')
+    def check_silent_auth_first_if_present(self):
+        if len(self.workflow) > 1:
+            for i in range(1, len(self.workflow)):
+                if isinstance(self.workflow[i], SilentAuthChannel):
+                    raise VerifyError(
+                        'If using Silent Authentication, it must be the first channel in the "workflow" list.'
+                    )
         return self

@@ -224,7 +224,6 @@ class HttpClient:
             f'Response received from {response.url} with status code: {response.status_code}; headers: {response.headers}'
         )
         self._last_response = response
-        content_type = response.headers['Content-Type'].split(';', 1)[0]
         if 200 <= response.status_code < 300:
             if response.status_code == 204:
                 return None
@@ -233,6 +232,7 @@ class HttpClient:
             except JSONDecodeError:
                 return None
         if response.status_code >= 400:
+            content_type = response.headers['Content-Type'].split(';', 1)[0]
             logger.warning(
                 f'Http Response Error! Status code: {response.status_code}; content: {repr(response.text)}; from url: {response.url}'
             )

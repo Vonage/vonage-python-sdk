@@ -6,6 +6,7 @@ from vonage_number_insight_v2.number_insight_v2 import NumberInsightV2
 from vonage_sms.sms import Sms
 from vonage_users.users import Users
 from vonage_verify.verify import Verify
+from vonage_verify_v2 import VerifyV2
 
 from ._version import __version__
 
@@ -32,6 +33,7 @@ class Vonage:
         self.sms = Sms(self._http_client)
         self.users = Users(self._http_client)
         self.verify = Verify(self._http_client)
+        self.verify_v2 = VerifyV2(self._http_client)
 
     @property
     def http_client(self):

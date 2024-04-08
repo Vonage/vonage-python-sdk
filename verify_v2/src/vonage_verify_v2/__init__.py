@@ -1,28 +1,26 @@
+from .enums import ChannelType, Locale
 from .errors import VerifyError
-from .enums import VerifyChannel, VerifyLocale
 from .requests import (
+    EmailChannel,
+    SilentAuthChannel,
+    SmsChannel,
     VerifyRequest,
-    SilentAuthWorkflow,
-    SmsWorkflow,
-    WhatsappWorkflow,
-    VoiceWorkflow,
-    EmailWorkflow,
+    VoiceChannel,
+    WhatsappChannel,
 )
-from .responses import (
-    StartVerificationResponse,
-)
-from .verify_v2 import Verify
+from .responses import StartVerificationResponse
+from .verify_v2 import VerifyV2
 
 __all__ = [
-    'Verify',
+    'VerifyV2',
     'VerifyError',
-    'VerifyChannel',
-    'VerifyLocale',
+    'ChannelType',
+    'Locale',
     'VerifyRequest',
-    'SilentAuthWorkflow',
-    'SmsWorkflow',
-    'WhatsappWorkflow',
-    'VoiceWorkflow',
-    'EmailWorkflow',
+    'SilentAuthChannel',
+    'SmsChannel',
+    'WhatsappChannel',
+    'VoiceChannel',
+    'EmailChannel',
     'StartVerificationResponse',
 ]

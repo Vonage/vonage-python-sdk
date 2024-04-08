@@ -1,3 +1,7 @@
+# 3.99.0a5
+- Add support for the [Vonage Verify V2 API](https://developer.vonage.com/en/verify/overview).
+- Expose error classes at the top level of the `vonage-http-client` package.
+
 # 3.99.0a4
 - Add support for the [Vonage Verify API](https://developer.vonage.com/en/api/verify).
 - Add `last_request` and `last_response` properties to the HTTP Client.

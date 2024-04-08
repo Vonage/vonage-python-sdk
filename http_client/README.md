@@ -70,3 +70,16 @@ The `HttpClient` class automatically handles JWT and basic authentication based 
 # Use basic authentication for this request
 response = client.get(host='api.nexmo.com', request_path='/v1/messages', auth_type='basic')
 ```
+
+### Catching errors
+
+Error objects are exposed in the package scope, so you can catch errors like this:
+
+```python
+from vonage_http_client import HttpRequestError
+
+try:
+    client.post(...)
+except HttpRequestError:
+    ...
+```

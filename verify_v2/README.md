@@ -6,59 +6,49 @@ This package contains the code to use [Vonage's Verify v2 API](https://developer
 
 It is recommended to use this as part of the main `vonage` package. The examples below assume you've created an instance of the `vonage.Vonage` class called `vonage_client`.
 
-
-######################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################
-
 ### Make a Verify Request
 
 ```python
-from vonage_verify import VerifyRequest
-params = {'number': '1234567890', 'brand': 'Acme Inc.'}
-request = VerifyRequest(**params)
-response = vonage_client.verify.start_verification(request)
+from vonage_verify_v2 import VerifyRequest, SmsChannel
+# All channels have associated models
+sms_channel = SmsChannel(to='1234567890')
+params = {
+    'brand': 'Vonage',
+    'workflow': [sms_channel],
+}
+verify_request = VerifyRequest(**params)
+
+response = vonage_client.verify_v2.start_verification(verify_request)
 ```
 
-### Make a PSD2 (Payment Services Directive v2) Request
+If using silent authentication, the response will include a `check_url` field with a url that should be accessed on the user's device to proceed with silent authentication. If used, silent auth must be the first element in the `workflow` list.
 
 ```python
-from vonage_verify import Psd2Request
-params = {'number': '1234567890', 'payee': 'Acme Inc.', 'amount': 99.99}
-request = VerifyRequest(**params)
-response = vonage_client.verify.start_verification(request)
+silent_auth_channel = SilentAuthChannel(channel=ChannelType.SILENT_AUTH, to='1234567890')
+sms_channel = SmsChannel(to='1234567890')
+params = {
+    'brand': 'Vonage',
+    'workflow': [silent_auth_channel, sms_channel],
+}
+verify_request = VerifyRequest(**params)
+
+response = vonage_client.verify_v2.start_verification(verify_request)
 ```
 
 ### Check a Verification Code
 
 ```python
-vonage_client.verify.check_code(request_id='my_request_id', code='1234')
-```
-
-### Search Verification Requests
-
-```python
-# Search for single request
-response = vonage_client.verify.search('my_request_id')
-
-# Search for multiple requests
-response = vonage_client.verify.search(['my_request_id_1', 'my_request_id_2'])
+vonage_client.verify_v2.check_code(request_id='my_request_id', code='1234')
 ```
 
 ### Cancel a Verification
 
 ```python
-response = vonage_client.verify.cancel_verification('my_request_id')
+vonage_client.verify_v2.cancel_verification('my_request_id')
 ```
 
 ### Trigger the Next Workflow Event
 
 ```python
-response = vonage_client.verify.trigger_next_event('my_request_id')
-```
-
-### Request a Network Unblock
-
-Note: Network Unblock is switched off by default. Contact Sales to enable the Network Unblock API for your account.
-
-```python
-response = vonage_client.verify.request_network_unblock('23410')
+vonage_client.verify_v2.trigger_next_workflow('my_request_id')
 ```

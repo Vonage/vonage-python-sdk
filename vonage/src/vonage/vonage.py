@@ -1,11 +1,10 @@
 from typing import Optional
 
-from vonage_http_client.auth import Auth
-from vonage_http_client.http_client import HttpClient, HttpClientOptions
-from vonage_number_insight_v2.number_insight_v2 import NumberInsightV2
-from vonage_sms.sms import Sms
-from vonage_users.users import Users
-from vonage_verify.verify import Verify
+from vonage_http_client import Auth, HttpClient, HttpClientOptions
+from vonage_number_insight_v2 import NumberInsightV2
+from vonage_sms import Sms
+from vonage_users import Users
+from vonage_verify import Verify
 from vonage_verify_v2 import VerifyV2
 
 from ._version import __version__

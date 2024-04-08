@@ -1,3 +1,6 @@
+# 1.2.1
+- Expose classes and errors at the package level
+
 # 1.2.0
 - Add `last_request` and `last_response` properties
 - Add new `Forbidden` error

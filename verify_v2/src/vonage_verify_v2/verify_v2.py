@@ -59,11 +59,13 @@ class VerifyV2:
 
     @validate_call
     def trigger_next_workflow(self, request_id: str) -> None:
-        """Trigger the next workflow event in the verification process.
+        """Trigger the next workflow event in the list of workflows passed in when making the
+        request.
 
         Args:
             request_id (str): The request ID.
         """
-        response = self._http_client.post(
-            self._http_client.api_host, f'/v2/verify/{request_id}'
+        self._http_client.post(
+            self._http_client.api_host,
+            f'/v2/verify/{request_id}/next_workflow',
         )

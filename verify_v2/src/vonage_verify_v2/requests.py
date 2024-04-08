@@ -31,11 +31,11 @@ class SmsChannel(Channel):
         if (
             v is not None
             and type(v) is not PhoneNumber
-            and not search(r'^[a-zA-Z0-9]{1,15}$', v)
+            and not search(r'^[a-zA-Z0-9]{3,11}$', v)
         ):
             raise VerifyError(
                 'You must specify a valid "from_" value if included. '
-                'It must be a valid phone number without the leading +, or a string of 1-15 alphanumeric characters. '
+                'It must be a valid phone number without the leading +, or a string of 3-11 alphanumeric characters. '
                 f'You set "from_": "{v}".'
             )
         return v
@@ -48,10 +48,10 @@ class WhatsappChannel(Channel):
     @field_validator('from_')
     @classmethod
     def check_valid_sender(cls, v):
-        if type(v) is not PhoneNumber and not search(r'^[a-zA-Z0-9]{1,15}$', v):
+        if type(v) is not PhoneNumber and not search(r'^[a-zA-Z0-9]{3,11}$', v):
             raise VerifyError(
                 f'You must specify a valid "from_" value. '
-                'It must be a valid phone number without the leading +, or a string of 1-15 alphanumeric characters. '
+                'It must be a valid phone number without the leading +, or a string of 3-11 alphanumeric characters. '
                 f'You set "from_": "{v}".'
             )
         return v
@@ -83,14 +83,6 @@ class VerifyRequest(BaseModel):
     client_ref: Optional[str] = Field(None, min_length=1, max_length=16)
     code_length: Optional[int] = Field(None, ge=4, le=10)
     code: Optional[str] = Field(None, pattern=r'^[a-zA-Z0-9]{4,10}$')
-
-    @model_validator(mode='after')
-    def remove_fields_if_only_silent_auth(self):
-        if len(self.workflow) == 1 and isinstance(self.workflow[0], SilentAuthChannel):
-            self.locale = None
-            self.code_length = None
-            self.code = None
-        return self
 
     @model_validator(mode='after')
     def check_silent_auth_first_if_present(self):

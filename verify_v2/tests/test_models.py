@@ -124,13 +124,6 @@ def test_create_verify_request():
     assert verify_request.code_length == 6
     assert verify_request.code == '123456'
 
-    # Silent auth only
-    params['workflow'] = [silent_auth_channel]
-    verify_request = VerifyRequest(**params)
-    assert verify_request.locale == None
-    assert verify_request.code_length == None
-    assert verify_request.code == None
-
 
 def test_create_verify_request_error():
     params = {

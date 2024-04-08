@@ -67,7 +67,7 @@ def test_make_verify_request_full():
 
 
 @responses.activate
-def test_verify_request_error():
+def test_verify_request_concurrent_verifications_error():
     build_response(
         path,
         'POST',
@@ -155,20 +155,30 @@ def test_cancel_verification():
 
 @responses.activate
 def test_trigger_next_workflow():
-    response = verify.trigger_next_event('c5037cb8b47449158ed6611afde58990')
+    responses.add(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify/36e7060d-2b23-4257-bad0-773ab47f85ef/next_workflow',
+        status=200,
+    )
+    assert verify.trigger_next_workflow('36e7060d-2b23-4257-bad0-773ab47f85ef') is None
+    assert verify._http_client.last_response.status_code == 200
 
 
-# @responses.activate
-# def test_trigger_next_event_error():
-#     build_response(
-#         path,
-#         'POST',
-#         'https://api.nexmo.com/verify/control/json',
-#         'trigger_next_event_error.json',
-#     )
+@responses.activate
+def test_trigger_next_event_error():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/v2/verify/36e7060d-2b23-4257-bad0-773ab47f85ef/next_workflow',
+        'trigger_next_workflow_error.json',
+        status_code=409,
+    )
 
-#     with raises(VerifyError) as e:
-#         verify.trigger_next_event('2c021d25cf2e47a9b277a996f4325b81')
+    with raises(HttpRequestError) as e:
+        verify.trigger_next_workflow('36e7060d-2b23-4257-bad0-773ab47f85ef')
 
-#     assert e.match("'status': '19")
-#     assert e.match('No more events are left to execute for the request')
+    assert e.value.response.status_code == 409
+    assert e.value.response.json()['title'] == 'Conflict'
+    assert (
+        e.value.response.json()['detail'] == 'There are no more events left to trigger.'
+    )

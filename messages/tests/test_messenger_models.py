@@ -1,5 +1,4 @@
 from pytest import raises
-from vonage_messages.enums import WebhookVersion
 from vonage_messages.models import (
     MessengerAudio,
     MessengerFile,
@@ -9,6 +8,7 @@ from vonage_messages.models import (
     MessengerText,
     MessengerVideo,
 )
+from vonage_messages.models.enums import WebhookVersion
 
 
 def test_messenger_options_validator():

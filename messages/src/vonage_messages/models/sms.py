@@ -3,8 +3,8 @@ from typing import Optional, Union
 from pydantic import BaseModel, Field
 from vonage_utils.types.phone_number import PhoneNumber
 
-from ..enums import ChannelType, EncodingType, MessageType
 from .base_message import BaseMessage
+from .enums import ChannelType, EncodingType, MessageType
 
 
 class SmsOptions(BaseModel):

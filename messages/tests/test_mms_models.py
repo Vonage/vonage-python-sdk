@@ -1,5 +1,5 @@
-from vonage_messages.enums import WebhookVersion
 from vonage_messages.models import MmsAudio, MmsImage, MmsResource, MmsVcard, MmsVideo
+from vonage_messages.models.enums import WebhookVersion
 
 
 def test_create_mms_image():

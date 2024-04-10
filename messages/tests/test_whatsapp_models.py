@@ -1,6 +1,5 @@
 from copy import deepcopy
 
-from vonage_messages.enums import WebhookVersion
 from vonage_messages.models import (
     WhatsappAudio,
     WhatsappAudioResource,
@@ -20,6 +19,7 @@ from vonage_messages.models import (
     WhatsappVideo,
     WhatsappVideoResource,
 )
+from vonage_messages.models.enums import WebhookVersion
 
 
 def test_whatsapp_text():

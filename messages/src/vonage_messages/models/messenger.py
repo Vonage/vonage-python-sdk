@@ -2,8 +2,8 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, model_validator
 
-from ..enums import ChannelType, MessageType
 from .base_message import BaseMessage
+from .enums import ChannelType, MessageType
 
 
 class MessengerResource(BaseModel):

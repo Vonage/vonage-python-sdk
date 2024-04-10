@@ -2,7 +2,7 @@ from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 
 from .models import BaseMessage
-from .responses import MessageUuid
+from .responses import SendMessageResponse
 
 
 class Messages:
@@ -18,19 +18,20 @@ class Messages:
         self._http_client = http_client
 
     @validate_call
-    def send(self, message: BaseMessage) -> MessageUuid:
+    def send(self, message: BaseMessage) -> SendMessageResponse:
         """Send a message using Vonage's Messages API.
 
         Args:
-            message (BaseMessage): The message to be sent.
+            message (BaseMessage): The message to be sent as a Pydantic model.
+                Use the provided models (in `vonage_messages.models`) to create messages and pass them in to this method.
 
         Returns:
-            MessageUuid: The unique identifier of the sent message.
+            SendMessageResponse: Response model containing the unique identifier of the sent message.
+                Access the identifier with the `message_uuid` attribute.
         """
         response = self._http_client.post(
             self._http_client.api_host,
             '/v1/messages',
-            message.model_dump(by_alias=True, exclude_none=True),
+            message.model_dump(by_alias=True, exclude_none=True) or message,
         )
-
-        return MessageUuid(**response)
+        return SendMessageResponse(**response)

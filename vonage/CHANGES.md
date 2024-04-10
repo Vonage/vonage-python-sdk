@@ -1,3 +1,6 @@
+# 3.99.0a6
+- Add support for the [Vonage Messages API](https://developer.vonage.com/en/messages/overview).
+
 # 3.99.0a5
 - Add support for the [Vonage Verify V2 API](https://developer.vonage.com/en/verify/overview).
 - Expose error classes at the top level of the `vonage-http-client` package.

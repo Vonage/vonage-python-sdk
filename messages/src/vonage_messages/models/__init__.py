@@ -1,4 +1,5 @@
 from .base_message import BaseMessage
+from .enums import ChannelType, EncodingType, MessageType, WebhookVersion
 from .messenger import (
     MessengerAudio,
     MessengerFile,
@@ -46,6 +47,9 @@ from .whatsapp import (
 
 __all__ = [
     'BaseMessage',
+    'ChannelType',
+    'EncodingType',
+    'MessageType',
     'MessengerAudio',
     'MessengerFile',
     'MessengerImage',
@@ -72,6 +76,7 @@ __all__ = [
     'ViberVideo',
     'ViberVideoOptions',
     'ViberVideoResource',
+    'WebhookVersion',
     'WhatsappAudio',
     'WhatsappAudioResource',
     'WhatsappContext',

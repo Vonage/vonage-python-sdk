@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel, Field
 from vonage_utils.types.phone_number import PhoneNumber
 
-from ..enums import WebhookVersion
+from .enums import WebhookVersion
 
 
 class BaseMessage(BaseModel):

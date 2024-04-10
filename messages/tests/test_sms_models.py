@@ -1,5 +1,5 @@
-from vonage_messages.enums import EncodingType, WebhookVersion
 from vonage_messages.models import Sms, SmsOptions
+from vonage_messages.models.enums import EncodingType, WebhookVersion
 
 
 def test_create_sms():

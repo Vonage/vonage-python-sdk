@@ -225,8 +225,6 @@ class HttpClient:
         )
         self._last_response = response
         if 200 <= response.status_code < 300:
-            if response.status_code == 204:
-                return None
             try:
                 return response.json()
             except JSONDecodeError:

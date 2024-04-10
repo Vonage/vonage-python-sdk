@@ -1,7 +1,11 @@
 from pydantic import BaseModel
 
 
-class MessageUuid(BaseModel):
-    """Response from Vonage's Messages API."""
+class SendMessageResponse(BaseModel):
+    """Response from Vonage's Messages API.
+
+    Attributes:
+        message_uuid (str): The UUID of the sent message.
+    """
 
     message_uuid: str

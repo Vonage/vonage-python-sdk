@@ -1,5 +1,4 @@
 from pytest import raises
-from vonage_messages.enums import WebhookVersion
 from vonage_messages.models import (
     ViberAction,
     ViberFile,
@@ -14,6 +13,7 @@ from vonage_messages.models import (
     ViberVideoOptions,
     ViberVideoResource,
 )
+from vonage_messages.models.enums import WebhookVersion
 
 
 def test_viber_video_options_validator():

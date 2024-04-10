@@ -81,8 +81,7 @@ class User(BaseModel):
     id: Optional[str] = None
 
     @model_validator(mode='after')
-    @classmethod
-    def get_link(cls, data):
-        if data.links is not None:
-            data.link = data.links.self.href
-        return data
+    def get_link(self):
+        if self.links is not None:
+            self.link = self.links.self.href
+        return self

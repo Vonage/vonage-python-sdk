@@ -3,8 +3,8 @@ from typing import List, Literal, Optional, Union
 from pydantic import BaseModel, ConfigDict, Field
 from vonage_utils.types.phone_number import PhoneNumber
 
-from ..enums import ChannelType, MessageType
 from .base_message import BaseMessage
+from .enums import ChannelType, MessageType
 
 
 class WhatsappContext(BaseModel):

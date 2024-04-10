@@ -3,7 +3,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field, field_validator
 
 from ..enums import ChannelType, MessageType
-from .message import BaseMessage
+from .base_message import BaseMessage
 
 
 class ViberAction(BaseModel):
@@ -77,7 +77,7 @@ class ViberVideoOptions(ViberOptions):
 
 class ViberVideo(BaseViber):
     video: ViberVideoResource
-    viber_service: Optional[ViberVideoOptions] = None
+    viber_service: ViberVideoOptions
     message_type: MessageType = MessageType.VIDEO
 
 

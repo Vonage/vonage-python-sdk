@@ -3,7 +3,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field, model_validator
 
 from ..enums import ChannelType, MessageType
-from .message import BaseMessage
+from .base_message import BaseMessage
 
 
 class MessengerResource(BaseModel):
@@ -30,24 +30,24 @@ class BaseMessenger(BaseMessage):
 
 class MessengerText(BaseMessenger):
     text: str = Field(..., max_length=640)
-    type: MessageType = MessageType.TEXT
+    message_type: MessageType = MessageType.TEXT
 
 
 class MessengerImage(BaseMessenger):
     image: MessengerResource
-    type: MessageType = MessageType.IMAGE
+    message_type: MessageType = MessageType.IMAGE
 
 
 class MessengerAudio(BaseMessenger):
     audio: MessengerResource
-    type: MessageType = MessageType.AUDIO
+    message_type: MessageType = MessageType.AUDIO
 
 
 class MessengerVideo(BaseMessenger):
     video: MessengerResource
-    type: MessageType = MessageType.VIDEO
+    message_type: MessageType = MessageType.VIDEO
 
 
 class MessengerFile(BaseMessenger):
     file: MessengerResource
-    type: MessageType = MessageType.FILE
+    message_type: MessageType = MessageType.FILE

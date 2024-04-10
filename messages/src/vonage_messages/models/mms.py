@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from vonage_utils.types.phone_number import PhoneNumber
 
 from ..enums import ChannelType, MessageType
-from .message import BaseMessage
+from .base_message import BaseMessage
 
 
 class MmsResource(BaseModel):

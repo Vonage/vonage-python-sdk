@@ -1,10 +1,10 @@
-from typing import Literal, Optional, Union
+from typing import List, Literal, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 from vonage_utils.types.phone_number import PhoneNumber
 
 from ..enums import ChannelType, MessageType
-from .message import BaseMessage
+from .base_message import BaseMessage
 
 
 class WhatsappContext(BaseModel):
@@ -13,13 +13,13 @@ class WhatsappContext(BaseModel):
 
 class BaseWhatsapp(BaseMessage):
     from_: Union[PhoneNumber, str] = Field(..., serialization_alias='from')
-    context: WhatsappContext
+    context: Optional[WhatsappContext] = None
     channel: ChannelType = ChannelType.WHATSAPP
 
 
 class WhatsappText(BaseWhatsapp):
     text: str = Field(..., max_length=4096)
-    type: MessageType = MessageType.TEXT
+    message_type: MessageType = MessageType.TEXT
 
 
 class WhatsappImageResource(BaseModel):
@@ -29,7 +29,7 @@ class WhatsappImageResource(BaseModel):
 
 class WhatsappImage(BaseWhatsapp):
     image: WhatsappImageResource
-    type: MessageType = MessageType.IMAGE
+    message_type: MessageType = MessageType.IMAGE
 
 
 class WhatsappAudioResource(BaseModel):
@@ -38,7 +38,7 @@ class WhatsappAudioResource(BaseModel):
 
 class WhatsappAudio(BaseWhatsapp):
     audio: WhatsappAudioResource
-    type: MessageType = MessageType.AUDIO
+    message_type: MessageType = MessageType.AUDIO
 
 
 class WhatsappVideoResource(BaseModel):
@@ -48,7 +48,7 @@ class WhatsappVideoResource(BaseModel):
 
 class WhatsappVideo(BaseWhatsapp):
     video: WhatsappVideoResource
-    type: MessageType = MessageType.VIDEO
+    message_type: MessageType = MessageType.VIDEO
 
 
 class WhatsappFileResource(BaseModel):
@@ -59,25 +59,25 @@ class WhatsappFileResource(BaseModel):
 
 class WhatsappFile(BaseWhatsapp):
     file: WhatsappFileResource
-    type: MessageType = MessageType.FILE
+    message_type: MessageType = MessageType.FILE
 
 
 class WhatsappTemplateResource(BaseModel):
     name: str
-    parameters: Optional[list] = None
+    parameters: Optional[List[str]] = None
 
     model_config = ConfigDict(extra='allow')
 
 
 class WhatsappTemplateSettings(BaseModel):
-    locale: str = 'en_US'
+    locale: Optional[str] = 'en_US'
     policy: Optional[Literal['deterministic']] = None
 
 
 class WhatsappTemplate(BaseWhatsapp):
     template: WhatsappTemplateResource
-    whatsapp: WhatsappTemplateSettings
-    type: MessageType = MessageType.TEMPLATE
+    whatsapp: WhatsappTemplateSettings = WhatsappTemplateSettings()
+    message_type: MessageType = MessageType.TEMPLATE
 
 
 class WhatsappStickerUrl(BaseModel):
@@ -90,9 +90,9 @@ class WhatsappStickerId(BaseModel):
 
 class WhatsappSticker(BaseWhatsapp):
     sticker: Union[WhatsappStickerUrl, WhatsappStickerId]
-    type: MessageType = MessageType.STICKER
+    message_type: MessageType = MessageType.STICKER
 
 
 class WhatsappCustom(BaseWhatsapp):
     custom: Optional[dict] = None
-    type: MessageType = MessageType.CUSTOM
+    message_type: MessageType = MessageType.CUSTOM

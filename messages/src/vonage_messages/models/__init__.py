@@ -1,4 +1,4 @@
-from .message import BaseMessage
+from .base_message import BaseMessage
 from .messenger import (
     MessengerAudio,
     MessengerFile,

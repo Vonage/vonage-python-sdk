@@ -32,12 +32,15 @@ report = ['html', 'console']
 filter = [
   'vonage/src',
   'http_client/src',
+  'messages/src',
   'number_insight_v2/src',
   'sms/src',
   'users/src',
   'utils/src',
   'testutils',
   'verify/src',
+  'verify_v2/src',
+  'vonage_utils/src',
 ]
 
 [black]

@@ -2,7 +2,7 @@ from re import search
 from typing import List, Optional, Union
 
 from pydantic import BaseModel, Field, field_validator, model_validator
-from vonage_utils.types.phone_number import PhoneNumber
+from vonage_utils.types import PhoneNumber
 
 from .enums import ChannelType, Locale
 from .errors import VerifyError

@@ -2,7 +2,7 @@ from logging import getLogger
 from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, model_validator
-from vonage_utils.types.phone_number import PhoneNumber
+from vonage_utils.types import PhoneNumber
 
 from .language_codes import LanguageCode, Psd2LanguageCode
 

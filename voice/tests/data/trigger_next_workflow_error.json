@@ -1,0 +1,6 @@
+{
+    "title": "Conflict",
+    "detail": "There are no more events left to trigger.",
+    "instance": "4d731cb7-25d3-487a-9ea0-f6b5811b534f",
+    "type": "https://developer.nexmo.com/api-errors#conflict"
+}

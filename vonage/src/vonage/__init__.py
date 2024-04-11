@@ -9,6 +9,7 @@ from .vonage import (
     Users,
     Verify,
     VerifyV2,
+    Voice,
     Vonage,
 )
 
@@ -22,5 +23,6 @@ __all__ = [
     'Users',
     'Verify',
     'VerifyV2',
+    'Voice',
     'VonageError',
 ]

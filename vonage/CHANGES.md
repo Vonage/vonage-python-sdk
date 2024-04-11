@@ -1,3 +1,6 @@
+# 3.99.0a7
+- Add support for the [Vonage Voice API](https://developer.vonage.com/en/voice/voice-api/overview).
+
 # 3.99.0a6
 - Add support for the [Vonage Messages API](https://developer.vonage.com/en/messages/overview).
 

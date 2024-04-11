@@ -1,0 +1,6 @@
+{
+    "title": "Invalid Code",
+    "detail": "An incorrect code has been provided too many times. Workflow terminated.",
+    "instance": "f79d7a15-30b7-498a-bc99-4e879b836b18",
+    "type": "https://developer.nexmo.com/api-errors#gone"
+}

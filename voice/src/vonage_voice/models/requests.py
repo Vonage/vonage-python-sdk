@@ -1,19 +1,21 @@
 from typing import List, Literal, Optional, Union
-from pydantic import BaseModel, Field, AnyUrl, field_validator, model_validator
+
+from pydantic import BaseModel, Field, model_validator
+from vonage_utils.types import Dtmf, PhoneNumber, SipUri
 
 from ..errors import VoiceError
-from .ncco import NccoAction
 from .common import AdvancedMachineDetection
 from .enums import Channel
-from vonage_utils.types import PhoneNumber, Dtmf, SipUri
+from .ncco import NccoAction
 
 
 class Phone(BaseModel):
-    """If using this model for a `from_` field, the `dtmf_answer` field is not allowed."""
-
     number: PhoneNumber
-    dtmf_answer: Optional[Dtmf] = Field(None, serialization_alias='dtmfAnswer')
     type: Channel = Channel.PHONE
+
+
+class ToPhone(Phone):
+    dtmf_answer: Optional[Dtmf] = Field(None, serialization_alias='dtmfAnswer')
 
 
 class Sip(BaseModel):
@@ -37,24 +39,17 @@ class Vbc(BaseModel):
 
 class Call(BaseModel):
     ncco: List[NccoAction] = None
-    answer_url: List[AnyUrl] = None
-    answer_method: Optional[Literal['POST', 'GET']] = 'POST'
-    to: List[Union[Phone, Sip, Websocket, Vbc]]
+    answer_url: List[str] = None
+    answer_method: Optional[Literal['POST', 'GET']] = None
+    to: List[Union[ToPhone, Sip, Websocket, Vbc]]
     from_: Optional[Phone] = Field(None, serialization_alias='from')
     random_from_number: Optional[bool] = None
-    event_url: Optional[List[AnyUrl]] = None
+    event_url: Optional[List[str]] = None
     event_method: Optional[Literal['POST', 'GET']] = None
     machine_detection: Optional[Literal['continue', 'hangup']] = None
     advanced_machine_detection: Optional[AdvancedMachineDetection] = None
-    length_timer: Optional[int] = Field(7200, ge=1, le=7200)
-    ringing_timer: Optional[int] = Field(60, ge=1, le=120)
-
-    @field_validator('from_')
-    @classmethod
-    def validate_from(cls, v: Phone):
-        if v.dtmf_answer is not None:
-            v.dtmf_answer = None
-        return v
+    length_timer: Optional[int] = Field(None, ge=1, le=7200)
+    ringing_timer: Optional[int] = Field(None, ge=1, le=120)
 
     @model_validator(mode='after')
     def validate_ncco_and_answer_url(self):

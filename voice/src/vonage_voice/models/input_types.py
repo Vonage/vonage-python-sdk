@@ -1,26 +1,20 @@
-from pydantic import BaseModel, confloat, conint
-from typing import Optional, List
+from typing import List, Optional
+
+from pydantic import BaseModel, Field
 
 
-class InputTypes:
-    class Dtmf(BaseModel):
-        timeOut: Optional[conint(ge=0, le=10)]
-        maxDigits: Optional[conint(ge=1, le=20)]
-        submitOnHash: Optional[bool]
+class Dtmf(BaseModel):
+    timeOut: Optional[int] = Field(None, ge=0, le=10)
+    maxDigits: Optional[int] = Field(None, ge=1, le=20)
+    submitOnHash: Optional[bool] = None
 
-    class Speech(BaseModel):
-        uuid: Optional[str]
-        endOnSilence: Optional[confloat(ge=0.4, le=10.0)]
-        language: Optional[str]
-        context: Optional[List[str]]
-        startTimeout: Optional[conint(ge=1, le=60)]
-        maxDuration: Optional[conint(ge=1, le=60)]
-        saveAudio: Optional[bool]
 
-    @classmethod
-    def create_dtmf_model(cls, dict) -> Dtmf:
-        return cls.Dtmf.parse_obj(dict)
-
-    @classmethod
-    def create_speech_model(cls, dict) -> Speech:
-        return cls.Speech.parse_obj(dict)
+class Speech(BaseModel):
+    uuid: Optional[List[str]] = None
+    endOnSilence: Optional[float] = Field(None, ge=0.4, le=10.0)
+    language: Optional[str] = None
+    context: Optional[List[str]] = None
+    startTimeout: Optional[int] = Field(None, ge=1, le=60)
+    maxDuration: Optional[int] = Field(None, ge=1, le=60)
+    saveAudio: Optional[bool] = False
+    sensitivity: Optional[int] = Field(None, ge=0, le=100)

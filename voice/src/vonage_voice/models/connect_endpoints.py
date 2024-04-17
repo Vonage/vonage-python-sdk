@@ -1,48 +1,44 @@
-from pydantic import BaseModel, AnyUrl, Field
 from typing import Optional
+
+from pydantic import BaseModel, Field
 from typing_extensions import Literal
+from vonage_utils.types import Dtmf, PhoneNumber, SipUri
 
 from .enums import ConnectEndpointType
 
-from vonage_utils.types import Dtmf, PhoneNumber, SipUri
-
-
-class BaseEndpoint(BaseModel):
-    """Base Endpoint model for use with the NCCO Connect action."""
-
 
 class OnAnswer(BaseModel):
-    url: AnyUrl
-    ringbackTone: Optional[AnyUrl] = None
+    url: str
+    ringbackTone: Optional[str] = None
 
 
-class PhoneEndpoint(BaseEndpoint):
+class PhoneEndpoint(BaseModel):
     number: PhoneNumber
     dtmfAnswer: Optional[Dtmf] = None
     onAnswer: Optional[OnAnswer] = None
     type: ConnectEndpointType = ConnectEndpointType.PHONE
 
 
-class AppEndpoint(BaseEndpoint):
+class AppEndpoint(BaseModel):
     user: str
     type: ConnectEndpointType = ConnectEndpointType.APP
 
 
-class WebsocketEndpoint(BaseEndpoint):
-    uri: AnyUrl
+class WebsocketEndpoint(BaseModel):
+    uri: str
     contentType: Literal['audio/l16;rate=16000', 'audio/l16;rate=8000'] = Field(
-        'audio/l16;rate=16000', serialization_alias='content-type'
+        None, serialization_alias='content-type'
     )
-    headers: Optional[dict] = {}
+    headers: Optional[dict] = None
     type: ConnectEndpointType = ConnectEndpointType.WEBSOCKET
 
 
-class SipEndpoint(BaseEndpoint):
+class SipEndpoint(BaseModel):
     uri: SipUri
-    headers: Optional[dict] = {}
+    headers: Optional[dict] = None
     type: ConnectEndpointType = ConnectEndpointType.SIP
 
 
-class VbcEndpoint(BaseEndpoint):
+class VbcEndpoint(BaseModel):
     extension: str
     type: ConnectEndpointType = ConnectEndpointType.VBC

@@ -1,14 +1,14 @@
 from enum import Enum
 
 
-class Channel(Enum, str):
+class Channel(str, Enum):
     PHONE = 'phone'
     SIP = 'sip'
     WEBSOCKET = 'websocket'
     VBC = 'vbc'
 
 
-class NccoActionType(Enum, str):
+class NccoActionType(str, Enum):
     RECORD = 'record'
     CONVERSATION = 'conversation'
     CONNECT = 'connect'
@@ -18,7 +18,7 @@ class NccoActionType(Enum, str):
     NOTIFY = 'notify'
 
 
-class ConnectEndpointType(Enum, str):
+class ConnectEndpointType(str, Enum):
     PHONE = 'phone'
     APP = 'app'
     WEBSOCKET = 'websocket'

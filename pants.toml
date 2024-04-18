@@ -40,6 +40,7 @@ filter = [
   'testutils',
   'verify/src',
   'verify_v2/src',
+  'voice/src',
   'vonage_utils/src',
 ]
 

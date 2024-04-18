@@ -10,12 +10,12 @@ from .connect_endpoints import (
 from .enums import Channel, ConnectEndpointType, NccoActionType
 from .input_types import Dtmf, Speech
 from .ncco import Connect, Conversation, Input, NccoAction, Notify, Record, Stream, Talk
-from .requests import Call, NccoAction, Phone, Sip, ToPhone, Vbc, Websocket
+from .requests import CreateCallRequest, Phone, Sip, ToPhone, Vbc, Websocket
 from .responses import CallStatus, CreateCallResponse
 
 __all__ = [
     'AdvancedMachineDetection',
-    'Call',
+    'CreateCallRequest',
     'ToPhone',
     'Sip',
     'Websocket',

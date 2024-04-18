@@ -5,8 +5,8 @@ from vonage_utils.types import Dtmf, PhoneNumber, SipUri
 
 from ..errors import VoiceError
 from .common import AdvancedMachineDetection
-from .enums import Channel
-from .ncco import NccoAction
+from .enums import CallStatus, Channel
+from .ncco import Record, Conversation, Connect, Input, Talk, Stream, Notify
 
 
 class Phone(BaseModel):
@@ -37,11 +37,12 @@ class Vbc(BaseModel):
     type: Channel = Channel.VBC
 
 
-class Call(BaseModel):
-    ncco: List[NccoAction] = None
+class CreateCallRequest(BaseModel):
+    ncco: List[Union[Record, Conversation, Connect, Input, Talk, Stream, Notify]] = None
     answer_url: List[str] = None
     answer_method: Optional[Literal['POST', 'GET']] = None
     to: List[Union[ToPhone, Sip, Websocket, Vbc]]
+
     from_: Optional[Phone] = Field(None, serialization_alias='from')
     random_from_number: Optional[bool] = None
     event_url: Optional[List[str]] = None
@@ -57,12 +58,6 @@ class Call(BaseModel):
             raise VoiceError('Either `ncco` or `answer_url` must be set')
         if self.ncco is not None and self.answer_url is not None:
             raise VoiceError('`ncco` and `answer_url` cannot be used together')
-        if (
-            self.ncco is not None
-            and self.answer_url is None
-            and self.answer_method is not None
-        ):
-            self.answer_method = None
         return self
 
     @model_validator(mode='after')
@@ -72,3 +67,13 @@ class Call(BaseModel):
         if self.random_from_number == True and self.from_ is not None:
             raise VoiceError('`from_` and `random_from_number` cannot be used together')
         return self
+
+
+class ListCallsFilter(BaseModel):
+    status: Optional[CallStatus] = None
+    date_start: Optional[str] = None
+    date_end: Optional[str] = None
+    page_size: Optional[int] = Field(None, ge=1, le=100)
+    record_index: Optional[int] = None
+    order: Optional[Literal['asc', 'desc']] = None
+    conversation_uuid: Optional[str] = None

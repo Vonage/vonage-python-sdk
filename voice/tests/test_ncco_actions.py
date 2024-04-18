@@ -9,7 +9,7 @@ def test_record_basic():
     assert record.model_dump(by_alias=True, exclude_none=True) == {'action': 'record'}
 
 
-def test_record_full():
+def test_record_options():
     record = ncco.Record(
         format='wav',
         split='conversation',
@@ -53,7 +53,7 @@ def test_conversation_basic():
     }
 
 
-def test_conversation_full():
+def test_conversation_options():
     conversation = ncco.Conversation(
         name='my_conversation',
         musicOnHoldUrl=['http://example.com/music.mp3'],
@@ -209,7 +209,7 @@ def test_talk_basic():
     }
 
 
-def test_talk_optional_params():
+def test_talk_options():
     talk = ncco.Talk(
         text='hello',
         bargeIn=True,
@@ -231,151 +231,94 @@ def test_talk_optional_params():
     }
 
 
-# def test_stream_basic():
-#     stream = Ncco.Stream(streamUrl='https://example.com/stream/music.mp3')
-#     assert type(stream) == Ncco.Stream
-#     assert json.dumps(_action_as_dict(stream)) == nas.stream_basic
+def test_stream_basic():
+    stream = ncco.Stream(streamUrl=['https://example.com/stream/music.mp3'])
+    assert stream.model_dump(by_alias=True, exclude_none=True) == {
+        'streamUrl': ['https://example.com/stream/music.mp3'],
+        'action': 'stream',
+    }
 
 
-# def test_stream_full():
-#     stream = Ncco.Stream(
-#         streamUrl='https://example.com/stream/music.mp3', level=0.1, bargeIn=True, loop=10
-#     )
-#     assert json.dumps(_action_as_dict(stream)) == nas.stream_full
+def test_stream_options():
+    stream = ncco.Stream(
+        streamUrl=['https://example.com/stream/music.mp3'],
+        level=0.1,
+        bargeIn=True,
+        loop=10,
+    )
+    assert stream.model_dump(by_alias=True, exclude_none=True) == {
+        'streamUrl': ['https://example.com/stream/music.mp3'],
+        'level': 0.1,
+        'bargeIn': True,
+        'loop': 10,
+        'action': 'stream',
+    }
 
 
-# def test_input_basic():
-#     input = Ncco.Input(type='dtmf')
-#     assert type(input) == Ncco.Input
-#     assert json.dumps(_action_as_dict(input)) == nas.input_basic_dtmf
+def test_input_basic():
+    input = ncco.Input(
+        type=['dtmf'],
+    )
+    assert input.model_dump(by_alias=True, exclude_none=True) == {
+        'type': ['dtmf'],
+        'action': 'input',
+    }
 
 
-# def test_input_basic_list():
-#     input = Ncco.Input(type=['dtmf', 'speech'])
-#     assert json.dumps(_action_as_dict(input)) == nas.input_basic_dtmf_speech
+def test_input_options():
+    input = ncco.Input(
+        type=['dtmf', 'speech'],
+        dtmf={'timeOut': 5, 'maxDigits': 12, 'submitOnHash': True},
+        speech={
+            'uuid': ['my-uuid'],
+            'endOnSilence': 2.5,
+            'language': 'en-GB',
+            'context': ['sales', 'billing'],
+            'startTimeout': 20,
+            'maxDuration': 30,
+            'saveAudio': True,
+            'sensitivity': 50,
+        },
+        eventUrl=['http://example.com/speech'],
+        eventMethod='PUT',
+    )
+    assert input.model_dump(by_alias=True, exclude_none=True) == {
+        'type': ['dtmf', 'speech'],
+        'dtmf': {'timeOut': 5, 'maxDigits': 12, 'submitOnHash': True},
+        'speech': {
+            'uuid': ['my-uuid'],
+            'endOnSilence': 2.5,
+            'language': 'en-GB',
+            'context': ['sales', 'billing'],
+            'startTimeout': 20,
+            'maxDuration': 30,
+            'saveAudio': True,
+            'sensitivity': 50,
+        },
+        'eventUrl': ['http://example.com/speech'],
+        'eventMethod': 'PUT',
+        'action': 'input',
+    }
 
 
-# def test_input_dtmf_and_speech_options():
-#     dtmf = InputTypes.Dtmf(timeOut=5, maxDigits=12, submitOnHash=True)
-#     speech = InputTypes.Speech(
-#         uuid='my-uuid',
-#         endOnSilence=2.5,
-#         language='en-GB',
-#         context=['sales', 'billing'],
-#         startTimeout=20,
-#         maxDuration=30,
-#         saveAudio=True,
-#     )
-#     input = Ncco.Input(
-#         type=['dtmf', 'speech'],
-#         dtmf=dtmf,
-#         speech=speech,
-#         eventUrl='http://example.com/speech',
-#         eventMethod='put',
-#     )
-#     assert json.dumps(_action_as_dict(input)) == nas.input_dtmf_and_speech_full
+def test_notify_basic():
+    notify = ncco.Notify(payload={'message': 'hello'}, eventUrl=['http://example.com'])
+    assert notify.model_dump(by_alias=True, exclude_none=True) == {
+        'payload': {'message': 'hello'},
+        'eventUrl': ['http://example.com'],
+        'action': 'notify',
+    }
 
 
-# def test_input_validation_error():
-#     with pytest.raises(ValidationError):
-#         Ncco.Input(type='invalid_type')
-
-
-# def test_notify_basic():
-#     notify = Ncco.Notify(payload={'message': 'hello'}, eventUrl=['http://example.com'])
-#     assert type(notify) == Ncco.Notify
-#     assert json.dumps(_action_as_dict(notify)) == nas.notify_basic
-
-
-# def test_notify_basic_str_in_event_url():
-#     notify = Ncco.Notify(payload={'message': 'hello'}, eventUrl='http://example.com')
-#     assert type(notify) == Ncco.Notify
-#     assert json.dumps(_action_as_dict(notify)) == nas.notify_basic
-
-
-# def test_notify_full():
-#     notify = Ncco.Notify(
-#         payload={'message': 'hello'}, eventUrl=['http://example.com'], eventMethod='POST'
-#     )
-#     assert type(notify) == Ncco.Notify
-#     assert json.dumps(_action_as_dict(notify)) == nas.notify_full
-
-
-# def test_notify_validation_error():
-#     with pytest.raises(ValidationError):
-#         Ncco.Notify(payload={'message', 'hello'}, eventUrl=['http://example.com'])
-
-
-# def test_pay_voice_basic():
-#     pay = Ncco.Pay(amount='10.00')
-#     assert type(pay) == Ncco.Pay
-#     assert json.dumps(_action_as_dict(pay)) == nas.pay_basic
-
-
-# def test_pay_voice_full():
-#     voice_settings = PayPrompts.VoicePrompt(language='en-GB', style=1)
-#     pay = Ncco.Pay(
-#         amount=99.99,
-#         currency='gbp',
-#         eventUrl='https://example.com/payment',
-#         voice=voice_settings,
-#     )
-#     assert json.dumps(_action_as_dict(pay)) == nas.pay_voice_full
-
-
-# def test_pay_text():
-#     text_prompts = PayPrompts.TextPrompt(
-#         type='CardNumber',
-#         text='Enter your card number.',
-#         errors={
-#             'InvalidCardType': {
-#                 'text': 'The card you are trying to use is not valid for this purchase.'
-#             }
-#         },
-#     )
-#     pay = Ncco.Pay(
-#         amount=12.345,
-#         currency='gbp',
-#         eventUrl='https://example.com/payment',
-#         prompts=text_prompts,
-#     )
-#     assert json.dumps(_action_as_dict(pay)) == nas.pay_text
-
-
-# def test_pay_text_multiple_prompts():
-#     card_prompt = PayPrompts.TextPrompt(
-#         type='CardNumber',
-#         text='Enter your card number.',
-#         errors={
-#             'InvalidCardType': {
-#                 'text': 'The card you are trying to use is not valid for this purchase.'
-#             }
-#         },
-#     )
-#     expiration_date_prompt = PayPrompts.TextPrompt(
-#         type='ExpirationDate',
-#         text='Enter your card expiration date.',
-#         errors={
-#             'InvalidExpirationDate': {
-#                 'text': 'You have entered an invalid expiration date.'
-#             },
-#             'Timeout': {'text': 'Please enter your card\'s expiration date.'},
-#         },
-#     )
-#     security_code_prompt = PayPrompts.TextPrompt(
-#         type='SecurityCode',
-#         text='Enter your 3-digit security code.',
-#         errors={
-#             'InvalidSecurityCode': {'text': 'You have entered an invalid security code.'},
-#             'Timeout': {'text': 'Please enter your card\'s security code.'},
-#         },
-#     )
-
-#     text_prompts = [card_prompt, expiration_date_prompt, security_code_prompt]
-#     pay = Ncco.Pay(amount=12, prompts=text_prompts)
-#     assert json.dumps(_action_as_dict(pay)) == nas.pay_text_multiple_prompts
-
-
-# def test_pay_validation_error():
-#     with pytest.raises(ValidationError):
-#         Ncco.Pay(amount='not-valid')
+def test_notify_options():
+    notify = ncco.Notify(
+        payload={'message': 'hello'},
+        eventUrl=['http://example.com'],
+        eventMethod='POST',
+    )
+    assert notify.model_dump(by_alias=True, exclude_none=True) == {
+        'payload': {'message': 'hello'},
+        'eventUrl': ['http://example.com'],
+        'eventMethod': 'POST',
+        'action': 'notify',
+    }

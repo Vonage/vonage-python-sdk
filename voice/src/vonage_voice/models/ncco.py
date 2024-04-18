@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Annotated, List, Optional, Union
 
 from pydantic import BaseModel, Field, model_validator
 from typing_extensions import Literal
@@ -137,17 +137,6 @@ class Input(NccoAction):
     eventUrl: Optional[List[str]] = None
     eventMethod: Optional[str] = None
     action: NccoActionType = NccoActionType.INPUT
-
-    @model_validator(mode='after')
-    def validate_objects_provided(self):
-        if 'dtmf' in self.type and self.dtmf is None:
-            raise NccoActionError(
-                '`dtmf` object must be provided if `dtmf` is in the `type` array.'
-            )
-        if 'speech' in self.type and self.speech is None:
-            raise NccoActionError(
-                '`speech` object must be provided if `speech` is in the `type` array.'
-            )
 
 
 class Notify(NccoAction):

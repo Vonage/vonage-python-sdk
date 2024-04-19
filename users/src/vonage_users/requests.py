@@ -3,7 +3,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
 
-class ListUsersRequest(BaseModel):
+class ListUsersFilter(BaseModel):
     """Request object for listing users."""
 
     page_size: Optional[int] = Field(100, ge=1, le=100)

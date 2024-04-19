@@ -1,11 +1,11 @@
 from .common import User
-from .requests import ListUsersRequest
+from .requests import ListUsersFilter
 from .responses import UserSummary
 from .users import Users
 
 __all__ = [
     'Users',
     'User',
-    'ListUsersRequest',
+    'ListUsersFilter',
     'UserSummary',
 ]

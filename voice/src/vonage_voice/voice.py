@@ -1,3 +1,5 @@
+from typing import List, Optional, Tuple
+
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 
@@ -30,22 +32,30 @@ class Voice:
         return CreateCallResponse(**response)
 
     @validate_call
-    def list_calls(self, params: ListCallsFilter = None) -> CallList:
+    def list_calls(
+        self, filter: ListCallsFilter = ListCallsFilter()
+    ) -> Tuple[List[CallInfo], Optional[int]]:
         """Lists calls made with the Vonage Voice API.
 
         Args:
-            params (ListCallsFilter): The parameters to filter the list of calls.
+            filter (ListCallsFilter): The parameters to filter the list of calls.
 
         Returns:
-            CallList: The response object containing information about the calls.
+            Tuple[List[CallInfo], Optional[int]] A tuple containing a list of `CallInfo` objects and the
+                value of the `record_index` attribute to get the next page of results, if there
+                are more results than the specified `page_size`.
         """
         response = self._http_client.get(
             self._http_client.api_host,
             '/v1/calls',
-            params.model_dump(by_alias=True, exclude_none=True) if params else None,
+            filter.model_dump(by_alias=True, exclude_none=True),
         )
 
-        return CallList(**response)
+        list_response = CallList(**response)
+        if list_response.links.next is None:
+            return list_response.embedded.calls, None
+        next_page_index = list_response.record_index + 1
+        return list_response.embedded.calls, next_page_index
 
     @validate_call
     def get_call(self, call_id: str) -> CallInfo:

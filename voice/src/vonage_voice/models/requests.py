@@ -1,40 +1,11 @@
 from typing import List, Literal, Optional, Union
 
 from pydantic import BaseModel, Field, model_validator
-from vonage_utils.types import Dtmf, PhoneNumber, SipUri
 
 from ..errors import VoiceError
-from .common import AdvancedMachineDetection
-from .enums import CallStatus, Channel
-from .ncco import Record, Conversation, Connect, Input, Talk, Stream, Notify
-
-
-class Phone(BaseModel):
-    number: PhoneNumber
-    type: Channel = Channel.PHONE
-
-
-class ToPhone(Phone):
-    dtmf_answer: Optional[Dtmf] = Field(None, serialization_alias='dtmfAnswer')
-
-
-class Sip(BaseModel):
-    uri: SipUri
-    type: Channel = Channel.SIP
-
-
-class Websocket(BaseModel):
-    uri: str = Field(..., min_length=1, max_length=50)
-    content_type: Literal['audio/l16;rate=8000', 'audio/l16;rate=16000'] = Field(
-        'audio/l16;rate=16000', serialization_alias='content-type'
-    )
-    type: Channel = Channel.WEBSOCKET
-    headers: Optional[dict] = None
-
-
-class Vbc(BaseModel):
-    extension: str
-    type: Channel = Channel.VBC
+from .common import AdvancedMachineDetection, Phone, Sip, ToPhone, Vbc, Websocket
+from .enums import CallStatus
+from .ncco import Connect, Conversation, Input, Notify, Record, Stream, Talk
 
 
 class CreateCallRequest(BaseModel):
@@ -73,7 +44,7 @@ class ListCallsFilter(BaseModel):
     status: Optional[CallStatus] = None
     date_start: Optional[str] = None
     date_end: Optional[str] = None
-    page_size: Optional[int] = Field(None, ge=1, le=100)
+    page_size: Optional[int] = Field(100, ge=1, le=100)
     record_index: Optional[int] = None
     order: Optional[Literal['asc', 'desc']] = None
     conversation_uuid: Optional[str] = None

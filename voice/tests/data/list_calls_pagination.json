@@ -1,0 +1,51 @@
+{
+    "page_size": 1,
+    "record_index": 1,
+    "count": 3,
+    "_embedded": {
+        "calls": [
+            {
+                "uuid": "1acdf499-83ae-4861-a694-9e47a98c505d",
+                "status": "completed",
+                "direction": "outbound",
+                "rate": "0.10000000",
+                "price": "0.00333333",
+                "duration": "2",
+                "network": "23420",
+                "conversation_uuid": "CON-ee83ad86-ee21-4c28-bf7d-4ae67692721e",
+                "start_time": "2024-04-18T16:01:51.000Z",
+                "end_time": "2024-04-18T16:01:53.000Z",
+                "to": {
+                    "type": "phone",
+                    "number": "1234567890"
+                },
+                "from": {
+                    "type": "phone",
+                    "number": "9876543210"
+                },
+                "_links": {
+                    "self": {
+                        "href": "/v1/calls/1acdf499-83ae-4861-a694-9e47a98c505d"
+                    }
+                }
+            }
+        ]
+    },
+    "_links": {
+        "self": {
+            "href": "/v1/calls?page_size=1&record_index=1"
+        },
+        "first": {
+            "href": "/v1/calls?page_size=1"
+        },
+        "last": {
+            "href": "/v1/calls?page_size=1&record_index=2"
+        },
+        "next": {
+            "href": "/v1/calls?page_size=1&record_index=2"
+        },
+        "prev": {
+            "href": "/v1/calls?page_size=1&record_index=0"
+        }
+    }
+}

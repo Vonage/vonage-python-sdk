@@ -5,7 +5,7 @@ from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 
 from .common import User
-from .requests import ListUsersRequest
+from .requests import ListUsersFilter
 from .responses import ListUsersResponse, UserSummary
 
 
@@ -22,23 +22,27 @@ class Users:
 
     @validate_call
     def list_users(
-        self, params: ListUsersRequest = ListUsersRequest()
-    ) -> Tuple[List[UserSummary], str]:
+        self, filter: ListUsersFilter = ListUsersFilter()
+    ) -> Tuple[List[UserSummary], Optional[str]]:
         """List all users.
 
         Retrieves a list of all users. Gets 100 users by default.
-        If you want to see more information about a specific user, you can use the `Users.get_user` method.
+        If you want to see more information about a specific user, you can use the
+            `Users.get_user` method.
 
         Args:
-            params (ListUsersRequest, optional): An instance of the ListUsersRequest class that allows you to specify additional parameters for the user listing.
+            params (ListUsersFilter, optional): An instance of the `ListUsersFilter`
+                class that allows you to specify additional parameters for the user listing.
 
         Returns:
-            Tuple[List[UserSummary], str]: A tuple containing a list of UserSummary objects representing the users and a string representing the next cursor for pagination.
+            Tuple[List[UserSummary], Optional[str]]: A tuple containing a list of `UserSummary`
+                objects representing the users and a string representing the next cursor for
+                pagination, if there are more results than the specified `page_size`.
         """
         response = self._http_client.get(
             self._http_client.api_host,
             '/v1/users',
-            params.model_dump(exclude_none=True),
+            filter.model_dump(exclude_none=True),
             self._auth_type,
         )
 

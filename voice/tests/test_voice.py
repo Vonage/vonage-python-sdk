@@ -2,13 +2,12 @@ from os.path import abspath
 
 import responses
 from pytest import raises
-
 from vonage_http_client.http_client import HttpClient
 from vonage_voice.errors import VoiceError
 from vonage_voice.models.ncco import Talk
-from vonage_voice.voice import Voice
-from vonage_voice.models.requests import CreateCallRequest
+from vonage_voice.models.requests import CreateCallRequest, ListCallsFilter
 from vonage_voice.models.responses import CreateCallResponse
+from vonage_voice.voice import Voice
 
 from testutils import build_response, get_mock_jwt_auth
 
@@ -152,3 +151,39 @@ def test_create_call_from_and_random_from_number_error():
             random_from_number=True,
         )
     assert e.match('`from_` and `random_from_number` cannot be used together')
+
+
+@responses.activate
+def test_list_calls():
+    build_response(path, 'GET', 'https://api.nexmo.com/v1/calls', 'list_calls.json', 200)
+    response, _ = voice.list_calls()
+    assert len(response) == 3
+    assert response[0].to.number == '1234567890'
+    assert response[0].from_.number == '9876543210'
+    assert response[0].uuid == 'e154eb57-2962-41e7-baf4-90f63e25e439'
+    from pprint import pprint
+
+    pprint(response)
+    assert 0
+
+
+def test_list_calls_filter():
+    filter = ListCallsFilter(
+        status='completed',
+        date_start='2024-03-14T07:45:14Z',
+        date_end='2024-04-19T08:45:14Z',
+        page_size=10,
+        record_index=0,
+        order='asc',
+        conversation_uuid='CON-2be039b2-d0a4-4274-afc8-d7b241c7c044',
+    )
+    filter_dict = {
+        'status': 'completed',
+        'date_start': '2024-03-14T07:45:14Z',
+        'date_end': '2024-04-19T08:45:14Z',
+        'page_size': 10,
+        'record_index': 0,
+        'order': 'asc',
+        'conversation_uuid': 'CON-2be039b2-d0a4-4274-afc8-d7b241c7c044',
+    }
+    assert filter.model_dump(by_alias=True, exclude_none=True) == filter_dict

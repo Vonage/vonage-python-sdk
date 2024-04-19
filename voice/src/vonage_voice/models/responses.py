@@ -1,5 +1,9 @@
-from typing import List, Optional
+from typing import List, Optional, Union
+
 from pydantic import BaseModel, Field, model_validator
+from vonage_utils.models import Link
+
+from .common import Phone, Sip, ToPhone, Vbc, Websocket
 
 
 class CreateCallResponse(BaseModel):
@@ -14,27 +18,19 @@ class CallStatus(BaseModel):
     uuid: str
 
 
-class Link(BaseModel):
-    href: str
-
-
 class Links(BaseModel):
     self: Link
     first: Optional[Link] = None
-    next: Optional[Link] = None
+    last: Optional[Link] = None
     prev: Optional[Link] = None
-
-
-class Endpoint(BaseModel):
-    type: str
-    number: str
+    next: Optional[Link] = None
 
 
 class CallInfo(BaseModel):
     uuid: str
     conversation_uuid: str
-    to: Endpoint
-    from_: Endpoint = Field(..., alias='from')
+    to: ToPhone
+    from_: Union[Phone, Sip, Websocket, Vbc] = Field(..., validation_alias='from')
     status: str
     direction: str
     rate: Optional[str] = None
@@ -47,7 +43,6 @@ class CallInfo(BaseModel):
     link: Optional[str] = None
 
     @model_validator(mode='after')
-    @classmethod
     def get_link(self):
         self.link = self.links.self.href
         return self

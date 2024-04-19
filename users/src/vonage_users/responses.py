@@ -19,7 +19,6 @@ class UserSummary(BaseModel):
     link: Optional[str] = None
 
     @model_validator(mode='after')
-    @classmethod
     def get_link(self):
         if self.links is not None:
             self.link = self.links.self.href

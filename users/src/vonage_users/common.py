@@ -1,11 +1,8 @@
 from typing import List, Optional
 
 from pydantic import BaseModel, Field, model_validator
+from vonage_utils.models import Link
 from vonage_utils.types import PhoneNumber
-
-
-class Link(BaseModel):
-    href: str
 
 
 class ResourceLink(BaseModel):

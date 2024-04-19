@@ -5,7 +5,7 @@ from vonage_http_client.errors import NotFoundError
 from vonage_http_client.http_client import HttpClient
 from vonage_users import Users
 from vonage_users.common import *
-from vonage_users.requests import ListUsersRequest
+from vonage_users.requests import ListUsersFilter
 
 from testutils import build_response, get_mock_jwt_auth
 
@@ -21,7 +21,7 @@ def test_create_list_users_request():
         'cursor': '7EjDNQrAcipmOnc0HCzpQRkhBULzY44ljGUX4lXKyUIVfiZay5pv9wg=',
         'name': 'my_user',
     }
-    list_users_request = ListUsersRequest(**params)
+    list_users_request = ListUsersFilter(**params)
 
     assert list_users_request.model_dump() == params
 
@@ -52,7 +52,7 @@ def test_list_users_options():
         path, 'GET', 'https://api.nexmo.com/v1/users', 'list_users_options.json'
     )
 
-    params = ListUsersRequest(
+    params = ListUsersFilter(
         page_size=2,
         order='asc',
         cursor='zAmuSchIBsUF1QaaohGdaf32NgHOkP130XeQrZkoOPEuGPnIxFb0Xj3iqCfOzxSSq9Es/S/2h+HYumKt3HS0V9ewjis+j74oMcsvYBLN1PwFEupI6ENEWHYC7lk=',

@@ -1,12 +1,11 @@
 from typing import List, Literal, Optional, Union
 
 from pydantic import BaseModel, Field, model_validator
-
 from vonage_utils.types import Dtmf
 
 from ..errors import VoiceError
 from .common import AdvancedMachineDetection, Phone, Sip, Vbc, Websocket
-from .enums import CallState
+from .enums import CallState, TtsLanguageCode
 from .ncco import Connect, Conversation, Input, Notify, Record, Stream, Talk
 
 
@@ -54,3 +53,18 @@ class ListCallsFilter(BaseModel):
     record_index: Optional[int] = None
     order: Optional[Literal['asc', 'desc']] = None
     conversation_uuid: Optional[str] = None
+
+
+class AudioStreamOptions(BaseModel):
+    stream_url: List[str]
+    loop: Optional[int] = Field(None, ge=0)
+    level: Optional[float] = Field(None, ge=-1, le=1)
+
+
+class TtsStreamOptions(BaseModel):
+    text: str
+    language: Optional[TtsLanguageCode] = None
+    style: Optional[int] = None
+    premium: Optional[bool] = None
+    loop: Optional[int] = Field(None, ge=0)
+    level: Optional[float] = Field(None, ge=-1, le=1)

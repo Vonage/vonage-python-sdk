@@ -92,3 +92,7 @@ def test_ni2_sim_swap_only():
     assert 'fraud_score' not in clear_response
     assert 'sim_swap' in clear_response
     assert 'reason' not in clear_response['sim_swap']
+
+
+def test_number_insight_v2_http_client():
+    assert type(ni2.http_client) == HttpClient

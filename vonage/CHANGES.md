@@ -1,5 +1,6 @@
 # 3.99.0a7
 - Add support for the [Vonage Voice API](https://developer.vonage.com/en/voice/voice-api/overview).
+- Add `http_client` property to each module that has an HTTP Client, e.g. Voice, Sms, Verify.
 
 # 3.99.0a6
 - Add support for the [Vonage Messages API](https://developer.vonage.com/en/messages/overview).

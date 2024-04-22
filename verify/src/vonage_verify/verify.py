@@ -26,6 +26,15 @@ class Verify:
         self._sent_data_type = 'form'
         self._auth_type = 'body'
 
+    @property
+    def http_client(self) -> HttpClient:
+        """The HTTP client used to make requests to the Verify API.
+
+        Returns:
+            HttpClient: The HTTP client used to make requests to the Verify API.
+        """
+        return self._http_client
+
     @validate_call
     def start_verification(
         self, verify_request: VerifyRequest

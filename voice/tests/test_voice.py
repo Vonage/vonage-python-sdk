@@ -1,12 +1,17 @@
 from os.path import abspath
 
 import responses
-from responses.matchers import json_params_matcher
 from pytest import raises
+from responses.matchers import json_params_matcher
 from vonage_http_client.http_client import HttpClient
 from vonage_voice.errors import VoiceError
 from vonage_voice.models.ncco import Talk
-from vonage_voice.models.requests import CreateCallRequest, ListCallsFilter
+from vonage_voice.models.requests import (
+    AudioStreamOptions,
+    CreateCallRequest,
+    ListCallsFilter,
+    TtsStreamOptions,
+)
 from vonage_voice.models.responses import CreateCallResponse
 from vonage_voice.voice import Voice
 
@@ -16,6 +21,10 @@ path = abspath(__file__)
 
 
 voice = Voice(HttpClient(get_mock_jwt_auth()))
+
+
+def test_http_client_property():
+    assert type(voice.http_client) == HttpClient
 
 
 @responses.activate
@@ -318,3 +327,84 @@ def test_unearmuff():
 
     voice.unearmuff('e154eb57-2962-41e7-baf4-90f63e25e439')
     assert voice._http_client.last_response.status_code == 204
+
+
+@responses.activate
+def test_play_audio_into_call():
+    uuid = 'e154eb57-2962-41e7-baf4-90f63e25e439'
+    build_response(
+        path,
+        'PUT',
+        f'https://api.nexmo.com/v1/calls/{uuid}/stream',
+        'play_audio_into_call.json',
+    )
+
+    options = AudioStreamOptions(
+        stream_url=['https://example.com/audio'], loop=2, level=0.5
+    )
+    response = voice.play_audio_into_call(uuid, options)
+    assert response.message == 'Stream started'
+    assert response.uuid == uuid
+
+
+@responses.activate
+def test_stop_audio_stream():
+    uuid = 'e154eb57-2962-41e7-baf4-90f63e25e439'
+    build_response(
+        path,
+        'DELETE',
+        f'https://api.nexmo.com/v1/calls/{uuid}/stream',
+        'stop_audio_stream.json',
+    )
+
+    response = voice.stop_audio_stream(uuid)
+    assert response.message == 'Stream stopped'
+    assert response.uuid == uuid
+
+
+@responses.activate
+def test_play_tts_into_call():
+    uuid = 'e154eb57-2962-41e7-baf4-90f63e25e439'
+    build_response(
+        path,
+        'PUT',
+        f'https://api.nexmo.com/v1/calls/{uuid}/talk',
+        'play_tts_into_call.json',
+    )
+
+    options = TtsStreamOptions(
+        text='Hello world', language='en-ZA', style=1, premium=False, loop=2, level=0.5
+    )
+    response = voice.play_tts_into_call(uuid, options)
+    assert response.message == 'Talk started'
+    assert response.uuid == uuid
+
+
+@responses.activate
+def test_stop_tts():
+    uuid = 'e154eb57-2962-41e7-baf4-90f63e25e439'
+    build_response(
+        path,
+        'DELETE',
+        f'https://api.nexmo.com/v1/calls/{uuid}/talk',
+        'stop_tts.json',
+    )
+
+    response = voice.stop_tts(uuid)
+    assert response.message == 'Talk stopped'
+    assert response.uuid == uuid
+
+
+@responses.activate
+def test_play_dtmf_into_call():
+    uuid = 'e154eb57-2962-41e7-baf4-90f63e25e439'
+    build_response(
+        path,
+        'PUT',
+        f'https://api.nexmo.com/v1/calls/{uuid}/dtmf',
+        'play_dtmf_into_call.json',
+    )
+
+    response = voice.play_dtmf_into_call(uuid, dtmf='1234*#')
+    assert response.message == 'DTMF sent'
+    assert response.uuid == uuid

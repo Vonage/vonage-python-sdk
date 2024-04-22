@@ -19,6 +19,15 @@ class Sms:
         else:
             self._auth_type = 'basic'
 
+    @property
+    def http_client(self) -> HttpClient:
+        """The HTTP client used to make requests to the SMS API.
+
+        Returns:
+            HttpClient: The HTTP client used to make requests to the SMS API.
+        """
+        return self._http_client
+
     @validate_call
     def send(self, message: SmsMessage) -> SmsResponse:
         """Send an SMS message."""

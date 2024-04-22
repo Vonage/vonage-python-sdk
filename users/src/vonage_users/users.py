@@ -20,6 +20,15 @@ class Users:
         self._http_client = http_client
         self._auth_type = 'jwt'
 
+    @property
+    def http_client(self) -> HttpClient:
+        """The HTTP client used to make requests to the Users API.
+
+        Returns:
+            HttpClient: The HTTP client used to make requests to the Users API.
+        """
+        return self._http_client
+
     @validate_call
     def list_users(
         self, filter: ListUsersFilter = ListUsersFilter()

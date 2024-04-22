@@ -182,3 +182,8 @@ def test_trigger_next_event_error():
     assert (
         e.value.response.json()['detail'] == 'There are no more events left to trigger.'
     )
+
+
+def test_http_client_property():
+    http_client = verify.http_client
+    assert isinstance(http_client, HttpClient)

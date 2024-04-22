@@ -251,3 +251,8 @@ def test_delete_user():
         status=204,
     )
     assert users.delete_user('USR-87e3e6b0-cd7b-45ef-a0a7-bcd5566a672b') is None
+
+
+def test_http_client_property():
+    http_client = users.http_client
+    assert isinstance(http_client, HttpClient)

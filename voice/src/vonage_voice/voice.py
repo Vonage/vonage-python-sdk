@@ -2,9 +2,15 @@ from typing import List, Optional, Tuple
 
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
+from vonage_utils.types import Dtmf
 from vonage_voice.models.ncco import NccoAction
 
-from .models.requests import CreateCallRequest, ListCallsFilter
+from .models.requests import (
+    AudioStreamOptions,
+    CreateCallRequest,
+    ListCallsFilter,
+    TtsStreamOptions,
+)
 from .models.responses import CallInfo, CallList, CallMessage, CreateCallResponse
 
 
@@ -13,6 +19,15 @@ class Voice:
 
     def __init__(self, http_client: HttpClient) -> None:
         self._http_client = http_client
+
+    @property
+    def http_client(self) -> HttpClient:
+        """The HTTP client used to make requests to the Voice API.
+
+        Returns:
+            HttpClient: The HTTP client used to make requests to the Voice API.
+        """
+        return self._http_client
 
     @validate_call
     def create_call(self, params: CreateCallRequest) -> CreateCallResponse:
@@ -157,3 +172,86 @@ class Voice:
         self._http_client.put(
             self._http_client.api_host, f'/v1/calls/{uuid}', {'action': 'unearmuff'}
         )
+
+    @validate_call
+    def play_audio_into_call(
+        self, uuid: str, audio_stream_options: AudioStreamOptions
+    ) -> CallMessage:
+        """Plays an audio stream into a call.
+
+        Args:
+            uuid (str): The UUID of the call to stream audio into.
+            stream_audio_options (StreamAudioOptions): The options for streaming audio.
+
+        Returns:
+            CallMessage: Object with information about the call.
+        """
+        response = self._http_client.put(
+            self._http_client.api_host,
+            f'/v1/calls/{uuid}/stream',
+            audio_stream_options.model_dump(by_alias=True, exclude_none=True),
+        )
+
+        return CallMessage(**response)
+
+    def stop_audio_stream(self, uuid: str) -> CallMessage:
+        """Stops streaming audio into a call.
+
+        Args:
+            uuid (str): The UUID of the call to stop streaming audio into.
+        """
+        response = self._http_client.delete(
+            self._http_client.api_host, f'/v1/calls/{uuid}/stream'
+        )
+
+        return CallMessage(**response)
+
+    @validate_call
+    def play_tts_into_call(self, uuid: str, tts_options: TtsStreamOptions) -> CallMessage:
+        """Plays text-to-speech into a call.
+
+        Args:
+            uuid (str): The UUID of the call to play text-to-speech into.
+            tts_options (TtsStreamOptions): The options for playing text-to-speech.
+
+        Returns:
+            CallMessage: Object with information about the call.
+        """
+        response = self._http_client.put(
+            self._http_client.api_host,
+            f'/v1/calls/{uuid}/talk',
+            tts_options.model_dump(by_alias=True, exclude_none=True),
+        )
+
+        return CallMessage(**response)
+
+    def stop_tts(self, uuid: str) -> CallMessage:
+        """Stops playing text-to-speech into a call.
+
+        Args:
+            uuid (str): The UUID of the call to stop playing text-to-speech into.
+        """
+        response = self._http_client.delete(
+            self._http_client.api_host, f'/v1/calls/{uuid}/talk'
+        )
+
+        return CallMessage(**response)
+
+    @validate_call
+    def play_dtmf_into_call(self, uuid: str, dtmf: Dtmf) -> CallMessage:
+        """Plays DTMF tones into a call.
+
+        Args:
+            uuid (str): The UUID of the call to play DTMF tones into.
+            dtmf (Dtmf): The DTMF tones to play.
+
+        Returns:
+            CallMessage: Object with information about the call.
+        """
+        response = self._http_client.put(
+            self._http_client.api_host,
+            f'/v1/calls/{uuid}/dtmf',
+            {'digits': dtmf},
+        )
+
+        return CallMessage(**response)

@@ -1,3 +1,6 @@
+# 1.3.0
+- Add new PUT method
+
 # 1.2.1
 - Expose classes and errors at the package level
 

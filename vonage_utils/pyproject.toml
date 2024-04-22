@@ -1,10 +1,10 @@
 [project]
 name = 'vonage-utils'
-version = '1.0.1'
+version = '1.1.0'
 description = 'Utils package containing objects for use with Vonage APIs'
 readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
-dependencies = ["pydantic>=2.6.1"]
+dependencies = ["typing_extensions>=4.9.0", "pydantic>=2.6.1"]
 requires-python = ">=3.8"
 classifiers = [
   "Programming Language :: Python",

@@ -1,7 +1,6 @@
-from typing import List, Optional, Union
+from typing import List, Literal, Optional, Union
 
 from pydantic import BaseModel, Field, model_validator
-from typing_extensions import Literal
 from vonage_utils.types import PhoneNumber
 from vonage_voice.errors import NccoActionError
 from vonage_voice.models.common import AdvancedMachineDetection

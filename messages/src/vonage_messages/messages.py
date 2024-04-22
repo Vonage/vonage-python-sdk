@@ -17,6 +17,15 @@ class Messages:
     def __init__(self, http_client: HttpClient) -> None:
         self._http_client = http_client
 
+    @property
+    def http_client(self) -> HttpClient:
+        """The HTTP client used to make requests to the Messages API.
+
+        Returns:
+            HttpClient: The HTTP client used to make requests to the Messages API.
+        """
+        return self._http_client
+
     @validate_call
     def send(self, message: BaseMessage) -> SendMessageResponse:
         """Send a message using Vonage's Messages API.

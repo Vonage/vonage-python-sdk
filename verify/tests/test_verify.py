@@ -297,3 +297,8 @@ def test_request_network_unblock_error():
             == 'The network you provided does not have an active block.'
         )
         assert e.response.json()['title'] == 'Not Found'
+
+
+def test_http_client_property():
+    verify = Verify(HttpClient(get_mock_api_key_auth()))
+    assert isinstance(verify.http_client, HttpClient)

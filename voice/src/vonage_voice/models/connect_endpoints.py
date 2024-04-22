@@ -1,7 +1,6 @@
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
-from typing_extensions import Literal
 from vonage_utils.types import Dtmf, PhoneNumber, SipUri
 
 from .enums import ConnectEndpointType

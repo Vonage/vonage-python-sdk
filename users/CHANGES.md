@@ -1,3 +1,8 @@
+# 1.1.0
+- Add `http_client` property
+- Rename `ListUsersRequest` -> `ListUsersFilter`
+- Internal refactoring
+
 # 1.0.1
 - Internal refactoring
 

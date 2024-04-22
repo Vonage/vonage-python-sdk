@@ -59,6 +59,15 @@ class NumberInsightV2:
         self._http_client = deepcopy(http_client)
         self._auth_type = 'basic'
 
+    @property
+    def http_client(self) -> HttpClient:
+        """The HTTP client used to make requests to the Number Insight V2 API.
+
+        Returns:
+            HttpClient: The HTTP client used to make requests to the Number Insight V2 API.
+        """
+        return self._http_client
+
     @validate_call
     def fraud_check(self, request: FraudCheckRequest) -> FraudCheckResponse:
         """Initiate a fraud check request."""

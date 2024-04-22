@@ -75,3 +75,9 @@ def test_send_message_invalid_error():
 
     assert e.value.response.status_code == 422
     assert e.value.response.json()['title'] == 'Invalid params'
+
+
+def test_http_client_property():
+    http_client = HttpClient(get_mock_jwt_auth())
+    messages = Messages(http_client)
+    assert messages.http_client == http_client

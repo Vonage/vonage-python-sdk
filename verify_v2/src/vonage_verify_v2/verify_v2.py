@@ -11,6 +11,15 @@ class VerifyV2:
     def __init__(self, http_client: HttpClient) -> None:
         self._http_client = http_client
 
+    @property
+    def http_client(self) -> HttpClient:
+        """The HTTP client used to make requests to the Verify V2 API.
+
+        Returns:
+            HttpClient: The HTTP client used to make requests to the Verify V2 API.
+        """
+        return self._http_client
+
     @validate_call
     def start_verification(
         self, verify_request: VerifyRequest

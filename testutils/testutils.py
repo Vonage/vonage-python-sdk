@@ -17,7 +17,7 @@ def _filter_none_values(data: dict) -> dict:
 @validate_call
 def build_response(
     file_path: str,
-    method: Literal['GET', 'POST', 'PATCH', 'DELETE'],
+    method: Literal['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
     url: str,
     mock_path: str = None,
     status_code: int = 200,

@@ -3,7 +3,7 @@ from typing import List, Optional, Union
 from pydantic import BaseModel, Field, model_validator
 from vonage_utils.models import Link
 
-from .common import Phone, Sip, ToPhone, Vbc, Websocket
+from .common import Phone, Sip, Vbc, Websocket
 
 
 class CreateCallResponse(BaseModel):
@@ -13,7 +13,7 @@ class CreateCallResponse(BaseModel):
     conversation_uuid: str
 
 
-class CallStatus(BaseModel):
+class CallMessage(BaseModel):
     message: str
     uuid: str
 
@@ -29,7 +29,7 @@ class Links(BaseModel):
 class CallInfo(BaseModel):
     uuid: str
     conversation_uuid: str
-    to: ToPhone
+    to: Phone
     from_: Union[Phone, Sip, Websocket, Vbc] = Field(..., validation_alias='from')
     status: str
     direction: str

@@ -26,7 +26,7 @@ class ConnectEndpointType(str, Enum):
     VBC = 'vbc'
 
 
-class CallStatus(str, Enum):
+class CallState(str, Enum):
     STARTED = 'started'
     RINGING = 'ringing'
     ANSWERED = 'answered'

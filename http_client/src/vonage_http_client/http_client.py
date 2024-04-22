@@ -161,6 +161,18 @@ class HttpClient:
             'PATCH', host, request_path, params, auth_type, sent_data_type
         )
 
+    def put(
+        self,
+        host: str,
+        request_path: str = '',
+        params: dict = None,
+        auth_type: Literal['jwt', 'basic', 'body', 'signature'] = 'jwt',
+        sent_data_type: Literal['json', 'form', 'query_params'] = 'json',
+    ) -> Union[dict, None]:
+        return self.make_request(
+            'PUT', host, request_path, params, auth_type, sent_data_type
+        )
+
     def delete(
         self,
         host: str,
@@ -176,7 +188,7 @@ class HttpClient:
     @validate_call
     def make_request(
         self,
-        request_type: Literal['GET', 'POST', 'PATCH', 'DELETE'],
+        request_type: Literal['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
         host: str,
         request_path: str = '',
         params: Optional[dict] = None,

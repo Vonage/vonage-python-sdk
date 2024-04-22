@@ -1,6 +1,7 @@
 from os.path import abspath
 
 import responses
+from responses.matchers import json_params_matcher
 from pytest import raises
 from vonage_http_client.http_client import HttpClient
 from vonage_voice.errors import VoiceError
@@ -156,18 +157,21 @@ def test_create_call_from_and_random_from_number_error():
 @responses.activate
 def test_list_calls():
     build_response(path, 'GET', 'https://api.nexmo.com/v1/calls', 'list_calls.json', 200)
-    response, _ = voice.list_calls()
-    assert len(response) == 3
-    assert response[0].to.number == '1234567890'
-    assert response[0].from_.number == '9876543210'
-    assert response[0].uuid == 'e154eb57-2962-41e7-baf4-90f63e25e439'
-    from pprint import pprint
+    calls, _ = voice.list_calls()
+    assert len(calls) == 3
+    assert calls[0].to.number == '1234567890'
+    assert calls[0].from_.number == '9876543210'
+    assert calls[0].uuid == 'e154eb57-2962-41e7-baf4-90f63e25e439'
+    assert calls[1].direction == 'outbound'
+    assert calls[1].status == 'completed'
+    assert calls[2].conversation_uuid == 'CON-2be039b2-d0a4-4274-afc8-d7b241c7c044'
 
-    pprint(response)
-    assert 0
 
-
+@responses.activate
 def test_list_calls_filter():
+    build_response(
+        path, 'GET', 'https://api.nexmo.com/v1/calls', 'list_calls_filter.json', 200
+    )
     filter = ListCallsFilter(
         status='completed',
         date_start='2024-03-14T07:45:14Z',
@@ -187,3 +191,130 @@ def test_list_calls_filter():
         'conversation_uuid': 'CON-2be039b2-d0a4-4274-afc8-d7b241c7c044',
     }
     assert filter.model_dump(by_alias=True, exclude_none=True) == filter_dict
+
+    calls, next_record_index = voice.list_calls(filter)
+    assert len(calls) == 1
+    assert calls[0].to.number == '1234567890'
+    assert next_record_index == 2
+
+
+@responses.activate
+def test_get_call():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/v1/calls/e154eb57-2962-41e7-baf4-90f63e25e439',
+        'get_call.json',
+        200,
+    )
+    call = voice.get_call('e154eb57-2962-41e7-baf4-90f63e25e439')
+    assert call.to.number == '1234567890'
+    assert call.from_.number == '9876543210'
+    assert call.uuid == 'e154eb57-2962-41e7-baf4-90f63e25e439'
+    assert call.link == '/v1/calls/e154eb57-2962-41e7-baf4-90f63e25e439'
+
+
+@responses.activate
+def test_transfer_call_ncco():
+    build_response(
+        path,
+        'PUT',
+        'https://api.nexmo.com/v1/calls/e154eb57-2962-41e7-baf4-90f63e25e439',
+        status_code=204,
+    )
+
+    ncco = [Talk(text='Hello world')]
+    voice.transfer_call_ncco('e154eb57-2962-41e7-baf4-90f63e25e439', ncco)
+    assert voice._http_client.last_response.status_code == 204
+
+
+@responses.activate
+def test_transfer_call_answer_url():
+    answer_url = 'https://example.com/answer'
+    build_response(
+        path,
+        'PUT',
+        'https://api.nexmo.com/v1/calls/e154eb57-2962-41e7-baf4-90f63e25e439',
+        status_code=204,
+        match=[
+            json_params_matcher(
+                {
+                    'action': 'transfer',
+                    'destination': {'type': 'ncco', 'url': [answer_url]},
+                },
+            ),
+        ],
+    )
+
+    voice.transfer_call_answer_url('e154eb57-2962-41e7-baf4-90f63e25e439', answer_url)
+    assert voice._http_client.last_response.status_code == 204
+
+
+@responses.activate
+def test_hangup():
+    build_response(
+        path,
+        'PUT',
+        'https://api.nexmo.com/v1/calls/e154eb57-2962-41e7-baf4-90f63e25e439',
+        status_code=204,
+        match=[json_params_matcher({'action': 'hangup'})],
+    )
+
+    voice.hangup('e154eb57-2962-41e7-baf4-90f63e25e439')
+    assert voice._http_client.last_response.status_code == 204
+
+
+@responses.activate
+def test_mute():
+    build_response(
+        path,
+        'PUT',
+        'https://api.nexmo.com/v1/calls/e154eb57-2962-41e7-baf4-90f63e25e439',
+        status_code=204,
+        match=[json_params_matcher({'action': 'mute'})],
+    )
+
+    voice.mute('e154eb57-2962-41e7-baf4-90f63e25e439')
+    assert voice._http_client.last_response.status_code == 204
+
+
+@responses.activate
+def test_unmute():
+    build_response(
+        path,
+        'PUT',
+        'https://api.nexmo.com/v1/calls/e154eb57-2962-41e7-baf4-90f63e25e439',
+        status_code=204,
+        match=[json_params_matcher({'action': 'unmute'})],
+    )
+
+    voice.unmute('e154eb57-2962-41e7-baf4-90f63e25e439')
+    assert voice._http_client.last_response.status_code == 204
+
+
+@responses.activate
+def test_earmuff():
+    build_response(
+        path,
+        'PUT',
+        'https://api.nexmo.com/v1/calls/e154eb57-2962-41e7-baf4-90f63e25e439',
+        status_code=204,
+        match=[json_params_matcher({'action': 'earmuff'})],
+    )
+
+    voice.earmuff('e154eb57-2962-41e7-baf4-90f63e25e439')
+    assert voice._http_client.last_response.status_code == 204
+
+
+@responses.activate
+def test_unearmuff():
+    build_response(
+        path,
+        'PUT',
+        'https://api.nexmo.com/v1/calls/e154eb57-2962-41e7-baf4-90f63e25e439',
+        status_code=204,
+        match=[json_params_matcher({'action': 'unearmuff'})],
+    )
+
+    voice.unearmuff('e154eb57-2962-41e7-baf4-90f63e25e439')
+    assert voice._http_client.last_response.status_code == 204

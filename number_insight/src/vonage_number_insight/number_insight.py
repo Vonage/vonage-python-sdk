@@ -1,0 +1,139 @@
+from pydantic import validate_call
+from vonage_http_client.http_client import HttpClient
+
+from .errors import NumberInsightError
+from .requests import (
+    AdvancedAsyncInsightRequest,
+    AdvancedSyncInsightRequest,
+    BasicInsightRequest,
+    StandardInsightRequest,
+)
+from .responses import (
+    AdvancedAsyncInsightResponse,
+    AdvancedSyncInsightResponse,
+    BasicInsightResponse,
+    StandardInsightResponse,
+)
+
+
+class NumberInsight:
+    """Calls Vonage's Number Insight API."""
+
+    def __init__(self, http_client: HttpClient) -> None:
+        self._http_client = http_client
+        self._auth_type = 'body'
+
+    @property
+    def http_client(self) -> HttpClient:
+        """The HTTP client used to make requests to the Verify V2 API.
+
+        Returns:
+            HttpClient: The HTTP client used to make requests to the Verify V2 API.
+        """
+        return self._http_client
+
+    @validate_call
+    def basic_number_insight(self, options: BasicInsightRequest) -> BasicInsightResponse:
+        """Get basic number insight information about a phone number.
+
+        Args:
+            Options (BasicInsightRequest): The options for the request. The `number` paramerter
+                is required, and the `country_code` parameter is optional.
+
+        Returns:
+            BasicInsightResponse: The response object containing the basic number insight
+                information about the phone number.
+        """
+        response = self._http_client.get(
+            self._http_client.api_host,
+            '/ni/basic/json',
+            params=options.model_dump(exclude_none=True),
+            auth_type=self._auth_type,
+        )
+        self._check_for_error(response)
+
+        return BasicInsightResponse(**response)
+
+    @validate_call
+    def standard_number_insight(
+        self, options: StandardInsightRequest
+    ) -> StandardInsightResponse:
+        """Get standard number insight information about a phone number.
+
+        Args:
+            Options (StandardInsightRequest): The options for the request. The `number` paramerter
+                is required, and the `country_code` and `cnam` parameters are optional.
+
+        Returns:
+            StandardInsightResponse: The response object containing the standard number insight
+                information about the phone number.
+        """
+        response = self._http_client.get(
+            self._http_client.api_host,
+            '/ni/standard/json',
+            params=options.model_dump(exclude_none=True),
+            auth_type=self._auth_type,
+        )
+        self._check_for_error(response)
+
+        return StandardInsightResponse(**response)
+
+    @validate_call
+    def advanced_async_number_insight(
+        self, options: AdvancedAsyncInsightRequest
+    ) -> AdvancedAsyncInsightResponse:
+        """Get advanced number insight information about a phone number asynchronously.
+
+        Args:
+            Options (AdvancedAsyncInsightRequest): The options for the request. You must provide values
+                for the `callback` and `number` parameters. The `country_code` and `cnam` parameters
+                are optional.
+
+        Returns:
+            AdvancedAsyncInsightResponse: The response object containing the advanced number insight
+                information about the phone number.
+        """
+        response = self._http_client.get(
+            self._http_client.api_host,
+            '/ni/advanced/async/json',
+            params=options.model_dump(exclude_none=True),
+            auth_type=self._auth_type,
+        )
+
+        return AdvancedAsyncInsightResponse(**response)
+
+    @validate_call
+    def advanced_sync_number_insight(
+        self, options: AdvancedSyncInsightRequest
+    ) -> AdvancedSyncInsightResponse:
+        """Get advanced number insight information about a phone number synchronously.
+
+        Args:
+            Options (AdvancedSyncInsightRequest): The options for the request. The `number` parameter
+                is required, and the `country_code`, `cnam`, and `real_time_data` parameters are optional.
+
+        Returns:
+            AdvancedSyncInsightResponse: The response object containing the advanced number insight
+                information about the phone number.
+        """
+        response = self._http_client.get(
+            self._http_client.api_host,
+            '/ni/advanced/json',
+            params=options.model_dump(exclude_none=True),
+            auth_type=self._auth_type,
+        )
+
+        return AdvancedSyncInsightResponse(**response)
+
+    def _check_for_error(self, response: dict) -> None:
+        """Check for an error in the response from the Number Insight API.
+
+        Args:
+            response (dict): The response from the Number Insight API.
+
+        Raises:
+            NumberInsightError: If the response contains an error.
+        """
+        if response['status'] != 0:
+            error_message = f'Error with the following details: {response}'
+            raise NumberInsightError(error_message)

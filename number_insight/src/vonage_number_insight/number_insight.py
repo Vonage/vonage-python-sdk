@@ -1,3 +1,5 @@
+from logging import getLogger
+
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 
@@ -14,6 +16,8 @@ from .responses import (
     BasicInsightResponse,
     StandardInsightResponse,
 )
+
+logger = getLogger('vonage_number_insight')
 
 
 class NumberInsight:
@@ -99,6 +103,7 @@ class NumberInsight:
             params=options.model_dump(exclude_none=True),
             auth_type=self._auth_type,
         )
+        self._check_for_error(response)
 
         return AdvancedAsyncInsightResponse(**response)
 
@@ -122,6 +127,7 @@ class NumberInsight:
             params=options.model_dump(exclude_none=True),
             auth_type=self._auth_type,
         )
+        self._check_for_error(response)
 
         return AdvancedSyncInsightResponse(**response)
 
@@ -135,5 +141,13 @@ class NumberInsight:
             NumberInsightError: If the response contains an error.
         """
         if response['status'] != 0:
+            if response['status'] in {43, 44, 45}:
+                logger.warning(
+                    'Live mobile lookup not returned. Not all parameters are available.'
+                )
+                return
+            logger.warning(
+                f'Error using the Number Insight API. Response received: {response}'
+            )
             error_message = f'Error with the following details: {response}'
             raise NumberInsightError(error_message)

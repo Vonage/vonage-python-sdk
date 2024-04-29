@@ -1,3 +1,6 @@
+# 1.1.1
+- Update minimum dependency version
+
 # 1.1.0
 - Add `http_client` property
 - Rename `ListUsersRequest` -> `ListUsersFilter`

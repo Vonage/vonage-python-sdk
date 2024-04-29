@@ -38,10 +38,6 @@ class StandardInsightResponse(BasicInsightResponse):
     original_carrier: Optional[Carrier] = None
     ported: Optional[str] = None
     caller_identity: Optional[CallerIdentity] = None
-    caller_type: Optional[str] = None
-    caller_name: Optional[str] = None
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
 
 
 class RoamingStatus(BaseModel):
@@ -63,7 +59,6 @@ class AdvancedSyncInsightResponse(StandardInsightResponse):
     valid_number: Optional[str] = None
     reachable: Optional[str] = None
     real_time_data: Optional[RealTimeData] = None
-    ip_warnings: Optional[str] = None
 
 
 class AdvancedAsyncInsightResponse(BaseModel):

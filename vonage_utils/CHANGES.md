@@ -1,4 +1,7 @@
 # 1.1.0
+- Update minimum dependency version
+
+# 1.1.0
 - Add `Dtmf` and `SipUri` types
 - Add `Link` model
 - Internal refactoring

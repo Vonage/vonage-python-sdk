@@ -1,5 +1,6 @@
 # 3.99.0a8
 - Add support for the [Vonage Number Insight API](https://developer.vonage.com/en/number-insight/overview).
+- Update minimum dependency version
 
 # 3.99.0a7
 - Add support for the [Vonage Voice API](https://developer.vonage.com/en/voice/voice-api/overview).

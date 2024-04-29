@@ -1,3 +1,6 @@
+# 1.3.1
+- Update minimum dependency version
+
 # 1.3.0
 - Add new PUT method
 

@@ -149,8 +149,9 @@ def test_advanced_sync_insight(caplog):
     assert response.status == 44
     assert response.request_id == '97e973e7-2e27-4fd3-9e1a-972ea14dd992'
     assert response.current_carrier.network_code == '310090'
-    assert response.first_name == 'John'
-    assert response.last_name == 'Smith'
+    assert response.caller_identity.first_name == 'John'
+    assert response.caller_identity.last_name == 'Smith'
+    assert response.caller_identity.subscription_type == 'postpaid'
     assert response.lookup_outcome == 1
     assert response.lookup_outcome_message == 'Partial success - some fields populated'
     assert response.roaming == 'unknown'

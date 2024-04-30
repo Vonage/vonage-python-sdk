@@ -1,6 +1,6 @@
 from pydantic import BaseModel, HttpUrl, AnyUrl, constr, field_serializer, Field
-from typing import Dict, Annotated
-from typing_extensions import Literal
+from typing import Dict
+from typing_extensions import Annotated, Literal
 
 
 class ConnectEndpoints:
@@ -29,7 +29,10 @@ class ConnectEndpoints:
         type: Literal['websocket'] = 'websocket'
 
         uri: AnyUrl
-        contentType: Annotated[Literal['audio/l16;rate=16000', 'audio/l16;rate=8000'], Field(serialization_alias='content-type')]
+        contentType: Annotated[
+            Literal['audio/l16;rate=16000', 'audio/l16;rate=8000'],
+            Field(serialization_alias='content-type'),
+        ]
         headers: dict = None
 
         @field_serializer('uri')

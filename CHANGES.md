@@ -1,3 +1,6 @@
+# 3.13.1
+- Fix content-type incorrect serialization
+
 # 3.13.0
 - Migrating to use Pydantic v2 as a dependency
 

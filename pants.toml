@@ -32,6 +32,7 @@ report = ['html', 'console']
 filter = [
   'vonage/src',
   'http_client/src',
+  'application/src',
   'messages/src',
   'number_insight/src',
   'number_insight_v2/src',

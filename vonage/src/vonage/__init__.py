@@ -1,6 +1,7 @@
 from vonage_utils import VonageError
 
 from .vonage import (
+    Application,
     Auth,
     HttpClientOptions,
     Messages,
@@ -18,6 +19,7 @@ __all__ = [
     'Vonage',
     'Auth',
     'HttpClientOptions',
+    'Application',
     'Messages',
     'NumberInsight',
     'NumberInsightV2',

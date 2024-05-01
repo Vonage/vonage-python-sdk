@@ -1,84 +1,79 @@
-from typing import List, Optional
+from typing import Literal, Optional, Union
 
-from pydantic import BaseModel, Field, model_validator
-from vonage_utils.models import Link
-from vonage_utils.types import PhoneNumber
+from pydantic import BaseModel, Field, field_validator
 
-
-class ResourceLink(BaseModel):
-    self: Link
+from .enums import Region
+from .errors import ApplicationError
 
 
-class PstnChannel(BaseModel):
-    number: int
+class Url(BaseModel):
+    address: str
+    http_method: Optional[Literal['GET', 'POST']] = None
 
 
-class SipChannel(BaseModel):
-    uri: str = Field(..., pattern=r'^(sip|sips):\+?([\w|:.\-@;,=%&]+)')
-    username: str = None
-    password: str = None
+class VoiceUrl(Url):
+    connection_timeout: Optional[int] = Field(None, ge=300, le=1000)
+    socket_timeout: Optional[int] = Field(None, ge=1000, le=5000)
 
 
-class VbcChannel(BaseModel):
-    extension: str
+class VoiceWebhooks(BaseModel):
+    answer_url: Optional[Url] = None
+    fallback_answer_url: Optional[Url] = None
+    event_url: Optional[Url] = None
 
 
-class WebsocketChannel(BaseModel):
-    uri: str = Field(pattern=r'^(ws|wss):\/\/[a-zA-Z0-9~#%@&-_?\/.,:;)(\]\[]*$')
-    content_type: Optional[str] = Field(
-        None, alias='content-type', pattern='^audio/l16;rate=(8000|16000)$'
-    )
-    headers: Optional[dict] = None
+class Voice(BaseModel):
+    webhooks: Optional[VoiceWebhooks] = None
+    signed_callbacks: Optional[bool] = None
+    conversations_ttl: Optional[int] = Field(None, ge=1, le=9000)
+    leg_persistence_time: Optional[int] = Field(None, ge=1, le=31)
+    region: Optional[Region] = None
 
 
-class SmsChannel(BaseModel):
-    number: PhoneNumber
+class RtcWebhooks(BaseModel):
+    event_url: Optional[Url] = None
 
 
-class MmsChannel(BaseModel):
-    number: PhoneNumber
+class Rtc(BaseModel):
+    webhooks: Optional[RtcWebhooks] = None
+    signed_callbacks: Optional[bool] = None
 
 
-class WhatsappChannel(BaseModel):
-    number: PhoneNumber
+class MessagesWebhooks(BaseModel):
+    inbound_url: Optional[Url] = None
+    status_url: Optional[Url] = None
 
 
-class ViberChannel(BaseModel):
-    number: PhoneNumber
+class Messages(BaseModel):
+    version: Optional[str] = None
+    webhooks: Optional[MessagesWebhooks] = None
 
 
-class MessengerChannel(BaseModel):
-    id: str
+class Vbc(BaseModel):
+    pass
 
 
-class Channels(BaseModel):
-    sms: Optional[List[SmsChannel]] = None
-    mms: Optional[List[MmsChannel]] = None
-    whatsapp: Optional[List[WhatsappChannel]] = None
-    viber: Optional[List[ViberChannel]] = None
-    messenger: Optional[List[MessengerChannel]] = None
-    pstn: Optional[List[PstnChannel]] = None
-    sip: Optional[List[SipChannel]] = None
-    websocket: Optional[List[WebsocketChannel]] = None
-    vbc: Optional[List[VbcChannel]] = None
+class VerifyWebhooks(BaseModel):
+    status_url: Optional[Url] = None
+
+    @field_validator('status_url')
+    @classmethod
+    def check_http_method(cls, v: Url):
+        if v.http_method is not None and v.http_method != 'POST':
+            raise ApplicationError('HTTP method must be POST')
+        return v
 
 
-class Properties(BaseModel):
-    custom_data: Optional[dict] = None
+class Verify(BaseModel):
+    webhooks: Optional[VerifyWebhooks] = None
+    version: Optional[str] = None
 
 
-class User(BaseModel):
-    name: Optional[str] = None
-    display_name: Optional[str] = None
-    image_url: Optional[str] = None
-    channels: Optional[Channels] = None
-    properties: Optional[Properties] = None
-    links: Optional[ResourceLink] = Field(None, validation_alias='_links', exclude=True)
-    link: Optional[str] = None
-    id: Optional[str] = None
+class Privacy(BaseModel):
+    improve_ai: Optional[bool] = None
 
-    @model_validator(mode='after')
-    def get_link(self):
-        if self.links is not None:
-            self.link = self.links.self.href
-        return self
+
+class ApplicationBase(BaseModel):
+    name: str
+    capabilities: Optional[Union[Voice, Rtc, Messages, Vbc, Verify]] = None
+    privacy: Optional[Privacy] = None

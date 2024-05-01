@@ -1,12 +1,8 @@
 from typing import List, Optional
 
 from pydantic import BaseModel, Field, model_validator
-from vonage_utils.models import Link
+from vonage_utils.models import ResourceLink
 from vonage_utils.types import PhoneNumber
-
-
-class ResourceLink(BaseModel):
-    self: Link
 
 
 class PstnChannel(BaseModel):

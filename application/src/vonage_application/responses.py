@@ -1,20 +1,28 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field, model_validator
-from vonage_users.common import Link, ResourceLink
+from vonage_utils.models import ResourceLink
+
+from .common import ApplicationBase
+
+# class Embedded(BaseModel):
+#     users: List[UserSummary] = []
 
 
-class Links(BaseModel):
-    self: Link
-    first: Link
-    next: Optional[Link] = None
-    prev: Optional[Link] = None
+# class ListApplicationsResponse(BaseModel):
+#     page_size: int
+#     embedded: Embedded = Field(..., validation_alias='_embedded')
+#     links: Links = Field(..., validation_alias='_links')
 
 
-class UserSummary(BaseModel):
-    id: Optional[str]
-    name: Optional[str]
-    display_name: Optional[str] = None
+class KeysResponse(BaseModel):
+    public_key: Optional[str] = None
+    private_key: Optional[str] = None
+
+
+class ApplicationData(ApplicationBase):
+    id: str
+    keys: Optional[KeysResponse] = None
     links: Optional[ResourceLink] = Field(None, validation_alias='_links', exclude=True)
     link: Optional[str] = None
 
@@ -23,13 +31,3 @@ class UserSummary(BaseModel):
         if self.links is not None:
             self.link = self.links.self.href
         return self
-
-
-class Embedded(BaseModel):
-    users: List[UserSummary] = []
-
-
-class ListUsersResponse(BaseModel):
-    page_size: int
-    embedded: Embedded = Field(..., validation_alias='_embedded')
-    links: Links = Field(..., validation_alias='_links')

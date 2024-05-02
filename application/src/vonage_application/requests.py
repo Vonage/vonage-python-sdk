@@ -12,9 +12,5 @@ class ListApplicationsFilter(BaseModel):
     page: int = None
 
 
-class RequestKeys(BaseModel):
-    public_key: str
-
-
-class ApplicationOptions(ApplicationBase):
-    keys: Optional[RequestKeys] = None
+class ApplicationConfig(ApplicationBase):
+    pass

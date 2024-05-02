@@ -1,6 +1,6 @@
 from typing import Literal, Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from .enums import Region
 from .errors import ApplicationError
@@ -103,6 +103,12 @@ class Capabilities(BaseModel):
     verify: Optional[Verify] = None
 
 
+class Keys(BaseModel):
+    model_config = ConfigDict(extra='allow')
+
+    public_key: Optional[str] = None
+
+
 class ApplicationBase(BaseModel):
     """Base application object used in requests and responses when communicating with the Vonage
     Application API."""
@@ -110,3 +116,4 @@ class ApplicationBase(BaseModel):
     name: str
     capabilities: Optional[Capabilities] = None
     privacy: Optional[Privacy] = None
+    keys: Optional[Keys] = None

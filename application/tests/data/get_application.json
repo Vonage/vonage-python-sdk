@@ -1,0 +1,36 @@
+{
+    "id": "1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+    "name": "My Server Demo",
+    "keys": {
+        "public_key": "-----BEGIN PUBLIC KEY-----\npublic_key_info_goes_here\n-----END PUBLIC KEY-----\n"
+    },
+    "privacy": {
+        "improve_ai": false
+    },
+    "capabilities": {
+        "voice": {
+            "webhooks": {
+                "event_url": {
+                    "address": "http://example.ngrok.app/webhooks/events",
+                    "http_method": "POST",
+                    "socket_timeout": 10000,
+                    "connect_timeout": 1000
+                },
+                "answer_url": {
+                    "address": "http://example.ngrok.app/webhooks/answer",
+                    "http_method": "GET",
+                    "socket_timeout": 5000,
+                    "connect_timeout": 1000
+                }
+            },
+            "signed_callbacks": true,
+            "conversations_ttl": 48,
+            "leg_persistence_time": 7
+        }
+    },
+    "_links": {
+        "self": {
+            "href": "/v2/applications/1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b"
+        }
+    }
+}

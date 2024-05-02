@@ -8,39 +8,23 @@ It includes methods for managing applications.
 
 It is recommended to use this as part of the main `vonage` package. The examples below assume you've created an instance of the `vonage.Vonage` class called `vonage_client`.
 
---------------
---------------
---------------
---------------
---------------
---------------
---------------
---------------
---------------
---------------
---------------
---------------
---------------
---------------
---------------
+### List Applications
 
-### List Users
-
-With no custom options specified, this method will get the last 100 users. It returns a tuple consisting of a list of `UserSummary` objects and a string describing the cursor to the next page of results.
+With no custom options specified, this method will get the first 100 applications. It returns a tuple consisting of a list of `ApplicationData` objects and an int showing the page number of the next page of results.
 
 ```python
-from vonage_users import ListUsersRequest
+from vonage_application import ListApplicationsFilter, ApplicationData
 
-users, _ = vonage_client.users.list_users()
+applications, next_page = vonage_client.application.list_applications()
 
 # With options
-params = ListUsersRequest(
-    page_size=10,
-    cursor=my_cursor,
-    order='desc',
-)
-users, next_cursor = vonage_client.users.list_users(params)
+options = ListApplicationsFilter(page_size=3, page=2)
+applications, next_page = vonage_client.applications.list_applications(options)
 ```
+
+
+--------
+
 
 ### Create a New User
 

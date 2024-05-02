@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 
-from .requests import ApplicationOptions, ListApplicationsFilter
+from .requests import ApplicationConfig, ListApplicationsFilter
 from .responses import ApplicationData, ListApplicationsResponse
 
 
@@ -56,12 +56,13 @@ class Application:
 
     @validate_call
     def create_application(
-        self, params: Optional[ApplicationOptions] = None
+        self, params: Optional[ApplicationConfig] = None
     ) -> ApplicationData:
         """Create a new application.
 
         Args:
-            params (Optional[ApplicationOptions]): The application options.
+            params (Optional[ApplicationConfig]): Parameters describing the
+                application options to set.
 
         Returns:
             ApplicationData: The created application object.
@@ -85,39 +86,40 @@ class Application:
             ApplicationData: The created application object.
         """
         response = self._http_client.get(
-            self._http_client.api_host, f'/v1/users/{id}', None, self._auth_type
+            self._http_client.api_host, f'/v2/applications/{id}', None, self._auth_type
         )
         return ApplicationData(**response)
 
-    # @validate_call
-    # def update_application(self, id: str, params: User) -> User:
-    #     """Update a user.
+    @validate_call
+    def update_application(self, id: str, params: ApplicationConfig) -> ApplicationData:
+        """Update an application.
 
-    #     Args:
-    #         id (str): The ID of the user to update.
-    #         params (User): The updated user object.
+        Args:
+            id (str): The ID of the application to update.
+            params (ApplicationConfig): Parameters describing the
+                application options to update.
 
-    #     Returns:
-    #         User: The updated user object.
-    #     """
-    #     response = self._http_client.patch(
-    #         self._http_client.api_host,
-    #         f'/v1/users/{id}',
-    #         params.model_dump(exclude_none=True),
-    #         self._auth_type,
-    #     )
-    #     return User(**response)
+        Returns:
+            ApplicationData: The updated application object.
+        """
+        response = self._http_client.put(
+            self._http_client.api_host,
+            f'/v2/applications/{id}',
+            params.model_dump(exclude_none=True),
+            self._auth_type,
+        )
+        return ApplicationData(**response)
 
-    # @validate_call
-    # def delete_application(self, id: str) -> None:
-    #     """Delete an application.
+    @validate_call
+    def delete_application(self, id: str) -> None:
+        """Delete an application.
 
-    #     Args:
-    #         id (str): The ID of the application to delete.
+        Args:
+            id (str): The ID of the application to delete.
 
-    #     Returns:
-    #         None
-    #     """
-    #     self._http_client.delete(
-    #         self._http_client.api_host, f'/v2/applications/{id}', None, self._auth_type
-    #     )
+        Returns:
+            None
+        """
+        self._http_client.delete(
+            self._http_client.api_host, f'/v2/applications/{id}', None, self._auth_type
+        )

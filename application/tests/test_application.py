@@ -6,6 +6,7 @@ from vonage_application.application import Application
 from vonage_application.common import (
     ApplicationUrl,
     Capabilities,
+    Keys,
     Messages,
     MessagesWebhooks,
     Privacy,
@@ -20,11 +21,7 @@ from vonage_application.common import (
 )
 from vonage_application.enums import Region
 from vonage_application.errors import ApplicationError
-from vonage_application.requests import (
-    ApplicationOptions,
-    ListApplicationsFilter,
-    RequestKeys,
-)
+from vonage_application.requests import ApplicationConfig, ListApplicationsFilter
 from vonage_http_client.http_client import HttpClient
 
 from testutils import build_response, get_mock_api_key_auth
@@ -47,7 +44,7 @@ def test_create_application_basic():
         'https://api.nexmo.com/v2/applications',
         'create_application_basic.json',
     )
-    app = application.create_application(ApplicationOptions(name='My Application'))
+    app = application.create_application(ApplicationConfig(name='My Application'))
 
     assert app.id == 'ba1a6aa3-8ac6-487d-ac5c-be469e77ddb7'
     assert app.name == 'My Application'
@@ -132,7 +129,7 @@ def test_create_application_options_model_from_dict():
         'keys': keys,
     }
     application_options_dict = params
-    application_options_model = ApplicationOptions(**application_options_dict)
+    application_options_model = ApplicationConfig(**application_options_dict)
     assert (
         application_options_model.model_dump(exclude_unset=True)
         == application_options_dict
@@ -212,9 +209,9 @@ def test_create_application_options_with_models():
     privacy = Privacy(improve_ai=False)
 
     public_key = '-----BEGIN PUBLIC KEY-----\npublic_key_info_goes_here\n-----END PUBLIC KEY-----\n'
-    keys = RequestKeys(public_key=public_key)
+    keys = Keys(public_key=public_key)
 
-    params = ApplicationOptions(
+    params = ApplicationConfig(
         name='My Customised Application',
         capabilities=capabilities,
         privacy=privacy,
@@ -307,3 +304,54 @@ def test_list_applications_multiple_pages():
     )
     assert applications[2].id == '3b3b3b3b-3b3b-3b3b-3b3b-3b3b3b3b3b3b'
     assert next_page == 2
+
+
+@responses.activate
+def test_get_application():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/v2/applications/1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b',
+        'get_application.json',
+    )
+    app = application.get_application('1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b')
+
+    assert app.id == '1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b'
+    assert app.link == '/v2/applications/1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b'
+
+
+@responses.activate
+def test_update_application():
+    build_response(
+        path,
+        'PUT',
+        'https://api.nexmo.com/v2/applications/1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b',
+        'update_application.json',
+    )
+
+    public_key = (
+        '-----BEGIN PUBLIC KEY-----\nupdated_public_key_info\n-----END PUBLIC KEY-----\n'
+    )
+    keys = Keys(public_key=public_key)
+    params = ApplicationConfig(name='My Updated Application', keys=keys)
+    application_data = application.update_application(
+        '1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b', params
+    )
+
+    assert application_data.name == 'My Updated Application'
+    assert application_data.keys.public_key == public_key
+    assert (
+        application_data.link == '/v2/applications/1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b'
+    )
+
+
+@responses.activate
+def test_delete_application():
+    responses.add(
+        responses.DELETE,
+        'https://api.nexmo.com/v2/applications/1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b',
+        status=204,
+    )
+
+    application.delete_application('1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b')
+    assert application.http_client.last_response.status_code == 204

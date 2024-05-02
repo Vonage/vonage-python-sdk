@@ -29,7 +29,7 @@ from .responses import (
     CallMessage,
     CreateCallResponse,
     Embedded,
-    Links,
+    HalLinks,
 )
 
 __all__ = [
@@ -50,7 +50,7 @@ __all__ = [
     'Embedded',
     'Input',
     'ListCallsFilter',
-    'Links',
+    'HalLinks',
     'NccoAction',
     'NccoActionType',
     'Notify',

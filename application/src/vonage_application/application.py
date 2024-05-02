@@ -4,7 +4,7 @@ from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 
 from .requests import ApplicationOptions, ListApplicationsFilter
-from .responses import ApplicationData
+from .responses import ApplicationData, ListApplicationsResponse
 
 
 class Application:
@@ -27,7 +27,18 @@ class Application:
     def list_applications(
         self, filter: ListApplicationsFilter = ListApplicationsFilter()
     ) -> Tuple[List[ApplicationData], Optional[str]]:
-        """"""
+        """List applications.
+
+        By default, returns the first 100 applications and the page index of
+            the next page of results, if there are more than 100 applications.
+
+        Args:
+            filter (ListApplicationsFilter): The filter object.
+
+        Returns:
+            Tuple[List[ApplicationData], Optional[str]]: A tuple containing a
+                list of applications and the next page index.
+        """
         response = self._http_client.get(
             self._http_client.api_host,
             '/v2/applications',
@@ -35,14 +46,13 @@ class Application:
             self._auth_type,
         )
 
-    #     applications_response = ListApplicationsResponse(**response)
-    #     if applications_response.links.next is None:
-    #         return applications_response.embedded.users, None
+        applications_response = ListApplicationsResponse(**response)
 
-    #     parsed_url = urlparse(users_response.links.next.href)
-    #     query_params = parse_qs(parsed_url.query)
-    #     next_cursor = query_params.get('cursor', [None])[0]
-    #     return users_response.embedded.users, next_cursor
+        if applications_response.page == applications_response.total_pages:
+            return applications_response.embedded.applications, None
+
+        next_page = applications_response.page + 1
+        return applications_response.embedded.applications, next_page
 
     @validate_call
     def create_application(

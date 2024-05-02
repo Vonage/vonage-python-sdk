@@ -1,7 +1,7 @@
 from typing import List, Optional, Union
 
 from pydantic import BaseModel, Field, model_validator
-from vonage_utils.models import Link
+from vonage_utils.models import HalLinks
 
 from .common import Phone, Sip, Vbc, Websocket
 
@@ -18,14 +18,6 @@ class CallMessage(BaseModel):
     uuid: str
 
 
-class Links(BaseModel):
-    self: Link
-    first: Optional[Link] = None
-    last: Optional[Link] = None
-    prev: Optional[Link] = None
-    next: Optional[Link] = None
-
-
 class CallInfo(BaseModel):
     uuid: str
     conversation_uuid: str
@@ -39,7 +31,7 @@ class CallInfo(BaseModel):
     start_time: Optional[str] = None
     end_time: Optional[str] = None
     network: Optional[str] = None
-    links: Links = Field(..., validation_alias='_links', exclude=True)
+    links: HalLinks = Field(..., validation_alias='_links', exclude=True)
     link: Optional[str] = None
 
     @model_validator(mode='after')
@@ -57,4 +49,4 @@ class CallList(BaseModel):
     page_size: int
     record_index: int
     embedded: Embedded = Field(..., validation_alias='_embedded')
-    links: Links = Field(..., validation_alias='_links')
+    links: HalLinks = Field(..., validation_alias='_links')

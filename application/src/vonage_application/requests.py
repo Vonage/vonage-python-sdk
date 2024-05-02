@@ -6,15 +6,15 @@ from .common import ApplicationBase
 
 
 class ListApplicationsFilter(BaseModel):
-    """Request object for listing users."""
+    """Request object for filtering applications."""
 
     page_size: Optional[int] = 100
     page: int = None
 
 
-class KeysRequest(BaseModel):
+class RequestKeys(BaseModel):
     public_key: str
 
 
 class ApplicationOptions(ApplicationBase):
-    keys: Optional[KeysRequest] = None
+    keys: Optional[RequestKeys] = None

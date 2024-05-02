@@ -1,17 +1,75 @@
 {
-    "id": "ba1a6aa3-8ac6-487d-ac5c-be469e77ddb7",
-    "name": "My Application",
+    "id": "33e3329f-d1cc-48f3-9105-55e5a6e475c1",
+    "name": "My Customised Application",
     "keys": {
-        "private_key": "-----BEGIN PRIVATE KEY-----\nprivate_key_info_goes_here\n-----END PRIVATE KEY-----\n",
         "public_key": "-----BEGIN PUBLIC KEY-----\npublic_key_info_goes_here\n-----END PUBLIC KEY-----\n"
     },
     "privacy": {
         "improve_ai": false
     },
-    "capabilities": {},
+    "capabilities": {
+        "voice": {
+            "webhooks": {
+                "event_url": {
+                    "address": "https://example.com/event",
+                    "http_method": "POST",
+                    "socket_timeout": 3000,
+                    "connect_timeout": 500
+                },
+                "answer_url": {
+                    "address": "https://example.com/answer",
+                    "http_method": "POST",
+                    "socket_timeout": 3000,
+                    "connect_timeout": 500
+                },
+                "fallback_answer_url": {
+                    "address": "https://example.com/fallback",
+                    "http_method": "POST",
+                    "socket_timeout": 3000,
+                    "connect_timeout": 500
+                }
+            },
+            "signed_callbacks": true,
+            "conversations_ttl": 8000,
+            "leg_persistence_time": 14,
+            "region": "na-east"
+        },
+        "rtc": {
+            "webhooks": {
+                "event_url": {
+                    "address": "https://example.com/event",
+                    "http_method": "POST"
+                }
+            },
+            "signed_callbacks": true
+        },
+        "messages": {
+            "webhooks": {
+                "inbound_url": {
+                    "address": "https://example.com/inbound",
+                    "http_method": "POST"
+                },
+                "status_url": {
+                    "address": "https://example.com/status",
+                    "http_method": "POST"
+                }
+            },
+            "version": "v1",
+            "authenticate_inbound_media": true
+        },
+        "verify": {
+            "webhooks": {
+                "status_url": {
+                    "address": "https://example.com/status",
+                    "http_method": "POST"
+                }
+            }
+        },
+        "vbc": {}
+    },
     "_links": {
         "self": {
-            "href": "/v2/applications/ba1a6aa3-8ac6-487d-ac5c-be469e77ddb7"
+            "href": "/v2/applications/33e3329f-d1cc-48f3-9105-55e5a6e475c1"
         }
     }
 }

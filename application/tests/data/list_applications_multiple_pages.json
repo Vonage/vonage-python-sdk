@@ -1,0 +1,100 @@
+{
+    "page_size": 3,
+    "page": 1,
+    "total_items": 10,
+    "total_pages": 4,
+    "_embedded": {
+        "applications": [
+            {
+                "id": "1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+                "name": "dev-application",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\npublic_key_info_goes_here\n-----END PUBLIC KEY-----\n"
+                },
+                "privacy": {
+                    "improve_ai": true
+                },
+                "capabilities": {
+                    "voice": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "http://example.com",
+                                "http_method": "POST"
+                            },
+                            "answer_url": {
+                                "address": "http://example.com",
+                                "http_method": "GET"
+                            }
+                        },
+                        "signed_callbacks": true,
+                        "conversations_ttl": 9000,
+                        "leg_persistence_time": 7
+                    }
+                }
+            },
+            {
+                "id": "2b2b2b2b-2b2b-2b2b-2b2b-2b2b2b2b2b2b",
+                "name": "My Test Server Application",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\npublic_key_info_goes_here\n-----END PUBLIC KEY-----\n"
+                },
+                "privacy": {
+                    "improve_ai": false
+                },
+                "capabilities": {
+                    "voice": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "http://9ff8266be1ed.ngrok.app/webhooks/events",
+                                "http_method": "POST",
+                                "socket_timeout": 10000,
+                                "connect_timeout": 1000
+                            },
+                            "answer_url": {
+                                "address": "http://9ff8266be1ed.ngrok.app/webhooks/answer",
+                                "http_method": "GET",
+                                "socket_timeout": 5000,
+                                "connect_timeout": 1000
+                            }
+                        },
+                        "signed_callbacks": true,
+                        "conversations_ttl": 48,
+                        "leg_persistence_time": 7
+                    }
+                }
+            },
+            {
+                "id": "3b3b3b3b-3b3b-3b3b-3b3b-3b3b3b3b3b3b",
+                "name": "test-application",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\npublic_key_info_goes_here\n-----END PUBLIC KEY-----\n"
+                },
+                "privacy": {
+                    "improve_ai": false
+                },
+                "capabilities": {
+                    "voice": {
+                        "webhooks": {},
+                        "signed_callbacks": true,
+                        "conversations_ttl": 9000,
+                        "leg_persistence_time": 7
+                    }
+                }
+            }
+        ]
+    },
+    "_links": {
+        "self": {
+            "href": "/v2/applications?page_size=3&page=1"
+        },
+        "first": {
+            "href": "/v2/applications?page_size=3"
+        },
+        "last": {
+            "href": "/v2/applications?page_size=3&page=4"
+        },
+        "next": {
+            "href": "/v2/applications?page_size=3&page=2"
+        }
+    }
+}

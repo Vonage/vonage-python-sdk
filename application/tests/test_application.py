@@ -1,8 +1,30 @@
 from os.path import abspath
 
 import responses
+from pytest import raises
 from vonage_application.application import Application
-from vonage_application.requests import ApplicationOptions
+from vonage_application.common import (
+    ApplicationUrl,
+    Capabilities,
+    Messages,
+    MessagesWebhooks,
+    Privacy,
+    Rtc,
+    RtcWebhooks,
+    Vbc,
+    Verify,
+    VerifyWebhooks,
+    Voice,
+    VoiceUrl,
+    VoiceWebhooks,
+)
+from vonage_application.enums import Region
+from vonage_application.errors import ApplicationError
+from vonage_application.requests import (
+    ApplicationOptions,
+    ListApplicationsFilter,
+    RequestKeys,
+)
 from vonage_http_client.http_client import HttpClient
 
 from testutils import build_response, get_mock_api_key_auth
@@ -36,94 +58,252 @@ def test_create_application_basic():
     assert app.link == '/v2/applications/ba1a6aa3-8ac6-487d-ac5c-be469e77ddb7'
 
 
+def test_create_application_options_model_from_dict():
+    capabilities = {
+        'voice': {
+            'webhooks': {
+                'answer_url': {
+                    'address': 'https://example.com/answer',
+                    'http_method': 'POST',
+                    'connect_timeout': 500,
+                    'socket_timeout': 3000,
+                },
+                'fallback_answer_url': {
+                    'address': 'https://example.com/fallback',
+                    'http_method': 'POST',
+                    'connect_timeout': 500,
+                    'socket_timeout': 3000,
+                },
+                'event_url': {
+                    'address': 'https://example.com/event',
+                    'http_method': 'POST',
+                    'connect_timeout': 500,
+                    'socket_timeout': 3000,
+                },
+            },
+            'signed_callbacks': True,
+            'conversations_ttl': 8000,
+            'leg_persistence_time': 14,
+            'region': 'na-east',
+        },
+        'rtc': {
+            'webhooks': {
+                'event_url': {
+                    'address': 'https://example.com/event',
+                    'http_method': 'POST',
+                }
+            },
+            'signed_callbacks': True,
+        },
+        'messages': {
+            'version': 'v1',
+            'webhooks': {
+                'inbound_url': {
+                    'address': 'https://example.com/inbound',
+                    'http_method': 'POST',
+                },
+                'status_url': {
+                    'address': 'https://example.com/status',
+                    'http_method': 'POST',
+                },
+            },
+            'authenticate_inbound_media': True,
+        },
+        'verify': {
+            'webhooks': {
+                'status_url': {
+                    'address': 'https://example.com/status',
+                    'http_method': 'POST',
+                }
+            }
+        },
+        'vbc': {},
+    }
+
+    privacy = {'improve_ai': False}
+
+    public_key = '-----BEGIN PUBLIC KEY-----\npublic_key_info_goes_here\n-----END PUBLIC KEY-----\n'
+    keys = {'public_key': public_key}
+
+    params = {
+        'name': 'My Application Created from a Dict',
+        'capabilities': capabilities,
+        'privacy': privacy,
+        'keys': keys,
+    }
+    application_options_dict = params
+    application_options_model = ApplicationOptions(**application_options_dict)
+    assert (
+        application_options_model.model_dump(exclude_unset=True)
+        == application_options_dict
+    )
+
+
 @responses.activate
-def test_create_application_options():
+def test_create_application_options_with_models():
     build_response(
         path,
         'POST',
         'https://api.nexmo.com/v2/applications',
         'create_application_options.json',
     )
-    app = application.create_application(
-        ApplicationOptions(
-            name='My Application',
-            keys={'public_key': 'public_key_info_goes_here'},
-        )
+
+    voice = Voice(
+        webhooks=VoiceWebhooks(
+            answer_url=VoiceUrl(
+                address='https://example.com/answer',
+                http_method='POST',
+                connect_timeout=500,
+                socket_timeout=3000,
+            ),
+            fallback_answer_url=VoiceUrl(
+                address='https://example.com/fallback',
+                http_method='POST',
+                connect_timeout=500,
+                socket_timeout=3000,
+            ),
+            event_url=VoiceUrl(
+                address='https://example.com/event',
+                http_method='POST',
+                connect_timeout=500,
+                socket_timeout=3000,
+            ),
+        ),
+        signed_callbacks=True,
+        conversations_ttl=8000,
+        leg_persistence_time=14,
+        region=Region.NA_EAST,
     )
 
-    assert app.id == 'ba1a6aa3-8ac6-487d-ac5c-be469e77ddb7'
-    assert app.name == 'My Application'
+    rtc = Rtc(
+        webhooks=RtcWebhooks(
+            event_url=ApplicationUrl(
+                address='https://example.com/event', http_method='POST'
+            ),
+        ),
+        signed_callbacks=True,
+    )
+
+    messages = Messages(
+        version='v1',
+        webhooks=MessagesWebhooks(
+            inbound_url=ApplicationUrl(
+                address='https://example.com/inbound', http_method='POST'
+            ),
+            status_url=ApplicationUrl(
+                address='https://example.com/status', http_method='POST'
+            ),
+        ),
+        authenticate_inbound_media=True,
+    )
+
+    verify = Verify(
+        webhooks=VerifyWebhooks(
+            status_url=ApplicationUrl(
+                address='https://example.com/status', http_method='POST'
+            )
+        ),
+    )
+
+    capabilities = Capabilities(
+        voice=voice, rtc=rtc, messages=messages, verify=verify, vbc=Vbc()
+    )
+
+    privacy = Privacy(improve_ai=False)
+
+    public_key = '-----BEGIN PUBLIC KEY-----\npublic_key_info_goes_here\n-----END PUBLIC KEY-----\n'
+    keys = RequestKeys(public_key=public_key)
+
+    params = ApplicationOptions(
+        name='My Customised Application',
+        capabilities=capabilities,
+        privacy=privacy,
+        keys=keys,
+    )
+    app = application.create_application(params)
+
+    assert app.id == '33e3329f-d1cc-48f3-9105-55e5a6e475c1'
+    assert app.name == 'My Customised Application'
+    assert app.keys.public_key == public_key
+    assert app.link == '/v2/applications/33e3329f-d1cc-48f3-9105-55e5a6e475c1'
+    assert app.privacy.improve_ai is False
+    assert (
+        app.capabilities.voice.webhooks.event_url.address == 'https://example.com/event'
+    )
+    assert app.capabilities.voice.webhooks.answer_url.socket_timeout == 3000
+    assert app.capabilities.voice.webhooks.fallback_answer_url.connect_timeout == 500
+    assert app.capabilities.voice.signed_callbacks is True
+    assert app.capabilities.rtc.signed_callbacks is True
+    assert app.capabilities.messages.version == 'v1'
+    assert app.capabilities.messages.authenticate_inbound_media is True
+    assert (
+        app.capabilities.verify.webhooks.status_url.address
+        == 'https://example.com/status'
+    )
+    assert app.capabilities.vbc.model_dump() == {}
 
 
-# @responses.activate
-# def test_list_users_options():
-#     build_response(
-#         path, 'GET', 'https://api.nexmo.com/v1/users', 'list_users_options.json'
-#     )
+def test_create_application_invalid_request_method():
+    with raises(ApplicationError) as err:
+        VerifyWebhooks(
+            status_url=ApplicationUrl(
+                address='https://example.com/status', http_method='GET'
+            )
+        )
+    assert err.match('HTTP method must be POST')
 
-#     params = ListUsersFilter(
-#         page_size=2,
-#         order='asc',
-#         cursor='zAmuSchIBsUF1QaaohGdaf32NgHOkP130XeQrZkoOPEuGPnIxFb0Xj3iqCfOzxSSq9Es/S/2h+HYumKt3HS0V9ewjis+j74oMcsvYBLN1PwFEupI6ENEWHYC7lk=',
-#     )
-#     users_list, next = users.list_users(params)
-
-#     assert users_list[0].id == 'USR-37a8299f-eaad-417c-a0b3-431b6555c4be'
-#     assert users_list[0].name == 'my_other_user_name'
-#     assert users_list[0].display_name == 'My Other User Name'
-#     assert (
-#         users_list[0].link
-#         == 'https://api-us-3.vonage.com/v1/users/USR-37a8299f-eaad-417c-a0b3-431b6555c4be'
-#     )
-#     assert users_list[1].id == 'USR-5ab17d58-b8b3-427d-ac42-c31dab7ef422'
-#     assert (
-#         next
-#         == 'Rv1d7qE3lDuOuwSFjRGHJ2JpKG28CdI1iNjSKNwy0NIr7uicrn7SGpIyaDtvkEEBfyH5xyjSonpeoYNLdw19SQ=='
-#     )
+    with raises(ApplicationError) as err:
+        MessagesWebhooks(
+            inbound_url=ApplicationUrl(
+                address='https://example.com/inbound', http_method='GET'
+            )
+        )
+    assert err.match('HTTP method must be POST')
 
 
-# def test_create_user_model_from_dict():
-#     user_dict = {
-#         'name': 'my_user_name',
-#         'channels': {
-#             'sms': [{'number': '1234567890'}],
-#             'mms': [{'number': '1234567890'}],
-#         },
-#     }
+@responses.activate
+def test_list_applications_basic():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/v2/applications',
+        'list_applications_basic.json',
+    )
+    applications, next_page = application.list_applications()
 
-#     user = User(**user_dict)
-#     assert user.model_dump(by_alias=True, exclude_none=True) == user_dict
+    assert len(applications) == 1
+    assert applications[0].id == '1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b'
+    assert applications[0].name == 'dev-application'
+    assert (
+        applications[0].keys.public_key
+        == '-----BEGIN PUBLIC KEY-----\npublic_key_info_goes_here\n-----END PUBLIC KEY-----\n'
+    )
 
-
-# def test_create_user_model_from_models():
-#     user = User(
-#         name='my_user_name',
-#         display_name='My User Name',
-#         properties={'custom_key': 'custom_value'},
-#         channels=Channels(sms=[SmsChannel(number='1234567890')]),
-#     )
-#     assert user.model_dump(exclude_none=True) == {
-#         'name': 'my_user_name',
-#         'display_name': 'My User Name',
-#         'properties': {},
-#         'channels': {'sms': [{'number': '1234567890'}]},
-#     }
+    assert next_page is None
 
 
-# @responses.activate
-# def test_get_user_not_found_error():
-#     build_response(
-#         path,
-#         'GET',
-#         'https://api.nexmo.com/v1/users/USR-87e3e6b0-cd7b-45ef-a0a7-bcd5566a672b',
-#         'user_not_found.json',
-#         404,
-#     )
+@responses.activate
+def test_list_applications_multiple_pages():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/v2/applications',
+        'list_applications_multiple_pages.json',
+    )
+    options = ListApplicationsFilter(page_size=3, page=1)
+    applications, next_page = application.list_applications(options)
 
-#     try:
-#         users.get_user('USR-87e3e6b0-cd7b-45ef-a0a7-bcd5566a672b')
-#     except NotFoundError as err:
-#         assert (
-#             '404 response from https://api.nexmo.com/v1/users/USR-87e3e6b0-cd7b-45ef-a0a7-bcd5566a672b.'
-#             in err.message
-#         )
+    assert len(applications) == 3
+    assert applications[0].id == '1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b'
+    assert applications[0].name == 'dev-application'
+    assert (
+        applications[0].keys.public_key
+        == '-----BEGIN PUBLIC KEY-----\npublic_key_info_goes_here\n-----END PUBLIC KEY-----\n'
+    )
+    assert applications[1].id == '2b2b2b2b-2b2b-2b2b-2b2b-2b2b2b2b2b2b'
+    assert (
+        applications[1].capabilities.voice.webhooks.event_url.address
+        == 'http://9ff8266be1ed.ngrok.app/webhooks/events'
+    )
+    assert applications[2].id == '3b3b3b3b-3b3b-3b3b-3b3b-3b3b3b3b3b3b'
+    assert next_page == 2

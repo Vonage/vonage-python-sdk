@@ -1,3 +1,9 @@
+# 3.99.0a10
+- Add support for the [Vonage Application API](https://developer.vonage.com/en/application/overview).
+
+# 3.99.0a9
+- Internal refactoring
+
 # 3.99.0a8
 - Add support for the [Vonage Number Insight API](https://developer.vonage.com/en/number-insight/overview).
 - Update minimum dependency version

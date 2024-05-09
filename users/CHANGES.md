@@ -1,3 +1,6 @@
+# 1.1.2
+- Internal refactoring
+
 # 1.1.1
 - Update minimum dependency version
 

@@ -1,4 +1,7 @@
-# 1.1.0
+# 1.1.2
+- Refactoring common pydantic models across the monorepo into this package
+
+# 1.1.1
 - Update minimum dependency version
 
 # 1.1.0

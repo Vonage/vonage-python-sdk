@@ -1,6 +1,6 @@
 [project]
 name = 'vonage-utils'
-version = '1.1.1'
+version = '1.1.2'
 description = 'Utils package containing objects for use with Vonage APIs'
 readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]

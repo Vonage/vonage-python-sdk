@@ -13,10 +13,10 @@ dependencies = [
   "vonage-number-insight>=1.0.0",
   "vonage-number-insight-v2>=0.1.1b0",
   "vonage-sms>=1.1.1",
-  "vonage-users>=1.1.1",
+  "vonage-users>=1.1.2",
   "vonage-verify>=1.1.1",
   "vonage-verify-v2>=1.1.1",
-  "vonage-voice>=1.0.2",
+  "vonage-voice>=1.0.3",
 ]
 classifiers = [
   "Programming Language :: Python",

@@ -20,7 +20,7 @@ class Video:
     auth_type = 'jwt'
     archive_mode_values = {'manual', 'always'}
     media_mode_values = {'routed', 'relayed'}
-    token_roles = {'subscriber', 'publisher', 'moderator'}
+    token_roles = {'subscriber', 'publisher', 'publisheronly', 'moderator'}
 
     def __init__(self, client: Client):
         self._client = client

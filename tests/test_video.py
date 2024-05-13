@@ -44,7 +44,11 @@ def test_create_session_custom_archive_mode_and_location(client: Client):
         fixture_path="video/create_session.json",
     )
 
-    session_options = {'archive_mode': 'always', 'location': '192.0.1.1', 'media_mode': 'routed'}
+    session_options = {
+        'archive_mode': 'always',
+        'location': '192.0.1.1',
+        'media_mode': 'routed',
+    }
     session_info = client.video.create_session(session_options)
     assert isinstance(session_info, dict)
     assert session_info['session_id'] == session_id
@@ -130,6 +134,12 @@ def test_generate_client_token_custom_options(client: Client):
     assert decoded_token['acl'] == ['1', '2', '3']
 
 
+def test_generate_client_token_publisher_only_role(client: Client):
+    token = client.video.generate_client_token(session_id, {'role': 'publisheronly'})
+    decoded_token = jwt.decode(token, algorithms='RS256', options={'verify_signature': False})
+    assert decoded_token['role'] == 'publisheronly'
+
+
 def test_check_client_token_headers(client: Client):
     token = client.video.generate_client_token(session_id)
     headers = jwt.get_unverified_header(token)
@@ -197,7 +207,8 @@ def test_send_signal_to_all_participants(client: Client):
     )
 
     assert isinstance(
-        client.video.send_signal(session_id, type='chat', data='hello from a test case'), dict
+        client.video.send_signal(session_id, type='chat', data='hello from a test case'),
+        dict,
     )
     assert request_content_type() == "application/json"
 
@@ -211,7 +222,10 @@ def test_send_signal_to_single_participant(client: Client):
 
     assert isinstance(
         client.video.send_signal(
-            session_id, type='chat', data='hello from a test case', connection_id=connection_id
+            session_id,
+            type='chat',
+            data='hello from a test case',
+            connection_id=connection_id,
         ),
         dict,
     )

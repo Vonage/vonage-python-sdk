@@ -70,11 +70,3 @@ class TokenExpiryError(ClientError):
 
 class SipError(ClientError):
     """Error related to usage of SIP calls."""
-
-
-class SimSwapError(ClientError):
-    """Error related to SIM swap requests."""
-
-
-class NumberVerificationError(ClientError):
-    """Error related to number verification requests."""

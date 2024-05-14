@@ -3,9 +3,10 @@ requests>=2.31.0
 responses>=0.24.1
 pydantic>=2.7.1
 typing-extensions>=4.9.0
-vonage-jwt>=1.1.0
+pyjwt[crypto]>=1.6.4
 
 -e http_client
+-e jwt
 -e messages
 -e number_insight
 -e number_insight_v2

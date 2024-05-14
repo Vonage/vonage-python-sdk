@@ -1,3 +1,6 @@
+# 3.14.0
+- Add publisher-only as a valid Video API client token role
+
 # 3.13.1
 - Fix content-type incorrect serialization
 

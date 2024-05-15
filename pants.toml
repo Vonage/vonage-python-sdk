@@ -33,6 +33,8 @@ filter = [
   'vonage/src',
   'http_client/src',
   'application/src',
+  'camara_auth/src',
+  'gnp_sim_swap/src',
   'jwt/src',
   'messages/src',
   'number_insight/src',

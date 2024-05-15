@@ -1,0 +1,5 @@
+{
+    "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZWZhdWx0IiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.3wWzV6t8bFJUZ6k0WJ9kY3J2kNw9v5zXJ8x1J5g1v2k",
+    "token_type": "A-VALID-TOKEN-TYPE",
+    "refresh_token": "A-VALID-REFRESH-TOKEN"
+}

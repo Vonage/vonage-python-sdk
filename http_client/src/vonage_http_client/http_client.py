@@ -131,7 +131,7 @@ class HttpClient:
         request_path: str = '',
         params: dict = None,
         auth_type: Literal['jwt', 'basic', 'body', 'signature'] = 'jwt',
-        sent_data_type: Literal['json', 'data'] = 'json',
+        sent_data_type: Literal['json', 'form', 'query-params'] = 'json',
     ) -> Union[dict, None]:
         return self.make_request(
             'POST', host, request_path, params, auth_type, sent_data_type

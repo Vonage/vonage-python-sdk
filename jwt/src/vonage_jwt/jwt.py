@@ -1,8 +1,11 @@
 import re
 from time import time
-from jwt import encode
-from uuid import uuid4
 from typing import Union
+from uuid import uuid4
+
+from jwt import encode
+
+from .errors import VonageJwtError
 
 
 class JwtClient:
@@ -22,8 +25,8 @@ class JwtClient:
             )
 
     def generate_application_jwt(self, jwt_options: dict = {}):
-        """
-        Generates a JWT for the specified Vonage application.
+        """Generates a JWT for the specified Vonage application.
+
         You can override values for application_id and private_key on the JWTClient object by
         specifying them in the `jwt_options` dict if required.
         """
@@ -51,7 +54,3 @@ class JwtClient:
             )
         else:
             self._private_key = key
-
-
-class VonageJwtError(Exception):
-    """An error relating to the Vonage JWT Generator."""

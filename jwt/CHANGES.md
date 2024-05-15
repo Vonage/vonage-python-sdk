@@ -1,3 +1,7 @@
+# 1.1.1
+- Exceptions inherit from `VonageError`
+- Moving the package into the Vonage Python SDK monorepo
+
 # 1.1.0
 - Add new module with method to verify JWT signatures, `verify_jwt.verify_signature`
 

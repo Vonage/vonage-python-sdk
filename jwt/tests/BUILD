@@ -1,1 +1,1 @@
-python_tests(dependencies=['messages', 'testutils'])
+python_tests(dependencies=['jwt', 'testutils'])

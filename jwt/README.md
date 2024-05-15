@@ -2,9 +2,9 @@
 
 This package (`vonage-jwt`) provides functionality to generate a JWT in Python code.
 
-It is used by the [Vonage Python SDK](https://github.com/Vonage/vonage-python-sdk), specifically by the `vonage-http-client` package, to generate JWTs for authentication. Thus, it doesn't require manual installation or configuration unless you're using this package independently of a SDK.
+It is used by the [Vonage Python SDK](https://github.com/Vonage/vonage-python-sdk), specifically by the `vonage-http-client` package, to generate JWTs for authentication. Thus, it doesn't require manual installation or configuration unless you're using this package independently of an SDK.
 
-For full API documentation, refer to the [Vonage Developer documentation](https://developer.vonage.com).
+For full API documentation, refer to the [Vonage developer documentation](https://developer.vonage.com).
 
 - [Installation](#installation)
 - [Generating JWTs](#generating-jwts)
@@ -27,7 +27,7 @@ It can also be used as a standalone JWT generator for use with Vonage APIs, like
 ### Import the `JwtClient` object
 
 ```python
-from vonage_jwt.jwt import JwtClient
+from vonage_jwt import JwtClient
 ```
 
 ### Create a `JwtClient` object
@@ -54,7 +54,7 @@ jwt_client.generate_application_jwt(claims)
 You can use the `verify_jwt.verify_signature` method to verify a JWT signature is valid.
 
 ```python
-from vonage_jwt.verify_jwt import verify_signature
+from vonage_jwt import verify_signature
 
 verify_signature(TOKEN, SIGNATURE_SECRET) # Returns a boolean
 ```

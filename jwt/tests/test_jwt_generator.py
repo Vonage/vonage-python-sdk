@@ -1,23 +1,25 @@
-from vonage_jwt.jwt import JwtClient, VonageJwtError
-
-import os
-from pytest import raises
-from jwt import decode
-from jwt.exceptions import ImmatureSignatureError
+from os import environ
+from os.path import dirname, join
 from time import time
 
+from jwt.exceptions import ImmatureSignatureError
+from pytest import raises
+from vonage_jwt.jwt import JwtClient, VonageJwtError
+
+from jwt import decode
+
 # Ensure the client isn't being configured with real values
-os.environ.clear()
+environ.clear()
 
 
 def read_file(path):
-    with open(os.path.join(os.path.dirname(__file__), path)) as input_file:
+    with open(join(dirname(__file__), path)) as input_file:
         return input_file.read()
 
 
 application_id = 'asdf1234'
 private_key_string = read_file('data/private_key.txt')
-private_key_file_path = './tests/data/private_key.txt'
+private_key_file_path = 'jwt/tests/data/private_key.txt'
 jwt_client = JwtClient(application_id, private_key_file_path)
 
 public_key = read_file('data/public_key.txt')

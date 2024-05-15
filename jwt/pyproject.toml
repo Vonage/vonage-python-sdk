@@ -5,9 +5,7 @@ description = "Tooling for working with JWTs for Vonage APIs in Python."
 readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
 requires-python = ">=3.8"
-dependencies = [
-  "pyjwt[crypto] >=1.6.4"
-]
+dependencies = ["vonage-utils>=1.1.2", "pyjwt[crypto]>=1.6.4"]
 classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",

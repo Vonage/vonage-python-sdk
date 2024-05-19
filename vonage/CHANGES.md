@@ -1,3 +1,7 @@
+# 3.99.1a10
+- Migrate the Vonage JWT package
+- Internal refactoring
+
 # 3.99.0a10
 - Add support for the [Vonage Application API](https://developer.vonage.com/en/application/overview).
 

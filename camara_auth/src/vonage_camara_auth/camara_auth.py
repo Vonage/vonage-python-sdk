@@ -1,5 +1,6 @@
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
+
 from .responses import OidcResponse, TokenResponse
 
 
@@ -30,7 +31,8 @@ class CamaraAuth:
     def _make_oidc_request(self, number: str, scope: str) -> OidcResponse:
         """Make an OIDC request to authenticate a user.
 
-        Returns a code that can be used to request a Camara token."""
+        Returns a code that can be used to request a Camara token.
+        """
 
         login_hint = f'tel:+{number}'
         params = {'login_hint': login_hint, 'scope': scope}
@@ -47,9 +49,8 @@ class CamaraAuth:
     def _request_camara_token(
         self, auth_req_id: str, grant_type: str = 'urn:openid:params:grant-type:ciba'
     ) -> TokenResponse:
-        """Request a Camara token using an authentication request ID given as a
-        response to the OIDC request.
-        """
+        """Request a Camara token using an authentication request ID given as a response to the OIDC
+        request."""
         params = {'auth_req_id': auth_req_id, 'grant_type': grant_type}
 
         response = self._http_client.post(

@@ -25,7 +25,6 @@ class SimSwap:
             max_age (int, optional): Period in hours to be checked for SIM swap.
 
         Returns:
-
         """
         token = self._camara_auth.get_oauth2_user_token(
             number=phone_number, scope='dpv:FraudPreventionAndDetection#check-sim-swap'
@@ -47,7 +46,6 @@ class SimSwap:
             phone_number (str): The phone number to check. Use the E.164 format without a leading +.
 
         Returns:
-
         """
         token = self._camara_auth.get_oauth2_user_token(
             number=phone_number,

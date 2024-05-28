@@ -1,7 +1,6 @@
-from vonage.sim_swap import SimSwap
-from util import *
-
 import responses
+from util import *
+from vonage_gnp_sim_swap import SimSwap
 
 
 @responses.activate

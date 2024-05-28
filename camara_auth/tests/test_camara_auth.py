@@ -1,11 +1,11 @@
 from os.path import abspath
 
 import responses
-
-from testutils import build_response, get_mock_jwt_auth
 from vonage_camara_auth import CamaraAuth, camara_auth
 from vonage_camara_auth.responses import OidcResponse
 from vonage_http_client.http_client import HttpClient
+
+from testutils import build_response, get_mock_jwt_auth
 
 path = abspath(__file__)
 

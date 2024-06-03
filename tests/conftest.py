@@ -139,3 +139,17 @@ def proc(client):
     import vonage
 
     return vonage.ProactiveConnect(client)
+
+
+@pytest.fixture
+def camara_auth(client):
+    from vonage.camara_auth import CamaraAuth
+
+    return CamaraAuth(client)
+
+
+@pytest.fixture
+def sim_swap(client):
+    import vonage
+
+    return vonage.SimSwap(client)

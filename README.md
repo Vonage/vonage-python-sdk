@@ -29,6 +29,7 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [Managing Secrets](#managing-secrets)
 - [Application API](#application-api)
 - [Users API](#users-api)
+- [Sim Swap API](#sim-swap-api)
 - [Validating Webhook Signatures](#validate-webhook-signatures)
 - [JWT Parameters](#jwt-parameters)
 - [Overriding API Attributes](#overriding-api-attributes)
@@ -1135,6 +1136,22 @@ client.users.update_user('USER_ID', params={...})
 
 ```python
 client.users.delete_user('USER_ID')
+```
+
+## Sim Swap API
+
+This can be used to check the sim swap status of a device. You must register a business account with Vonage and create a network profile in order to use this API. [More information on authentication can be found in the Vonage Developer documentation]('https://developer.vonage.com/en/getting-started-network/authentication').
+
+### Check the Sim Swap Status of a Number
+
+```python
+client.sim_swap.check('447700900000', max_age=24)
+```
+
+### Retrieve the Last Sim Swap Date for a Number
+
+```python
+client.sim_swap.get_last_swap_date('447700900000')
 ```
 
 ## Validate webhook signatures

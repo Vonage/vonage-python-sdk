@@ -1,3 +1,6 @@
+# 3.15.0
+- Add support for the [Vonage Sim Swap API](https://developer.vonage.com/en/sim-swap/overview)
+
 # 3.14.0
 - Add publisher-only as a valid Video API client token role
 

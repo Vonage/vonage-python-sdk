@@ -10,6 +10,7 @@ from .number_insight import NumberInsight
 from .number_management import Numbers
 from .proactive_connect import ProactiveConnect
 from .redact import Redact
+from .sim_swap import SimSwap
 from .short_codes import ShortCodes
 from .sms import Sms
 from .subaccounts import Subaccounts
@@ -133,6 +134,7 @@ class Client:
         self.numbers = Numbers(self)
         self.proactive_connect = ProactiveConnect(self)
         self.short_codes = ShortCodes(self)
+        self.sim_swap = SimSwap(self)
         self.sms = Sms(self)
         self.subaccounts = Subaccounts(self)
         self.users = Users(self)
@@ -258,6 +260,7 @@ class Client:
         auth_type=None,
         body_is_json=True,
         supports_signature_auth=False,
+        oauth_token=None,
     ):
         """
         Low-level method to make a post request to an API server.
@@ -283,9 +286,11 @@ class Client:
             )
         elif auth_type == 'header':
             self._request_headers['Authorization'] = self._create_header_auth_string()
+        elif auth_type == 'oauth2':
+            self._request_headers['Authorization'] = self._create_oauth2_auth_string(oauth_token)
         else:
             raise InvalidAuthenticationTypeError(
-                f'Invalid authentication type. Must be one of "jwt", "header" or "params".'
+                f'Invalid authentication type. Must be one of "jwt", "header", "params" or "oauth2".'
             )
 
         logger.debug(
@@ -461,3 +466,6 @@ class Client:
     def _create_header_auth_string(self):
         hash = base64.b64encode(f"{self.api_key}:{self.api_secret}".encode("utf-8")).decode("ascii")
         return f"Basic {hash}"
+
+    def _create_oauth2_auth_string(self, token: str):
+        return f'Bearer {token}'

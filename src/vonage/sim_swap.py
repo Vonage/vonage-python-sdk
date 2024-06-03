@@ -30,10 +30,14 @@ class SimSwap:
         )
         token = self._camara_auth.request_camara_token(oicd_response)
 
+        params = {'phoneNumber': phone_number}
+        if max_age:
+            params['maxAge'] = max_age
+
         return self._client.post(
             'api-eu.vonage.com',
             '/camara/sim-swap/v040/check',
-            params={'phoneNumber': phone_number, 'maxAge': max_age},
+            params=params,
             auth_type=self._auth_type,
             oauth_token=token,
         )

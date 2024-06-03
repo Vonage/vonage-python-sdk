@@ -38,10 +38,12 @@ class CamaraAuth:
             'grant_type': grant_type,
             'auth_req_id': oidc_response['auth_req_id'],
         }
+
         token_response = self._client.post(
             'api-eu.vonage.com',
             '/oauth2/token',
             params=params,
             auth_type=self._auth_type,
+            body_is_json=False,
         )
         return token_response['access_token']

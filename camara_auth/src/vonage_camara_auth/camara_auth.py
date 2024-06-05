@@ -24,6 +24,15 @@ class CamaraAuth:
 
     @validate_call
     def get_oauth2_user_token(self, number: str, scope: str) -> str:
+        """Get an OAuth2 user token for a given number and scope.
+
+        Args:
+            number (str): The phone number to authenticate.
+            scope (str): The scope of the token.
+
+        Returns:
+            str: The OAuth2 user token.
+        """
         oidc_response = self._make_oidc_request(number, scope)
         token_response = self._request_camara_token(oidc_response.auth_req_id)
         return token_response.access_token
@@ -49,8 +58,9 @@ class CamaraAuth:
     def _request_camara_token(
         self, auth_req_id: str, grant_type: str = 'urn:openid:params:grant-type:ciba'
     ) -> TokenResponse:
-        """Request a Camara token using an authentication request ID given as a response to the OIDC
-        request."""
+        """Request a Camara token using an authentication request ID given as a response
+        to the OIDC request.
+        """
         params = {'auth_req_id': auth_req_id, 'grant_type': grant_type}
 
         response = self._http_client.post(

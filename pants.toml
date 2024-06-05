@@ -1,5 +1,5 @@
 [GLOBAL]
-pants_version = '2.19.1'
+pants_version = '2.21.0'
 
 backend_packages = [
   'pants.backend.python',
@@ -31,6 +31,7 @@ interpreter_constraints = ['>=3.8']
 report = ['html', 'console']
 filter = [
   'vonage/src',
+  'vonage_gnp/src',
   'http_client/src',
   'application/src',
   'camara_auth/src',

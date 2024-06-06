@@ -28,7 +28,7 @@ class SimSwap:
         oicd_response = self._camara_auth.make_oidc_request(
             number=phone_number, scope='dpv:FraudPreventionAndDetection#check-sim-swap'
         )
-        token = self._camara_auth.request_camara_token(oicd_response)
+        token = self._camara_auth.request_backend_camara_token(oicd_response)
 
         params = {'phoneNumber': phone_number}
         if max_age:
@@ -55,7 +55,7 @@ class SimSwap:
             number=phone_number,
             scope='dpv:FraudPreventionAndDetection#retrieve-sim-swap-date',
         )
-        token = self._camara_auth.request_camara_token(oicd_response)
+        token = self._camara_auth.request_backend_camara_token(oicd_response)
         return self._client.post(
             'api-eu.vonage.com',
             '/camara/sim-swap/v040/retrieve-date',

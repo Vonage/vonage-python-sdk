@@ -16,7 +16,7 @@ def read_file(path):
 
 class DummyData(object):
     def __init__(self):
-        import vonage
+        from vonage import __version__
 
         self.api_key = "nexmo-api-key"
         self.api_secret = "nexmo-api-secret"
@@ -24,7 +24,7 @@ class DummyData(object):
         self.application_id = "nexmo-application-id"
         self.private_key = read_file("data/private_key.txt")
         self.public_key = read_file("data/public_key.txt")
-        self.user_agent = f"vonage-python/{vonage.__version__} python/{platform.python_version()}"
+        self.user_agent = f"vonage-python/{__version__} python/{platform.python_version()}"
         self.host = "rest.nexmo.com"
         self.api_host = "api.nexmo.com"
         self.meetings_api_host = "api-eu.vonage.com/beta/meetings"
@@ -37,9 +37,9 @@ def dummy_data():
 
 @pytest.fixture
 def client(dummy_data):
-    import vonage
+    from vonage.client import Client
 
-    return vonage.Client(
+    return Client(
         key=dummy_data.api_key,
         secret=dummy_data.api_secret,
         application_id=dummy_data.application_id,
@@ -50,95 +50,95 @@ def client(dummy_data):
 # Represents an instance of the Voice class for testing
 @pytest.fixture
 def voice(client):
-    import vonage
+    from vonage.voice import Voice
 
-    return vonage.Voice(client)
+    return Voice(client)
 
 
 # Represents an instance of the Sms class for testing
 @pytest.fixture
 def sms(client):
-    import vonage
+    from vonage.sms import Sms
 
-    return vonage.Sms(client)
+    return Sms(client)
 
 
 # Represents an instance of the Verify class for testing
 @pytest.fixture
 def verify(client):
-    import vonage
+    from vonage.verify import Verify
 
-    return vonage.Verify(client)
+    return Verify(client)
 
 
 @pytest.fixture
 def number_insight(client):
-    import vonage
+    from vonage.number_insight import NumberInsight
 
-    return vonage.NumberInsight(client)
+    return NumberInsight(client)
 
 
 @pytest.fixture
 def account(client):
-    import vonage
+    from vonage.account import Account
 
-    return vonage.Account(client)
+    return Account(client)
 
 
 @pytest.fixture
 def numbers(client):
-    import vonage
+    from vonage.number_management import Numbers
 
-    return vonage.Numbers(client)
+    return Numbers(client)
 
 
 @pytest.fixture
 def ussd(client):
-    import vonage
+    from vonage.ussd import Ussd
 
-    return vonage.Ussd(client)
+    return Ussd(client)
 
 
 @pytest.fixture
 def short_codes(client):
-    import vonage
+    from vonage.short_codes import ShortCodes
 
-    return vonage.ShortCodes(client)
+    return ShortCodes(client)
 
 
 @pytest.fixture
 def messages(client):
-    import vonage
+    from vonage.messages import Messages
 
-    return vonage.Messages(client)
+    return Messages(client)
 
 
 @pytest.fixture
 def redact(client):
-    import vonage
+    from vonage.redact import Redact
 
-    return vonage.Redact(client)
+    return Redact(client)
 
 
 @pytest.fixture
 def application_v2(client):
-    import vonage
+    from vonage.application import Application
 
-    return vonage.ApplicationV2(client)
+    return Application(client)
 
 
 @pytest.fixture
 def meetings(client):
-    import vonage
+    from vonage.meetings import Meetings
 
-    return vonage.Meetings(client)
+    return Meetings(client)
 
 
 @pytest.fixture
 def proc(client):
-    import vonage
+    from vonage.proactive_connect import ProactiveConnect
 
-    return vonage.ProactiveConnect(client)
+    return ProactiveConnect(client)
 
 
 @pytest.fixture
@@ -150,6 +150,13 @@ def camara_auth(client):
 
 @pytest.fixture
 def sim_swap(client):
-    import vonage
+    from vonage.sim_swap import SimSwap
 
-    return vonage.SimSwap(client)
+    return SimSwap(client)
+
+
+@pytest.fixture
+def number_verification(client):
+    from vonage.number_verification import NumberVerification
+
+    return NumberVerification(client)

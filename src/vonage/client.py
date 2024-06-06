@@ -8,6 +8,7 @@ from .meetings import Meetings
 from .messages import Messages
 from .number_insight import NumberInsight
 from .number_management import Numbers
+from .number_verification import NumberVerification
 from .proactive_connect import ProactiveConnect
 from .redact import Redact
 from .sim_swap import SimSwap
@@ -132,6 +133,7 @@ class Client:
         self.messages = Messages(self)
         self.number_insight = NumberInsight(self)
         self.numbers = Numbers(self)
+        self.number_verification = NumberVerification(self)
         self.proactive_connect = ProactiveConnect(self)
         self.short_codes = ShortCodes(self)
         self.sim_swap = SimSwap(self)

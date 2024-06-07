@@ -15,7 +15,7 @@ def test_get_oidc_url(number_verification: NumberVerification):
 
     assert (
         url
-        == 'https://oidc.idp.vonage.com/oauth2/auth?client_id=nexmo-application-id&redirect_uri=https%3A%2F%2Fexample.com%2Fcallback&response_type=code&scope=openid%2Bdpv%3AFraudPreventionAndDetection%23number-verification-verify-read&state=state_id&login_hint=447700900000'
+        == 'https://oidc.idp.vonage.com/oauth2/auth?client_id=nexmo-application-id&redirect_uri=https%3A%2F%2Fexample.com%2Fcallback&response_type=code&scope=openid+dpv%3AFraudPreventionAndDetection%23number-verification-verify-read&state=state_id&login_hint=%2B447700900000'
     )
 
 

@@ -35,7 +35,7 @@ class CamaraAuth:
         redirect_uri: str,
         state: str = None,
         login_hint: str = None,
-        scope: str = 'openid+dpv:FraudPreventionAndDetection#number-verification-verify-read',
+        scope: str = 'openid dpv:FraudPreventionAndDetection#number-verification-verify-read',
     ):
         """Get the URL to use for authentication in a front-end application.
 
@@ -59,7 +59,10 @@ class CamaraAuth:
         if state:
             params['state'] = state
         if login_hint:
-            params['login_hint'] = login_hint
+            if login_hint.startswith('+'):
+                params['login_hint'] = login_hint
+            else:
+                params['login_hint'] = f'+{login_hint}'
 
         full_url = urlunparse(('', '', base_url, '', urlencode(params), ''))
         return full_url

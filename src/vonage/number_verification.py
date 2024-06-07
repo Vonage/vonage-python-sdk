@@ -23,7 +23,7 @@ class NumberVerification:
         redirect_uri: str,
         state: str = None,
         login_hint: str = None,
-        scope: str = 'openid+dpv:FraudPreventionAndDetection#number-verification-verify-read',
+        scope: str = 'openid dpv:FraudPreventionAndDetection#number-verification-verify-read',
     ):
         """Get the URL to use for authentication in a front-end application.
 

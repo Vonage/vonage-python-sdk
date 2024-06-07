@@ -1,3 +1,6 @@
+# 3.16.0
+- Add support for the [Vonage Number Verification API](https://developer.vonage.com/number-verification/overview)
+
 # 3.15.0
 - Add support for the [Vonage Sim Swap API](https://developer.vonage.com/en/sim-swap/overview)
 

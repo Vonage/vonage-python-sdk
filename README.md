@@ -30,6 +30,7 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [Application API](#application-api)
 - [Users API](#users-api)
 - [Sim Swap API](#sim-swap-api)
+- [Number Verification API](#number-verification-api)
 - [Validating Webhook Signatures](#validate-webhook-signatures)
 - [JWT Parameters](#jwt-parameters)
 - [Overriding API Attributes](#overriding-api-attributes)
@@ -1154,7 +1155,41 @@ client.sim_swap.check('447700900000', max_age=24)
 client.sim_swap.get_last_swap_date('447700900000')
 ```
 
-## Validate webhook signatures
+## Number Verification API
+
+This can be used to verify a mobile device. You must register a business account with Vonage and create a network profile in order to use this API. [More information on authentication can be found in the Vonage Developer documentation]('https://developer.vonage.com/en/getting-started-network/authentication').
+
+### Get an OIDC URL
+
+Get an OIDC URL for use in your front-end application.
+
+```python
+url = client.number_verification.get_oidc_url(
+    redirect_uri='https://example.com/callback',
+    state='state_id',
+    login_hint='447700900000',
+)
+print(url)
+```
+
+### Create an Access Token from an Authentication Code
+
+To verify a number, you need a Camara access token. Your front-end application should have made an OIDC request that returned a `code`. Use this with your `redirect_uri` to generate an access token.
+
+```python
+access_token = client.number_verification.create_camara_token('code', 'https://example.com/callback')
+```
+
+You can then use this access token when making a Number Verification request.
+
+### Make a Number Verification Request
+
+```python
+response = client.number_verification.verify(access_token, phone_number='447700900000')
+print(response)
+```
+
+## Validate Webhook Signatures
 
 ```python
 client = vonage.Client(signature_secret='secret')

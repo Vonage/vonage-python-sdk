@@ -70,3 +70,7 @@ class TokenExpiryError(ClientError):
 
 class SipError(ClientError):
     """Error related to usage of SIP calls."""
+
+
+class NumberVerificationError(ClientError):
+    """An error relating to the Number Verification API."""

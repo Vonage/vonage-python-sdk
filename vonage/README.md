@@ -30,12 +30,14 @@ options = HttpClientOptions(api_host='api.nexmo.com', timeout=30)
 vonage = Vonage(auth=auth, http_client_options=options)
 ```
 
-The Vonage class provides access to various Vonage APIs through its properties. For example, to use methods to call the Number Insight API v2:
+The Vonage class provides access to various Vonage APIs through its properties. For example, to use methods to call the SMS API:
 
 ```python
-from vonage_number_insight_v2 import FraudCheckRequest
+from vonage_sms import SmsMessage
 
-vonage.number_insight_v2.fraud_check(FraudCheckRequest(phone='1234567890'))
+message = SmsMessage(to='1234567890', from_='Vonage', text='Hello World')
+response = client.sms.send(message)
+print(response.model_dump_json(exclude_unset=True))
 ```
 
 You can also access the underlying `HttpClient` instance through the `http_client` property:

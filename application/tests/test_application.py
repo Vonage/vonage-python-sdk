@@ -2,7 +2,6 @@ from os.path import abspath
 
 import responses
 from pytest import raises
-from testutils import build_response, get_mock_api_key_auth
 from vonage_application.application import Application
 from vonage_application.common import (
     ApplicationUrl,
@@ -24,6 +23,8 @@ from vonage_application.enums import Region
 from vonage_application.errors import ApplicationError
 from vonage_application.requests import ApplicationConfig, ListApplicationsFilter
 from vonage_http_client.http_client import HttpClient
+
+from testutils import build_response, get_mock_api_key_auth
 
 path = abspath(__file__)
 

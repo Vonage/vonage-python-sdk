@@ -1,6 +1,8 @@
 from os.path import abspath
 
 import responses
+from pytest import raises
+from vonage_http_client.errors import HttpRequestError
 from vonage_http_client.http_client import HttpClient
 from vonage_network_auth import NetworkAuth
 from vonage_network_auth.responses import OidcResponse
@@ -89,3 +91,21 @@ def test_whole_oauth2_flow():
 def test_number_plus_prefixes():
     assert network_auth._ensure_plus_prefix('447700900000') == '+447700900000'
     assert network_auth._ensure_plus_prefix('+447700900000') == '+447700900000'
+
+
+@responses.activate
+def test_oidc_request_permissions_error():
+    build_response(
+        path,
+        'POST',
+        'https://api-eu.vonage.com/oauth2/bc-authorize',
+        'oidc_request_permissions_error.json',
+        status_code=400,
+    )
+
+    with raises(HttpRequestError) as err:
+        response = network_auth.make_oidc_request(
+            number='447700900000',
+            scope='dpv:FraudPreventionAndDetection#check-sim-swap',
+        )
+    assert err.match('"title": "Bad Request"')

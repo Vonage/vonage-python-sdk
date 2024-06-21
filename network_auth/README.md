@@ -6,6 +6,8 @@ This package is intended to be used as part of an SDK, accessing required method
 
 For full API documentation, refer to the [Vonage developer documentation](https://developer.vonage.com).
 
+Please note this package is in beta.
+
 ## Installation
 
 Install from the Python Package Index with pip:
@@ -28,7 +30,7 @@ network_auth = NetworkAuth(HttpClient(Auth(application_id='application-id', priv
 ### Generate an Authenticated Access Token
 
 ```python
-token = camara_auth.get_oauth2_user_token(
+token = network_auth.get_oauth2_user_token(
     number='447700900000', scope='dpv:FraudPreventionAndDetection#check-sim-swap'
 )
 ```

@@ -8,6 +8,8 @@ pyjwt[crypto]>=1.6.4
 -e http_client
 -e jwt
 -e messages
+-e network_auth
+-e network_sim_swap
 -e number_insight
 -e number_insight_v2
 -e sms
@@ -16,4 +18,5 @@ pyjwt[crypto]>=1.6.4
 -e verify_v2
 -e voice
 -e vonage
+-e vonage_network
 -e vonage_utils

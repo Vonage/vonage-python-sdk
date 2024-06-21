@@ -15,10 +15,10 @@ class NetworkAuth:
 
     @property
     def http_client(self) -> HttpClient:
-        """The HTTP client used to make requests to the Users API.
+        """The HTTP client used to make requests to the Network Auth API.
 
         Returns:
-            HttpClient: The HTTP client used to make requests to the Users API.
+            HttpClient: The HTTP client used to make requests to the Network Auth API.
         """
         return self._http_client
 

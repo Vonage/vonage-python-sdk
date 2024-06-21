@@ -4,14 +4,14 @@ from .vonage_network import (
     Auth,
     HttpClient,
     HttpClientOptions,
-    NetworkAuth,
+    NetworkSimSwap,
     VonageNetwork,
 )
 
 __all__ = [
     'VonageError',
     'VonageNetwork',
-    'NetworkAuth',
+    'NetworkSimSwap',
     'Auth',
     'HttpClient',
     'HttpClientOptions',

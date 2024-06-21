@@ -6,4 +6,4 @@ class SwapStatus(BaseModel):
 
 
 class LastSwapDate(BaseModel):
-    last_swap_date = Field(..., validation_alias='latestSimChange')
+    last_swap_date: str = Field(..., validation_alias='latestSimChange')

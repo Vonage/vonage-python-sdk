@@ -31,13 +31,13 @@ interpreter_constraints = ['>=3.8']
 report = ['html', 'console']
 filter = [
   'vonage/src',
-  'vonage_gnp/src',
+  'vonage_network/src',
   'http_client/src',
   'application/src',
-  'gnp_sim_swap/src',
   'jwt/src',
   'messages/src',
   'network_auth/src',
+  'network_sim_swap/src',
   'number_insight/src',
   'number_insight_v2/src',
   'sms/src',

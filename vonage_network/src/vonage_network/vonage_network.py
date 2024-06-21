@@ -2,11 +2,9 @@ from platform import python_version
 from typing import Optional
 
 from vonage_http_client import Auth, HttpClient, HttpClientOptions
-from vonage_network_auth import NetworkAuth
+from vonage_network_sim_swap import NetworkSimSwap
 
 from ._version import __version__
-
-# from network_sim_swap import SimSwap
 
 
 class VonageNetwork:
@@ -30,9 +28,8 @@ class VonageNetwork:
         self._http_client._user_agent = (
             f'vonage-network-python-sdk/{__version__} python/{python_version()}'
         )
-        self.network_auth = NetworkAuth(self._http_client)
 
-        # self.sim_swap = SimSwap()
+        self.sim_swap = NetworkSimSwap(self._http_client)
 
     @property
     def http_client(self):

@@ -130,11 +130,12 @@ class HttpClient:
         host: str,
         request_path: str = '',
         params: dict = None,
-        auth_type: Literal['jwt', 'basic', 'body', 'signature'] = 'jwt',
+        auth_type: Literal['jwt', 'basic', 'body', 'signature', 'oauth2'] = 'jwt',
         sent_data_type: Literal['json', 'form', 'query-params'] = 'json',
+        token: Optional[str] = None,
     ) -> Union[dict, None]:
         return self.make_request(
-            'POST', host, request_path, params, auth_type, sent_data_type
+            'POST', host, request_path, params, auth_type, sent_data_type, token
         )
 
     def get(
@@ -192,8 +193,9 @@ class HttpClient:
         host: str,
         request_path: str = '',
         params: Optional[dict] = None,
-        auth_type: Literal['jwt', 'basic', 'body', 'signature'] = 'jwt',
+        auth_type: Literal['jwt', 'basic', 'body', 'signature', 'oauth2'] = 'jwt',
         sent_data_type: Literal['json', 'form', 'query_params'] = 'json',
+        token: Optional[str] = None,
     ):
         url = f'https://{host}{request_path}'
         logger.debug(
@@ -206,6 +208,8 @@ class HttpClient:
         elif auth_type == 'body':
             params['api_key'] = self._auth.api_key
             params['api_secret'] = self._auth.api_secret
+        elif auth_type == 'oauth2':
+            self._headers['Authorization'] = f'Bearer {token}'
         elif auth_type == 'signature':
             params['api_key'] = self._auth.api_key
             params['sig'] = self._auth.sign_params(params)

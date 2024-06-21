@@ -1,3 +1,7 @@
+# 3.99.0a11
+- Remove the Number Insight v2 beta which was not in use and is going to be deprecated
+- Lower the VerifyV2 minimum channel timeout to 15s
+
 # 3.99.1a10
 - Migrate the Vonage JWT package
 - Internal refactoring

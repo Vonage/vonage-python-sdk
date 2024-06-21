@@ -1,3 +1,6 @@
+# 1.1.2
+- Allow minimum `channel_timeout` value to be 15 seconds
+
 # 1.1.1
 - Update minimum dependency version
 

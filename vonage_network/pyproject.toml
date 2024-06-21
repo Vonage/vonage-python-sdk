@@ -1,16 +1,15 @@
 [project]
-name = "vonage-http-client"
-version = "1.4.0"
-description = "An HTTP client for making requests to Vonage APIs."
+name = "vonage-network"
+dynamic = ["version"]
+description = "Python Server SDK for using Vonage Network APIs"
 readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
 requires-python = ">=3.8"
 dependencies = [
   "vonage-utils>=1.1.2",
-  "vonage-jwt>=1.1.1",
-  "requests>=2.27.0",
-  "typing-extensions>=4.9.0",
-  "pydantic>=2.7.1",
+  "vonage-http-client>=1.4.0",
+  "vonage-network-auth>=0.1.0b0",
+  "vonage-network-sim-swap>=0.1.0b0",
 ]
 classifiers = [
   "Programming Language :: Python",
@@ -24,7 +23,10 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Vonage/vonage-python-sdk"
+homepage = "https://github.com/Vonage/vonage-python-sdk"
+
+[tool.setuptools.dynamic]
+version = { attr = "vonage._version.__version__" }
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]

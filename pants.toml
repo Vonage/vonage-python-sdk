@@ -1,5 +1,5 @@
 [GLOBAL]
-pants_version = '2.19.1'
+pants_version = '2.21.0'
 
 backend_packages = [
   'pants.backend.python',
@@ -31,10 +31,13 @@ interpreter_constraints = ['>=3.8']
 report = ['html', 'console']
 filter = [
   'vonage/src',
+  'vonage_network/src',
   'http_client/src',
   'application/src',
   'jwt/src',
   'messages/src',
+  'network_auth/src',
+  'network_sim_swap/src',
   'number_insight/src',
   'number_insight_v2/src',
   'sms/src',

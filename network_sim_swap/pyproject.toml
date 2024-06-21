@@ -1,16 +1,14 @@
 [project]
-name = "vonage-http-client"
-version = "1.4.0"
-description = "An HTTP client for making requests to Vonage APIs."
+name = "vonage-network-sim-swap"
+version = "0.1.0b0"
+description = "Package for working with the Vonage Sim Swap Network API."
 readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
 requires-python = ">=3.8"
 dependencies = [
+  "vonage-http-client>=1.4.0",
+  "vonage-network-auth>=0.1.0b0",
   "vonage-utils>=1.1.2",
-  "vonage-jwt>=1.1.1",
-  "requests>=2.27.0",
-  "typing-extensions>=4.9.0",
-  "pydantic>=2.7.1",
 ]
 classifiers = [
   "Programming Language :: Python",

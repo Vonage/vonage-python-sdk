@@ -79,7 +79,7 @@ class VerifyRequest(BaseModel):
         ]
     ]
     locale: Optional[Locale] = None
-    channel_timeout: Optional[int] = Field(None, ge=60, le=900)
+    channel_timeout: Optional[int] = Field(None, ge=15, le=900)
     client_ref: Optional[str] = Field(None, min_length=1, max_length=16)
     code_length: Optional[int] = Field(None, ge=4, le=10)
     code: Optional[str] = Field(None, pattern=r'^[a-zA-Z0-9]{4,10}$')

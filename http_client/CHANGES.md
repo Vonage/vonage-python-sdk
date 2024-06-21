@@ -1,3 +1,6 @@
+# 1.4.0
+- Add new `oauth2` logic for calling APIs that require Oauth
+
 # 1.3.1
 - Update minimum dependency version
 

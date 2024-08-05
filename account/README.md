@@ -1,4 +1,4 @@
-# Vonage Application API Package
+# Vonage Users Package
 
 This package contains the code to use Vonage's Application API in Python.
 

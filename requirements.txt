@@ -5,8 +5,10 @@ pydantic>=2.7.1
 typing-extensions>=4.9.0
 pyjwt[crypto]>=1.6.4
 
--e http_client
 -e jwt
+-e http_client
+-e account
+-e application
 -e messages
 -e network_auth
 -e network_sim_swap
@@ -17,6 +19,6 @@ pyjwt[crypto]>=1.6.4
 -e verify
 -e verify_v2
 -e voice
--e vonage
--e vonage_network
 -e vonage_utils
+-e vonage_network
+-e vonage

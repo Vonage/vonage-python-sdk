@@ -33,6 +33,7 @@ filter = [
   'vonage/src',
   'vonage_network/src',
   'http_client/src',
+  'account/src',
   'application/src',
   'jwt/src',
   'messages/src',

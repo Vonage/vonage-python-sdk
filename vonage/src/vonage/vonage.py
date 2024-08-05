@@ -1,5 +1,6 @@
 from typing import Optional
 
+from vonage_account.account import Account
 from vonage_application.application import Application
 from vonage_http_client import Auth, HttpClient, HttpClientOptions
 from vonage_messages import Messages
@@ -31,6 +32,7 @@ class Vonage:
     ):
         self._http_client = HttpClient(auth, http_client_options, __version__)
 
+        self.account = Account(self._http_client)
         self.application = Application(self._http_client)
         self.messages = Messages(self._http_client)
         self.number_insight = NumberInsight(self._http_client)

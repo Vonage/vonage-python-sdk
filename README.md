@@ -961,7 +961,7 @@ client.subaccounts.transfer_balance(
 ### Transfer bought phone numbers between accounts
 
 ```python
-client.subaccounts.transfer_balance(
+client.subaccounts.transfer_number(
     from_=FROM_ACCOUNT,
     to=TO_ACCOUNT,
     number=NUMBER_TO_TRANSFER,

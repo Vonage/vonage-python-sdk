@@ -1,7 +1,7 @@
 -e .
-pytest==8.2.2
-responses==0.25.0
-pydantic==2.7.3
+pytest>=8.3.2
+responses>=0.25.3
+pydantic>=2.8.2
 coverage
 
 bump2version

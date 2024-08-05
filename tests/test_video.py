@@ -128,7 +128,7 @@ def test_generate_client_token_custom_options(client: Client):
     assert decoded_token['session_id'] == 'my_session_id'
     assert decoded_token['role'] == 'moderator'
     assert decoded_token['initial_layout_class_list'] == ['1234', '5678', '9123']
-    assert decoded_token['data'] == 'some token data'
+    assert decoded_token['connection_data'] == 'some token data'
     assert decoded_token['jti'] == 1234
     assert decoded_token['subject'] == 'test_subject'
     assert decoded_token['acl'] == ['1', '2', '3']

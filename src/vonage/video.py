@@ -325,7 +325,7 @@ class Video:
         if 'role' in token_options:
             claims['role'] = token_options['role']
         if 'data' in token_options:
-            claims['data'] = token_options['data']
+            claims['connection_data'] = token_options['data']
         if 'initialLayoutClassList' in token_options:
             claims['initial_layout_class_list'] = token_options['initialLayoutClassList']
         if 'expireTime' in token_options and token_options['expireTime'] > now:

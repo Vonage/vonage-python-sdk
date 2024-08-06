@@ -1,6 +1,7 @@
 # 3.16.1
 - Fix video client token option
 - Fix typos in README
+- Bump minimum versions for dependencies with fixed vulnerabilities
 
 # 3.16.0
 - Add support for the [Vonage Number Verification API](https://developer.vonage.com/number-verification/overview)

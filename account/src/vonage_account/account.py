@@ -1,8 +1,11 @@
+import re
+from typing import List
+
 from pydantic import validate_call
+from vonage_account.errors import InvalidSecretError
 from vonage_http_client.http_client import HttpClient
 
-from .requests import Balance
-from .responses import SettingsResponse, TopUpResponse
+from .responses import Balance, SettingsResponse, TopUpResponse, VonageApiSecret
 
 
 class Account:
@@ -21,7 +24,6 @@ class Account:
         """
         return self._http_client
 
-    @validate_call
     def get_balance(self) -> Balance:
         """Get the balance of the account.
 
@@ -62,8 +64,8 @@ class Account:
     def update_default_sms_webhook(
         self, mo_callback_url: str = None, dr_callback_url: str = None
     ) -> SettingsResponse:
-        """Update the default SMS webhook URLs for the account.
-            In order to unset any default value, pass an empty string as the value.
+        """Update the default SMS webhook URLs for the account. In order to unset any default value,
+        pass an empty string as the value.
 
         Args:
             mo_callback_url (str, optional): The URL to which inbound SMS messages will be
@@ -89,10 +91,89 @@ class Account:
         )
         return SettingsResponse(**response)
 
-    def list_secrets(self) -> SecretList:
+    def list_secrets(self) -> List[VonageApiSecret]:
         """List all secrets associated with the account.
 
         Returns:
-            SecretList: List of Secret objects.
+            List[VonageApiSecret]: List of VonageApiSecret objects.
         """
-        pass
+        response = self._http_client.get(
+            self._http_client.api_host,
+            f'/accounts/{self._http_client.auth.api_key}/secrets',
+            auth_type=self._auth_type,
+        )
+        secrets = []
+        for element in response['_embedded']['secrets']:
+            secrets.append(VonageApiSecret(**element))
+
+        return secrets
+
+    @validate_call
+    def create_secret(self, secret: str) -> VonageApiSecret:
+        """Create an API secret for the account.
+
+        Args:
+            secret (VonageSecret): The secret to create. Must satisfy the following
+                conditions:
+                - 8-25 characters long
+                - At least one uppercase letter
+                - At least one lowercase letter
+                - At least one digit
+
+        Returns:
+            VonageApiSecret: The created VonageApiSecret object.
+        """
+        if not self._is_valid_secret(secret):
+            raise InvalidSecretError(
+                'Secret must be 8-25 characters long and contain at least one uppercase '
+                'letter, one lowercase letter, and one digit.'
+            )
+
+        response = self._http_client.post(
+            self._http_client.api_host,
+            f'/accounts/{self._http_client.auth.api_key}/secrets',
+            params={'secret': secret},
+            auth_type=self._auth_type,
+        )
+        return VonageApiSecret(**response)
+
+    @validate_call
+    def get_secret(self, secret_id: str) -> VonageApiSecret:
+        """Get a specific secret associated with the account.
+
+        Args:
+            secret_id (str): The ID of the secret to retrieve.
+
+        Returns:
+            VonageApiSecret: The VonageApiSecret object.
+        """
+        response = self._http_client.get(
+            self._http_client.api_host,
+            f'/accounts/{self._http_client.auth.api_key}/secrets/{secret_id}',
+            auth_type=self._auth_type,
+        )
+        return VonageApiSecret(**response)
+
+    @validate_call
+    def revoke_secret(self, secret_id: str) -> None:
+        """Revoke a specific secret associated with the account.
+
+        Args:
+            secret_id (str): The ID of the secret to revoke.
+        """
+        self._http_client.delete(
+            self._http_client.api_host,
+            f'/accounts/{self._http_client.auth.api_key}/secrets/{secret_id}',
+            auth_type=self._auth_type,
+        )
+
+    def _is_valid_secret(self, secret: str) -> bool:
+        if len(secret) < 8 or len(secret) > 25:
+            return False
+        if not re.search(r'[a-z]', secret):
+            return False
+        if not re.search(r'[A-Z]', secret):
+            return False
+        if not re.search(r'\d', secret):
+            return False
+        return True

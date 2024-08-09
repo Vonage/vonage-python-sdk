@@ -1,6 +1,6 @@
 [project]
 name = 'vonage-application'
-version = '1.0.0'
+version = '1.0.1'
 description = 'Vonage Application API package'
 readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]

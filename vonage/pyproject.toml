@@ -8,6 +8,7 @@ requires-python = ">=3.8"
 dependencies = [
   "vonage-utils>=1.1.2",
   "vonage-http-client>=1.4.0",
+  "vonage-account>=1.0.0",
   "vonage-application>=1.0.0",
   "vonage-messages>=1.1.1",
   "vonage-number-insight>=1.0.0",

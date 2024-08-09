@@ -1,3 +1,7 @@
+# 3.99.0a12
+- Add support for the [Vonage Account API](https://developer.vonage.com/en/account/overview).
+- Update package metadata for the `vonage-application` package.
+
 # 3.99.0a11
 - Remove the Number Insight v2 beta which was not in use and is going to be deprecated
 - Lower the VerifyV2 minimum channel timeout to 15s

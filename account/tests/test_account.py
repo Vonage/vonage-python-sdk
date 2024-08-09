@@ -3,9 +3,8 @@ from os.path import abspath
 import responses
 from pytest import raises
 from vonage_account.account import Account
-
-# from vonage_account.errors import ApplicationError
-# from vonage_account.requests import ApplicationConfig, ListApplicationsFilter
+from vonage_account.errors import InvalidSecretError
+from vonage_http_client.errors import ForbiddenError
 from vonage_http_client.http_client import HttpClient
 
 from testutils import build_response, get_mock_api_key_auth
@@ -71,118 +70,106 @@ def test_update_default_sms_webhook():
     assert settings_response.max_calls_per_second == 30
 
 
-# def test_create_application_invalid_request_method():
-#     with raises(ApplicationError) as err:
-#         VerifyWebhooks(
-#             status_url=ApplicationUrl(
-#                 address='https://example.com/status', http_method='GET'
-#             )
-#         )
-#     assert err.match('HTTP method must be POST')
+@responses.activate
+def test_list_secrets():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/accounts/test_api_key/secrets',
+        'list_secrets.json',
+    )
+    secrets = account.list_secrets()
 
-#     with raises(ApplicationError) as err:
-#         MessagesWebhooks(
-#             inbound_url=ApplicationUrl(
-#                 address='https://example.com/inbound', http_method='GET'
-#             )
-#         )
-#     assert err.match('HTTP method must be POST')
+    assert len(secrets) == 1
+    assert secrets[0].id == '1b1b1b1b-1b1b-1b-1b1b-1b1b1b1b1b1b'
+    assert secrets[0].created_at == '2022-03-28T14:16:56Z'
 
 
-# @responses.activate
-# def test_list_applications_basic():
-#     build_response(
-#         path,
-#         'GET',
-#         'https://api.nexmo.com/v2/applications',
-#         'list_applications_basic.json',
-#     )
-#     applications, next_page = application.list_applications()
+@responses.activate
+def test_create_secret():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/accounts/test_api_key/secrets',
+        'secret.json',
+        201,
+    )
+    secret = account.create_secret('Mytestsecret1234')
 
-#     assert len(applications) == 1
-#     assert applications[0].id == '1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b'
-#     assert applications[0].name == 'dev-application'
-#     assert (
-#         applications[0].keys.public_key
-#         == '-----BEGIN PUBLIC KEY-----\npublic_key_info_goes_here\n-----END PUBLIC KEY-----\n'
-#     )
-
-#     assert next_page is None
+    assert account.http_client.last_response.status_code == 201
+    assert secret.id == 'ad6dc56f-07b5-46e1-a527-85530e625800'
+    assert secret.created_at == '2017-03-02T16:34:49Z'
 
 
-# @responses.activate
-# def test_list_applications_multiple_pages():
-#     build_response(
-#         path,
-#         'GET',
-#         'https://api.nexmo.com/v2/applications',
-#         'list_applications_multiple_pages.json',
-#     )
-#     options = ListApplicationsFilter(page_size=3, page=1)
-#     applications, next_page = application.list_applications(options)
+def test_create_secret_invalid_secret():
+    with raises(InvalidSecretError) as e:
+        account.create_secret('secret')
 
-#     assert len(applications) == 3
-#     assert applications[0].id == '1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b'
-#     assert applications[0].name == 'dev-application'
-#     assert (
-#         applications[0].keys.public_key
-#         == '-----BEGIN PUBLIC KEY-----\npublic_key_info_goes_here\n-----END PUBLIC KEY-----\n'
-#     )
-#     assert applications[1].id == '2b2b2b2b-2b2b-2b2b-2b2b-2b2b2b2b2b2b'
-#     assert (
-#         applications[1].capabilities.voice.webhooks.event_url.address
-#         == 'http://9ff8266be1ed.ngrok.app/webhooks/events'
-#     )
-#     assert applications[2].id == '3b3b3b3b-3b3b-3b3b-3b3b-3b3b3b3b3b3b'
-#     assert next_page == 2
+    with raises(InvalidSecretError) as e:
+        account.create_secret('MYTESTSECRET1234')
+
+    with raises(InvalidSecretError) as e:
+        account.create_secret('mytestsecret1234')
+
+    with raises(InvalidSecretError) as e:
+        account.create_secret('Mytestsecret')
+
+    assert e.match(
+        'Secret must be 8-25 characters long and contain at least one uppercase letter, one lowercase letter, and one digit.'
+    )
 
 
-# @responses.activate
-# def test_get_application():
-#     build_response(
-#         path,
-#         'GET',
-#         'https://api.nexmo.com/v2/applications/1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b',
-#         'get_application.json',
-#     )
-#     app = application.get_application('1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b')
+@responses.activate
+def test_create_secret_error_max_number():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/accounts/test_api_key/secrets',
+        'create_secret_error_max_number.json',
+        403,
+    )
 
-#     assert app.id == '1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b'
-#     assert app.link == '/v2/applications/1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b'
-
-
-# @responses.activate
-# def test_update_application():
-#     build_response(
-#         path,
-#         'PUT',
-#         'https://api.nexmo.com/v2/applications/1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b',
-#         'update_application.json',
-#     )
-
-#     public_key = (
-#         '-----BEGIN PUBLIC KEY-----\nupdated_public_key_info\n-----END PUBLIC KEY-----\n'
-#     )
-#     keys = Keys(public_key=public_key)
-#     params = ApplicationConfig(name='My Updated Application', keys=keys)
-#     application_data = application.update_application(
-#         '1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b', params
-#     )
-
-#     assert application_data.name == 'My Updated Application'
-#     assert application_data.keys.public_key == public_key
-#     assert (
-#         application_data.link == '/v2/applications/1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b'
-#     )
+    with raises(ForbiddenError) as e:
+        account.create_secret('Mytestsecret23456')
+    assert 'Account reached maximum number [2] of allowed secrets' in e.exconly()
 
 
-# @responses.activate
-# def test_delete_application():
-#     responses.add(
-#         responses.DELETE,
-#         'https://api.nexmo.com/v2/applications/1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b',
-#         status=204,
-#     )
+@responses.activate
+def test_get_secret():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/accounts/test_api_key/secrets/secret_id',
+        'secret.json',
+    )
+    secret = account.get_secret('secret_id')
 
-#     application.delete_application('1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b')
-#     assert application.http_client.last_response.status_code == 204
+    assert secret.id == 'ad6dc56f-07b5-46e1-a527-85530e625800'
+    assert secret.created_at == '2017-03-02T16:34:49Z'
+
+
+@responses.activate
+def test_revoke_api_secret():
+    responses.add(
+        responses.DELETE,
+        'https://api.nexmo.com/accounts/test_api_key/secrets/secret_id',
+        status=204,
+    )
+    account.revoke_secret('secret_id')
+    assert account.http_client.last_response.status_code == 204
+
+
+@responses.activate
+def test_revoke_api_secret_error_last_secret():
+    build_response(
+        path,
+        'DELETE',
+        'https://api.nexmo.com/accounts/test_api_key/secrets/secret_id',
+        'revoke_secret_error.json',
+        403,
+    )
+
+    with raises(ForbiddenError) as e:
+        account.revoke_secret('secret_id')
+
+    assert 'Can not delete the last secret.' in e.exconly()

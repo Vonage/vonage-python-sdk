@@ -1,77 +1,66 @@
-# Vonage Users Package
+# Vonage Account Package
 
-This package contains the code to use Vonage's Application API in Python.
+This package contains the code to use Vonage's Account API in Python.
 
-It includes methods for managing applications.
+It includes methods for managing Vonage accounts.
 
 ## Usage
 
 It is recommended to use this as part of the main `vonage` package. The examples below assume you've created an instance of the `vonage.Vonage` class called `vonage_client`.
 
-### List Applications
 
-With no custom options specified, this method will get the first 100 applications. It returns a tuple consisting of a list of `ApplicationData` objects and an int showing the page number of the next page of results.
+### Get Account Balance
 
 ```python
-from vonage_application import ListApplicationsFilter, ApplicationData
-
-applications, next_page = vonage_client.application.list_applications()
-
-# With options
-options = ListApplicationsFilter(page_size=3, page=2)
-applications, next_page = vonage_client.application.list_applications(options)
+balance = vonage_client.account.get_balance()
+print(balance)
 ```
 
-### Create a New Application
+### Top-Up Account
 
 ```python
-from vonage_application import ApplicationConfig
+response = vonage_client.account.top_up(trx='1234567890')
+print(response)
+```
 
-app_data = vonage_client.application.create_application()
+### Update the Default SMS Webhook
 
-# Create with custom options (can also be done with a dict)
-from vonage_application import ApplicationConfig, Keys, Voice, VoiceWebhooks
-voice = Voice(
-    webhooks=VoiceWebhooks(
-        event_url=VoiceUrl(
-            address='https://example.com/event',
-            http_method='POST',
-            connect_timeout=500,
-            socket_timeout=3000,
-        ),
-    ),
-    signed_callbacks=True,
+This will return a Pydantic object (`SettingsResponse`) containing multiple settings for your account.
+
+```python
+settings: SettingsResponse = vonage_client.account.update_default_sms_webhook(
+    mo_callback_url='https://example.com/inbound_sms_webhook',
+    dr_callback_url='https://example.com/delivery_receipt_webhook',
 )
-capabilities = Capabilities(voice=voice)
-keys = Keys(public_key='MY_PUBLIC_KEY')
-config = ApplicationConfig(
-    name='My Customised Application',
-    capabilities=capabilities,
-    keys=keys,
-)
-app_data = vonage_client.application.create_application(config)
+
+print(settings)
 ```
 
-### Get an Application
+### List Secrets Associated with the Account
 
 ```python
-app_data = client.application.get_application('MY_APP_ID')
-app_data_as_dict = app.model_dump(exclude_none=True)
+response = vonage_client.account.list_secrets()
+print(response)
 ```
 
-### Update an Application
-
-To update an application, pass config for the updated field(s) in an ApplicationConfig object
+### Create a New Account Secret
 
 ```python
-from vonage_application import ApplicationConfig, Keys, Voice, VoiceWebhooks
-
-config = ApplicationConfig(name='My Updated Application')
-app_data = vonage_client.application.update_application('MY_APP_ID', config)
+secret = vonage_client.account.create_secret('Mytestsecret12345')
+print(secret)
 ```
 
-### Delete an Application
+### Get Information About One Secret
 
 ```python
-vonage_client.applications.delete_application('MY_APP_ID')
+secret = vonage_client.account.get_secret(MY_SECRET_ID)
+print(secret)
+```
+
+### Revoke a Secret
+
+Note: it isn't possible to revoke all account secrets, there must always be one valid secret. Attempting to do so will give a 403 error.
+
+```python
+client.account.revoke_secret(MY_SECRET_ID)
 ```

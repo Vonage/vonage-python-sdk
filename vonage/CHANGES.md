@@ -1,3 +1,6 @@
+# 3.99.2a0
+- Add support for the [Vonage Subaccounts API](https://developer.vonage.com/en/use-cases/using-subaccounts).
+
 # 3.99.0a12
 - Add support for the [Vonage Account API](https://developer.vonage.com/en/account/overview).
 - Update package metadata for the `vonage-application` package.

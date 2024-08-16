@@ -6,6 +6,7 @@ from vonage_http_client import Auth, HttpClient, HttpClientOptions
 from vonage_messages import Messages
 from vonage_number_insight import NumberInsight
 from vonage_sms import Sms
+from vonage_subaccounts import Subaccounts
 from vonage_users import Users
 from vonage_verify import Verify
 from vonage_verify_v2 import VerifyV2
@@ -37,6 +38,7 @@ class Vonage:
         self.messages = Messages(self._http_client)
         self.number_insight = NumberInsight(self._http_client)
         self.sms = Sms(self._http_client)
+        self.subaccounts = Subaccounts(self._http_client)
         self.users = Users(self._http_client)
         self.verify = Verify(self._http_client)
         self.verify_v2 = VerifyV2(self._http_client)

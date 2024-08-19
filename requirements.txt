@@ -6,8 +6,9 @@ requests>=2.32.2
 urllib3>=2.2.2
 zipp>=3.19.1
 coverage
+importlib_metadata>=8.2.0
 
 bump2version
 build
 twine>=5.1.1
-pre-commit
+pre-commit>=3.5.0

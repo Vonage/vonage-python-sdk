@@ -9,5 +9,5 @@ coverage
 
 bump2version
 build
-twine
+twine>=5.1.1
 pre-commit

@@ -167,7 +167,7 @@ The delivery receipt URL can be unset by sending an empty string.
 
 ## Messages API
 
-The Messages API is an API that allows you to send messages via SMS, MMS, WhatsApp, Messenger and Viber. Call the API from your Python code by
+The Messages API is an API that allows you to send messages via SMS, MMS, RCS, WhatsApp, Messenger and Viber. Call the API from your Python code by
 passing a dict of parameters into the `client.messages.send_message()` method.
 
 It accepts JWT or API key/secret authentication.
@@ -196,6 +196,24 @@ client.messages.send_message({
         'from': '1223345567',
         'image': {'url': 'https://example.com/image.jpg', 'caption': 'Test Image'}
     })
+```
+
+### Send a File Via RCS
+
+```python
+client.messages.send_message({
+    'channel': 'rcs',
+    'message_type': 'file',
+    'file': {'url': 'https://example.com/file.pdf'},
+    'to': '441234567890',
+    'from': 'vonage',
+})
+```
+
+### Revoke an RCS Message
+
+```python
+client.messages.revoke_outbound_message('asdf-1234-5678-9012')
 ```
 
 ### Send an audio file via WhatsApp

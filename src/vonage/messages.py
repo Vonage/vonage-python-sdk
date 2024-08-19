@@ -1,3 +1,9 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from vonage import Client
+
 from ._internal import set_auth_type
 from .errors import MessagesError
 
@@ -5,16 +11,33 @@ import re
 
 
 class Messages:
-    valid_message_channels = {'sms', 'mms', 'whatsapp', 'messenger', 'viber_service'}
+    valid_message_channels = {
+        'sms',
+        'mms',
+        'rcs',
+        'whatsapp',
+        'messenger',
+        'viber_service',
+    }
     valid_message_types = {
         'sms': {'text'},
         'mms': {'image', 'vcard', 'audio', 'video'},
-        'whatsapp': {'text', 'image', 'audio', 'video', 'file', 'template', 'sticker', 'custom'},
+        'rcs': {'text', 'image', 'video', 'file', 'custom'},
+        'whatsapp': {
+            'text',
+            'image',
+            'audio',
+            'video',
+            'file',
+            'template',
+            'sticker',
+            'custom',
+        },
         'messenger': {'text', 'image', 'audio', 'video', 'file'},
         'viber_service': {'text', 'image', 'video', 'file'},
     }
 
-    def __init__(self, client):
+    def __init__(self, client: Client):
         self._client = client
         self._auth_type = set_auth_type(self._client)
 
@@ -23,8 +46,21 @@ class Messages:
 
         return self._client.post(
             self._client.api_host(),
-            "/v1/messages",
+            '/v1/messages',
             params,
+            auth_type=self._auth_type,
+        )
+
+    def revoke_outbound_message(self, message_uuid: str) -> None:
+        """Revoke an outbound RCS message.
+
+        Args:
+            message_uuid (str): The UUID of the message to revoke.
+        """
+        return self._client.patch(
+            self._client.api_host(),
+            f'/v1/messages/{message_uuid}',
+            params={'status': 'revoked'},
             auth_type=self._auth_type,
         )
 
@@ -47,7 +83,7 @@ class Messages:
         if params['channel'] not in Messages.valid_message_channels:
             raise MessagesError(
                 f"""
-            "{params['channel']}" is an invalid message channel. 
+            "{params['channel']}" is an invalid message channel.
             Must be one of the following types: {self.valid_message_channels}'
             """
             )
@@ -56,7 +92,7 @@ class Messages:
         if params['message_type'] not in self.valid_message_types[params['channel']]:
             raise MessagesError(
                 f"""
-                "{params['message_type']}" is not a valid message type for channel "{params["channel"]}". 
+                "{params['message_type']}" is not a valid message type for channel "{params["channel"]}".
                 Must be one of the following types: {self.valid_message_types[params["channel"]]}
             """
             )

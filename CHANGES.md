@@ -1,3 +1,7 @@
+# 3.17.0
+- Add RCS message type option for Messages API
+- Add "revoke RCS message" option
+
 # 3.16.1
 - Fix video client token option
 - Fix typos in README

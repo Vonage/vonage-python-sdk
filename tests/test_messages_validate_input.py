@@ -212,7 +212,10 @@ def test_viber_service_text_action_button(messages):
                 'category': 'transaction',
                 'ttl': 30,
                 'type': 'string',
-                'action': {'url': 'https://example.com/page1.html', 'text': 'Find out more'},
+                'action': {
+                    'url': 'https://example.com/page1.html',
+                    'text': 'Find out more',
+                },
             },
         }
     )
@@ -233,7 +236,10 @@ def test_viber_service_image_action_button(messages):
                 'category': 'transaction',
                 'ttl': 30,
                 'type': 'string',
-                'action': {'url': 'https://example.com/page1.html', 'text': 'Find out more'},
+                'action': {
+                    'url': 'https://example.com/page1.html',
+                    'text': 'Find out more',
+                },
             },
         }
     )
@@ -312,4 +318,16 @@ def test_whatsapp_sticker_exclusive_keys_error(messages):
         )
     assert (
         str(err.value) == 'Must specify one, and only one, of "id" or "url" in the "sticker" field.'
+    )
+
+
+def test_valid_rcs_message(messages):
+    messages.validate_send_message_input(
+        {
+            'channel': 'rcs',
+            'message_type': 'video',
+            'video': {'url': 'https://example.com/video.mp4'},
+            'to': '44123456789',
+            'from': 'vonage',
+        }
     )

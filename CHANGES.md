@@ -1,3 +1,6 @@
+# 3.17.1
+- Add "mark WhatsApp message as read" option for Messages API
+
 # 3.17.0
 - Add RCS message type option for Messages API
 - Add "revoke RCS message" option

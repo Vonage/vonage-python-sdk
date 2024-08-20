@@ -213,7 +213,7 @@ client.messages.send_message({
 ### Revoke an RCS Message
 
 ```python
-client.messages.revoke_outbound_message('asdf-1234-5678-9012')
+client.messages.revoke_outbound_message('MY-MESSAGE-ID')
 ```
 
 ### Send an audio file via WhatsApp
@@ -232,7 +232,19 @@ client.messages.send_message({
     })
 ```
 
-### Send a video file via Facebook Messenger
+### Mark a WhatsApp Message as Read
+
+To mark a WhatsApp message as read, you must override the default `vonage.Client.api_host` attribute. Override it to correspond to the region where the WhatsApp number you're using is hosted.
+
+```python
+# Override api_host attribute for EU region
+client.api_host('api-eu.vonage.com')
+
+# Mark message as read
+client.messages.mark_whatsapp_message_read('MY-MESSAGE-ID')
+```
+
+### Send a Video File via Facebook Messenger
 
 You will need to link your Facebook business page to your Vonage account in the Vonage developer dashboard. (Click on the sidebar
 "External Accounts" option to do this.)

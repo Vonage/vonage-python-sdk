@@ -50,6 +50,19 @@ def test_revoke_rcs_message(messages, dummy_data):
         'no_content.json',
     )
 
-    assert messages.revoke_outbound_message('abcd-ef01-2345-6789') is None
+    assert messages.revoke_outbound_rcs_message('abcd-ef01-2345-6789') is None
     assert request_user_agent() == dummy_data.user_agent
     assert b'"status": "revoked"' in request_body()
+
+
+@responses.activate
+def test_mark_whatsapp_message_read(messages, dummy_data):
+    stub(
+        responses.PATCH,
+        'https://api.nexmo.com/v1/messages/abcd-ef01-2345-6789',
+        'no_content.json',
+    )
+
+    assert messages.mark_whatsapp_message_read('abcd-ef01-2345-6789') is None
+    assert request_user_agent() == dummy_data.user_agent
+    assert b'"status": "read"' in request_body()

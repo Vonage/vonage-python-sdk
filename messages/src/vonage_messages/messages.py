@@ -44,3 +44,43 @@ class Messages:
             message.model_dump(by_alias=True, exclude_none=True) or message,
         )
         return SendMessageResponse(**response)
+
+    @validate_call
+    def mark_whatsapp_message_read(self, message_uuid: str) -> None:
+        """Mark a WhatsApp message as read.
+
+        Note: to use this method, update the `api_host` attribute of the
+        `vonage_http_client.HttpClientOptions` object to the API endpoint
+        corresponding to the region where the WhatsApp number is hosted.
+
+        For example, to use the EU API endpoint, set the `api_host`
+        attribute to 'https://api-eu.vonage.com'.
+
+        Args:
+            message_uuid (str): The unique identifier of the WhatsApp message to mark as read.
+        """
+        self._http_client.patch(
+            self._http_client.api_host,
+            f'/v1/messages/{message_uuid}',
+            {'status': 'read'},
+        )
+
+    @validate_call
+    def revoke_rcs_message(self, message_uuid: str) -> None:
+        """Revoke an RCS message.
+
+        Note: to use this method, update the `api_host` attribute of the
+        `vonage_http_client.HttpClientOptions` object to the API endpoint
+        corresponding to the region where the RCS number is hosted.
+
+        For example, to use the EU API endpoint, set the `api_host`
+        attribute to 'https://api-eu.vonage.com'.
+
+        Args:
+            message_uuid (str): The unique identifier of the RCS message to revoke.
+        """
+        self._http_client.patch(
+            self._http_client.api_host,
+            f'/v1/messages/{message_uuid}',
+            {'status': 'revoked'},
+        )

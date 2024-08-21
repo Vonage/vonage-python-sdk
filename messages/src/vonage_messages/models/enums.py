@@ -16,6 +16,7 @@ class MessageType(str, Enum):
 class ChannelType(str, Enum):
     SMS = 'sms'
     MMS = 'mms'
+    RCS = 'rcs'
     WHATSAPP = 'whatsapp'
     MESSENGER = 'messenger'
     VIBER = 'viber_service'

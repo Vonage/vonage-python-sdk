@@ -26,7 +26,7 @@ This message can now be sent with
 vonage_client.messages.send(message)
 ```
 
-All possible message types from every message channel have their own message model. They are named following this rule: {Channel}{MessageType}, e.g. `Sms`, `MmsImage`, `MessengerAudio`, `WhatsappSticker`, `ViberVideo`, etc.
+All possible message types from every message channel have their own message model. They are named following this rule: {Channel}{MessageType}, e.g. `Sms`, `MmsImage`, `RcsFile`, `MessengerAudio`, `WhatsappSticker`, `ViberVideo`, etc.
 
 The different message models are listed at the bottom of the page.
 
@@ -64,6 +64,38 @@ message = Sms(
 vonage_client.messages.send(message)
 ```
 
+### Mark a WhatsApp Message as Read
+
+Note: to use this method, update the `api_host` attribute of the `vonage_http_client.HttpClientOptions` object to the API endpoint corresponding to the region where the WhatsApp number is hosted.
+
+For example, to use the EU API endpoint, set the `api_host` attribute to 'api-eu.vonage.com'.
+
+```python
+from vonage import Vonage, Auth, HttpClientOptions
+
+auth = Auth(application_id='MY-APP-ID', private_key='MY-PRIVATE-KEY')
+options = HttpClientOptions(api_host='api-eu.vonage.com')
+
+vonage_client = Vonage(auth, options)
+vonage_client.messages.mark_whatsapp_message_read('MESSAGE_UUID')
+```
+
+### Revoke an RCS Message
+
+Note: as above, to use this method you need to update the `api_host` attribute of the `vonage_http_client.HttpClientOptions` object to the API endpoint corresponding to the region where the WhatsApp number is hosted.
+
+For example, to use the EU API endpoint, set the `api_host` attribute to 'api-eu.vonage.com'.
+
+```python
+from vonage import Vonage, Auth, HttpClientOptions
+
+auth = Auth(application_id='MY-APP-ID', private_key='MY-PRIVATE-KEY')
+options = HttpClientOptions(api_host='api-eu.vonage.com')
+
+vonage_client = Vonage(auth, options)
+vonage_client.messages.revoke_rcs_message('MESSAGE_UUID')
+```
+
 ## Message Models
 
 To send a message, instantiate a message model of the correct type as described above. This is a list of message models that can be used:
@@ -71,6 +103,7 @@ To send a message, instantiate a message model of the correct type as described 
 ```
 Sms
 MmsImage, MmsVcard, MmsAudio, MmsVideo
+RcsText, RcsImage, RcsVideo, RcsFile, RcsCustom
 WhatsappText, WhatsappImage, WhatsappAudio, WhatsappVideo, WhatsappFile, WhatsappTemplate, WhatsappSticker, WhatsappCustom
 MessengerText, MessengerImage, MessengerAudio, MessengerVideo, MessengerFile
 ViberText, ViberImage, ViberVideo, ViberFile

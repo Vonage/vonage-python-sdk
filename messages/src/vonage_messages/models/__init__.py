@@ -10,6 +10,7 @@ from .messenger import (
     MessengerVideo,
 )
 from .mms import MmsAudio, MmsImage, MmsResource, MmsVcard, MmsVideo
+from .rcs import RcsCustom, RcsFile, RcsImage, RcsResource, RcsText, RcsVideo
 from .sms import Sms, SmsOptions
 from .viber import (
     ViberAction,
@@ -62,6 +63,12 @@ __all__ = [
     'MmsResource',
     'MmsVcard',
     'MmsVideo',
+    'RcsCustom',
+    'RcsFile',
+    'RcsImage',
+    'RcsResource',
+    'RcsText',
+    'RcsVideo',
     'Sms',
     'SmsOptions',
     'ViberAction',

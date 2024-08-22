@@ -54,6 +54,12 @@ class Messages:
     def revoke_outbound_rcs_message(self, message_uuid: str) -> None:
         """Revoke an outbound RCS message.
 
+        Note: to use this method, update the `api_host` attribute of the `vonage.Client` instance
+        to the API endpoint corresponding to the region where the WhatsApp number is hosted.
+
+        For example, to use the EU API endpoint, set the `api_host`
+        attribute to 'api-eu.vonage.com'.
+
         Args:
             message_uuid (str): The UUID of the message to revoke.
         """
@@ -71,7 +77,7 @@ class Messages:
         to the API endpoint corresponding to the region where the WhatsApp number is hosted.
 
         For example, to use the EU API endpoint, set the `api_host`
-        attribute to 'https://api-eu.vonage.com'.
+        attribute to 'api-eu.vonage.com'.
 
         Args:
             message_uuid (str): The UUID of the message to mark as read.

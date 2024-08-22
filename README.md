@@ -212,15 +212,18 @@ client.messages.send_message({
 
 ### Revoke an RCS Message
 
+To mark a WhatsApp message as read, you must override the default `vonage.Client.api_host` attribute. Override it to correspond to the region where the WhatsApp number you're using is hosted.
+
 ```python
+# Override api_host attribute for EU region
+client.api_host('api-eu.vonage.com')
+
 client.messages.revoke_outbound_message('MY-MESSAGE-ID')
 ```
 
 ### Send an audio file via WhatsApp
 
-You will need a WhatsApp Business Account to use WhatsApp messaging. WhatsApp restrictions mean that you
-must send a template message to a user if they have not previously messaged you, but you can send any message
-type to a user if they have messaged your business number in the last 24 hours.
+You will need a WhatsApp Business Account to use WhatsApp messaging. WhatsApp restrictions mean that you must send a template message to a user if they have not previously messaged you, but you can send any message type to a user if they have messaged your business number in the last 24 hours.
 
 ```python
 client.messages.send_message({

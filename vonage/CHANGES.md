@@ -1,3 +1,8 @@
+# 3.99.2a0
+- Add support for the [RCS messaging channel](https://developer.vonage.com/en/messages/concepts/rcs) of the Vonage Messages API
+- Add method to revoke an RCS message
+- Add method to mark a WhatsApp message as read
+
 # 3.99.0a12
 - Add support for the [Vonage Account API](https://developer.vonage.com/en/account/overview).
 - Update package metadata for the `vonage-application` package.

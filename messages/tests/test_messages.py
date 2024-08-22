@@ -87,13 +87,13 @@ def test_http_client_property():
 def test_mark_whatsapp_message_read():
     responses.add(
         responses.PATCH,
-        'https://api-eu.vonage.com/v1/messages/1234567890',
+        'https://api-eu.vonage.com/v1/messages/asdf',
     )
     messages = Messages(
         HttpClient(get_mock_jwt_auth(), HttpClientOptions(api_host='api-eu.vonage.com'))
     )
     messages.http_client.http_client_options.api_host = 'api-eu.vonage.com'
-    messages.mark_whatsapp_message_read('1234567890')
+    messages.mark_whatsapp_message_read('asdf')
 
 
 @responses.activate

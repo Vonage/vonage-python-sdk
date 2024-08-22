@@ -54,7 +54,7 @@ class Messages:
         corresponding to the region where the WhatsApp number is hosted.
 
         For example, to use the EU API endpoint, set the `api_host`
-        attribute to 'https://api-eu.vonage.com'.
+        attribute to 'api-eu.vonage.com'.
 
         Args:
             message_uuid (str): The unique identifier of the WhatsApp message to mark as read.
@@ -74,7 +74,7 @@ class Messages:
         corresponding to the region where the RCS number is hosted.
 
         For example, to use the EU API endpoint, set the `api_host`
-        attribute to 'https://api-eu.vonage.com'.
+        attribute to 'api-eu.vonage.com'.
 
         Args:
             message_uuid (str): The unique identifier of the RCS message to revoke.

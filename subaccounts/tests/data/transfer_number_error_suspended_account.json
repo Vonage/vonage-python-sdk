@@ -1,0 +1,6 @@
+{
+    "type": "https://developer.nexmo.com/api-errors/subaccounts#invalid-number-transfer",
+    "title": "Invalid Number Transfer",
+    "detail": "One of the accounts involved in the transfer is banned",
+    "instance": "ba2abf2a-e64d-4281-aca5-30f13947cbcd"
+}

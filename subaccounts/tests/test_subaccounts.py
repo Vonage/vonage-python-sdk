@@ -1,175 +1,255 @@
-# from os.path import abspath
+from os.path import abspath
 
-# import responses
-# from pytest import raises
-# from vonage_account.account import Account
-# from vonage_account.errors import InvalidSecretError
-# from vonage_http_client.errors import ForbiddenError
-# from vonage_http_client.http_client import HttpClient
+import responses
+from pytest import raises
+from vonage_http_client.errors import ForbiddenError
+from vonage_http_client.http_client import HttpClient
+from vonage_subaccounts.errors import InvalidSecretError
+from vonage_subaccounts.requests import (
+    ListTransfersFilter,
+    SubaccountOptions,
+    TransferNumberRequest,
+    TransferRequest,
+)
+from vonage_subaccounts.subaccounts import Subaccounts
 
-# from testutils import build_response, get_mock_api_key_auth
+from testutils import build_response, get_mock_api_key_auth
 
-# path = abspath(__file__)
+path = abspath(__file__)
 
-# account = Account(HttpClient(get_mock_api_key_auth()))
-
-
-# def test_http_client_property():
-#     http_client = account.http_client
-#     assert isinstance(http_client, HttpClient)
-
-
-# @responses.activate
-# def test_get_balance():
-#     build_response(
-#         path,
-#         'GET',
-#         'https://rest.nexmo.com/account/get-balance',
-#         'get_balance.json',
-#     )
-#     balance = account.get_balance()
-
-#     assert balance.value == 29.18202293
-#     assert balance.auto_reload is False
+subaccounts = Subaccounts(HttpClient(get_mock_api_key_auth()))
 
 
-# @responses.activate
-# def test_top_up():
-#     build_response(
-#         path,
-#         'POST',
-#         'https://rest.nexmo.com/account/top-up',
-#         'top_up.json',
-#     )
-#     top_up_response = account.top_up('1234567890')
-
-#     assert top_up_response.error_code == '200'
-#     assert top_up_response.error_code_label == 'success'
+def test_http_client_property():
+    http_client = subaccounts.http_client
+    assert isinstance(http_client, HttpClient)
 
 
-# @responses.activate
-# def test_update_default_sms_webhook():
-#     build_response(
-#         path,
-#         'POST',
-#         'https://rest.nexmo.com/account/settings',
-#         'update_default_sms_webhook.json',
-#     )
-#     settings_response = account.update_default_sms_webhook(
-#         mo_callback_url='https://example.com/inbound_sms_webhook',
-#         dr_callback_url='https://example.com/delivery_receipt_webhook',
-#     )
+@responses.activate
+def test_list_subaccounts():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/accounts/test_api_key/subaccounts',
+        'list_subaccounts.json',
+    )
+    response = subaccounts.list_subaccounts()
 
-#     assert settings_response.mo_callback_url == 'https://example.com/inbound_sms_webhook'
-#     assert (
-#         settings_response.dr_callback_url
-#         == 'https://example.com/delivery_receipt_webhook'
-#     )
-#     assert settings_response.max_outbound_request == 30
-#     assert settings_response.max_inbound_request == 30
-#     assert settings_response.max_calls_per_second == 30
+    assert response.primary_account.api_key == 'test_api_key'
+    assert response.primary_account.name == 'SMPP Account'
+    assert response.primary_account.created_at == '2024-08-28T02:02:14.626Z'
+    assert response.primary_account.suspended is False
 
+    assert len(response.subaccounts) == 2
+    assert response.subaccounts[0].api_key == 'qwer1234'
+    assert response.subaccounts[0].name == 'second own balance subacct'
+    assert response.subaccounts[0].primary_account_api_key == 'test_api_key'
+    assert response.subaccounts[0].use_primary_account_balance is False
 
-# @responses.activate
-# def test_list_secrets():
-#     build_response(
-#         path,
-#         'GET',
-#         'https://api.nexmo.com/accounts/test_api_key/secrets',
-#         'list_secrets.json',
-#     )
-#     secrets = account.list_secrets()
-
-#     assert len(secrets) == 1
-#     assert secrets[0].id == '1b1b1b1b-1b1b-1b-1b1b-1b1b1b1b1b1b'
-#     assert secrets[0].created_at == '2022-03-28T14:16:56Z'
+    assert response.total_balance == 29.6672
+    assert response.total_credit_limit == 0
 
 
-# @responses.activate
-# def test_create_secret():
-#     build_response(
-#         path,
-#         'POST',
-#         'https://api.nexmo.com/accounts/test_api_key/secrets',
-#         'secret.json',
-#         201,
-#     )
-#     secret = account.create_secret('Mytestsecret1234')
+@responses.activate
+def test_create_subaccount():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/accounts/test_api_key/subaccounts',
+        'create_subaccount.json',
+    )
 
-#     assert account.http_client.last_response.status_code == 201
-#     assert secret.id == 'ad6dc56f-07b5-46e1-a527-85530e625800'
-#     assert secret.created_at == '2017-03-02T16:34:49Z'
+    response = subaccounts.create_subaccount(
+        SubaccountOptions(
+            name='test_subaccount', secret='1234asdfA', use_primary_account_balance=False
+        )
+    )
 
-
-# def test_create_secret_invalid_secret():
-#     with raises(InvalidSecretError) as e:
-#         account.create_secret('secret')
-
-#     with raises(InvalidSecretError) as e:
-#         account.create_secret('MYTESTSECRET1234')
-
-#     with raises(InvalidSecretError) as e:
-#         account.create_secret('mytestsecret1234')
-
-#     with raises(InvalidSecretError) as e:
-#         account.create_secret('Mytestsecret')
-
-#     assert e.match(
-#         'Secret must be 8-25 characters long and contain at least one uppercase letter, one lowercase letter, and one digit.'
-#     )
+    assert response.api_key == '1234qwer'
+    assert response.secret == 'SuperSecr3t'
+    assert response.name == 'test_subaccount'
+    assert response.suspended is False
+    assert response.use_primary_account_balance is False
 
 
-# @responses.activate
-# def test_create_secret_error_max_number():
-#     build_response(
-#         path,
-#         'POST',
-#         'https://api.nexmo.com/accounts/test_api_key/secrets',
-#         'create_secret_error_max_number.json',
-#         403,
-#     )
+@responses.activate
+def test_get_subaccount():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/accounts/test_api_key/subaccounts/1234qwer',
+        'get_subaccount.json',
+    )
 
-#     with raises(ForbiddenError) as e:
-#         account.create_secret('Mytestsecret23456')
-#     assert 'Account reached maximum number [2] of allowed secrets' in e.exconly()
+    response = subaccounts.get_subaccount('1234qwer')
 
-
-# @responses.activate
-# def test_get_secret():
-#     build_response(
-#         path,
-#         'GET',
-#         'https://api.nexmo.com/accounts/test_api_key/secrets/secret_id',
-#         'secret.json',
-#     )
-#     secret = account.get_secret('secret_id')
-
-#     assert secret.id == 'ad6dc56f-07b5-46e1-a527-85530e625800'
-#     assert secret.created_at == '2017-03-02T16:34:49Z'
+    assert response.api_key == '1234qwer'
+    assert response.name == 'test_subaccount'
+    assert response.suspended is False
+    assert response.use_primary_account_balance is False
 
 
-# @responses.activate
-# def test_revoke_api_secret():
-#     responses.add(
-#         responses.DELETE,
-#         'https://api.nexmo.com/accounts/test_api_key/secrets/secret_id',
-#         status=204,
-#     )
-#     account.revoke_secret('secret_id')
-#     assert account.http_client.last_response.status_code == 204
+@responses.activate
+def test_modify_subaccount():
+    build_response(
+        path,
+        'PATCH',
+        'https://api.nexmo.com/accounts/test_api_key/subaccounts/1234qwer',
+        'modify_subaccount.json',
+    )
+
+    response = subaccounts.modify_subaccount(
+        '1234qwer',
+        {
+            'suspended': True,
+            'name': 'modified_test_subaccount',
+        },
+    )
+
+    assert response.api_key == '1234qwer'
+    assert response.name == 'modified_test_subaccount'
+    assert response.suspended is True
+    assert response.use_primary_account_balance is False
 
 
-# @responses.activate
-# def test_revoke_api_secret_error_last_secret():
-#     build_response(
-#         path,
-#         'DELETE',
-#         'https://api.nexmo.com/accounts/test_api_key/secrets/secret_id',
-#         'revoke_secret_error.json',
-#         403,
-#     )
+@responses.activate
+def test_list_balance_transfers():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/accounts/test_api_key/balance-transfers',
+        'list_balance_transfers.json',
+    )
 
-#     with raises(ForbiddenError) as e:
-#         account.revoke_secret('secret_id')
+    response = subaccounts.list_balance_transfers(
+        ListTransfersFilter(start_date='2023-08-07T10:50:44Z')
+    )
 
-#     assert 'Can not delete the last secret.' in e.exconly()
+    assert len(response) == 2
+    assert response[0].id == '6917b0ae-aed3-453c-a918-e37f6ef7b21a'
+    assert response[0].amount == 0.01
+    assert response[1].from_ == 'test_api_key'
+    assert response[1].to == 'asdfqwer'
+    assert response[1].created_at == '2023-12-22T19:40:36.000Z'
+
+
+@responses.activate
+def test_transfer_balance():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/accounts/test_api_key/balance-transfers',
+        'transfer.json',
+    )
+
+    request = TransferRequest(
+        from_='test_api_key', to='asdfqwer', amount=0.02, reference='A reference'
+    )
+    response = subaccounts.transfer_balance(request)
+
+    assert response.id == 'a1a90387-fcf2-41dc-9beb-cfd82b6b994d'
+    assert response.amount == 0.02
+    assert response.from_ == 'test_api_key'
+    assert response.to == 'asdfqwer'
+    assert response.reference == 'A reference'
+
+
+@responses.activate
+def test_list_credit_transfers():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/accounts/test_api_key/credit-transfers',
+        'list_credit_transfers.json',
+    )
+
+    response = subaccounts.list_credit_transfers(
+        ListTransfersFilter(start_date='2023-08-07T10:50:44Z')
+    )
+
+    assert len(response) == 2
+    assert response[0].id == '6917b0ae-aed3-453c-a918-e37f6ef7b21a'
+    assert response[0].amount == 0.01
+    assert response[1].from_ == 'test_api_key'
+    assert response[1].to == 'asdfqwer'
+    assert response[1].created_at == '2023-12-22T19:40:36.000Z'
+
+
+@responses.activate
+def test_transfer_credit():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/accounts/test_api_key/credit-transfers',
+        'transfer.json',
+    )
+
+    request = TransferRequest(
+        from_='test_api_key', to='asdfqwer', amount=0.02, reference='A reference'
+    )
+    response = subaccounts.transfer_credit(request)
+
+    assert response.id == 'a1a90387-fcf2-41dc-9beb-cfd82b6b994d'
+    assert response.amount == 0.02
+    assert response.from_ == 'test_api_key'
+    assert response.to == 'asdfqwer'
+    assert response.reference == 'A reference'
+
+
+@responses.activate
+def test_transfer_number():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/accounts/test_api_key/transfer-number',
+        'transfer_number.json',
+    )
+
+    request = TransferNumberRequest(
+        from_='test_api_key', to='asdfqwer', number='447700900000', country='GB'
+    )
+    response = subaccounts.transfer_number(request)
+
+    assert response.number == '447700900000'
+    assert response.country == 'GB'
+    assert response.from_ == 'test_api_key'
+    assert response.to == 'asdfqwer'
+
+
+@responses.activate
+def test_transfer_number_error_suspended_account():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/accounts/test_api_key/transfer-number',
+        'transfer_number_error_suspended_account.json',
+        status_code=403,
+    )
+
+    request = TransferNumberRequest(
+        from_='test_api_key', to='asdfqwer', number='447700900000', country='GB'
+    )
+
+    with raises(ForbiddenError) as e:
+        subaccounts.transfer_number(request)
+
+    assert 'Invalid Number Transfer' in str(e.value)
+
+
+def test_invalid_secret():
+    with raises(InvalidSecretError):
+        subaccounts.create_subaccount(
+            SubaccountOptions(name='test_subaccount', secret='asDF1')
+        )
+    with raises(InvalidSecretError):
+        subaccounts.create_subaccount(
+            SubaccountOptions(name='test_subaccount', secret='1234asdf')
+        )
+    with raises(InvalidSecretError):
+        subaccounts.create_subaccount(
+            SubaccountOptions(name='test_subaccount', secret='1234ASDF')
+        )
+    with raises(InvalidSecretError):
+        subaccounts.create_subaccount(
+            SubaccountOptions(name='test_subaccount', secret='asdfASDF')
+        )

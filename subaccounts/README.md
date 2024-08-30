@@ -2,65 +2,102 @@
 
 This package contains the code to use Vonage's Subaccount API in Python.
 
-It includes methods for managing Vonage subaccounts.
+It includes methods for creating and modifying Vonage subaccounts and transferring credit, balances and numbers between subaccounts.
 
 ## Usage
 
 It is recommended to use this as part of the main `vonage` package. The examples below assume you've created an instance of the `vonage.Vonage` class called `vonage_client`.
 
 
-<!-- ### Get Account Balance
+### List Subaccounts
 
 ```python
-balance = vonage_client.account.get_balance()
-print(balance)
+response = vonage_client.subaccounts.list_subaccounts()
+print(response.model_dump)
 ```
 
-### Top-Up Account
+### Create Subaccount
 
 ```python
-response = vonage_client.account.top_up(trx='1234567890')
-print(response)
-```
+from vonage_subaccounts import SubaccountOptions
 
-### Update the Default SMS Webhook
-
-This will return a Pydantic object (`SettingsResponse`) containing multiple settings for your account.
-
-```python
-settings: SettingsResponse = vonage_client.account.update_default_sms_webhook(
-    mo_callback_url='https://example.com/inbound_sms_webhook',
-    dr_callback_url='https://example.com/delivery_receipt_webhook',
+response = vonage_client.subaccounts.create_subaccount(
+    SubaccountOptions(
+        name='test_subaccount', secret='1234asdfA', use_primary_account_balance=False
+    )
 )
-
-print(settings)
-```
-
-### List Secrets Associated with the Account
-
-```python
-response = vonage_client.account.list_secrets()
 print(response)
 ```
 
-### Create a New Account Secret
+### Modify a Subaccount
 
 ```python
-secret = vonage_client.account.create_secret('Mytestsecret12345')
-print(secret)
+from vonage_subaccounts import ModifySubaccountOptions
+
+response = vonage_client.subaccounts.modify_subaccount(
+    'test_subaccount',
+    ModifySubaccountOptions(
+        suspended=True,
+        name='modified_test_subaccount',
+    ),
+)
+print(response)
 ```
 
-### Get Information About One Secret
+### List Balance Transfers
 
 ```python
-secret = vonage_client.account.get_secret(MY_SECRET_ID)
-print(secret)
+from vonage_subaccounts import ListTransfersFilter
+
+filter = {'start_date': '2023-08-07T10:50:44Z'}
+response = vonage_client.subaccounts.list_balance_transfers(ListTransfersFilter(**filter))
+for item in response:
+    print(item.model_dump())
 ```
 
-### Revoke a Secret
-
-Note: it isn't possible to revoke all account secrets, there must always be one valid secret. Attempting to do so will give a 403 error.
+### Transfer Balance Between Subaccounts
 
 ```python
-client.account.revoke_secret(MY_SECRET_ID)
-``` -->
+from vonage_subaccounts import TransferRequest
+
+request = TransferRequest(
+    from_='test_api_key', to='test_subaccount', amount=0.02, reference='A reference'
+)
+response = vonage_client.subaccounts.transfer_balance(request)
+print(response)
+```
+
+### List Credit Transfers
+
+```python
+from vonage_subaccounts import ListTransfersFilter
+
+filter = {'start_date': '2023-08-07T10:50:44Z'}
+response = vonage_client.subaccounts.list_credit_transfers(ListTransfersFilter(**filter))
+for item in response:
+    print(item.model_dump())
+```
+
+### Transfer Credit Between Subaccounts
+
+```python
+from vonage_subaccounts import TransferRequest
+
+request = TransferRequest(
+    from_='test_api_key', to='test_subaccount', amount=0.02, reference='A reference'
+)
+response = vonage_client.subaccounts.transfer_balance(request)
+print(response)
+```
+
+### Transfer a Phone Number Between Subaccounts
+
+```python
+from vonage_subaccounts import TransferNumberRequest
+
+request = TransferNumberRequest(
+    from_='test_api_key', to='test_subaccount', number='447700900000', country='GB'
+)
+response = vonage_client.subaccounts.transfer_number(request)
+print(response)
+```

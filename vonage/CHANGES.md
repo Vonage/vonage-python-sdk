@@ -1,3 +1,6 @@
+# 3.99.3a1
+- Updated `vonage_subaccounts.ListSubaccountsResponse` for compatibility with Python 3.8
+
 # 3.99.3a0
 - Add support for the [Vonage Subaccounts API](https://developer.vonage.com/en/use-cases/using-subaccounts).
 

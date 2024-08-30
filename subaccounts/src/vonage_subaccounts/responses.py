@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 from pydantic import BaseModel, Field
 
@@ -23,7 +23,7 @@ class Subaccount(VonageAccount):
 
 class ListSubaccountsResponse(BaseModel):
     primary_account: PrimaryAccount
-    subaccounts: list[Subaccount]
+    subaccounts: List[Subaccount]
     total_balance: float
     total_credit_limit: Union[int, float]
 

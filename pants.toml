@@ -41,6 +41,7 @@ filter = [
   'network_sim_swap/src',
   'number_insight/src',
   'number_insight_v2/src',
+  'number_management/src',
   'sms/src',
   'subaccounts/src',
   'users/src',

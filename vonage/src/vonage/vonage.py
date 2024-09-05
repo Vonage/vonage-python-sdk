@@ -5,6 +5,7 @@ from vonage_application.application import Application
 from vonage_http_client import Auth, HttpClient, HttpClientOptions
 from vonage_messages import Messages
 from vonage_number_insight import NumberInsight
+from vonage_numbers import Numbers
 from vonage_sms import Sms
 from vonage_subaccounts import Subaccounts
 from vonage_users import Users
@@ -37,6 +38,7 @@ class Vonage:
         self.application = Application(self._http_client)
         self.messages = Messages(self._http_client)
         self.number_insight = NumberInsight(self._http_client)
+        self.numbers = Numbers(self._http_client)
         self.sms = Sms(self._http_client)
         self.subaccounts = Subaccounts(self._http_client)
         self.users = Users(self._http_client)

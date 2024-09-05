@@ -1,8 +1,15 @@
+# 3.99.5a0
+- Add support for the [Vonage Video API](https://developer.vonage.com/en/video/overview)
+- Updated `vonage_subaccounts.ListSubaccountsResponse` for compatibility with Python 3.8
+
+# 3.99.4a0
+- Add support for the [Vonage Numbers API](https://developer.vonage.com/en/numbers/overview)
+
 # 3.99.3a1
 - Updated `vonage_subaccounts.ListSubaccountsResponse` for compatibility with Python 3.8
 
 # 3.99.3a0
-- Add support for the [Vonage Subaccounts API](https://developer.vonage.com/en/use-cases/using-subaccounts).
+- Add support for the [Vonage Subaccounts API](https://developer.vonage.com/en/use-cases/using-subaccounts)
 
 # 3.99.2a0
 - Add support for the [RCS messaging channel](https://developer.vonage.com/en/messages/concepts/rcs) of the Vonage Messages API

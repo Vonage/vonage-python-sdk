@@ -1,11 +1,10 @@
 from typing import Optional
 
 from pydantic import BaseModel, Field, model_validator
-
 from vonage_numbers.enums import NumberFeatures, NumberType, VoiceCallbackType
+from vonage_utils.types import PhoneNumber
 
 from .errors import NumbersError
-from vonage_utils.types import PhoneNumber
 
 
 class ListNumbersFilter(BaseModel):
@@ -38,9 +37,9 @@ class SearchAvailableNumbersFilter(ListNumbersFilter):
 class NumberParams(BaseModel):
     """Specify the two-letter country code and the number you are referring to.
 
-    If you'd like to perform an action on a subaccount, provide the api_key of
-    that account in the `target_api_key` field. If you'd like to perform an action
-    on your own account, you do not need to provide this field.
+    If you'd like to perform an action on a subaccount, provide the api_key of that account in the
+    `target_api_key` field. If you'd like to perform an action on your own account, you do not need
+    to provide this field.
     """
 
     country: str = Field(..., min_length=2, max_length=2)

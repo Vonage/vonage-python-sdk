@@ -2,18 +2,17 @@ from os.path import abspath
 
 import responses
 from pytest import raises
-
+from vonage_http_client.http_client import HttpClient
 from vonage_numbers.errors import NumbersError
 from vonage_numbers.number_management import Numbers
-from vonage_http_client.http_client import HttpClient
-
-from testutils import build_response, get_mock_api_key_auth
 from vonage_numbers.requests import (
     ListOwnedNumbersFilter,
     NumberParams,
     SearchAvailableNumbersFilter,
     UpdateNumberParams,
 )
+
+from testutils import build_response, get_mock_api_key_auth
 
 path = abspath(__file__)
 

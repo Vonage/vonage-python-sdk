@@ -3,10 +3,11 @@ from typing import List, Optional, Tuple
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 from vonage_numbers.errors import NumbersError
+
 from .requests import (
-    SearchAvailableNumbersFilter,
     ListOwnedNumbersFilter,
     NumberParams,
+    SearchAvailableNumbersFilter,
     UpdateNumberParams,
 )
 from .responses import AvailableNumber, NumbersStatus, OwnedNumber

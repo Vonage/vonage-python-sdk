@@ -1,11 +1,11 @@
-from pyexpat import model
-from pydantic import BaseModel, field_validator, model_validator
-from typing import Literal, Optional, List, Union
-from uuid import UUID, uuid4
 from time import time
+from typing import List, Literal, Optional, Union
+from uuid import UUID, uuid4
 
-from .enums import TokenRole
+from pydantic import BaseModel, field_validator, model_validator
+
 from ..errors import TokenExpiryError
+from .enums import TokenRole
 
 
 class TokenOptions(BaseModel):

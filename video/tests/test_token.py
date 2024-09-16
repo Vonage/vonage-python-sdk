@@ -1,9 +1,9 @@
+from vonage_http_client import HttpClient
 from vonage_video.errors import TokenExpiryError
-from vonage_video.models.token import TokenOptions
 from vonage_video.models.enums import TokenRole
+from vonage_video.models.token import TokenOptions
 from vonage_video.video import Video
 
-from vonage_http_client import HttpClient
 from testutils import get_mock_jwt_auth
 
 video = Video(HttpClient(get_mock_jwt_auth()))

@@ -4,7 +4,6 @@ import responses
 from pytest import raises
 from responses.matchers import json_params_matcher
 from vonage_http_client.http_client import HttpClient
-
 from vonage_video.video import Video
 
 from testutils import build_response, get_mock_jwt_auth

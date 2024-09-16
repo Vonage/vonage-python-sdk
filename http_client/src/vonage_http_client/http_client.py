@@ -25,6 +25,7 @@ logger = getLogger('vonage')
 class HttpClientOptions(BaseModel):
     api_host: str = 'api.nexmo.com'
     rest_host: Optional[str] = 'rest.nexmo.com'
+    video_host: Optional[str] = 'video.api.vonage.com'
     timeout: Optional[Annotated[int, Field(ge=0)]] = None
     pool_connections: Optional[Annotated[int, Field(ge=1)]] = 10
     pool_maxsize: Optional[Annotated[int, Field(ge=1)]] = 10

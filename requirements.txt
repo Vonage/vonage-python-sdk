@@ -14,10 +14,13 @@ pyjwt[crypto]>=1.6.4
 -e network_sim_swap
 -e number_insight
 -e number_insight_v2
+-e number_management
 -e sms
+-e subaccounts
 -e users
 -e verify
 -e verify_v2
+-e video
 -e voice
 -e vonage_utils
 -e vonage_network

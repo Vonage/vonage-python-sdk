@@ -63,9 +63,9 @@ class Auth:
     def create_jwt_auth_string(self):
         return b'Bearer ' + self.generate_application_jwt()
 
-    def generate_application_jwt(self):
+    def generate_application_jwt(self, claims: dict = None):
         try:
-            return self._jwt_client.generate_application_jwt()
+            return self._jwt_client.generate_application_jwt(claims)
         except AttributeError as err:
             raise JWTGenerationError(
                 'JWT generation failed. Check that you passed in valid values for "application_id" and "private_key".'

@@ -1,0 +1,19 @@
+[
+    {
+        "session_id": "1_MX4yOWY3NjBmOC03Y2UxLTQ2YzktYWRlMy1mMmRlZGVlNGVkNWZ-fjE3MjY0NjI1ODg2NDd-MTF4TGExYmJoelBlR1FHbVhzbWd4STBrfn5-",
+        "project_id": "29f760f8-7ce1-46c9-ade3-f2dedee4ed5f",
+        "partner_id": "29f760f8-7ce1-46c9-ade3-f2dedee4ed5f",
+        "create_dt": "Sun Sep 15 21:56:28 PDT 2024",
+        "session_status": null,
+        "status_invalid": null,
+        "media_server_hostname": null,
+        "messaging_server_url": null,
+        "messaging_url": null,
+        "symphony_address": null,
+        "properties": null,
+        "ice_server": null,
+        "session_segment_id": "35308566-4012-4c1e-90f7-cc15b5a390fe",
+        "ice_servers": null,
+        "ice_credential_expiration": 86100
+    }
+]

@@ -1,6 +1,6 @@
 from time import time
-from typing import List, Literal, Optional, Union
-from uuid import UUID, uuid4
+from typing import List, Literal, Optional
+from uuid import uuid4
 
 from pydantic import BaseModel, field_validator, model_validator
 
@@ -29,7 +29,7 @@ class TokenOptions(BaseModel):
     connection_data: Optional[str] = None
     initial_layout_class_list: Optional[List[str]] = None
     exp: Optional[int] = None
-    jti: Union[UUID, str] = uuid4()
+    jti: str = str(uuid4())
     iat: int = int(time())
     subject: Literal['video'] = 'video'
     scope: Literal['session.connect'] = 'session.connect'

@@ -16,3 +16,8 @@ class ArchiveMode(str, Enum):
 class MediaMode(str, Enum):
     ROUTED = 'routed'
     RELAYED = 'relayed'
+
+
+class P2pPreference(str, Enum):
+    DISABLED = 'disabled'
+    ALWAYS = 'always'

@@ -1,14 +1,10 @@
+from typing import List
+
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
+from vonage_video.models.session import SessionOptions, VideoSession
+from vonage_video.models.stream import StreamInfo, StreamLayoutOptions
 from vonage_video.models.token import TokenOptions
-
-# from .models.requests import (
-#     AudioStreamOptions,
-#     CreateCallRequest,
-#     ListCallsFilter,
-#     TtsStreamOptions,
-# )
-# from .models.responses import CallInfo, CallList, CallMessage, CreateCallResponse
 
 
 class Video:
@@ -16,8 +12,6 @@ class Video:
 
     def __init__(self, http_client: HttpClient) -> None:
         self._http_client = http_client
-        archive_mode_values = {'manual', 'always'}
-        media_mode_values = {'routed', 'relayed'}
 
     @property
     def http_client(self) -> HttpClient:
@@ -42,233 +36,132 @@ class Video:
             token_options.model_dump(exclude_none=True)
         )
 
-    # def create_session(self, options: SessionOptions) -> Session:
-    #     """Creates a new session for the Vonage Video API."""
+    @validate_call
+    def create_session(self, options: SessionOptions = None) -> VideoSession:
+        """Creates a new session for the Vonage Video API.
 
-    # # #####################
-    # @validate_call
-    # def create_call(self, params: CreateCallRequest) -> CreateCallResponse:
-    #     """Creates a new call using the Vonage Voice API.
+        Args:
+            options (SessionOptions): The options for the session.
 
-    #     Args:
-    #         params (CreateCallRequest): The parameters for the call.
+        Returns:
+            VideoSession: The new session.
+        """
 
-    #     Returns:
-    #         CreateCallResponse: The response object containing information about the created call.
-    #     """
-    #     response = self._http_client.post(
-    #         self._http_client.api_host,
-    #         '/v1/calls',
-    #         params.model_dump(by_alias=True, exclude_none=True),
-    #     )
+        response = self._http_client.post(
+            self._http_client.video_host,
+            '/session/create',
+            options.model_dump(by_alias=True, exclude_none=True) if options else None,
+            sent_data_type='form',
+        )
 
-    #     return CreateCallResponse(**response)
+        session_response = {
+            'session_id': response[0]['session_id'],
+            **(options.model_dump(exclude_none=True) if options else {}),
+        }
 
-    # @validate_call
-    # def list_calls(
-    #     self, filter: ListCallsFilter = ListCallsFilter()
-    # ) -> Tuple[List[CallInfo], Optional[int]]:
-    #     """Lists calls made with the Vonage Voice API.
+        return VideoSession(**session_response)
 
-    #     Args:
-    #         filter (ListCallsFilter): The parameters to filter the list of calls.
+    @validate_call
+    def get_stream(self, session_id: str, stream_id: str) -> StreamInfo:
+        """Gets a stream from the Vonage Video API.
 
-    #     Returns:
-    #         Tuple[List[CallInfo], Optional[int]] A tuple containing a list of `CallInfo` objects and the
-    #             value of the `record_index` attribute to get the next page of results, if there
-    #             are more results than the specified `page_size`.
-    #     """
-    #     response = self._http_client.get(
-    #         self._http_client.api_host,
-    #         '/v1/calls',
-    #         filter.model_dump(by_alias=True, exclude_none=True),
-    #     )
+        Args:
+            session_id (str): The session ID.
+            stream_id (str): The stream ID.
 
-    #     list_response = CallList(**response)
-    #     if list_response.links.next is None:
-    #         return list_response.embedded.calls, None
-    #     next_page_index = list_response.record_index + 1
-    #     return list_response.embedded.calls, next_page_index
+        Returns:
+            StreamInfo: Information about the video stream.
+        """
 
-    # @validate_call
-    # def get_call(self, call_id: str) -> CallInfo:
-    #     """Gets a call by ID.
+        response = self._http_client.get(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/session/{session_id}/stream/{stream_id}',
+        )
 
-    #     Args:
-    #         call_id (str): The ID of the call to retrieve.
+        return StreamInfo(**response)
 
-    #     Returns:
-    #         CallInfo: Object with information about the call.
-    #     """
-    #     response = self._http_client.get(
-    #         self._http_client.api_host, f'/v1/calls/{call_id}'
-    #     )
+    @validate_call
+    def list_streams(self, session_id: str) -> List[StreamInfo]:
+        """Lists the streams in a session from the Vonage Video API.
 
-    #     return CallInfo(**response)
+        Args:
+            session_id (str): The session ID.
 
-    # @validate_call
-    # def transfer_call_ncco(self, uuid: str, ncco: List[NccoAction]) -> None:
-    #     """Transfers a call to a new NCCO.
+        Returns:
+            List[StreamInfo]: Information about the video streams.
+        """
 
-    #     Args:
-    #         uuid (str): The UUID of the call to transfer.
-    #         ncco (List[NccoAction]): The new NCCO to transfer the call to.
-    #     """
-    #     serializable_ncco = [
-    #         action.model_dump(by_alias=True, exclude_none=True) for action in ncco
-    #     ]
-    #     self._http_client.put(
-    #         self._http_client.api_host,
-    #         f'/v1/calls/{uuid}',
-    #         {
-    #             'action': 'transfer',
-    #             'destination': {'type': 'ncco', 'ncco': serializable_ncco},
-    #         },
-    #     )
+        response = self._http_client.get(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/session/{session_id}/stream',
+        )
 
-    # @validate_call
-    # def transfer_call_answer_url(self, uuid: str, answer_url: str) -> None:
-    #     """Transfers a call to a new answer URL.
+        return [StreamInfo(**stream) for stream in response['items']]
 
-    #     Args:
-    #         uuid (str): The UUID of the call to transfer.
-    #         answer_url (str): The new answer URL to transfer the call to.
-    #     """
-    #     self._http_client.put(
-    #         self._http_client.api_host,
-    #         f'/v1/calls/{uuid}',
-    #         {'action': 'transfer', 'destination': {'type': 'ncco', 'url': [answer_url]}},
-    #     )
+    @validate_call
+    def change_stream_layout(
+        self, session_id: str, stream_layout_options: StreamLayoutOptions
+    ) -> None:
+        """Changes the layout of a stream in a session in the Vonage Video API.
 
-    # def hangup(self, uuid: str) -> None:
-    #     """Ends the call for the specified UUID, removing them from it.
+        Args:
+            session_id (str): The session ID.
+            stream_layout_options (StreamLayoutOptions): The options for the stream layout.
+        """
 
-    #     Args:
-    #         uuid (str): The UUID to end the call for.
-    #     """
-    #     self._http_client.put(
-    #         self._http_client.api_host, f'/v1/calls/{uuid}', {'action': 'hangup'}
-    #     )
+        self._http_client.put(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/session/{session_id}/stream',
+            stream_layout_options.model_dump(by_alias=True, exclude_none=True),
+        )
 
-    # def mute(self, uuid: str) -> None:
-    #     """Mutes a call for the specified UUID.
+    def get_stream(self, session_id: str, stream_id: str) -> StreamInfo:
+        """Gets a stream from the Vonage Video API.
 
-    #     Args:
-    #         uuid (str): The UUID to mute the call for.
-    #     """
-    #     self._http_client.put(
-    #         self._http_client.api_host, f'/v1/calls/{uuid}', {'action': 'mute'}
-    #     )
+        Args:
+            session_id (str): The session ID.
+            stream_id (str): The stream ID.
 
-    # def unmute(self, uuid: str) -> None:
-    #     """Unmutes a call for the specified UUID.
+        Returns:
+            StreamInfo: Information about the video stream.
+        """
 
-    #     Args:
-    #         uuid (str): The UUID to unmute the call for.
-    #     """
-    #     self._http_client.put(
-    #         self._http_client.api_host, f'/v1/calls/{uuid}', {'action': 'unmute'}
-    #     )
+        response = self._http_client.get(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/session/{session_id}/stream/{stream_id}',
+        )
 
-    # def earmuff(self, uuid: str) -> None:
-    #     """Earmuffs a call for the specified UUID (prevents them from hearing audio).
+        return StreamInfo(**response)
 
-    #     Args:
-    #         uuid (str): The UUID you want to prevent from hearing audio.
-    #     """
-    #     self._http_client.put(
-    #         self._http_client.api_host, f'/v1/calls/{uuid}', {'action': 'earmuff'}
-    #     )
+    def list_streams(self, session_id: str) -> List[StreamInfo]:
+        """Lists the streams in a session from the Vonage Video API.
 
-    # def unearmuff(self, uuid: str) -> None:
-    #     """Allows the specified UUID to hear audio.
+        Args:
+            session_id (str): The session ID.
 
-    #     Args:
-    #         uuid (str): The UUID you want to to allow to hear audio.
-    #     """
-    #     self._http_client.put(
-    #         self._http_client.api_host, f'/v1/calls/{uuid}', {'action': 'unearmuff'}
-    #     )
+        Returns:
+            List[StreamInfo]: Information about the video streams.
+        """
 
-    # @validate_call
-    # def play_audio_into_call(
-    #     self, uuid: str, audio_stream_options: AudioStreamOptions
-    # ) -> CallMessage:
-    #     """Plays an audio stream into a call.
+        response = self._http_client.get(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/session/{session_id}/stream',
+        )
 
-    #     Args:
-    #         uuid (str): The UUID of the call to stream audio into.
-    #         stream_audio_options (StreamAudioOptions): The options for streaming audio.
+        return [StreamInfo(**stream) for stream in response['items']]
 
-    #     Returns:
-    #         CallMessage: Object with information about the call.
-    #     """
-    #     response = self._http_client.put(
-    #         self._http_client.api_host,
-    #         f'/v1/calls/{uuid}/stream',
-    #         audio_stream_options.model_dump(by_alias=True, exclude_none=True),
-    #     )
+    def change_stream_layout(
+        self, session_id: str, stream_layout_options: StreamLayoutOptions
+    ) -> None:
+        """Changes the layout of a stream in a session in the Vonage Video API.
 
-    #     return CallMessage(**response)
+        Args:
+            session_id (str): The session ID.
+            stream_layout_options (StreamLayoutOptions): The options for the stream layout.
+        """
 
-    # def stop_audio_stream(self, uuid: str) -> CallMessage:
-    #     """Stops streaming audio into a call.
-
-    #     Args:
-    #         uuid (str): The UUID of the call to stop streaming audio into.
-    #     """
-    #     response = self._http_client.delete(
-    #         self._http_client.api_host, f'/v1/calls/{uuid}/stream'
-    #     )
-
-    #     return CallMessage(**response)
-
-    # @validate_call
-    # def play_tts_into_call(self, uuid: str, tts_options: TtsStreamOptions) -> CallMessage:
-    #     """Plays text-to-speech into a call.
-
-    #     Args:
-    #         uuid (str): The UUID of the call to play text-to-speech into.
-    #         tts_options (TtsStreamOptions): The options for playing text-to-speech.
-
-    #     Returns:
-    #         CallMessage: Object with information about the call.
-    #     """
-    #     response = self._http_client.put(
-    #         self._http_client.api_host,
-    #         f'/v1/calls/{uuid}/talk',
-    #         tts_options.model_dump(by_alias=True, exclude_none=True),
-    #     )
-
-    #     return CallMessage(**response)
-
-    # def stop_tts(self, uuid: str) -> CallMessage:
-    #     """Stops playing text-to-speech into a call.
-
-    #     Args:
-    #         uuid (str): The UUID of the call to stop playing text-to-speech into.
-    #     """
-    #     response = self._http_client.delete(
-    #         self._http_client.api_host, f'/v1/calls/{uuid}/talk'
-    #     )
-
-    #     return CallMessage(**response)
-
-    # @validate_call
-    # def play_dtmf_into_call(self, uuid: str, dtmf: Dtmf) -> CallMessage:
-    #     """Plays DTMF tones into a call.
-
-    #     Args:
-    #         uuid (str): The UUID of the call to play DTMF tones into.
-    #         dtmf (Dtmf): The DTMF tones to play.
-
-    #     Returns:
-    #         CallMessage: Object with information about the call.
-    #     """
-    #     response = self._http_client.put(
-    #         self._http_client.api_host,
-    #         f'/v1/calls/{uuid}/dtmf',
-    #         {'digits': dtmf},
-    #     )
-
-    #     return CallMessage(**response)
+        self._http_client.put(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/session/{session_id}/stream',
+            stream_layout_options.model_dump(by_alias=True, exclude_none=True),
+        )

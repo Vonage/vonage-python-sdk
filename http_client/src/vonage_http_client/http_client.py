@@ -43,6 +43,7 @@ class HttpClient:
         The http_client_options dict can have any of the following fields:
             api_host (str, optional): The API host to use for HTTP requests. Defaults to 'api.nexmo.com'.
             rest_host (str, optional): The REST host to use for HTTP requests. Defaults to 'rest.nexmo.com'.
+            video_host (str, optional): The Video host to use for HTTP requests. Defaults to 'video.api.vonage.com'.
             timeout (int, optional): The timeout for HTTP requests in seconds. Defaults to None.
             pool_connections (int, optional): The number of pool connections. Must be > 0. Default is 10.
             pool_maxsize (int, optional): The maximum size of the connection pool. Must be > 0. Default is 10.
@@ -70,6 +71,7 @@ class HttpClient:
 
         self._api_host = self._http_client_options.api_host
         self._rest_host = self._http_client_options.rest_host
+        self._video_host = self._http_client_options.video_host
 
         self._timeout = self._http_client_options.timeout
         self._session = Session()
@@ -101,6 +103,10 @@ class HttpClient:
     @property
     def rest_host(self):
         return self._rest_host
+
+    @property
+    def video_host(self):
+        return self._video_host
 
     @property
     def user_agent(self):

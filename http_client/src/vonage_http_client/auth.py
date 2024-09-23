@@ -45,6 +45,7 @@ class Auth:
 
         self._api_key = api_key
         self._api_secret = api_secret
+        self._application_id = application_id
 
         if application_id is not None and private_key is not None:
             self._jwt_client = JwtClient(application_id, private_key)
@@ -60,10 +61,14 @@ class Auth:
     def api_secret(self):
         return self._api_secret
 
+    @property
+    def application_id(self):
+        return self._application_id
+
     def create_jwt_auth_string(self):
         return b'Bearer ' + self.generate_application_jwt()
 
-    def generate_application_jwt(self, claims: dict = None):
+    def generate_application_jwt(self, claims: dict = {}) -> bytes:
         try:
             return self._jwt_client.generate_application_jwt(claims)
         except AttributeError as err:

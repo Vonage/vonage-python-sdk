@@ -14,7 +14,7 @@ class StreamInfo(BaseModel):
 
 class StreamLayout(BaseModel):
     id: str
-    layout_class_list: List[str] = Field(..., validation_alias='layoutClassList')
+    layout_class_list: List[str] = Field(..., serialization_alias='layoutClassList')
 
 
 class StreamLayoutOptions(BaseModel):

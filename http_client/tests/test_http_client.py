@@ -41,6 +41,7 @@ def test_create_http_client_options():
     client_options = {
         'api_host': 'api.nexmo.com',
         'rest_host': 'rest.nexmo.com',
+        'video_host': 'video.api.vonage.com',
         'timeout': 30,
         'pool_connections': 5,
         'pool_maxsize': 12,

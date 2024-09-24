@@ -24,20 +24,28 @@ class JwtClient:
                 'Both of "application_id" and "private_key" are required.'
             )
 
-    def generate_application_jwt(self, jwt_options: dict = {}) -> bytes:
+    def generate_application_jwt(self, jwt_options: dict = None) -> bytes:
         """Generates a JWT for the specified Vonage application.
 
         You can override values for application_id and private_key on the JWTClient object by
         specifying them in the `jwt_options` dict if required.
+
+        Args:
+            jwt_options (dict): The options to include in the JWT.
+
+        Returns:
+            bytes: The generated JWT.
         """
+        if jwt_options is None:
+            jwt_options = {}
 
         iat = int(time())
 
         payload = jwt_options
         payload["application_id"] = self._application_id
-        payload.setdefault("iat", iat)
-        payload.setdefault("jti", str(uuid4()))
-        payload.setdefault("exp", iat + (15 * 60))
+        payload['iat'] = payload.get("iat", iat)
+        payload["jti"] = payload.get("jti", str(uuid4()))
+        payload["exp"] = payload.get("exp", payload["iat"] + (15 * 60))
 
         headers = {'alg': 'RS256', 'typ': 'JWT'}
 

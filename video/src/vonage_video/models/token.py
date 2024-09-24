@@ -2,7 +2,7 @@ from time import time
 from typing import List, Literal, Optional
 from uuid import uuid4
 
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from ..errors import TokenExpiryError
 from .enums import TokenRole
@@ -29,8 +29,8 @@ class TokenOptions(BaseModel):
     connection_data: Optional[str] = None
     initial_layout_class_list: Optional[List[str]] = None
     exp: Optional[int] = None
-    jti: str = str(uuid4())
-    iat: int = int(time())
+    jti: str = Field(default_factory=lambda: str(uuid4()))
+    iat: int = Field(default_factory=lambda: int(time()))
     subject: Literal['video'] = 'video'
     scope: Literal['session.connect'] = 'session.connect'
     acl: dict = {'paths': {'/session/**': {}}}

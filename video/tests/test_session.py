@@ -55,6 +55,7 @@ def test_create_session():
     assert session.archive_mode is None
     assert session.media_mode is None
     assert session.location is None
+    assert session.e2ee is None
 
     build_response(
         path,
@@ -78,3 +79,4 @@ def test_create_session():
     assert session.archive_mode == ArchiveMode.ALWAYS
     assert session.media_mode == MediaMode.ROUTED
     assert session.location == '192.168.0.1'
+    assert session.e2ee is True

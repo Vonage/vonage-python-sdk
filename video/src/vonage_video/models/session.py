@@ -45,3 +45,4 @@ class VideoSession(BaseModel):
     archive_mode: Optional[ArchiveMode] = None
     media_mode: Optional[MediaMode] = None
     location: Optional[str] = None
+    e2ee: Optional[bool] = None

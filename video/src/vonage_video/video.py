@@ -2,7 +2,7 @@ from typing import List
 
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
-from vonage_video.models.captions import CaptionsOptions
+from vonage_video.models.captions import CaptionsData, CaptionsOptions
 from vonage_video.models.session import SessionOptions, VideoSession
 from vonage_video.models.signal import SignalData
 from vonage_video.models.stream import StreamInfo, StreamLayoutOptions
@@ -207,19 +207,49 @@ class Video:
         )
 
     @validate_call
-    def enable_captions(self, options: CaptionsOptions) -> str:
+    def start_captions(self, options: CaptionsOptions) -> CaptionsData:
         """Enables captions in a session using the Vonage Video API.
 
         Args:
             options (CaptionsOptions): Options for the captions.
 
         Returns:
-            str: The captions stream ID.
+            CaptionsData: Class containing captions ID.
         """
         response = self._http_client.post(
             self._http_client.video_host,
             f'/v2/project/{self._http_client.auth.application_id}/captions',
-            options.model_dump(exclude_none=True),
+            options.model_dump(exclude_none=True, by_alias=True),
         )
 
-        return response['captionsId']
+        return CaptionsData(captions_id=response['captionsId'])
+
+    @validate_call
+    def stop_captions(self, captions: CaptionsData) -> None:
+        """Disables captions in a session using the Vonage Video API.
+
+        Args:
+            captions (CaptionsData): The captions data.
+        """
+        self._http_client.post(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/captions/{captions.captions_id}/stop',
+        )
+
+    @validate_call
+    def start_audio_connector(self, options: AudioConnectorOptions) -> AudioConnectorData:
+        """Starts an audio connector in a session using the Vonage Video API.
+
+        Args:
+            options (AudioConnectorOptions): Options for the audio connector.
+
+        Returns:
+            AudioConnectorData: Class containing audio connector ID.
+        """
+        response = self._http_client.post(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/connect',
+            options.model_dump(exclude_none=True, by_alias=True),
+        )
+
+        return AudioConnectorData(audio_connector_id=response['audioConnectorId'])

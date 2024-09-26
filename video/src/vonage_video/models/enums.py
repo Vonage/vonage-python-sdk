@@ -37,3 +37,8 @@ class LanguageCode(str, Enum):
     KO_KR = 'ko-KR'
     PT_BR = 'pt-BR'
     TH_TH = 'th-TH'
+
+
+class AudioSampleRate(str, Enum):
+    KHZ_8 = 8000
+    KHZ_16 = 16000

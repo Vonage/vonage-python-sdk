@@ -41,6 +41,8 @@ class SessionOptions(BaseModel):
 
 
 class VideoSession(BaseModel):
+    """The new session ID and options specified in the request."""
+
     session_id: str
     archive_mode: Optional[ArchiveMode] = None
     media_mode: Optional[MediaMode] = None

@@ -39,6 +39,6 @@ class LanguageCode(str, Enum):
     TH_TH = 'th-TH'
 
 
-class AudioSampleRate(str, Enum):
+class AudioSampleRate(int, Enum):
     KHZ_8 = 8000
     KHZ_16 = 16000

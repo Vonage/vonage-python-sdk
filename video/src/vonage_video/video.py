@@ -2,6 +2,7 @@ from typing import List
 
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
+from vonage_video.models.audio_connector import AudioConnectorData, AudioConnectorOptions
 from vonage_video.models.captions import CaptionsData, CaptionsOptions
 from vonage_video.models.session import SessionOptions, VideoSession
 from vonage_video.models.signal import SignalData
@@ -252,4 +253,4 @@ class Video:
             options.model_dump(exclude_none=True, by_alias=True),
         )
 
-        return AudioConnectorData(audio_connector_id=response['audioConnectorId'])
+        return AudioConnectorData(**response)

@@ -42,3 +42,19 @@ class LanguageCode(str, Enum):
 class AudioSampleRate(int, Enum):
     KHZ_8 = 8000
     KHZ_16 = 16000
+
+
+class ExperienceComposerResolution(str, Enum):
+    RES_640x480 = '640x480'
+    RES_480x640 = '480x640'
+    RES_1280x720 = '1280x720'
+    RES_720x1280 = '720x1280'
+    RES_1920x1080 = '1920x1080'
+    RES_1080x1920 = '1080x1920'
+
+
+class ExperienceComposerStatus(str, Enum):
+    STARTING = 'starting'
+    STARTED = 'started'
+    STOPPED = 'stopped'
+    FAILED = 'failed'

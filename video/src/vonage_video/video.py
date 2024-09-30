@@ -4,6 +4,10 @@ from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 from vonage_video.models.audio_connector import AudioConnectorData, AudioConnectorOptions
 from vonage_video.models.captions import CaptionsData, CaptionsOptions
+from vonage_video.models.experience_composer import (
+    ExperienceComposer,
+    ExperienceComposerOptions,
+)
 from vonage_video.models.session import SessionOptions, VideoSession
 from vonage_video.models.signal import SignalData
 from vonage_video.models.stream import StreamInfo, StreamLayoutOptions
@@ -254,3 +258,24 @@ class Video:
         )
 
         return AudioConnectorData(**response)
+
+    @validate_call
+    def start_experience_composer(
+        self, options: ExperienceComposerOptions
+    ) -> ExperienceComposer:
+        """Starts an experience composer using the Vonage Video API.
+
+        Args:
+            options (ExperienceComposerOptions): Options for the experience composer.
+
+        Returns:
+            ExperienceComposer: Class containing experience composer data.
+        """
+
+        response = self._http_client.post(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/render',
+            options.model_dump(exclude_none=True, by_alias=True),
+        )
+
+        return ExperienceComposer(**response)

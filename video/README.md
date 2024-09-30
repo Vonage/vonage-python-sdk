@@ -1,148 +1,115 @@
-# Vonage Video Package
+# Vonage Video API
 
-
-
-
-
-This package contains the code to use [Vonage's Voice API](https://developer.vonage.com/en/voice/voice-api/overview) in Python. This package includes methods for working with the Voice API. It also contains an NCCO (Call Control Object) builder to help you to control call flow.
-
-## Structure
-
-There is a `Voice` class which contains the methods used to call Vonage APIs. To call many of the APIs, you need to pass a Pydantic model with the required options. These can be accessed from the `vonage_voice.models` subpackage. Errors can be accessed from the `vonage_voice.errors` module.
+This package contains the code to use [Vonage's Video API](https://developer.vonage.com/en/video/overview) in Python. This package includes methods for working with video sessions, streams, signals, and more.
 
 ## Usage
 
-It is recommended to use this as part of the main `vonage` package. The examples below assume you've created an instance of the `vonage.Vonage` class called `vonage_client`, like so:
+It is recommended to use this as part of the main `vonage` package. The examples below assume you've created an instance of the `vonage.Vonage` class called `vonage_client`.
+
+### Generate a Client Token
 
 ```python
-from vonage import Vonage, Auth
+from vonage_video.models.token import TokenOptions
 
-vonage_client = Vonage(Auth('MY_AUTH_INFO'))
+token_options = TokenOptions(session_id='your_session_id', role='publisher')
+client_token = vonage_client.video.generate_client_token(token_options)
 ```
 
-### Create a Call
-
-To create a call, you must pass an instance of the `CreateCallRequest` model to the `create_call` method. If supplying an NCCO, import the NCCO actions you want to use and pass them in as a list to the `ncco` model field.
+### Create a Session
 
 ```python
-from vonage_voice.models import CreateCallRequest, Talk
+from vonage_video.models.session import SessionOptions
 
-ncco = [Talk(text='Hello world', loop=3, language='en-GB')]
-
-call = CreateCallRequest(
-    to=[{'type': 'phone', 'number': '1234567890'}],
-    ncco=ncco,
-    random_from_number=True,
-)
-
-response = vonage_client.voice.create_call(call)
-print(response.model_dump())
+session_options = SessionOptions(media_mode='routed')
+video_session = vonage_client.video.create_session(session_options)
 ```
 
-### List Calls
+### List Streams
 
 ```python
-# Gets the first 100 results and the record_index of the
-# next page if there's more than 100
-calls, next_record_index = vonage_client.voice.list_calls()
-
-# Specify filtering options
-from vonage_voice.models import ListCallsFilter
-
-call_filter = ListCallsFilter(
-    status='completed',
-    date_start='2024-03-14T07:45:14Z',
-    date_end='2024-04-19T08:45:14Z',
-    page_size=10,
-    record_index=0,
-    order='asc',
-    conversation_uuid='CON-2be039b2-d0a4-4274-afc8-d7b241c7c044',
-)
-
-calls, next_record_index = vonage_client.voice.list_calls(call_filter)
+streams = vonage_client.video.list_streams(session_id='your_session_id')
 ```
 
-### Get Information About a Specific Call
+### Get a Stream
 
 ```python
-call = vonage_client.voice.get_call('CALL_ID')
+stream_info = vonage_client.video.get_stream(session_id='your_session_id', stream_id='your_stream_id')
 ```
 
-### Transfer a Call to a New NCCO
+### Change Stream Layout
 
 ```python
-ncco = [Talk(text='Hello world')]
-vonage_client.voice.transfer_call_ncco('UUID', ncco)
+from vonage_video.models.stream import StreamLayoutOptions
+
+layout_options = StreamLayoutOptions(type='bestFit')
+updated_streams = vonage_client.video.change_stream_layout(session_id='your_session_id', stream_layout_options=layout_options)
 ```
 
-### Transfer a Call to a New Answer URL
+### Send a Signal
 
 ```python
-vonage_client.voice.transfer_call_answer_url('UUID', 'ANSWER_URL')
+from vonage_video.models.signal import SignalData
+
+signal_data = SignalData(type='chat', data='Hello, World!')
+vonage_client.video.send_signal(session_id='your_session_id', data=signal_data)
 ```
 
-### Hang Up a Call
-
-End the call for a specified UUID, removing them from it.
+### Disconnect a Client
 
 ```python
-vonage_client.voice.hangup('UUID')
+vonage_client.video.disconnect_client(session_id='your_session_id', connection_id='your_connection_id')
 ```
 
-### Mute/Unmute a Participant
+### Mute a Stream
 
 ```python
-vonage_client.voice.mute('UUID')
-vonage_client.voice.unmute('UUID')
+vonage_client.video.mute_stream(session_id='your_session_id', stream_id='your_stream_id')
 ```
 
-### Earmuff/Unearmuff a UUID
-
-Prevent/allow a specified UUID participant to be able to hear audio.
+### Mute All Streams
 
 ```python
-vonage_client.voice.earmuff('UUID')
-vonage_client.voice.unearmuff('UUID')
+vonage_client.video.mute_all_streams(session_id='your_session_id', excluded_stream_ids=['stream_id_1', 'stream_id_2'])
 ```
 
-### Play Audio Into a Call
+### Disable Mute All Streams
 
 ```python
-from vonage_voice.models import AudioStreamOptions
-
-# Only the `stream_url` option is required
-options = AudioStreamOptions(
-    stream_url=['https://example.com/audio'], loop=2, level=0.5
-)
-response = vonage_client.voice.play_audio_into_call('UUID', options)
+vonage_client.video.disable_mute_all_streams(session_id='your_session_id')
 ```
 
-### Stop Playing Audio Into a Call
+### Start Captions
 
 ```python
-vonage_client.voice.stop_audio_stream('UUID')
+from vonage_video.models.captions import CaptionsOptions
+
+captions_options = CaptionsOptions(language='en-US')
+captions_data = vonage_client.video.start_captions(captions_options)
 ```
 
-### Play TTS Into a Call
+### Stop Captions
 
 ```python
-from vonage_voice.models import TtsStreamOptions
+from vonage_video.models.captions import CaptionsData
 
-# Only the `text` field is required
-options = TtsStreamOptions(
-    text='Hello world', language='en-ZA', style=1, premium=False, loop=2, level=0.5
-)
-response = voice.play_tts_into_call('UUID', options)
+captions_data = CaptionsData(captions_id='your_captions_id')
+vonage_client.video.stop_captions(captions_data)
 ```
 
-### Stop Playing TTS Into a Call
+### Start Audio Connector
 
 ```python
-vonage_client.voice.stop_tts('UUID')
+from vonage_video.models.audio_connector import AudioConnectorOptions
+
+audio_connector_options = AudioConnectorOptions(session_id='your_session_id', token='your_token', url='https://example.com')
+audio_connector_data = vonage_client.video.start_audio_connector(audio_connector_options)
 ```
 
-### Play DTMF Tones Into a Call
+### Start Experience Composer
 
 ```python
-response = voice.play_dtmf_into_call('UUID', '1234*#')
+from vonage_video.models.experience_composer import ExperienceComposerOptions
+
+experience_composer_options = ExperienceComposerOptions(session_id='your_session_id', token='your_token', url='https://example.com')
+experience_composer = vonage_client.video.start_experience_composer(experience_composer_options)
 ```

@@ -1,12 +1,14 @@
-from typing import List
+from typing import List, Optional, Tuple
 
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
+from vonage_video.models.archive import Archive, CreateArchiveRequest, ListArchivesFilter
 from vonage_video.models.audio_connector import AudioConnectorData, AudioConnectorOptions
 from vonage_video.models.captions import CaptionsData, CaptionsOptions
 from vonage_video.models.experience_composer import (
     ExperienceComposer,
     ExperienceComposerOptions,
+    ListExperienceComposersFilter,
 )
 from vonage_video.models.session import SessionOptions, VideoSession
 from vonage_video.models.signal import SignalData
@@ -263,13 +265,13 @@ class Video:
     def start_experience_composer(
         self, options: ExperienceComposerOptions
     ) -> ExperienceComposer:
-        """Starts an experience composer using the Vonage Video API.
+        """Starts an Experience Composer using the Vonage Video API.
 
         Args:
-            options (ExperienceComposerOptions): Options for the experience composer.
+            options (ExperienceComposerOptions): Options for the Experience Composer.
 
         Returns:
-            ExperienceComposer: Class containing experience composer data.
+            ExperienceComposer: Class containing Experience Composer data.
         """
 
         response = self._http_client.post(
@@ -279,3 +281,79 @@ class Video:
         )
 
         return ExperienceComposer(**response)
+
+    @validate_call
+    def list_experience_composers(
+        self, filter: ListExperienceComposersFilter = ListExperienceComposersFilter()
+    ) -> Tuple[List[ExperienceComposer], int, Optional[int]]:
+        """Lists Experience Composers associated with your Vonage application.
+
+        Args:
+            filter (ListExperienceComposersFilter): Filter for the Experience Composers.
+
+        Returns:
+            Tuple[List[ExperienceComposer], int, Optional[int]]: A tuple containing a list of experience
+                composer objects, the total count of Experience Composers and the required offset value
+                for the next page, if applicable.
+                i.e.
+                experience_composers: List[ExperienceComposer], count: int, next_page_index: Optional[int]
+        """
+        response = self._http_client.get(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/render',
+            filter.model_dump(exclude_none=True, by_alias=True),
+        )
+
+        index = filter.offset + 1 or 1
+        page_size = filter.page_size
+        experience_composers = []
+
+        try:
+            for ec in response['items']:
+                experience_composers.append(ExperienceComposer(**ec))
+        except KeyError:
+            return [], 0, None
+
+        count = response['count']
+        if count > page_size * (index):
+            return experience_composers, count, index
+        return experience_composers, count, None
+
+    @validate_call
+    def get_experience_composer(self, experience_composer_id: str) -> ExperienceComposer:
+        """Gets an Experience Composer associated with your Vonage application.
+
+        Args:
+            experience_composer_id (str): The ID of the Experience Composer.
+
+        Returns:
+            ExperienceComposer: The Experience Composer object.
+        """
+        response = self._http_client.get(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/render/{experience_composer_id}',
+        )
+
+        return ExperienceComposer(**response)
+
+    @validate_call
+    def stop_experience_composer(self, experience_composer_id: str) -> None:
+        """Stops an Experience Composer associated with your Vonage application.
+
+        Args:
+            experience_composer_id (str): The ID of the Experience Composer.
+        """
+        self._http_client.delete(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/render/{experience_composer_id}',
+        )
+
+    @validate_call
+    def list_archives(
+        self, filter: ListArchivesFilter
+    ) -> Tuple[List[Archive], int, Optional[int]]:
+        pass
+
+    @validate_call
+    def create_archive(self, options: CreateArchiveRequest) -> Archive:
+        pass

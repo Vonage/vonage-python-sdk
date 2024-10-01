@@ -44,7 +44,7 @@ class AudioSampleRate(int, Enum):
     KHZ_16 = 16000
 
 
-class ExperienceComposerResolution(str, Enum):
+class VideoResolution(str, Enum):
     RES_640x480 = '640x480'
     RES_480x640 = '480x640'
     RES_1280x720 = '1280x720'
@@ -58,3 +58,31 @@ class ExperienceComposerStatus(str, Enum):
     STARTED = 'started'
     STOPPED = 'stopped'
     FAILED = 'failed'
+
+
+class OutputMode(str, Enum):
+    COMPOSED = 'composed'
+    INDIVIDUAL = 'individual'
+
+
+class StreamMode(str, Enum):
+    AUTO = 'auto'
+    MANUAL = 'manual'
+
+
+class LayoutType(str, Enum):
+    BEST_FIT = 'bestFit'
+    CUSTOM = 'custom'
+    PIP = 'pip'
+    VERTICAL_PRESENTATION = 'verticalPresentation'
+    HORIZONTAL_PRESENTATION = 'horizontalPresentation'
+
+
+class ArchiveStatus(str, Enum):
+    AVAILABLE = 'available'
+    EXPIRED = 'expired'
+    FAILED = 'failed'
+    PAUSED = 'paused'
+    STARTED = 'started'
+    STOPPED = 'stopped'
+    UPLOADED = 'uploaded'

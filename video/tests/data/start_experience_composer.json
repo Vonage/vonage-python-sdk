@@ -1,0 +1,12 @@
+{
+    "id": "80c3d2d8-0848-41b2-be14-1a5b8936c87d",
+    "sessionId": "test_session_id",
+    "createdAt": 1727781191064,
+    "updatedAt": 1727781191064,
+    "url": "https://example.com",
+    "status": "starting",
+    "name": "test_experience_composer",
+    "event": "render",
+    "applicationId": "test_application_id",
+    "resolution": "1280x720"
+}

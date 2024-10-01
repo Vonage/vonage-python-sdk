@@ -1,10 +1,7 @@
 from typing import Optional
 
 from pydantic import BaseModel, Field
-from vonage_video.models.enums import (
-    ExperienceComposerResolution,
-    ExperienceComposerStatus,
-)
+from vonage_video.models.enums import ExperienceComposerStatus, VideoResolution
 
 
 class ExperienceComposerProperties(BaseModel):
@@ -31,11 +28,11 @@ class ExperienceComposerOptions(BaseModel):
 
     session_id: str = Field(..., serialization_alias='sessionId')
     token: str
-    url: str = Field(None, min_length=15, max_length=2048)
+    url: str = Field(..., min_length=15, max_length=2048)
     max_duration: Optional[int] = Field(
         None, ge=60, le=36000, serialization_alias='maxDuration'
     )
-    resolution: Optional[ExperienceComposerResolution] = None
+    resolution: Optional[VideoResolution] = None
     properties: Optional[ExperienceComposerProperties] = None
 
 
@@ -54,6 +51,7 @@ class ExperienceComposer(BaseModel):
         resolution (ExperienceComposerResolution, Optional): The resolution of the Experience Composer stream.
         status (ExperienceComposerStatus, Optional): The status.
         stream_id (str, Optional): The ID of the composed stream being published.
+        reason (str, Optional): The reason for the status change.
     """
 
     id: Optional[str] = None
@@ -64,6 +62,20 @@ class ExperienceComposer(BaseModel):
     updated_at: Optional[int] = Field(None, validation_alias='updatedAt')
     name: Optional[str] = None
     url: Optional[str] = None
-    resolution: Optional[ExperienceComposerResolution] = None
+    resolution: Optional[VideoResolution] = None
     status: Optional[ExperienceComposerStatus] = None
     stream_id: Optional[str] = Field(None, validation_alias='streamId')
+    reason: Optional[str] = None
+
+
+class ListExperienceComposersFilter(BaseModel):
+    """Request object for filtering Experience Composers associated with the specific Vonage
+    application.
+
+    Args:
+        offset (int, Optional): The offset.
+        page_size (int, Optional): The number of Experience Composers to return.
+    """
+
+    offset: Optional[int] = None
+    page_size: Optional[int] = Field(1000, serialization_alias='count')

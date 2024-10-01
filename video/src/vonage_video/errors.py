@@ -15,3 +15,19 @@ class TokenExpiryError(VideoError):
 
 class SipError(VideoError):
     """Error related to usage of SIP calls."""
+
+
+class NoAudioOrVideoError(VideoError):
+    """Either an audio or video stream must be included."""
+
+
+class IndividualArchivePropertyError(VideoError):
+    """The property cannot be set for `archive_mode: 'individual'`."""
+
+
+class LayoutStylesheetError(VideoError):
+    """Error with the `stylesheet` property when setting a layout."""
+
+
+class LayoutScreenshareTypeError(VideoError):
+    """Error with the `screenshare_type` property when setting a layout."""

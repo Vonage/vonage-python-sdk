@@ -31,3 +31,7 @@ class LayoutStylesheetError(VideoError):
 
 class LayoutScreenshareTypeError(VideoError):
     """Error with the `screenshare_type` property when setting a layout."""
+
+
+class InvalidArchiveStateError(VideoError):
+    """The archive state was invalid for the specified operation."""

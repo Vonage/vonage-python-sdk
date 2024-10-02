@@ -1,8 +1,16 @@
 from typing import List, Optional, Tuple
 
 from pydantic import validate_call
+from vonage_http_client.errors import HttpRequestError
 from vonage_http_client.http_client import HttpClient
-from vonage_video.models.archive import Archive, CreateArchiveRequest, ListArchivesFilter
+from vonage_video.errors import InvalidArchiveStateError
+from vonage_video.models.archive import (
+    AddStreamRequest,
+    Archive,
+    ComposedLayout,
+    CreateArchiveRequest,
+    ListArchivesFilter,
+)
 from vonage_video.models.audio_connector import AudioConnectorData, AudioConnectorOptions
 from vonage_video.models.captions import CaptionsData, CaptionsOptions
 from vonage_video.models.experience_composer import (
@@ -296,7 +304,7 @@ class Video:
                 composer objects, the total count of Experience Composers and the required offset value
                 for the next page, if applicable.
                 i.e.
-                experience_composers: List[ExperienceComposer], count: int, next_page_index: Optional[int]
+                experience_composers: List[ExperienceComposer], count: int, next_page_offset: Optional[int]
         """
         response = self._http_client.get(
             self._http_client.video_host,
@@ -352,8 +360,165 @@ class Video:
     def list_archives(
         self, filter: ListArchivesFilter
     ) -> Tuple[List[Archive], int, Optional[int]]:
-        pass
+        """Lists archives associated with a Vonage Application.
+
+        Args:
+            filter (ListArchivesFilter): The filters for the archives.
+
+        Returns:
+            Tuple[List[Archive], int, Optional[int]]: A tuple containing a list of archive objects,
+                the total count of archives and the required offset value for the next page, if applicable.
+                i.e.
+                archives: List[Archive], count: int, next_page_offset: Optional[int]
+        """
+        response = self._http_client.get(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/archive',
+            filter.model_dump(exclude_none=True, by_alias=True),
+        )
+
+        index = filter.offset + 1 or 1
+        page_size = filter.page_size
+        archives = []
+
+        try:
+            for archive in response['items']:
+                archives.append(Archive(**archive))
+        except KeyError:
+            return [], 0, None
+
+        count = response['count']
+        if count > page_size * (index):
+            return archives, count, index
+        return archives, count, None
 
     @validate_call
-    def create_archive(self, options: CreateArchiveRequest) -> Archive:
-        pass
+    def start_archive(self, options: CreateArchiveRequest) -> Archive:
+        """Starts an archive in a Vonage Video API session.
+
+        Args:
+            options (CreateArchiveRequest): The options for the archive.
+
+        Returns:
+            Archive: The archive object.
+        """
+        response = self._http_client.post(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/archive',
+            options.model_dump(exclude_none=True, by_alias=True),
+        )
+
+        return Archive(**response)
+
+    @validate_call
+    def get_archive(self, archive_id: str) -> Archive:
+        """Gets an archive from the Vonage Video API.
+
+        Args:
+            archive_id (str): The archive ID.
+
+        Returns:
+            Archive: The archive object.
+        """
+        response = self._http_client.get(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/archive/{archive_id}',
+        )
+
+        return Archive(**response)
+
+    @validate_call
+    def delete_archive(self, archive_id: str) -> None:
+        """Deletes an archive from the Vonage Video API.
+
+        Args:
+            archive_id (str): The archive ID.
+
+        Raises:
+            InvalidArchiveStateError: If the archive has a status other than `available`, `uploaded`, or `deleted`.
+        """
+        try:
+            self._http_client.delete(
+                self._http_client.video_host,
+                f'/v2/project/{self._http_client.auth.application_id}/archive/{archive_id}',
+            )
+        except HttpRequestError as e:
+            if e.response.status_code == 409:
+                raise InvalidArchiveStateError(
+                    'You can only delete an archive that has one of the following statuses: `available` OR `uploaded` OR `deleted`.'
+                )
+            raise e
+
+    @validate_call
+    def add_stream_to_archive(self, archive_id: str, params: AddStreamRequest) -> None:
+        """Adds a stream to an archive in the Vonage Video API. Use this method to change the
+        streams included in a composed archive that was started with the streamMode set to "manual".
+
+        Args:
+            archive_id (str): The archive ID.
+            params (AddStreamRequest): Params for adding a stream to an archive.
+        """
+        self._http_client.patch(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/archive/{archive_id}/streams',
+            params.model_dump(exclude_none=True, by_alias=True),
+        )
+
+    @validate_call
+    def remove_stream_from_archive(self, archive_id: str, stream_id: str) -> None:
+        """Removes a stream from an archive in the Vonage Video API.
+
+        Args:
+            archive_id (str): The archive ID.
+            stream_id (str): ID of the stream to remove.
+        """
+        self._http_client.patch(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/archive/{archive_id}/streams',
+            params={'removeStream': stream_id},
+        )
+
+    @validate_call
+    def stop_archive(self, archive_id: str) -> Archive:
+        """Stops a Vonage Video API archive.
+
+        Args:
+            archive_id (str): The archive ID.
+
+        Returns:
+            Archive: The archive object.
+
+        Raises:
+            InvalidArchiveStateError: If the archive is not being recorded.
+        """
+        try:
+            response = self._http_client.post(
+                self._http_client.video_host,
+                f'/v2/project/{self._http_client.auth.application_id}/archive/{archive_id}/stop',
+            )
+        except HttpRequestError as e:
+            if e.response.status_code == 409:
+                raise InvalidArchiveStateError(
+                    'You can only stop an archive that is being recorded.'
+                )
+            raise e
+        return Archive(**response)
+
+    @validate_call
+    def change_archive_layout(self, archive_id: str, layout: ComposedLayout) -> Archive:
+        """Changes the layout of an archive in the Vonage Video API.
+
+        Args:
+            archive_id (str): The archive ID.
+            layout (ComposedLayout): The layout to change to.
+
+        Returns:
+            Archive: The archive object.
+        """
+        response = self._http_client.put(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/archive/{archive_id}/layout',
+            layout.model_dump(exclude_none=True, by_alias=True),
+        )
+
+        return Archive(**response)

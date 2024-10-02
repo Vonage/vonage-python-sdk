@@ -1,0 +1,23 @@
+{
+    "id": "e05d6f8f-2280-4025-b1d2-defc4f5c8dfa",
+    "status": "stopped",
+    "name": "archive test",
+    "reason": "user initiated",
+    "sessionId": "2_MX4yOWY3NjBmOC03Y2UxLTQ2YzktYWRlMy1mMmRlZGVlNGVkNWZ-fjE3Mjc4NzcyMTYwNzJ-OUJ1WHN0V05vN0NoU044OGthaURwNmpxfn5-",
+    "applicationId": "29f760f8-7ce1-46c9-ade3-f2dedee4ed5f",
+    "createdAt": 1727887464000,
+    "size": 0,
+    "duration": 0,
+    "outputMode": "composed",
+    "streamMode": "auto",
+    "hasAudio": true,
+    "hasVideo": true,
+    "hasTranscription": false,
+    "sha256sum": "",
+    "password": "",
+    "updatedAt": 1727887464000,
+    "multiArchiveTag": "start-to-stop",
+    "event": "archive",
+    "resolution": "1280x720",
+    "url": null
+}

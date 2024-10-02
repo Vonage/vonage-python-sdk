@@ -86,3 +86,4 @@ class ArchiveStatus(str, Enum):
     STARTED = 'started'
     STOPPED = 'stopped'
     UPLOADED = 'uploaded'
+    DELETED = 'deleted'

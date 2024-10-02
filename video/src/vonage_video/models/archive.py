@@ -26,7 +26,7 @@ class ListArchivesFilter(BaseModel):
     """
 
     offset: Optional[int] = None
-    page_size: Optional[int] = Field(1000, serialization_alias='count')
+    page_size: Optional[int] = Field(100, serialization_alias='count')
     session_id: Optional[str] = None
 
 
@@ -44,54 +44,81 @@ class ArchiveStream(BaseModel):
     has_video: Optional[bool] = Field(None, validation_alias='hasVideo')
 
 
+class Transcription(BaseModel):
+    """Model for transcription options for an archive.
+
+    Args:
+        status (str, Optional): The status of the transcription.
+        reason (str, Optional): May give a brief reason for the transcription status.
+    """
+
+    status: Optional[str] = None
+    reason: Optional[str] = None
+
+
 class Archive(BaseModel):
     """Model for an archive.
 
     Args:
+        id (str, Optional): The unique archive ID.
+        status (ArchiveStatus, Optional): The status of the archive.
+        name (str, Optional): The name of the archive.
+        reason (str, Optional): May give a brief reason for the archive status.
+        session_id (str, Optional): The session ID of the Vonage Video session.
+        application_id (str, Optional): The Vonage application ID.
         created_at (int, Optional): The timestamp when the archive when the archive
             started recording, expressed in milliseconds since the Unix epoch.
+        size (int, Optional): The size of the archive.
         duration (int, Optional): The duration of the archive in seconds.
             For archives that have are being recorded, this value is set to 0.
+        output_mode (OutputMode, Optional): The output mode of the archive.
+        stream_mode (StreamMode, Optional): Whether streams included in the archive
+            are selected automatically (`auto`, the default) or manually (`manual`).
         has_audio (bool, Optional): Whether the archive will record audio.
         has_video (bool, Optional): Whether the archive will record video.
-        id (str, Optional): The unique archive ID.
+        has_transcription (bool, Optional): Whether audio will be transcribed.
+        sha256_sum (str, Optional): The SHA-256 hash of the archive.
+        password (str, Optional): The password for the archive.
+        updated_at (int, Optional): The timestamp when the archive was last updated,
+            expressed in milliseconds since the Unix epoch.
         multi_archive_tag (str, Optional): Set this to support recording multiple
             archives for the same session simultaneously. Set this to a unique string
             for each simultaneous archive of an ongoing session.
-        name (str, Optional): The name of the archive.
-        application_id (str, Optional): The Vonage application ID.
-        reason (str, Optional): This is set when the `status` is `stopped` or `failed`.
+        event (str, Optional): The event that triggered the response.
         resolution (VideoResolution, Optional): The resolution of the archive.
-        session_id (str, Optional): The session ID of the Vonage Video session.
-        size (int, Optional): The size of the archive.
-        status (ArchiveStatus, Optional): The status of the archive.
-        stream_mode (StreamMode, Optional): Whether streams included in the archive
-            are selected automatically (`auto`, the default) or manually (`manual`).
         streams (List[ArchiveStream], Optional): The streams in the archive.
         url (str, Optional): The download URL of the available archive file.
             This is only set for an archive with the status set to `available`.
+        transcription (Transcription, Optional): Transcription options for the archive.
     """
 
+    id: Optional[str] = None
+    status: Optional[ArchiveStatus] = None
+    name: Optional[str] = None
+    reason: Optional[str] = None
+    session_id: Optional[str] = Field(None, validation_alias='sessionId')
+    application_id: Optional[str] = Field(None, validation_alias='applicationId')
     created_at: Optional[int] = Field(None, validation_alias='createdAt')
+    size: Optional[int] = None
     duration: Optional[int] = None
+    output_mode: Optional[OutputMode] = Field(None, validation_alias='outputMode')
+    stream_mode: Optional[StreamMode] = Field(None, validation_alias='streamMode')
     has_audio: Optional[bool] = Field(None, validation_alias='hasAudio')
     has_video: Optional[bool] = Field(None, validation_alias='hasVideo')
-    id: Optional[str] = None
+    has_transcription: Optional[bool] = Field(None, validation_alias='hasTranscription')
+    sha256_sum: Optional[str] = Field(None, validation_alias='sha256sum')
+    password: Optional[str] = None
+    updated_at: Optional[int] = Field(None, validation_alias='updatedAt')
     multi_archive_tag: Optional[str] = Field(None, validation_alias='multiArchiveTag')
-    name: Optional[str] = None
-    application_id: Optional[str] = Field(None, validation_alias='applicationId')
-    reason: Optional[str] = None
+    event: Optional[str] = None
     resolution: Optional[VideoResolution] = None
-    session_id: Optional[str] = Field(None, validation_alias='sessionId')
-    size: Optional[int] = None
-    status: Optional[ArchiveStatus] = None
-    stream_mode: Optional[StreamMode] = Field(None, validation_alias='streamMode')
     streams: Optional[List[ArchiveStream]] = None
     url: Optional[str] = None
+    transcription: Optional[Transcription] = None
 
 
-class Layout(BaseModel):
-    """Model for layout options for an archive.
+class ComposedLayout(BaseModel):
+    """Model for layout options for a composed archive.
 
     Args:
         type (str): Specify this to assign the initial layout type for the archive.
@@ -154,7 +181,10 @@ class CreateArchiveRequest(BaseModel):
     session_id: str = Field(..., serialization_alias='sessionId')
     has_audio: Optional[bool] = Field(None, serialization_alias='hasAudio')
     has_video: Optional[bool] = Field(None, serialization_alias='hasVideo')
-    layout: Optional[Layout] = None
+    has_transcription: Optional[bool] = Field(
+        None, serialization_alias='hasTranscription'
+    )
+    layout: Optional[ComposedLayout] = None
     multi_archive_tag: Optional[str] = Field(None, serialization_alias='multiArchiveTag')
     name: Optional[str] = None
     output_mode: Optional[OutputMode] = Field(None, serialization_alias='outputMode')
@@ -180,3 +210,25 @@ class CreateArchiveRequest(BaseModel):
                 'The `layout` property cannot be set for `archive_mode: \'individual\'`.'
             )
         return self
+
+    @model_validator(mode='after')
+    def transcription_only_for_individual_archives(self):
+        if self.output_mode == OutputMode.COMPOSED and self.has_transcription is True:
+            raise IndividualArchivePropertyError(
+                'The `has_transcription` property can only be set for `archive_mode: \'individual\'`.'
+            )
+        return self
+
+
+class AddStreamRequest(BaseModel):
+    """Model for adding a stream to an archive.
+
+    Args:
+        stream_id (str): ID of the stream to add to the archive.
+        has_audio (bool, Optional): Whether the stream has audio.
+        has_video (bool, Optional): Whether the stream has video.
+    """
+
+    stream_id: str = Field(..., serialization_alias='addStream')
+    has_audio: Optional[bool] = Field(None, serialization_alias='hasAudio')
+    has_video: Optional[bool] = Field(None, serialization_alias='hasVideo')

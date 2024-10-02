@@ -78,4 +78,4 @@ class ListExperienceComposersFilter(BaseModel):
     """
 
     offset: Optional[int] = None
-    page_size: Optional[int] = Field(1000, serialization_alias='count')
+    page_size: Optional[int] = Field(100, serialization_alias='count')

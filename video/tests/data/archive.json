@@ -1,0 +1,23 @@
+{
+    "id": "5b1521e6-115f-4efd-bed9-e527b87f0699",
+    "status": "started",
+    "name": "first archive test",
+    "reason": "",
+    "sessionId": "test_session_id",
+    "applicationId": "test_application_id",
+    "createdAt": 1727870434974,
+    "size": 0,
+    "duration": 0,
+    "outputMode": "composed",
+    "streamMode": "manual",
+    "hasAudio": true,
+    "hasVideo": true,
+    "hasTranscription": false,
+    "sha256sum": "",
+    "password": "",
+    "updatedAt": 1727870434977,
+    "multiArchiveTag": "my-multi-archive",
+    "event": "archive",
+    "resolution": "1280x720",
+    "url": null
+}

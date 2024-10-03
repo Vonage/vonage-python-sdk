@@ -45,6 +45,12 @@ class AudioSampleRate(int, Enum):
 
 
 class VideoResolution(str, Enum):
+    """The resolution of the archive or broadcast.
+
+    This property only applies to composed archives. If you set this property and set the outputMode
+    property to "individual", the call to the REST method results in an error.
+    """
+
     RES_640x480 = '640x480'
     RES_480x640 = '480x640'
     RES_1280x720 = '1280x720'
@@ -66,6 +72,9 @@ class OutputMode(str, Enum):
 
 
 class StreamMode(str, Enum):
+    """Whether streams included in the archive are selected automatically ("auto", the default) or
+    manually ("manual")."""
+
     AUTO = 'auto'
     MANUAL = 'manual'
 

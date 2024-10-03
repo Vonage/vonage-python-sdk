@@ -3,6 +3,7 @@ from os.path import abspath
 import responses
 from pytest import raises
 from vonage_http_client.http_client import HttpClient
+from vonage_video.models.common import AddStreamRequest
 from vonage_video.errors import (
     IndividualArchivePropertyError,
     InvalidArchiveStateError,
@@ -11,7 +12,6 @@ from vonage_video.errors import (
     NoAudioOrVideoError,
 )
 from vonage_video.models.archive import (
-    AddStreamRequest,
     ComposedLayout,
     CreateArchiveRequest,
     ListArchivesFilter,

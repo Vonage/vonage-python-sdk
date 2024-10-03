@@ -5,14 +5,19 @@ from vonage_http_client.errors import HttpRequestError
 from vonage_http_client.http_client import HttpClient
 from vonage_video.errors import InvalidArchiveStateError
 from vonage_video.models.archive import (
-    AddStreamRequest,
     Archive,
     ComposedLayout,
     CreateArchiveRequest,
     ListArchivesFilter,
 )
 from vonage_video.models.audio_connector import AudioConnectorData, AudioConnectorOptions
+from vonage_video.models.broadcast import (
+    Broadcast,
+    CreateBroadcastRequest,
+    ListBroadcastsFilter,
+)
 from vonage_video.models.captions import CaptionsData, CaptionsOptions
+from vonage_video.models.common import AddStreamRequest, VideoStream
 from vonage_video.models.experience_composer import (
     ExperienceComposer,
     ExperienceComposerOptions,
@@ -522,3 +527,144 @@ class Video:
         )
 
         return Archive(**response)
+
+    @validate_call
+    def list_broadcasts(
+        self, filter: ListBroadcastsFilter
+    ) -> Tuple[List[Broadcast], int, Optional[int]]:
+        """Lists broadcasts associated with a Vonage Application.
+
+        Args:
+            filter (ListBroadcastsFilter): The filters for the broadcasts.
+
+        Returns:
+            Tuple[List[Broadcast], int, Optional[int]]: A tuple containing a list of broadcast objects,
+                the total count of broadcasts and the required offset value for the next page, if applicable.
+                i.e.
+                broadcasts: List[Broadcast], count: int, next_page_offset: Optional[int]
+        #
+        """
+        response = self._http_client.get(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/broadcast',
+            filter.model_dump(exclude_none=True, by_alias=True),
+        )
+
+        index = filter.offset + 1 or 1
+        page_size = filter.page_size
+        broadcasts = []
+
+        try:
+            for broadcast in response['items']:
+                broadcasts.append(Broadcast(**broadcast))
+        except KeyError:
+            return [], 0, None
+
+        count = response['count']
+        if count > page_size * (index):
+            return broadcasts, count, index
+        return broadcasts, count, None
+
+    @validate_call
+    def start_broadcast(self, options: CreateBroadcastRequest) -> Broadcast:
+        """Starts a broadcast in a Vonage Video API session.
+
+        Args:
+            options (CreateBroadcastRequest): The options for the broadcast.
+
+        Returns:
+            Broadcast: The broadcast object.
+        """
+        response = self._http_client.post(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/broadcast',
+            options.model_dump(exclude_none=True, by_alias=True),
+        )
+
+        return Broadcast(**response)
+
+    @validate_call
+    def get_broadcast(self, broadcast_id: str) -> Broadcast:
+        """Gets a broadcast from the Vonage Video API.
+
+        Args:
+            broadcast_id (str): The broadcast ID.
+
+        Returns:
+            Broadcast: The broadcast object.
+        """
+        response = self._http_client.get(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/broadcast/{broadcast_id}',
+        )
+
+        return Broadcast(**response)
+
+    @validate_call
+    def stop_broadcast(self, broadcast_id: str) -> Broadcast:
+        """Stops a Vonage Video API broadcast.
+
+        Args:
+            broadcast_id (str): The broadcast ID.
+
+        Returns:
+            Broadcast: The broadcast object.
+        """
+        response = self._http_client.post(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/broadcast/{broadcast_id}/stop',
+        )
+        return Broadcast(**response)
+
+    @validate_call
+    def change_broadcast_layout(
+        self, broadcast_id: str, layout: ComposedLayout
+    ) -> Broadcast:
+        """Changes the layout of a broadcast in the Vonage Video API.
+
+        Args:
+            broadcast_id (str): The broadcast ID.
+            layout (ComposedLayout): The layout to change to.
+
+        Returns:
+            Broadcast: The broadcast object.
+        """
+        response = self._http_client.put(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/broadcast/{broadcast_id}/layout',
+            layout.model_dump(exclude_none=True, by_alias=True),
+        )
+
+        return Broadcast(**response)
+
+    @validate_call
+    def add_stream_to_broadcast(
+        self, broadcast_id: str, params: AddStreamRequest
+    ) -> None:
+        """Adds a stream to a broadcast in the Vonage Video API. Use this method to change the
+        streams included in a composed broadcast that was started with the streamMode set to
+        "manual".
+
+        Args:
+            broadcast_id (str): The broadcast ID.
+            params (AddStreamRequest): The video stream to add to the broadcast.
+        """
+        self._http_client.patch(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/broadcast/{broadcast_id}/streams',
+            params.model_dump(exclude_none=True, by_alias=True),
+        )
+
+    @validate_call
+    def remove_stream_from_broadcast(self, broadcast_id: str, stream_id: str) -> None:
+        """Removes a stream from a broadcast in the Vonage Video API.
+
+        Args:
+            broadcast_id (str): The broadcast ID.
+            stream_id (str): ID of the stream to remove.
+        """
+        self._http_client.patch(
+            self._http_client.video_host,
+            f'/v2/project/{self._http_client.auth.application_id}/broadcast/{broadcast_id}/streams',
+            params={'removeStream': stream_id},
+        )

@@ -1,22 +1,17 @@
 from typing import List, Optional
 
 from pydantic import BaseModel, Field, model_validator
-from vonage_video.errors import (
-    IndividualArchivePropertyError,
-    LayoutScreenshareTypeError,
-    LayoutStylesheetError,
-    NoAudioOrVideoError,
-)
+from vonage_video.errors import IndividualArchivePropertyError, NoAudioOrVideoError
+from vonage_video.models.common import ComposedLayout, ListVideoFilter, VideoStream
 from vonage_video.models.enums import (
     ArchiveStatus,
-    LayoutType,
     OutputMode,
     StreamMode,
     VideoResolution,
 )
 
 
-class ListArchivesFilter(BaseModel):
+class ListArchivesFilter(ListVideoFilter):
     """Model with filters for listing archives.
 
     Args:
@@ -25,23 +20,7 @@ class ListArchivesFilter(BaseModel):
         session_id (str, Optional): The session ID of a Vonage Video session.
     """
 
-    offset: Optional[int] = None
-    page_size: Optional[int] = Field(100, serialization_alias='count')
     session_id: Optional[str] = None
-
-
-class ArchiveStream(BaseModel):
-    """Model for a stream in an archive.
-
-    Args:
-        stream_id (str, Optional): The stream ID.
-        has_audio (bool, Optional): Whether the stream has audio.
-        has_video (bool, Optional): Whether the stream has video.
-    """
-
-    stream_id: Optional[str] = Field(None, validation_alias='streamId')
-    has_audio: Optional[bool] = Field(None, validation_alias='hasAudio')
-    has_video: Optional[bool] = Field(None, validation_alias='hasVideo')
 
 
 class Transcription(BaseModel):
@@ -86,7 +65,7 @@ class Archive(BaseModel):
             for each simultaneous archive of an ongoing session.
         event (str, Optional): The event that triggered the response.
         resolution (VideoResolution, Optional): The resolution of the archive.
-        streams (List[ArchiveStream], Optional): The streams in the archive.
+        streams (List[VideoStream], Optional): The streams in the archive.
         url (str, Optional): The download URL of the available archive file.
             This is only set for an archive with the status set to `available`.
         transcription (Transcription, Optional): Transcription options for the archive.
@@ -112,50 +91,9 @@ class Archive(BaseModel):
     multi_archive_tag: Optional[str] = Field(None, validation_alias='multiArchiveTag')
     event: Optional[str] = None
     resolution: Optional[VideoResolution] = None
-    streams: Optional[List[ArchiveStream]] = None
+    streams: Optional[List[VideoStream]] = None
     url: Optional[str] = None
     transcription: Optional[Transcription] = None
-
-
-class ComposedLayout(BaseModel):
-    """Model for layout options for a composed archive.
-
-    Args:
-        type (str): Specify this to assign the initial layout type for the archive.
-            This applies only to composed archives.
-        stylesheet (str, Optional): The stylesheet URL. Used for the custom layout to
-            define the visual layout.
-        screenshare_type (str, Optional): The screenshare type. Set the screenshareType
-            property to the layout type to use when there is a screen-sharing stream in
-            the session. If you set the screenshareType property, you must set the type
-            property to "bestFit" and leave the stylesheet property unset.
-    """
-
-    type: LayoutType
-    stylesheet: Optional[str] = None
-    screenshare_type: Optional[LayoutType] = Field(
-        None, serialization_alias='screenshareType'
-    )
-
-    @model_validator(mode='after')
-    def validate_stylesheet(self):
-        if self.type == LayoutType.CUSTOM and self.stylesheet is None:
-            raise LayoutStylesheetError(
-                'The `stylesheet` property must be set for `layout_type: \'custom\'`.'
-            )
-        if self.type != LayoutType.CUSTOM and self.stylesheet is not None:
-            raise LayoutStylesheetError(
-                'The `stylesheet` property cannot be set for `layout_type: \'bestFit\'`.'
-            )
-        return self
-
-    @model_validator(mode='after')
-    def type_and_screenshare_type(self):
-        if self.screenshare_type is not None and self.type != LayoutType.BEST_FIT:
-            raise LayoutScreenshareTypeError(
-                'If `screenshare_type` is set, `type` must have the value `bestFit`.'
-            )
-        return self
 
 
 class CreateArchiveRequest(BaseModel):
@@ -218,17 +156,3 @@ class CreateArchiveRequest(BaseModel):
                 'The `has_transcription` property can only be set for `archive_mode: \'individual\'`.'
             )
         return self
-
-
-class AddStreamRequest(BaseModel):
-    """Model for adding a stream to an archive.
-
-    Args:
-        stream_id (str): ID of the stream to add to the archive.
-        has_audio (bool, Optional): Whether the stream has audio.
-        has_video (bool, Optional): Whether the stream has video.
-    """
-
-    stream_id: str = Field(..., serialization_alias='addStream')
-    has_audio: Optional[bool] = Field(None, serialization_alias='hasAudio')
-    has_video: Optional[bool] = Field(None, serialization_alias='hasVideo')

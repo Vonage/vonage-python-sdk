@@ -35,3 +35,11 @@ class LayoutScreenshareTypeError(VideoError):
 
 class InvalidArchiveStateError(VideoError):
     """The archive state was invalid for the specified operation."""
+
+
+class InvalidHlsOptionsError(VideoError):
+    """The HLS options were invalid."""
+
+
+class InvalidOutputOptionsError(VideoError):
+    """The output options were invalid."""

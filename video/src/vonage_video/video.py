@@ -1,9 +1,13 @@
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Type, Union
 
 from pydantic import validate_call
 from vonage_http_client.errors import HttpRequestError
 from vonage_http_client.http_client import HttpClient
-from vonage_video.errors import InvalidArchiveStateError
+from vonage_video.errors import (
+    InvalidArchiveStateError,
+    InvalidBroadcastStateError,
+    VideoError,
+)
 from vonage_video.models.archive import (
     Archive,
     ComposedLayout,
@@ -17,7 +21,7 @@ from vonage_video.models.broadcast import (
     ListBroadcastsFilter,
 )
 from vonage_video.models.captions import CaptionsData, CaptionsOptions
-from vonage_video.models.common import AddStreamRequest, VideoStream
+from vonage_video.models.common import AddStreamRequest
 from vonage_video.models.experience_composer import (
     ExperienceComposer,
     ExperienceComposerOptions,
@@ -317,20 +321,7 @@ class Video:
             filter.model_dump(exclude_none=True, by_alias=True),
         )
 
-        index = filter.offset + 1 or 1
-        page_size = filter.page_size
-        experience_composers = []
-
-        try:
-            for ec in response['items']:
-                experience_composers.append(ExperienceComposer(**ec))
-        except KeyError:
-            return [], 0, None
-
-        count = response['count']
-        if count > page_size * (index):
-            return experience_composers, count, index
-        return experience_composers, count, None
+        return self._list_video_objects(filter, response, ExperienceComposer)
 
     @validate_call
     def get_experience_composer(self, experience_composer_id: str) -> ExperienceComposer:
@@ -382,20 +373,7 @@ class Video:
             filter.model_dump(exclude_none=True, by_alias=True),
         )
 
-        index = filter.offset + 1 or 1
-        page_size = filter.page_size
-        archives = []
-
-        try:
-            for archive in response['items']:
-                archives.append(Archive(**archive))
-        except KeyError:
-            return [], 0, None
-
-        count = response['count']
-        if count > page_size * (index):
-            return archives, count, index
-        return archives, count, None
+        return self._list_video_objects(filter, response, Archive)
 
     @validate_call
     def start_archive(self, options: CreateArchiveRequest) -> Archive:
@@ -448,11 +426,10 @@ class Video:
                 f'/v2/project/{self._http_client.auth.application_id}/archive/{archive_id}',
             )
         except HttpRequestError as e:
-            if e.response.status_code == 409:
-                raise InvalidArchiveStateError(
-                    'You can only delete an archive that has one of the following statuses: `available` OR `uploaded` OR `deleted`.'
-                )
-            raise e
+            conflict_error_message = 'You can only delete an archive that has one of the following statuses: `available` OR `uploaded` OR `deleted`.'
+            self._check_conflict_error(
+                e, InvalidArchiveStateError, conflict_error_message
+            )
 
     @validate_call
     def add_stream_to_archive(self, archive_id: str, params: AddStreamRequest) -> None:
@@ -502,11 +479,12 @@ class Video:
                 f'/v2/project/{self._http_client.auth.application_id}/archive/{archive_id}/stop',
             )
         except HttpRequestError as e:
-            if e.response.status_code == 409:
-                raise InvalidArchiveStateError(
-                    'You can only stop an archive that is being recorded.'
-                )
-            raise e
+            conflict_error_message = (
+                'You can only stop an archive that is being recorded.'
+            )
+            self._check_conflict_error(
+                e, InvalidArchiveStateError, conflict_error_message
+            )
         return Archive(**response)
 
     @validate_call
@@ -550,20 +528,7 @@ class Video:
             filter.model_dump(exclude_none=True, by_alias=True),
         )
 
-        index = filter.offset + 1 or 1
-        page_size = filter.page_size
-        broadcasts = []
-
-        try:
-            for broadcast in response['items']:
-                broadcasts.append(Broadcast(**broadcast))
-        except KeyError:
-            return [], 0, None
-
-        count = response['count']
-        if count > page_size * (index):
-            return broadcasts, count, index
-        return broadcasts, count, None
+        return self._list_video_objects(filter, response, Broadcast)
 
     @validate_call
     def start_broadcast(self, options: CreateBroadcastRequest) -> Broadcast:
@@ -574,12 +539,27 @@ class Video:
 
         Returns:
             Broadcast: The broadcast object.
+
+        Raises:
+            InvalidBroadcastStateError: If the broadcast has already started for the session,
+                or if you attempt to start a simultaneous broadcast for a session without setting
+                a unique `multi-broadcast-tag` value.
         """
-        response = self._http_client.post(
-            self._http_client.video_host,
-            f'/v2/project/{self._http_client.auth.application_id}/broadcast',
-            options.model_dump(exclude_none=True, by_alias=True),
-        )
+        try:
+            response = self._http_client.post(
+                self._http_client.video_host,
+                f'/v2/project/{self._http_client.auth.application_id}/broadcast',
+                options.model_dump(exclude_none=True, by_alias=True),
+            )
+        except HttpRequestError as e:
+            conflict_error_message = (
+                'Either the broadcast has already started for the session, '
+                'or you attempted to start a simultaneous broadcast for a session '
+                'without setting a unique `multi-broadcast-tag` value.'
+            )
+            self._check_conflict_error(
+                e, InvalidBroadcastStateError, conflict_error_message
+            )
 
         return Broadcast(**response)
 
@@ -668,3 +648,59 @@ class Video:
             f'/v2/project/{self._http_client.auth.application_id}/broadcast/{broadcast_id}/streams',
             params={'removeStream': stream_id},
         )
+
+    @validate_call
+    def _list_video_objects(
+        self,
+        request_filter: Union[
+            ListArchivesFilter, ListBroadcastsFilter, ListExperienceComposersFilter
+        ],
+        response: dict,
+        model: Union[Type[Archive], Type[Broadcast], Type[ExperienceComposer]],
+    ) -> Tuple[List[object], int, Optional[int]]:
+        """List objects of a specific model from a response.
+
+        Args:
+            request_filter (Union[ListArchivesFilter, ListBroadcastsFilter, ListExperienceComposersFilter]):
+                The filter used to make the request.
+            response (dict): The response from the API.
+            model (Union[Type[Archive], Type[Broadcast], Type[ExperienceComposer]]): The type of a pydantic
+                model to populate the response into.
+
+        Returns:
+            Tuple[List[object], int, Optional[int]]: A tuple containing a list of objects,
+                the total count of objects and the required offset value for the next page, if applicable.
+                i.e.
+                objects: List[object], count: int, next_page_offset: Optional[int]
+        """
+        index = request_filter.offset + 1 or 1
+        page_size = request_filter.page_size
+        objects = []
+
+        try:
+            for obj in response['items']:
+                objects.append(model(**obj))
+        except KeyError:
+            return [], 0, None
+
+        count = response['count']
+        if count > page_size * index:
+            return objects, count, index
+        return objects, count, None
+
+    def _check_conflict_error(
+        self,
+        http_error: HttpRequestError,
+        ConflictError: Type[VideoError],
+        conflict_error_message: str,
+    ) -> None:
+        """Checks if the error is a conflict error and raises the specified error.
+
+        Args:
+            http_error (HttpRequestError): The error to check.
+            ConflictError (Type[VideoError]): The error to raise if there is a conflict.
+            conflict_error_message (str): The error message if there is a conflict.
+        """
+        if http_error.response.status_code == 409:
+            raise ConflictError(f'{conflict_error_message} {http_error.response.text}')
+        raise http_error

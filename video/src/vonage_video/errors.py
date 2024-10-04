@@ -43,3 +43,7 @@ class InvalidHlsOptionsError(VideoError):
 
 class InvalidOutputOptionsError(VideoError):
     """The output options were invalid."""
+
+
+class InvalidBroadcastStateError(VideoError):
+    """The broadcast state was invalid for the specified operation."""

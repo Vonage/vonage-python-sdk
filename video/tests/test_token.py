@@ -1,3 +1,5 @@
+from time import time
+
 from vonage_http_client import HttpClient
 from vonage_video.errors import TokenExpiryError
 from vonage_video.models.enums import TokenRole
@@ -16,6 +18,7 @@ def test_token_options_model():
         role=TokenRole.PUBLISHER,
         connection_data='connection-data',
         initial_layout_class_list=['focus'],
+        exp=int(time() + 15 * 60),
         jti='4cab89ca-b637-41c8-b62f-7b9ce10c3971',
         subject='video',
     )

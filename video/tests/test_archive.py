@@ -3,7 +3,6 @@ from os.path import abspath
 import responses
 from pytest import raises
 from vonage_http_client.http_client import HttpClient
-from vonage_video.models.common import AddStreamRequest
 from vonage_video.errors import (
     IndividualArchivePropertyError,
     InvalidArchiveStateError,
@@ -16,6 +15,7 @@ from vonage_video.models.archive import (
     CreateArchiveRequest,
     ListArchivesFilter,
 )
+from vonage_video.models.common import AddStreamRequest
 from vonage_video.models.enums import LayoutType, OutputMode, StreamMode, VideoResolution
 from vonage_video.video import Video
 
@@ -212,10 +212,7 @@ def test_delete_archive_error_invalid_status():
     with raises(InvalidArchiveStateError) as e:
         video.delete_archive('5b1521e6-115f-4efd-bed9-e527b87f0699')
 
-    assert (
-        str(e.value)
-        == 'You can only delete an archive that has one of the following statuses: `available` OR `uploaded` OR `deleted`.'
-    )
+    assert '"code": 15004' in str(e.value)
 
 
 @responses.activate
@@ -280,7 +277,7 @@ def test_stop_archive_invalid_state_error():
     with raises(InvalidArchiveStateError) as e:
         video.stop_archive('e05d6f8f-2280-4025-b1d2-defc4f5c8dfa')
 
-    assert str(e.value) == 'You can only stop an archive that is being recorded.'
+    assert '"code": 15002' in str(e.value)
 
 
 @responses.activate

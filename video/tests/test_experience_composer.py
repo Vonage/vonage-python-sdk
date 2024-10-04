@@ -120,14 +120,13 @@ def test_get_experience_composer():
 
 
 @responses.activate
-def stop_experience_composer():
+def test_stop_experience_composer():
     build_response(
         path,
-        'POST',
+        'DELETE',
         'https://video.api.vonage.com/v2/project/test_application_id/render/be7712a4-3a63-4ed7-a2c6-7ffaebefd4a6',
         status_code=204,
     )
-
     video.stop_experience_composer('be7712a4-3a63-4ed7-a2c6-7ffaebefd4a6')
 
     assert video.http_client.last_response.status_code == 204

@@ -2,6 +2,8 @@ from enum import Enum
 
 
 class TokenRole(str, Enum):
+    """The role assigned to the token."""
+
     SUBSCRIBER = 'subscriber'
     PUBLISHER = 'publisher'
     PUBLISHER_ONLY = 'publisheronly'
@@ -9,16 +11,23 @@ class TokenRole(str, Enum):
 
 
 class ArchiveMode(str, Enum):
+    """Whether the session is archived automatically ("always") or not ("manual")."""
+
     MANUAL = 'manual'
     ALWAYS = 'always'
 
 
 class MediaMode(str, Enum):
+    """Whether the session uses the Vonage Video media router ("routed")
+    or peers connect directly (relayed)."""
+
     ROUTED = 'routed'
     RELAYED = 'relayed'
 
 
 class P2pPreference(str, Enum):
+    """The preference for peer-to-peer connections."""
+
     DISABLED = 'disabled'
     ALWAYS = 'always'
 
@@ -40,6 +49,8 @@ class LanguageCode(str, Enum):
 
 
 class AudioSampleRate(int, Enum):
+    """Audio sample rate, in Hertz."""
+
     KHZ_8 = 8000
     KHZ_16 = 16000
 

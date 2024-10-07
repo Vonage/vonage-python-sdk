@@ -47,3 +47,7 @@ class InvalidOutputOptionsError(VideoError):
 
 class InvalidBroadcastStateError(VideoError):
     """The broadcast state was invalid for the specified operation."""
+
+
+class RoutedSessionRequiredError(VideoError):
+    """The operation requires a session with `media_mode=routed`."""

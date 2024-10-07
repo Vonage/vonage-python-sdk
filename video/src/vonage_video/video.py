@@ -3,9 +3,11 @@ from typing import List, Optional, Tuple, Type, Union
 from pydantic import validate_call
 from vonage_http_client.errors import HttpRequestError
 from vonage_http_client.http_client import HttpClient
+from vonage_utils.types import Dtmf
 from vonage_video.errors import (
     InvalidArchiveStateError,
     InvalidBroadcastStateError,
+    RoutedSessionRequiredError,
     VideoError,
 )
 from vonage_video.models.archive import (
@@ -29,6 +31,7 @@ from vonage_video.models.experience_composer import (
 )
 from vonage_video.models.session import SessionOptions, VideoSession
 from vonage_video.models.signal import SignalData
+from vonage_video.models.sip import SipCall, InitiateSipRequest
 from vonage_video.models.stream import StreamInfo, StreamLayoutOptions
 from vonage_video.models.token import TokenOptions
 
@@ -648,6 +651,51 @@ class Video:
             f'/v2/project/{self._http_client.auth.application_id}/broadcast/{broadcast_id}/streams',
             params={'removeStream': stream_id},
         )
+
+    @validate_call
+    def initiate_sip_call(self, sip_request_params: InitiateSipRequest) -> SipCall:
+        """Initiates a SIP call using the Vonage Video API.
+
+        Args:
+            sip_request_params (SipParams): Model containing the session ID and a valid token,
+                as well as options for the SIP call.
+
+        Returns:
+            SipCall: The SIP call object.
+        """
+        try:
+            response = self._http_client.post(
+                self._http_client.video_host,
+                f'/v2/project/{self._http_client.auth.application_id}/dial',
+                sip_request_params.model_dump(exclude_none=True, by_alias=True),
+            )
+        except HttpRequestError as e:
+            conflict_error_message = 'SIP calling can only be used in a session with'
+            ' `media_mode=routed`.'
+            self._check_conflict_error(
+                e, RoutedSessionRequiredError, conflict_error_message
+            )
+
+        return SipCall(**response)
+
+    @validate_call
+    def play_dtmf(self, session_id: str, digits: Dtmf, connection_id: str = None) -> None:
+        """Plays DTMF tones into one or all SIP connections in a session using the Vonage
+        Video API.
+
+        Args:
+            session_id (str): The session ID.
+            digits (Dtmf): The DTMF digits to play.
+            connection_id (str, Optional): The connection ID to send the DTMF tones to.
+                If not provided, the DTMF tones will be played on all connections in
+                the session.
+        """
+        if connection_id is not None:
+            url = f'/v2/project/{self._http_client.auth.application_id}/session/{session_id}/connection/{connection_id}/play-dtmf'
+        else:
+            url = f'/v2/project/{self._http_client.auth.application_id}/session/{session_id}/play-dtmf'
+
+        self._http_client.post(self._http_client.video_host, url, {'digits': digits})
 
     @validate_call
     def _list_video_objects(

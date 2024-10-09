@@ -12,8 +12,8 @@ from .responses import ListUsersResponse, UserSummary
 class Users:
     """Class containing methods for user management.
 
-    When using APIs that require a Vonage Application to be created, you can create users to
-    associate with that application.
+    When using APIs that require a Vonage Application to be created, you can create users
+    to associate with that application.
     """
 
     def __init__(self, http_client: HttpClient) -> None:

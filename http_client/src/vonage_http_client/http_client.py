@@ -23,6 +23,18 @@ logger = getLogger('vonage')
 
 
 class HttpClientOptions(BaseModel):
+    """Options for customizing the HTTP Client.
+
+    Args:
+        api_host (str, optional): The API host to use for HTTP requests.
+        rest_host (str, optional): The REST host to use for HTTP requests.
+        video_host (str, optional): The Video host to use for HTTP requests.
+        timeout (int, optional): The timeout for HTTP requests in seconds.
+        pool_connections (int, optional): The number of pool connections.
+        pool_maxsize (int, optional): The maximum size of the connection pool.
+        max_retries (int, optional): The maximum number of retries for HTTP requests.
+    """
+
     api_host: str = 'api.nexmo.com'
     rest_host: Optional[str] = 'rest.nexmo.com'
     video_host: Optional[str] = 'video.api.vonage.com'
@@ -240,6 +252,11 @@ class HttpClient:
             return self._parse_response(response)
 
     def append_to_user_agent(self, string: str):
+        """Append a string to the User-Agent header.
+
+        Args:
+            string (str): The string to append to the User-Agent header.
+        """
         self._user_agent += f' {string}'
 
     def _parse_response(self, response: Response) -> Union[dict, None]:

@@ -69,8 +69,8 @@ class ExperienceComposer(BaseModel):
 
 
 class ListExperienceComposersFilter(BaseModel):
-    """Request object for filtering Experience Composers associated with the specific Vonage
-    application.
+    """Request object for filtering Experience Composers associated with the specific
+    Vonage application.
 
     Args:
         offset (int, Optional): The offset.

@@ -1,6 +1,6 @@
 [project]
 name = 'vonage-utils'
-version = '1.1.2'
+dynamic = ["version"]
 description = 'Utils package containing objects for use with Vonage APIs'
 readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
@@ -19,6 +19,9 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/Vonage/vonage-python-sdk"
+
+[tool.setuptools.dynamic]
+version = { attr = "vonage_utils._version.__version__" }
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]

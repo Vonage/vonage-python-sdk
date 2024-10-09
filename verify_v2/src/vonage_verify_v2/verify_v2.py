@@ -68,8 +68,8 @@ class VerifyV2:
 
     @validate_call
     def trigger_next_workflow(self, request_id: str) -> None:
-        """Trigger the next workflow event in the list of workflows passed in when making the
-        request.
+        """Trigger the next workflow event in the list of workflows passed in when making
+        the request.
 
         Args:
             request_id (str): The request ID.

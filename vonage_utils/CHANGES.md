@@ -1,3 +1,6 @@
+# 1.1.3
+- Add docstrings to data models
+
 # 1.1.2
 - Refactoring common pydantic models across the monorepo into this package
 

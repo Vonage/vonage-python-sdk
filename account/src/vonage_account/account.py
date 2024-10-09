@@ -64,8 +64,8 @@ class Account:
     def update_default_sms_webhook(
         self, mo_callback_url: str = None, dr_callback_url: str = None
     ) -> SettingsResponse:
-        """Update the default SMS webhook URLs for the account. In order to unset any default value,
-        pass an empty string as the value.
+        """Update the default SMS webhook URLs for the account. In order to unset any
+        default value, pass an empty string as the value.
 
         Args:
             mo_callback_url (str, optional): The URL to which inbound SMS messages will be

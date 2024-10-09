@@ -141,7 +141,7 @@ def test_advanced_sync_insight(caplog):
         'advanced_sync_insight.json',
     )
     options = AdvancedSyncInsightRequest(
-        number='12345678900', country_code='US', cnam=True, real_time_data=True
+        number='12345678900', country_code='US', cnam=True
     )
     response = number_insight.advanced_sync_number_insight(options)
 

@@ -152,7 +152,8 @@ class Broadcast(BaseModel):
 
 
 class BroadcastOutputSettings(BaseModel):
-    """Model for output options for a broadcast. You must specify at least one output option.
+    """Model for output options for a broadcast. You must specify at least one output
+    option.
 
     Args:
         hls (BroadcastHls, Optional): HLS output settings.

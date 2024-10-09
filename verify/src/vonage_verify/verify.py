@@ -17,8 +17,8 @@ from .responses import (
 class Verify:
     """Calls Vonage's Verify API.
 
-    This class provides methods to interact with Vonage's Verify API for starting verification
-    processes.
+    This class provides methods to interact with Vonage's Verify API for starting
+    verification processes.
     """
 
     def __init__(self, http_client: HttpClient) -> None:
@@ -167,7 +167,8 @@ class Verify:
     def request_network_unblock(
         self, network: str, unblock_duration: Optional[int] = Field(None, ge=0, le=86400)
     ) -> NetworkUnblockStatus:
-        """Request to unblock a network that has been blocked due to potential fraud detection.
+        """Request to unblock a network that has been blocked due to potential fraud
+        detection.
 
         Note: The network unblock feature is switched off by default.
             Please contact Sales to enable the Network Unblock API for your account.

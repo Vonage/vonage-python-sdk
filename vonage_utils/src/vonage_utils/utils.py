@@ -37,8 +37,8 @@ def format_phone_number(number: Union[str, int]) -> str:
 
 
 def remove_none_values(my_dataclass) -> dict:
-    """A dict_factory that can be passed into the dataclass.asdict() method to remove None values
-    from a dict serialized from the dataclass my_dataclass.
+    """A dict_factory that can be passed into the dataclass.asdict() method to remove None
+    values from a dict serialized from the dataclass my_dataclass.
 
     Args:
         my_dataclass (dataclass): A dataclass instance

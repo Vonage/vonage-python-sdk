@@ -4,8 +4,8 @@ from pydantic import BaseModel, Field
 
 
 class SipAuth(BaseModel):
-    """Model representing the authentication details for the SIP INVITE request for HTTP digest
-    authentication, if it is required by your SIP platform.
+    """Model representing the authentication details for the SIP INVITE request for HTTP
+    digest authentication, if it is required by your SIP platform.
 
     Attributes:
         username (str): The username for HTTP digest authentication.

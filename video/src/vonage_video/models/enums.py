@@ -18,8 +18,8 @@ class ArchiveMode(str, Enum):
 
 
 class MediaMode(str, Enum):
-    """Whether the session uses the Vonage Video media router ("routed") or peers connect directly
-    (relayed)."""
+    """Whether the session uses the Vonage Video media router ("routed") or peers connect
+    directly (relayed)."""
 
     ROUTED = 'routed'
     RELAYED = 'relayed'
@@ -58,8 +58,8 @@ class AudioSampleRate(int, Enum):
 class VideoResolution(str, Enum):
     """The resolution of the archive or broadcast.
 
-    This property only applies to composed archives. If you set this property and set the outputMode
-    property to "individual", the call to the REST method results in an error.
+    This property only applies to composed archives. If you set this property and set the
+    outputMode property to "individual", the call to the REST method results in an error.
     """
 
     RES_640x480 = '640x480'
@@ -83,8 +83,8 @@ class OutputMode(str, Enum):
 
 
 class StreamMode(str, Enum):
-    """Whether streams included in the archive are selected automatically ("auto", the default) or
-    manually ("manual")."""
+    """Whether streams included in the archive are selected automatically ("auto", the
+    default) or manually ("manual")."""
 
     AUTO = 'auto'
     MANUAL = 'manual'

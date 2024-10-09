@@ -45,8 +45,8 @@ class Record(NccoAction):
 
 
 class Conversation(NccoAction):
-    """You can use the Conversation action to create standard or moderated conferences, while
-    preserving the communication context.
+    """You can use the Conversation action to create standard or moderated conferences,
+    while preserving the communication context.
 
     Using a conversation with the same name reuses the same persisted conversation.
     """
@@ -71,8 +71,8 @@ class Conversation(NccoAction):
 
 
 class Connect(NccoAction):
-    """You can use the Connect action to connect a call to endpoints such as phone numbers or a VBC
-    extension."""
+    """You can use the Connect action to connect a call to endpoints such as phone numbers
+    or a VBC extension."""
 
     endpoint: List[
         Union[PhoneEndpoint, AppEndpoint, WebsocketEndpoint, SipEndpoint, VbcEndpoint]

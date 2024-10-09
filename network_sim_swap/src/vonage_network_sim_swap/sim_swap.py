@@ -61,6 +61,7 @@ class NetworkSimSwap:
                 or without a leading +.
 
         Returns:
+            LastSwapDate: Class containing the Last Swap Date response.
         """
         token = self._network_auth.get_oauth2_user_token(
             number=phone_number,

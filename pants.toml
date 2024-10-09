@@ -63,7 +63,7 @@ args = ['--profile=black', '--line-length=90']
 interpreter_constraints = ['>=3.8']
 
 [docformatter]
-args = ['--wrap-summaries=100', '--wrap-descriptions=100']
+args = ['--wrap-summaries=90', '--wrap-descriptions=90']
 interpreter_constraints = ['>=3.8']
 
 [autoflake]

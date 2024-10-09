@@ -1,6 +1,6 @@
 [project]
 name = "vonage-network-auth"
-version = "0.1.0b0"
+dynamic = ["version"]
 description = "Package for working with Network APIs that require Oauth2 in Python."
 readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
@@ -19,6 +19,9 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/Vonage/vonage-python-sdk"
+
+[tool.setuptools.dynamic]
+version = { attr = "vonage_network_auth._version.__version__" }
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]

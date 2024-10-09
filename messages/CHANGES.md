@@ -1,3 +1,6 @@
+# 1.2.1
+- Add docstrings to data models
+
 # 1.2.0
 - Add RCS channel support
 - Add methods to revoke an RCS message and mark a WhatsApp message as read

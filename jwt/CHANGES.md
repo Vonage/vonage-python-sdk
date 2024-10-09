@@ -1,3 +1,6 @@
+# 1.1.2
+- Dynamically specify package version
+
 # 1.1.1
 - Exceptions inherit from `VonageError`
 - Moving the package into the Vonage Python SDK monorepo

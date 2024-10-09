@@ -12,7 +12,6 @@ from .responses import (
     BasicInsightResponse,
     CallerIdentity,
     Carrier,
-    RealTimeData,
     RoamingStatus,
     StandardInsightResponse,
 )
@@ -26,7 +25,6 @@ __all__ = [
     'BasicInsightResponse',
     'CallerIdentity',
     'Carrier',
-    'RealTimeData',
     'RoamingStatus',
     'StandardInsightResponse',
     'AdvancedSyncInsightResponse',

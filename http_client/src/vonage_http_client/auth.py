@@ -66,9 +66,19 @@ class Auth:
         return self._application_id
 
     def create_jwt_auth_string(self):
+        """Creates a JWT authentication string for use in the Authorization header by
+        generating a JWT token."""
         return b'Bearer ' + self.generate_application_jwt()
 
     def generate_application_jwt(self, claims: dict = None) -> bytes:
+        """Generates a JWT.
+
+        Args:
+            claims (dict): The claims to include in the JWT.
+
+        Returns:
+            bytes: The JWT token.
+        """
         if claims is None:
             claims = {}
         try:
@@ -80,15 +90,17 @@ class Auth:
             ) from err
 
     def create_basic_auth_string(self):
+        """Creates a basic authentication string for use in the Authorization header."""
+
         hash = b64encode(f'{self.api_key}:{self.api_secret}'.encode('utf-8')).decode(
             'ascii'
         )
         return f'Basic {hash}'
 
     def sign_params(self, params: dict) -> str:
-        """Signs the provided message parameters using the signature secret provided to the `Auth`
-        class. If no signature secret is provided, the message parameters are signed using a simple
-        MD5 hash.
+        """Signs the provided message parameters using the signature secret provided to
+        the `Auth` class. If no signature secret is provided, the message parameters are
+        signed using a simple MD5 hash.
 
         Args:
             params (dict): The message parameters to be signed.

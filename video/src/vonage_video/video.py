@@ -153,8 +153,8 @@ class Video:
     def send_signal(
         self, session_id: str, data: SignalData, connection_id: str = None
     ) -> None:
-        """Sends a signal to a session in the Vonage Video API. If `connection_id` is not provided,
-        the signal will be sent to all connections in the session.
+        """Sends a signal to a session in the Vonage Video API. If `connection_id` is not
+        provided, the signal will be sent to all connections in the session.
 
         Args:
             session_id (str): The session ID.
@@ -436,8 +436,9 @@ class Video:
 
     @validate_call
     def add_stream_to_archive(self, archive_id: str, params: AddStreamRequest) -> None:
-        """Adds a stream to an archive in the Vonage Video API. Use this method to change the
-        streams included in a composed archive that was started with the streamMode set to "manual".
+        """Adds a stream to an archive in the Vonage Video API. Use this method to change
+        the streams included in a composed archive that was started with the streamMode
+        set to "manual".
 
         Args:
             archive_id (str): The archive ID.
@@ -624,9 +625,9 @@ class Video:
     def add_stream_to_broadcast(
         self, broadcast_id: str, params: AddStreamRequest
     ) -> None:
-        """Adds a stream to a broadcast in the Vonage Video API. Use this method to change the
-        streams included in a composed broadcast that was started with the streamMode set to
-        "manual".
+        """Adds a stream to a broadcast in the Vonage Video API. Use this method to change
+        the streams included in a composed broadcast that was started with the streamMode
+        set to "manual".
 
         Args:
             broadcast_id (str): The broadcast ID.
@@ -680,7 +681,8 @@ class Video:
 
     @validate_call
     def play_dtmf(self, session_id: str, digits: Dtmf, connection_id: str = None) -> None:
-        """Plays DTMF tones into one or all SIP connections in a session using the Vonage Video API.
+        """Plays DTMF tones into one or all SIP connections in a session using the Vonage
+        Video API.
 
         Args:
             session_id (str): The session ID.

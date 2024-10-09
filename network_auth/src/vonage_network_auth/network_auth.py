@@ -5,7 +5,8 @@ from .responses import OidcResponse, TokenResponse
 
 
 class NetworkAuth:
-    """Class containing methods for authenticating Network APIs following Camara standards."""
+    """Class containing methods for authenticating Network APIs following Camara
+    standards."""
 
     def __init__(self, http_client: HttpClient):
         self._http_client = http_client
@@ -64,8 +65,16 @@ class NetworkAuth:
     def request_access_token(
         self, auth_req_id: str, grant_type: str = 'urn:openid:params:grant-type:ciba'
     ) -> TokenResponse:
-        """Request a Camara access token using an authentication request ID given as a response to
-        an OIDC request."""
+        """Request a Camara access token using an authentication request ID given as a
+        response to an OIDC request.
+
+        Args:
+            auth_req_id (str): The authentication request ID.
+            grant_type (str, optional): The grant type.
+
+        Returns:
+            TokenResponse: A response containing the access token.
+        """
         params = {'auth_req_id': auth_req_id, 'grant_type': grant_type}
 
         response = self._http_client.post(

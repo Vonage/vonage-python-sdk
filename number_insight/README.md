@@ -55,9 +55,4 @@ from vonage_number_insight import AdvancedSyncInsightRequest
 vonage_client.number_insight.advanced_sync_number_insight(
     AdvancedSyncInsightRequest(number='12345678900')
 )
-
-# Optionally, you can get real time information by setting the `real_time_data` parameter = True
-vonage_client.number_insight.advanced_async_number_insight(
-    AdvancedSyncInsightRequest(number='12345678900', real_time_data=True, cnam=True)
-)
 ```

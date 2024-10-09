@@ -1,3 +1,6 @@
+# 1.4.1
+- Add docstrings to data models
+
 # 1.4.0
 - Add new `oauth2` logic for calling APIs that require Oauth
 

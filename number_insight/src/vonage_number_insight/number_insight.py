@@ -115,7 +115,7 @@ class NumberInsight:
 
         Args:
             Options (AdvancedSyncInsightRequest): The options for the request. The `number` parameter
-                is required, and the `country_code`, `cnam`, and `real_time_data` parameters are optional.
+                is required, and the `country_code` and `cnam` parameters are optional.
 
         Returns:
             AdvancedSyncInsightResponse: The response object containing the advanced number insight

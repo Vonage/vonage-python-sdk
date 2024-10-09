@@ -9,7 +9,8 @@ from .errors import VonageJwtError
 
 
 class JwtClient:
-    """Object used to pass in an application ID and private key to generate JWT methods."""
+    """Object used to pass in an application ID and private key to generate JWT
+    methods."""
 
     def __init__(self, application_id: str, private_key: str):
         self._application_id = application_id

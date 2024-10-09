@@ -37,9 +37,9 @@ class SearchAvailableNumbersFilter(ListNumbersFilter):
 class NumberParams(BaseModel):
     """Specify the two-letter country code and the number you are referring to.
 
-    If you'd like to perform an action on a subaccount, provide the api_key of that account in the
-    `target_api_key` field. If you'd like to perform an action on your own account, you do not need
-    to provide this field.
+    If you'd like to perform an action on a subaccount, provide the api_key of that
+    account in the `target_api_key` field. If you'd like to perform an action on your own
+    account, you do not need to provide this field.
     """
 
     country: str = Field(..., min_length=2, max_length=2)

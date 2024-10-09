@@ -104,7 +104,8 @@ class NotFoundError(HttpRequestError):
 
 
 class RateLimitedError(HttpRequestError):
-    """Exception indicating a rate limit was hit when making too many requests to a Vonage endpoint.
+    """Exception indicating a rate limit was hit when making too many requests to a Vonage
+    endpoint.
 
     This error is raised when the HTTP response status code is 429 (Too Many Requests).
 
@@ -122,8 +123,8 @@ class RateLimitedError(HttpRequestError):
 
 
 class ServerError(HttpRequestError):
-    """Exception indicating an error was returned by a Vonage server in response to a Vonage SDK
-    request.
+    """Exception indicating an error was returned by a Vonage server in response to a
+    Vonage SDK request.
 
     This error is raised when the HTTP response status code is 500 (Internal Server Error).
 

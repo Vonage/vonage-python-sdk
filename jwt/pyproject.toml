@@ -1,11 +1,11 @@
 [project]
 name = "vonage-jwt"
-version = "1.1.1"
+dynamic = ["version"]
 description = "Tooling for working with JWTs for Vonage APIs in Python."
 readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
 requires-python = ">=3.8"
-dependencies = ["vonage-utils>=1.1.2", "pyjwt[crypto]>=1.6.4"]
+dependencies = ["vonage-utils>=1.1.3", "pyjwt[crypto]>=1.6.4"]
 classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
@@ -19,6 +19,9 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/Vonage/vonage-python-sdk"
+
+[tool.setuptools.dynamic]
+version = { attr = "vonage_jwt._version.__version__" }
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]

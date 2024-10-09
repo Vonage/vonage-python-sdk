@@ -1,5 +1,5 @@
 [GLOBAL]
-pants_version = '2.22.0'
+pants_version = '2.23.0a0'
 
 backend_packages = [
   'pants.backend.python',
@@ -21,7 +21,7 @@ enabled = false
 root_patterns = ['/', 'src/', 'tests/']
 
 [python]
-interpreter_constraints = ['==3.11.*']
+interpreter_constraints = ['==3.12.*']
 
 [pytest]
 args = ['-vv', '--no-header']
@@ -56,9 +56,15 @@ filter = [
 
 [black]
 args = ['--line-length=90', '--skip-string-normalization']
+interpreter_constraints = ['>=3.8']
 
 [isort]
 args = ['--profile=black', '--line-length=90']
+interpreter_constraints = ['>=3.8']
 
 [docformatter]
 args = ['--wrap-summaries=100', '--wrap-descriptions=100']
+interpreter_constraints = ['>=3.8']
+
+[autoflake]
+interpreter_constraints = ['>=3.8']

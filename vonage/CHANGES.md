@@ -1,5 +1,6 @@
 # 3.99.5a0
 - Add support for the [Vonage Video API](https://developer.vonage.com/en/video/overview)
+- Add docstrings for data models across the SDK to increase quality-of-life developer experience
 - Updated `vonage_subaccounts.ListSubaccountsResponse` for compatibility with Python 3.8
 
 # 3.99.4a0

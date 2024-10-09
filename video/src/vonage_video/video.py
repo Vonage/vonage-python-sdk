@@ -31,7 +31,7 @@ from vonage_video.models.experience_composer import (
 )
 from vonage_video.models.session import SessionOptions, VideoSession
 from vonage_video.models.signal import SignalData
-from vonage_video.models.sip import SipCall, InitiateSipRequest
+from vonage_video.models.sip import InitiateSipRequest, SipCall
 from vonage_video.models.stream import StreamInfo, StreamLayoutOptions
 from vonage_video.models.token import TokenOptions
 
@@ -680,12 +680,12 @@ class Video:
 
     @validate_call
     def play_dtmf(self, session_id: str, digits: Dtmf, connection_id: str = None) -> None:
-        """Plays DTMF tones into one or all SIP connections in a session using the Vonage
-        Video API.
+        """Plays DTMF tones into one or all SIP connections in a session using the Vonage Video API.
 
         Args:
             session_id (str): The session ID.
-            digits (Dtmf): The DTMF digits to play.
+            digits (Dtmf): The DTMF digits to play. Numbers `0-9`, `*`, `#` and `p`
+                (500ms pause) are supported.
             connection_id (str, Optional): The connection ID to send the DTMF tones to.
                 If not provided, the DTMF tones will be played on all connections in
                 the session.

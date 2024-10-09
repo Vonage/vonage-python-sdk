@@ -18,8 +18,8 @@ class ArchiveMode(str, Enum):
 
 
 class MediaMode(str, Enum):
-    """Whether the session uses the Vonage Video media router ("routed")
-    or peers connect directly (relayed)."""
+    """Whether the session uses the Vonage Video media router ("routed") or peers connect directly
+    (relayed)."""
 
     ROUTED = 'routed'
     RELAYED = 'relayed'

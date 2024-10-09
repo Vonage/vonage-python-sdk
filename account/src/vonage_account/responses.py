@@ -4,11 +4,25 @@ from pydantic import BaseModel, Field
 
 
 class Balance(BaseModel):
+    """Model for the balance of a Vonage account.
+
+    Args:
+        value (float): The balance of the account in EUR.
+        auto_reload (bool, Optional): Whether the account has auto-reload enabled.
+    """
+
     value: float
     auto_reload: Optional[bool] = Field(None, validation_alias='autoReload')
 
 
 class TopUpResponse(BaseModel):
+    """Model for a response to a top-up request.
+
+    Args:
+        error_code (str, Optional): The error code.
+        error_code_label (str, Optional): The error code label.
+    """
+
     error_code: Optional[str] = Field(None, validation_alias='error-code')
     error_code_label: Optional[str] = Field(None, validation_alias='error-code-label')
 

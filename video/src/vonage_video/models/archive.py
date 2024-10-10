@@ -114,6 +114,11 @@ class CreateArchiveRequest(BaseModel):
         resolution (VideoResolution, Optional): The resolution of the archive.
         stream_mode (StreamMode, Optional): Whether streams included in the archive are selected
             automatically ("auto", the default) or manually ("manual").
+
+    Raises:
+        NoAudioOrVideoError: If neither `has_audio` nor `has_video` is set.
+        IndividualArchivePropertyError: If `resolution` or `layout` is set for individual archives
+            or if `has_transcription` is set for composed archives.
     """
 
     session_id: str = Field(..., serialization_alias='sessionId')

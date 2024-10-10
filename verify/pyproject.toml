@@ -1,6 +1,6 @@
 [project]
 name = 'vonage-verify'
-version = '1.1.1'
+dynamic = ["version"]
 description = 'Vonage verify package'
 readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
@@ -23,6 +23,9 @@ classifiers = [
 
 [project.urls]
 homepage = "https://github.com/Vonage/vonage-python-sdk"
+
+[tool.setuptools.dynamic]
+version = { attr = "vonage_verify._version.__version__" }
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]

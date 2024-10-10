@@ -112,6 +112,7 @@ ENV*
 html/
 .mutmut-cache
 _test_scripts/
+_dev_scripts/
 
 # Pants workspace files
 /.pants.*

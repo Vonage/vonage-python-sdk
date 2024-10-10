@@ -10,7 +10,25 @@ logger = getLogger('vonage_verify')
 
 
 class BaseVerifyRequest(BaseModel):
-    """Base request object containing the data and options for a verification request."""
+    """Base request object containing the data and options for a verification request.
+
+    Args:
+        number (PhoneNumber): The phone number to verify. Unless you are setting country
+            explicitly, this number must be in E.164 format.
+        country (str, Optional): If you do not provide `number` in international format
+            or you are not sure if `number` is correctly formatted, specify the
+            two-character country code in country. Verify will then format the number for
+            you.
+        code_length (int, Optional): The length of the verification code to generate.
+        pin_expiry (int, Optional): How long the generated verification code is valid
+            for, in seconds. When you specify both `pin_expiry` and `next_event_wait`
+            then `pin_expiry` must be an integer multiple of `next_event_wait` otherwise
+            `pin_expiry` is defaulted to equal `next_event_wait`.
+        next_event_wait (int, Optional): The wait time in seconds between attempts to
+            deliver the verification code.
+        workflow_id (int, Optional): Selects the predefined sequence of SMS and TTS (Text
+            To Speech) actions to use in order to convey the PIN to your user.
+    """
 
     number: PhoneNumber
     country: Optional[str] = Field(None, max_length=2)
@@ -37,6 +55,31 @@ class VerifyRequest(BaseVerifyRequest):
     """Request object for a verification request.
 
     You must set the `number` and `brand` fields.
+
+    Args:
+        number (PhoneNumber): The phone number to verify. Unless you are setting country
+            explicitly, this number must be in E.164 format.
+        country (str, Optional): If you do not provide `number` in international format
+            or you are not sure if `number` is correctly formatted, specify the
+            two-character country code in country. Verify will then format the number for
+            you.
+        brand (str): The name of the company or service that is sending the verification
+            request. This will appear in the body of the SMS or TTS message.
+        code_length (int, Optional): The length of the verification code to generate.
+        pin_expiry (int, Optional): How long the generated verification code is valid
+            for, in seconds. When you specify both `pin_expiry` and `next_event_wait`
+            then `pin_expiry` must be an integer multiple of `next_event_wait` otherwise
+            `pin_expiry` is defaulted to equal `next_event_wait`.
+        next_event_wait (int, Optional): The wait time in seconds between attempts to
+            deliver the verification code.
+        workflow_id (int, Optional): Selects the predefined sequence of SMS and TTS (Text
+            To Speech) actions to use in order to convey the PIN to your user.
+        sender_id (str, Optional): An 11-character alphanumeric string that represents the
+            sender of the verification request. Depending on the location of the phone
+            number, restrictions may apply.
+        lg (LanguageCode, Optional): The language to use for the verification message.
+        pin_code (str, Optional): The verification code to send to the user. If you do not
+            provide this, Vonage will generate a code for you.
     """
 
     brand: str = Field(..., max_length=18)
@@ -49,6 +92,27 @@ class Psd2Request(BaseVerifyRequest):
     """Request object for a PSD2 verification request.
 
     You must set the `number`, `payee` and `amount` fields.
+
+    Args:
+        number (PhoneNumber): The phone number to verify. Unless you are setting country
+            explicitly, this number must be in E.164 format.
+        payee (str): An alphanumeric string to indicate to the user the name of the
+            recipient that they are confirming a payment to.
+        amount (float): The decimal amount of the payment to be confirmed, in Euros.
+        country (str, Optional): If you do not provide `number` in international
+            format or you are not sure if `number` is correctly formatted, specify the
+            two-character country code in `country`. Verify will then format the number for
+            you.
+        lg (Psd2LanguageCode, Optional): The language to use for the verification message.
+        code_length (int, Optional): The length of the verification code to generate.
+        pin_expiry (int, Optional): How long the generated verification code is valid
+            for, in seconds. When you specify both `pin_expiry` and `next_event_wait`
+            then `pin_expiry` must be an integer multiple of `next_event_wait` otherwise
+            `pin_expiry` is defaulted to equal `next_event_wait`.
+        next_event_wait (int, Optional): The wait time in seconds between attempts to
+            deliver the verification code.
+        workflow_id (int, Optional): Selects the predefined sequence of SMS and TTS (Text
+            To Speech) actions to use in order to convey the PIN to your user.
     """
 
     payee: str = Field(..., max_length=18)

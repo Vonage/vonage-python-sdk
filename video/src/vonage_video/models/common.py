@@ -45,6 +45,11 @@ class ComposedLayout(BaseModel):
             property to the layout type to use when there is a screen-sharing stream in
             the session. If you set the screenshareType property, you must set the type
             property to "bestFit" and leave the stylesheet property unset.
+
+    Raises:
+        LayoutStylesheetError: If `stylesheet` is not set for `layout_type: 'custom'` or
+            if `stylesheet` is set for `layout_type: 'bestFit'`.
+        LayoutScreenshareTypeError: If `screenshare_type` is set and `type` is not 'bestFit'.
     """
 
     type: LayoutType

@@ -41,7 +41,15 @@ class SessionOptions(BaseModel):
 
 
 class VideoSession(BaseModel):
-    """The new session ID and options specified in the request."""
+    """The new session ID and options specified in the request.
+
+    Args:
+        session_id (str): The session ID.
+        archive_mode (ArchiveMode, Optional): The archive mode for the session.
+        media_mode (MediaMode, Optional): The media mode for the session.
+        location (str, Optional): The location of the session.
+        e2ee (bool, Optional): Whether end-to-end encryption is enabled for the session.
+    """
 
     session_id: str
     archive_mode: Optional[ArchiveMode] = None

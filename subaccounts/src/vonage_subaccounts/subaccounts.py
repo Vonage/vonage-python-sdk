@@ -20,7 +20,11 @@ from vonage_subaccounts.responses import (
 
 
 class Subaccounts:
-    """Class containing methods to manage Vonage subaccounts."""
+    """Class containing methods to manage Vonage subaccounts.
+
+    Args:
+        http_client (HttpClient): The HTTP client to make requests to the Subaccounts API.
+    """
 
     def __init__(self, http_client: HttpClient) -> None:
         self._http_client = http_client
@@ -28,10 +32,10 @@ class Subaccounts:
 
     @property
     def http_client(self) -> HttpClient:
-        """The HTTP client used to make requests to the Users API.
+        """The HTTP client used to make requests to the Subaccounts API.
 
         Returns:
-            HttpClient: The HTTP client used to make requests to the Users API.
+            HttpClient: The HTTP client used to make requests to the Subaccounts API.
         """
         return self._http_client
 

@@ -122,9 +122,6 @@ class Users:
 
         Args:
             id (str): The ID of the user to delete.
-
-        Returns:
-            None
         """
         self._http_client.delete(
             self._http_client.api_host, f'/v1/users/{id}', None, self._auth_type

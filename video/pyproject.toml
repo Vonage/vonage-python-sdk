@@ -1,6 +1,6 @@
 [project]
 name = 'vonage-video'
-version = '1.0.0'
+dynamic = ["version"]
 description = 'Vonage video package'
 readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
@@ -23,6 +23,9 @@ classifiers = [
 
 [project.urls]
 homepage = "https://github.com/Vonage/vonage-python-sdk"
+
+[tool.setuptools.dynamic]
+version = { attr = "vonage_video._version.__version__" }
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]

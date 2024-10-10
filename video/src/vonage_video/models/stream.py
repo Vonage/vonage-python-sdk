@@ -8,9 +8,11 @@ class StreamInfo(BaseModel):
 
     Args:
         id (str): The stream ID.
-        video_type (str): The video type.
-        name (str): The name.
-        layout_class_list (list(str)): The layout class list.
+        video_type (str): Set to "camera", "screen", or "custom". A "screen" video uses
+            screen sharing on the publisher as the video source; a "custom" video is
+            published by a web client using an HTML VideoTrack element as the video
+            source.
+        name (str): An array of the layout classes for the stream.
     """
 
     id: Optional[str] = Field(None, validation_alias='id')
@@ -26,7 +28,7 @@ class StreamLayout(BaseModel):
 
     Args:
         id (str): The stream ID.
-        layout_class_list (list): The layout class list.
+        layout_class_list (list): An array of the layout classes for the stream.
     """
 
     id: str
@@ -34,6 +36,11 @@ class StreamLayout(BaseModel):
 
 
 class StreamLayoutOptions(BaseModel):
-    """The options for the stream layout."""
+    """The options for the stream layout.
+
+    Args:
+        items (list): An array of the stream layout items. Each item is a StreamLayout
+            object. See StreamLayout.
+    """
 
     items: List[StreamLayout]

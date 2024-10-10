@@ -35,7 +35,12 @@ class AudioConnectorOptions(BaseModel):
 
 
 class AudioConnectorData(BaseModel):
-    """Class containing Audio Connector WebSocket ID and connection ID."""
+    """Class containing Audio Connector WebSocket ID and connection ID.
+
+    Args:
+        id (str, Optional): The WebSocket ID.
+        connection_id (str, Optional): The connection ID.
+    """
 
     id: Optional[str] = None
     connection_id: Optional[str] = Field(None, validation_alias='connectionId')

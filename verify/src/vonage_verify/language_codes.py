@@ -2,6 +2,8 @@ from enum import Enum
 
 
 class LanguageCode(str, Enum):
+    """Language code used in a specific Verify request."""
+
     ar_xa = 'ar-xa'
     cs_cz = 'cs-cz'
     cy_cy = 'cy-cy'
@@ -44,6 +46,8 @@ class LanguageCode(str, Enum):
 
 
 class Psd2LanguageCode(str, Enum):
+    """Language code used in a specific Verify PSD2 request."""
+
     en_gb = 'en-gb'
     bg_bg = 'bg-bg'
     cs_cz = 'cs-cz'

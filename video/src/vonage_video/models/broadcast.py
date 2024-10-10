@@ -25,6 +25,9 @@ class BroadcastHls(BaseModel):
         dvr (bool, Optional): Whether the broadcast supports DVR.
         low_latency (bool, Optional): Whether the broadcast is low latency.
             Note: Cannot be True when `dvr=True`.
+
+    Raises:
+        InvalidHlsOptionsError: If `low_latency=True` and `dvr=True`.
     """
 
     dvr: Optional[bool] = None
@@ -158,6 +161,9 @@ class BroadcastOutputSettings(BaseModel):
     Args:
         hls (BroadcastHls, Optional): HLS output settings.
         rtmp (List[BroadcastRtmp], Optional): RTMP output settings.
+
+    Raises:
+        InvalidOutputOptionsError: If neither HLS nor RTMP output options are set.
     """
 
     hls: Optional[BroadcastHls] = None

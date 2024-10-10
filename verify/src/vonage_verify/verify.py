@@ -19,6 +19,12 @@ class Verify:
 
     This class provides methods to interact with Vonage's Verify API for starting
     verification processes.
+
+    Args:
+        http_client (HttpClient): The HTTP client used to make requests to the Verify API.
+
+    Raises:
+        VerifyError: If an error is found in the response.
     """
 
     def __init__(self, http_client: HttpClient) -> None:

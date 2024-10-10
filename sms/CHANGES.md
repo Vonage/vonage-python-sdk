@@ -1,3 +1,6 @@
+# 1.1.2
+- Add docstrings to data models
+
 # 1.1.1
 - Update minimum dependency version
 

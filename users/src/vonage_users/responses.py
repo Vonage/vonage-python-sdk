@@ -5,6 +5,15 @@ from vonage_utils.models import Link, ResourceLink
 
 
 class Links(BaseModel):
+    """Model for links following a version of the HAL standard.
+
+    Args:
+        self (Link): The self link.
+        first (Link): The first link.
+        next (Link, Optional): The next link.
+        prev (Link, Optional): The previous link.
+    """
+
     self: Link
     first: Link
     next: Optional[Link] = None
@@ -12,6 +21,16 @@ class Links(BaseModel):
 
 
 class UserSummary(BaseModel):
+    """Model for a user summary - a subset of user information.
+
+    Args:
+        id (str, Optional): The user ID.
+        name (str, Optional): The name of the user.
+        display_name (str, Optional): The display name of the user.
+        links (ResourceLink, Optional): Links to the user resource.
+        link (str, Optional): The `_self` link.
+    """
+
     id: Optional[str]
     name: Optional[str]
     display_name: Optional[str] = None
@@ -26,10 +45,24 @@ class UserSummary(BaseModel):
 
 
 class Embedded(BaseModel):
+    """Model for embedded resources.
+
+    Args:
+        users (List[UserSummary]): A list of user summaries.
+    """
+
     users: List[UserSummary] = []
 
 
 class ListUsersResponse(BaseModel):
+    """Model for a response containing a list of users.
+
+    Args:
+        page_size (int): The number of users returned in the response.
+        embedded (Embedded): Embedded resources.
+        links (Links): Links to other pages of users.
+    """
+
     page_size: int
     embedded: Embedded = Field(..., validation_alias='_embedded')
     links: Links = Field(..., validation_alias='_links')

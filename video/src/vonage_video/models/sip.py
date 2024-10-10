@@ -7,7 +7,7 @@ class SipAuth(BaseModel):
     """Model representing the authentication details for the SIP INVITE request for HTTP
     digest authentication, if it is required by your SIP platform.
 
-    Attributes:
+    Args:
         username (str): The username for HTTP digest authentication.
         password (str): The password for HTTP digest authentication.
     """
@@ -19,7 +19,7 @@ class SipAuth(BaseModel):
 class SipOptions(BaseModel):
     """Model representing the SIP options for the call.
 
-    Attributes:
+    Args:
         uri (str): The SIP URI to be used as the destination of the SIP call.
         from_ (Optional[str]): The number or string sent to the final SIP number
             as the caller. It must be a string in the form of `from@example.com`, where
@@ -48,7 +48,7 @@ class SipOptions(BaseModel):
 class InitiateSipRequest(BaseModel):
     """Model representing the SIP options for joining a Vonage Video session.
 
-    Attributes:
+    Args:
         session_id (str): The Vonage Video session ID for the SIP call to join.
         token (str): The Vonage Video token to be used for the participant being called.
         sip (Sip): The SIP options for the call.
@@ -62,7 +62,7 @@ class InitiateSipRequest(BaseModel):
 class SipCall(BaseModel):
     """Model representing the details of a SIP call.
 
-    Attributes:
+    Args:
         id (str): A unique ID for the SIP call.
         project_id (str): The Vonage Video project ID for the SIP call.
         session_id (str): The Vonage Video session ID for the SIP call.

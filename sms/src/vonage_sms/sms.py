@@ -9,7 +9,15 @@ from .responses import SmsResponse
 
 
 class Sms:
-    """Calls Vonage's SMS API."""
+    """Calls Vonage's SMS API.
+
+    Args:
+        http_client (HttpClient): The HTTP client used to make requests to the SMS API.
+
+    Raises:
+        PartialFailureError: Raised when not all messages were sent successfully.
+        SmsError: Raised when the SMS API returns an error.
+    """
 
     def __init__(self, http_client: HttpClient) -> None:
         self._http_client = http_client
@@ -30,7 +38,27 @@ class Sms:
 
     @validate_call
     def send(self, message: SmsMessage) -> SmsResponse:
-        """Send an SMS message."""
+        """Send an SMS message.
+
+        Args:
+            message (SmsMessage): The message to send.
+
+        Returns:
+            SmsResponse: The response from the API.
+
+        Raises:
+            PartialFailureError: Raised when not all messages were sent successfully.
+            SmsError: Raised when the SMS API returns an error.
+
+        Example:
+            >>> sms = Sms(http_client)
+            >>> message = SmsMessage(
+            ...     to='1234567890',
+            ...     from_='9876543210',
+            ...     text='Hello, World!',
+            ... )
+            >>> response = sms.send(message)
+        """
         response = self._http_client.post(
             self._http_client.rest_host,
             '/sms/json',
@@ -65,7 +93,7 @@ class Sms:
     @validate_call
     def submit_sms_conversion(
         self, message_id: str, delivered: bool = True, timestamp: datetime = None
-    ):
+    ) -> None:
         """
         Note: Not available without having this feature manually enabled on your account.
 

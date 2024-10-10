@@ -1,3 +1,6 @@
+# 1.1.3
+- Add docstrings for data models
+
 # 1.1.2
 - Allow minimum `channel_timeout` value to be 15 seconds
 

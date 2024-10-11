@@ -10,10 +10,52 @@ from .ncco import Connect, Conversation, Input, Notify, Record, Stream, Talk
 
 
 class ToPhone(Phone):
+    """Model for the phone number to call.
+
+    Args:
+        number (PhoneNumber): The phone number.
+        dtmf_answer (Optional[Dtmf]): The DTMF tones to send when the call is answered.
+    """
+
     dtmf_answer: Optional[Dtmf] = Field(None, serialization_alias='dtmfAnswer')
 
 
 class CreateCallRequest(BaseModel):
+    """Request model for creating a call. You must supply either `ncco` or `answer_url`.
+
+    Args:
+        ncco (Optional[List[Union[Record, Conversation, Connect, Input, Talk, Stream, Notify]]]):
+            The Nexmo Call Control Object (NCCO) to use for the call.
+        answer_url (Optional[List[str]]): The URL to fetch the NCCO from.
+        answer_method (Optional[Literal['POST', 'GET']]): The HTTP method used to send
+            event information to `answer_url`.
+        to (List[Union[ToPhone, Sip, Websocket, Vbc]]): The type of connection to call.
+        from_ (Optional[Phone]): The phone number to use when calling. Mutually exclusive
+            with the `random_from_number` property.
+        random_from_number (Optional[bool]): Whether to use a random number as the caller's
+            phone number. The number will be selected from the list of the numbers assigned
+            to the current application. Mutually exclusive with the `from_` property.
+        event_url (Optional[List[str]]): The webhook endpoint where call progress events
+            are sent.
+        event_method (Optional[Literal['POST', 'GET']]): The HTTP method used to send the call
+            events to `event_url`.
+        machine_detection (Optional[Literal['continue', 'hangup']]): Configure the behavior
+            when Vonage detects that the call is answered by voicemail.
+        advanced_machine_detection (Optional[AdvancedMachineDetection]): Configure the
+            behavior of Vonage's advanced machine detection. Overrides `machine_detection`
+            if both are set.
+        length_timer (Optional[int]): Set the number of seconds that elapse before Vonage
+            hangs up after the call state changes to "answered".
+        ringing_timer (Optional[int]): Set the number of seconds that elapse before Vonage
+            hangs up after the call state changes to `ringing`.
+
+    Raises:
+        VoiceError: If neither `ncco` nor `answer_url` is set.
+        VoiceError: If both `ncco` and `answer_url` are set.
+        VoiceError: If neither `from_` nor `random_from_number` is set.
+        VoiceError: If both `from_` and `random_from_number` are set.
+    """
+
     ncco: List[Union[Record, Conversation, Connect, Input, Talk, Stream, Notify]] = None
     answer_url: List[str] = None
     answer_method: Optional[Literal['POST', 'GET']] = None
@@ -46,6 +88,20 @@ class CreateCallRequest(BaseModel):
 
 
 class ListCallsFilter(BaseModel):
+    """Filter model for listing calls.
+
+    Args:
+        status (Optional[CallState]): The state of the call.
+        date_start (Optional[str]): Return the records available after this point in time.
+        date_end (Optional[str]): Return the records that occurred before this point in
+            time.
+        page_size (Optional[int]): Return this amount of records in the response.
+        record_index (Optional[int]): Return calls from this index in the response.
+        order (Optional[Literal['asc', 'desc']]): The order in which to return the records.
+        conversation_uuid (Optional[str]): Return all the records associated with a
+            specific conversation.
+    """
+
     status: Optional[CallState] = None
     date_start: Optional[str] = None
     date_end: Optional[str] = None
@@ -56,12 +112,37 @@ class ListCallsFilter(BaseModel):
 
 
 class AudioStreamOptions(BaseModel):
+    """Options for streaming audio to a call.
+
+    Args:
+        stream_url (List[str]): The URL to stream audio from.
+        loop (Optional[int]): The number of times to loop the audio. If set to 0, the audio
+            will loop indefinitely.`
+        level (Optional[float]): The volume level of the audio. The value must be between
+            -1 and 1.
+    """
+
     stream_url: List[str]
     loop: Optional[int] = Field(None, ge=0)
     level: Optional[float] = Field(None, ge=-1, le=1)
 
 
 class TtsStreamOptions(BaseModel):
+    """Options for streaming text-to-speech to a call.
+
+    Args:
+        text (str): The text to stream.
+        language (Optional[TtsLanguageCode]): The language of the text.
+        style (Optional[int]): The style of the voice (vocal range, tessitura, and timbre)
+            to use.
+        premium (Optional[bool]): Whether to use the premium version of the specified
+            voice.
+        loop (Optional[int]): The number of times to loop the audio. If set to 0, the audio
+            will loop indefinitely.
+        level (Optional[float]): The volume level of the audio. The value must be between
+            -1 and 1.
+    """
+
     text: str
     language: Optional[TtsLanguageCode] = None
     style: Optional[int] = None

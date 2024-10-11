@@ -1,3 +1,6 @@
+# 1.0.4
+- Add docstrings to data models
+
 # 1.0.3
 - Internal refactoring
 

@@ -199,6 +199,9 @@ class Voice:
 
         Args:
             uuid (str): The UUID of the call to stop streaming audio into.
+
+        Returns:
+            CallMessage: Object with information about the call.
         """
         response = self._http_client.delete(
             self._http_client.api_host, f'/v1/calls/{uuid}/stream'
@@ -230,6 +233,9 @@ class Voice:
 
         Args:
             uuid (str): The UUID of the call to stop playing text-to-speech into.
+
+        Returns:
+            CallMessage: Object with information about the call.
         """
         response = self._http_client.delete(
             self._http_client.api_host, f'/v1/calls/{uuid}/talk'

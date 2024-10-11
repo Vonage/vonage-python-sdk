@@ -24,7 +24,29 @@ class NccoAction(BaseModel):
 
 
 class Record(NccoAction):
-    """Use the Record action to record a call or part of a call."""
+    """Use the Record action to record a call or part of a call.
+
+    Args:
+        format (Optional[Literal['mp3', 'wav', 'ogg']]): The format of the recording.
+        split (Optional[Literal['conversation']]): Record the sent and received audio
+            in separate channels of a stereo recording. Set to `conversation` to enable
+            this.
+        channels (Optional[int]): The number of channels to record.  If the number of
+            participants exceeds `channels` any additional participants will be added
+            to the last channel in file. `split=conversation` must also be set.
+        endOnSilence (Optional[int]): Stop recording after this many seconds of silence.
+        endOnKey (Optional[str]): Stop recording when a digit is pressed on the keypad.
+            Possible values are `[0-9*#]`.
+        timeOut (Optional[int]): The maximum length of a recording in seconds. Once the
+            recording is stopped the recording data is sent to `event_url`.
+        beepStart (Optional[bool]): Play a beep when the recording starts.
+        eventUrl (Optional[List[str]]): The URL to the webhook endpoint that is called
+            asynchronously when a recording is finished. If the message recording is
+            hosted by Vonage, this webhook contains the URL you need to download the
+            recording and other metadata.
+        eventMethod (Optional[str]): The HTTP method used to send the recording event to
+            `eventUrl`.
+    """
 
     format: Optional[Literal['mp3', 'wav', 'ogg']] = None
     split: Optional[Literal['conversation']] = None
@@ -49,6 +71,26 @@ class Conversation(NccoAction):
     while preserving the communication context.
 
     Using a conversation with the same name reuses the same persisted conversation.
+
+    Args:
+        name (str): The name of the conversation room.
+        musicOnHoldUrl (Optional[List[str]]): The URL to the music that is played to
+            participants when they are on hold.
+        startOnEnter (Optional[bool]): The default value of `True` ensures that the
+            conversation starts when this caller joins conversation `name`. Set to
+            `False` for attendees in a moderated conversation.
+        endOnExit (Optional[bool]): End the conversation when the moderator leaves.
+        record (Optional[bool]): Record the conversation.
+        canSpeak (Optional[List[str]]): A list of leg UUIDs that this participant can be
+            heard by. If not provided, the participant can be heard by everyone. If an
+            empty list is provided, the participant will not be heard by anyone.
+        canHear (Optional[List[str]]): A list of leg UUIDs that this participant can
+            hear. If not provided, the participant can hear everyone. If an empty list
+            is provided, the participant will not hear any other participants.
+        mute (Optional[bool]): Mute the participant.
+
+    Raises:
+        NccoActionError: If the `mute` option is used with the `canSpeak` option.
     """
 
     name: str
@@ -72,7 +114,39 @@ class Conversation(NccoAction):
 
 class Connect(NccoAction):
     """You can use the Connect action to connect a call to endpoints such as phone numbers
-    or a VBC extension."""
+    or a VBC extension.
+
+    Args:
+        endpoint (List[Union[PhoneEndpoint, AppEndpoint, WebsocketEndpoint, SipEndpoint, VbcEndpoint]]):
+            The endpoint to connect to.
+        from_ (Optional[PhoneNumber]): The phone number to use when calling. Mutually exclusive
+            with the `randomFromNumber` property.
+        randomFromNumber (Optional[bool]): Whether to use a random number as the caller's phone
+            number. The number will be selected from the list of the numbers assigned to the
+            current application. Mutually exclusive with the `from_` property.
+        eventType (Optional[Literal['synchronous']]): The type of event that triggers the `eventUrl`
+            webhook. The default is `synchronous`.
+        timeout (Optional[int]): If the call is unanswered, set the number in seconds before
+            Vonage stops ringing `endpoint`.
+        limit (Optional[int]): The maximum duration of the call in seconds. The default is `7200`.
+        machineDetection (Optional[Literal['continue', 'hangup']]): Configure the behavior when Vonage
+            detects that the call is answered by voicemail.
+        advancedMachineDetection (Optional[AdvancedMachineDetection]): Configure the behavior of Vonage's
+            advanced machine detection. Overrides `machineDetection` if both are set.
+        eventUrl (Optional[List[str]]): Set the webhook endpoint that Vonage calls asynchronously
+            on each of the possible Call States. If `eventType` is set to `synchronous` the
+            `eventUrl` can return an NCCO that overrides the current NCCO when a timeout occurs.
+        eventMethod (Optional[str]): The HTTP method used to send the call events to `eventUrl`.
+        ringbackTone (Optional[List[str]]):A URL value that points to a `ringbackTone` to be played
+            back on repeat to the caller, so they don't hear silence. The `ringbackTone` will
+            automatically stop playing when the call is fully connected. It's not recommended to
+            use this parameter when connecting to a `phone` endpoint, as the carrier will supply
+            their own `ringbackTone`.
+
+    Raises:
+        NccoActionError: If neither `from_` nor `randomFromNumber` is set.
+        NccoActionError: If both `from_` and `randomFromNumber` are set.
+    """
 
     endpoint: List[
         Union[PhoneEndpoint, AppEndpoint, WebsocketEndpoint, SipEndpoint, VbcEndpoint]
@@ -105,6 +179,18 @@ class Talk(NccoAction):
 
     For valid languages, see the Vonage API documentation.
     https://developer.vonage.com/en/voice/voice-api/concepts/text-to-speech#supported-languages
+
+    Args:
+        text (str): The text to be spoken.
+        bargeIn (Optional[bool]): Set to `True` to allow the user to interrupt the audio
+            stream by speaking or DTMF input. The default is `False`.
+        loop (Optional[int]): The number of times the audio file is played before the call
+            is closed. The default is `1`, `0` loops indefinitely.
+        level (Optional[float]): The volume the speech is played at. The default is `0`.
+        language (Optional[str]): The language used for the message. The default is `en-US`.
+        style (Optional[int]): The vocal style of the voice used.
+        premium (Optional[bool]): Set to `True` to use the premium version of the text-to-speech
+            voice. The default is `False`.
     """
 
     text: str = Field(..., max_length=1500)
@@ -118,7 +204,18 @@ class Talk(NccoAction):
 
 
 class Stream(NccoAction):
-    """The stream action allows you to send an audio stream to a Conversation."""
+    """The stream action allows you to send an audio stream to a Call or Conversation.
+
+    Args:
+        streamUrl (List[str]): An array containing a single URL to an mp3 or wav (16-bit)
+            audio file to stream to the Call or Conversation.
+        level (Optional[float]): The volume level of the audio. The value must be between
+            -1 and 1.
+        bargeIn (Optional[bool]): Set to `True` to allow the user to interrupt the audio
+            stream by speaking or DTMF input. The default is `False`.
+        loop (Optional[int]): The number of times the audio file is played before the call
+            is closed. The default is `1`, `0` loops indefinitely.
+    """
 
     streamUrl: List[str]
     level: Optional[float] = Field(None, ge=-1, le=1)
@@ -128,7 +225,19 @@ class Stream(NccoAction):
 
 
 class Input(NccoAction):
-    """Collect digits or speech input by the person you are are calling."""
+    """Collect digits or speech input by the person you are are calling.
+
+    Args:
+        type (List[Union[Literal['dtmf'], Literal['speech']]]): The type of input to collect.
+        dtmf (Optional[Dtmf]): The DTMF options to use.
+        speech (Optional[Speech]): The speech options to use.
+        eventUrl (Optional[List[str]]): Vonage sends the digits pressed by the callee to
+            this URL either 1) after `timeOut` pause in activity or when `#` is pressed for
+            DTMF input or 2) after the user stops speaking or 30 seconds of speech for
+            speech input.
+        eventMethod (Optional[str]): The HTTP method to use when sending the result to
+            `eventUrl`.
+    """
 
     type: List[Union[Literal['dtmf'], Literal['speech']]]
     dtmf: Optional[Dtmf] = None
@@ -139,7 +248,16 @@ class Input(NccoAction):
 
 
 class Notify(NccoAction):
-    """Use the notify action to send a custom payload to your event URL."""
+    """Use the notify action to send a custom payload to your event URL. Your webhook
+    endpoint can return another NCCO that replaces the existing NCCO or return an empty
+    payload meaning the existing NCCO will continue to execute.
+
+    Args:
+        payload (dict): The custom payload to send to your event URL.
+        eventUrl (List[str]): The URL to send events to.  If you return an NCCO when you
+            receive a notification, it will replace the current NCCO.
+        eventMethod (Optional[str]): The HTTP method to use when sending the payload.
+    """
 
     payload: dict
     eventUrl: List[str]

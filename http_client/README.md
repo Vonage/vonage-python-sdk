@@ -42,7 +42,7 @@ response = client.get(host='api.nexmo.com', request_path='/v1/messages')
 response = client.post(host='api.nexmo.com', request_path='/v1/messages', params={'key': 'value'})
 ```
 
-## Get the Last Request and Last Response from the HTTP Client
+### Get the Last Request and Last Response from the HTTP Client
 
 The `HttpClient` class exposes two properties, `last_request` and `last_response` that cache the last sent request and response.
 

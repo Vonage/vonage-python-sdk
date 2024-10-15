@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import Optional
 
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
@@ -50,14 +50,14 @@ class Voice:
     @validate_call
     def list_calls(
         self, filter: ListCallsFilter = ListCallsFilter()
-    ) -> Tuple[List[CallInfo], Optional[int]]:
+    ) -> tuple[list[CallInfo], Optional[int]]:
         """Lists calls made with the Vonage Voice API.
 
         Args:
             filter (ListCallsFilter): The parameters to filter the list of calls.
 
         Returns:
-            Tuple[List[CallInfo], Optional[int]] A tuple containing a list of `CallInfo` objects and the
+            tuple[list[CallInfo], Optional[int]] A tuple containing a list of `CallInfo` objects and the
                 value of the `record_index` attribute to get the next page of results, if there
                 are more results than the specified `page_size`.
         """
@@ -90,12 +90,12 @@ class Voice:
         return CallInfo(**response)
 
     @validate_call
-    def transfer_call_ncco(self, uuid: str, ncco: List[NccoAction]) -> None:
+    def transfer_call_ncco(self, uuid: str, ncco: list[NccoAction]) -> None:
         """Transfers a call to a new NCCO.
 
         Args:
             uuid (str): The UUID of the call to transfer.
-            ncco (List[NccoAction]): The new NCCO to transfer the call to.
+            ncco (list[NccoAction]): The new NCCO to transfer the call to.
         """
         serializable_ncco = [
             action.model_dump(by_alias=True, exclude_none=True) for action in ncco

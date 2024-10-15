@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field, model_validator
 from vonage_video.errors import InvalidHlsOptionsError, InvalidOutputOptionsError
@@ -77,12 +77,12 @@ class BroadcastUrls(BaseModel):
     Args:
         hls (str, Optional): URL for the HLS broadcast.
         hls_status (str, Optional): The status of the HLS broadcast.
-        rtmp (List[str], Optional): An array of objects that include information on each of the RTMP streams.
+        rtmp (list[str], Optional): An array of objects that include information on each of the RTMP streams.
     """
 
     hls: Optional[str] = None
     hls_status: Optional[str] = Field(None, validation_alias='hlsStatus')
-    rtmp: Optional[List[RtmpStream]] = None
+    rtmp: Optional[list[RtmpStream]] = None
 
 
 class HlsSettings(BaseModel):
@@ -131,7 +131,7 @@ class Broadcast(BaseModel):
         stream_mode (StreamMode, Optional): Whether streams included in the broadcast are
             selected automatically (`auto`, the default) or manually (`manual`).
         status (str, Optional): The status of the broadcast.
-        streams (List[VideoStream], Optional): An array of objects corresponding to
+        streams (list[VideoStream], Optional): An array of objects corresponding to
             streams currently being broadcast. This is only set for a broadcast with
             the status set to "started" and the `stream_mode` set to "manual".
     """
@@ -151,7 +151,7 @@ class Broadcast(BaseModel):
     has_video: Optional[bool] = Field(None, alias='hasVideo')
     stream_mode: Optional[StreamMode] = Field(None, alias='streamMode')
     status: Optional[str] = None
-    streams: Optional[List[VideoStream]] = None
+    streams: Optional[list[VideoStream]] = None
 
 
 class BroadcastOutputSettings(BaseModel):
@@ -160,14 +160,14 @@ class BroadcastOutputSettings(BaseModel):
 
     Args:
         hls (BroadcastHls, Optional): HLS output settings.
-        rtmp (List[BroadcastRtmp], Optional): RTMP output settings.
+        rtmp (list[BroadcastRtmp], Optional): RTMP output settings.
 
     Raises:
         InvalidOutputOptionsError: If neither HLS nor RTMP output options are set.
     """
 
     hls: Optional[BroadcastHls] = None
-    rtmp: Optional[List[BroadcastRtmp]] = None
+    rtmp: Optional[list[BroadcastRtmp]] = None
 
     @model_validator(mode='after')
     def validate_outputs(self):

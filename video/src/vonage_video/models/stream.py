@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -13,12 +13,13 @@ class StreamInfo(BaseModel):
             published by a web client using an HTML VideoTrack element as the video
             source.
         name (str): An array of the layout classes for the stream.
+        layout_class_list (list[str]): An array of the layout classes for the stream.
     """
 
     id: Optional[str] = Field(None, validation_alias='id')
     video_type: Optional[str] = Field(None, validation_alias='videoType')
     name: Optional[str] = Field(None, validation_alias='name')
-    layout_class_list: Optional[List[str]] = Field(
+    layout_class_list: Optional[list[str]] = Field(
         None, validation_alias='layoutClassList'
     )
 
@@ -28,19 +29,19 @@ class StreamLayout(BaseModel):
 
     Args:
         id (str): The stream ID.
-        layout_class_list (list): An array of the layout classes for the stream.
+        layout_class_list (list[str]): An array of the layout classes for the stream.
     """
 
     id: str
-    layout_class_list: List[str] = Field(..., serialization_alias='layoutClassList')
+    layout_class_list: list[str] = Field(..., serialization_alias='layoutClassList')
 
 
 class StreamLayoutOptions(BaseModel):
     """The options for the stream layout.
 
     Args:
-        items (list): An array of the stream layout items. Each item is a StreamLayout
+        items (list[[StreamLayout]]): An array of the stream layout items. Each item is a StreamLayout
             object. See StreamLayout.
     """
 
-    items: List[StreamLayout]
+    items: list[StreamLayout]

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field, model_validator
 from vonage_utils.models import HalLinks, ResourceLink
@@ -37,10 +37,10 @@ class Embedded(BaseModel):
     """Model for embedded application data. This is used in the response model.
 
     Args:
-        applications (List[ApplicationData]): A list of application data objects.
+        applications (list[ApplicationData]): A list of application data objects.
     """
 
-    applications: List[ApplicationData] = []
+    applications: list[ApplicationData] = []
 
 
 class ListApplicationsResponse(BaseModel):

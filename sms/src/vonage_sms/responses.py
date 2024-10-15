@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -35,9 +35,9 @@ class SmsResponse(BaseModel):
 
     Args:
         message_count (str): The number of messages sent.
-        messages (List[MessageResponse]): A list of individual message responses. See
+        messages (list[MessageResponse]): A list of individual message responses. See
             `MessageResponse` for more information.
     """
 
     message_count: str = Field(..., validation_alias='message-count')
-    messages: List[MessageResponse]
+    messages: list[MessageResponse]

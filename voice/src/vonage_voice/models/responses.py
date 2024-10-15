@@ -86,10 +86,10 @@ class Embedded(BaseModel):
     """Model for calls embedded in a response.
 
     Args:
-        calls (List[CallInfo]): The calls in this response.
+        calls (list[CallInfo]): The calls in this response.
     """
 
-    calls: List[CallInfo]
+    calls: list[CallInfo]
 
 
 class CallList(BaseModel):

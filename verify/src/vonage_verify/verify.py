@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from pydantic import Field, validate_call
 from vonage_http_client.http_client import HttpClient
@@ -92,15 +92,15 @@ class Verify:
 
     @validate_call
     def search(
-        self, request: Union[str, List[str]]
-    ) -> Union[VerifyStatus, List[VerifyStatus]]:
+        self, request: Union[str, list[str]]
+    ) -> Union[VerifyStatus, list[VerifyStatus]]:
         """Search for past or current verification requests.
 
         Args:
             request (str | list[str]): The request ID, or a list of request IDs.
 
         Returns:
-            Union[VerifyStatus, List[VerifyStatus]]: Either the response object
+            Union[VerifyStatus, list[VerifyStatus]]: Either the response object
                 containing the verification result, or a list of response objects.
         """
         params = {}

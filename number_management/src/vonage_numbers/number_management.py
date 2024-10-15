@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import Optional
 
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
@@ -33,7 +33,7 @@ class Numbers:
     @validate_call
     def list_owned_numbers(
         self, filter: ListOwnedNumbersFilter = ListOwnedNumbersFilter()
-    ) -> Tuple[List[OwnedNumber], int, Optional[int]]:
+    ) -> tuple[list[OwnedNumber], int, Optional[int]]:
         """List numbers you own.
 
         By default, returns the first 100 numbers and the page index of
@@ -43,11 +43,11 @@ class Numbers:
             filter (ListOwnedNumbersFilter): The filter object.
 
         Returns:
-            Tuple[List[OwnedNumber], int, Optional[int]]: A tuple containing a
+            tuple[list[OwnedNumber], int, Optional[int]]: A tuple containing a
                 list of owned numbers, the total count of owned phone numbers
                 and the next page index, if applicable.
                 i.e.
-                number_list: List[OwnedNumber], count: int, next_page_index: Optional[int])
+                number_list: list[OwnedNumber], count: int, next_page_index: Optional[int])
         """
         response = self._http_client.get(
             self._http_client.rest_host,
@@ -74,7 +74,7 @@ class Numbers:
     @validate_call
     def search_available_numbers(
         self, filter: SearchAvailableNumbersFilter
-    ) -> Tuple[List[AvailableNumber], int, Optional[int]]:
+    ) -> tuple[list[AvailableNumber], int, Optional[int]]:
         """Search for available numbers to buy.
 
         By default, returns the first 100 numbers and the page index of
@@ -84,11 +84,11 @@ class Numbers:
             filter (SearchAvailableNumbersFilter): The filter object.
 
         Returns:
-            Tuple[List[AvailableNumber], int, Optional[int]]: A tuple containing a
+            tuple[list[AvailableNumber], int, Optional[int]]: A tuple containing a
                 list of available numbers, the total count of available phone numbers
                 and the next page index, if applicable.
                 i.e.
-                number_list: List[AvailableNumber], count: int, next_page_index: Optional[int])
+                number_list: list[AvailableNumber], count: int, next_page_index: Optional[int])
         """
         response = self._http_client.get(
             self._http_client.rest_host,

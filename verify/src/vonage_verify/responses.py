@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -88,9 +88,9 @@ class VerifyStatus(BaseModel):
             attempt (in the format YYYY-MM-DD HH:MM:SS).
         last_event_date (str, Optional): The date and time of the last verification
             attempt (in the format YYYY-MM-DD HH:MM:SS).
-        checks (List[Check], Optional): The list of checks made for this verification and
+        checks (list[Check], Optional): The list of checks made for this verification and
             their outcomes.
-        events (List[Event], Optional): The events that have taken place to verify this
+        events (list[Event], Optional): The events that have taken place to verify this
             number, and their unique identifiers.
         estimated_price_messages_sent (str, Optional): Cost (in EUR) of the calls made
             and messages sent for the verification process.
@@ -107,8 +107,8 @@ class VerifyStatus(BaseModel):
     date_finalized: Optional[str] = None
     first_event_date: Optional[str] = None
     last_event_date: Optional[str] = None
-    checks: Optional[List[Check]] = None
-    events: Optional[List[Event]] = None
+    checks: Optional[list[Check]] = None
+    events: Optional[list[Event]] = None
     estimated_price_messages_sent: Optional[str] = None
 
 

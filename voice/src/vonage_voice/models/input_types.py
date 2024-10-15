@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -24,12 +24,12 @@ class Speech(BaseModel):
     """Model for speech input options used as part of an NCCO.
 
     Args:
-        uuid (Optional[List[str]]): The UUID of the speech recognition session.
+        uuid (Optional[list[str]]): The UUID of the speech recognition session.
         endOnSilence (Optional[float]): The length of silence in seconds that indicates
             the end of the speech. Uses BCP-47 format.
         language (Optional[str]): The language used for speech recognition. The default
             is `en-US`.
-        context (Optional[List[str]]):Array of hints (strings) to improve recognition
+        context (Optional[list[str]]):Array of hints (strings) to improve recognition
             quality if certain words are expected from the user.
         startTimeout (Optional[int]): Controls how long the system will wait for the user
             to start speaking.
@@ -42,10 +42,10 @@ class Speech(BaseModel):
             maximum sensitivity.
     """
 
-    uuid: Optional[List[str]] = None
+    uuid: Optional[list[str]] = None
     endOnSilence: Optional[float] = Field(None, ge=0.4, le=10.0)
     language: Optional[str] = None
-    context: Optional[List[str]] = None
+    context: Optional[list[str]] = None
     startTimeout: Optional[int] = Field(None, ge=1, le=60)
     maxDuration: Optional[int] = Field(None, ge=1, le=60)
     saveAudio: Optional[bool] = False

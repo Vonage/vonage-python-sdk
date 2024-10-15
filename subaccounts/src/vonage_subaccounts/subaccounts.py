@@ -1,5 +1,3 @@
-from typing import List
-
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 from vonage_subaccounts.requests import (
@@ -46,7 +44,7 @@ class Subaccounts:
             ListSubaccountsResponse: A response containing the primary account and all subaccounts.
             ListSubaccountsResponse contains the following attributes:
                 - primary_account (PrimaryAccount): The primary account.
-                - subaccounts (List[Subaccount]): A list of subaccounts.
+                - subaccounts (list[Subaccount]): A list of subaccounts.
                 - total_balance (float): The total balance of the primary account and all subaccounts.
                 - total_credit_limit (float): The total credit limit of the primary account and all subaccounts.
         """
@@ -155,7 +153,7 @@ class Subaccounts:
 
         return Subaccount(**response)
 
-    def list_balance_transfers(self, filter: ListTransfersFilter) -> List[Transfer]:
+    def list_balance_transfers(self, filter: ListTransfersFilter) -> list[Transfer]:
         """List all balance transfers.
 
         Args:
@@ -165,7 +163,7 @@ class Subaccounts:
                 - subaccount (str): Show balance transfers relating to this subaccount.
 
         Returns:
-            List[Transfer]: A list of balance transfers. Each balance transfer contains the following attributes:
+            list[Transfer]: A list of balance transfers. Each balance transfer contains the following attributes:
                 - id (str)
                 - amount (float)
                 - from_ (str)
@@ -213,7 +211,7 @@ class Subaccounts:
 
         return Transfer(**response)
 
-    def list_credit_transfers(self, filter: ListTransfersFilter) -> List[Transfer]:
+    def list_credit_transfers(self, filter: ListTransfersFilter) -> list[Transfer]:
         """List all credit transfers.
 
         Args:
@@ -223,7 +221,7 @@ class Subaccounts:
                 - subaccount (str): Show credit transfers relating to this subaccount.
 
         Returns:
-            List[Transfer]: A list of credit transfers. Each credit transfer contains the following attributes:
+            list[Transfer]: A list of credit transfers. Each credit transfer contains the following attributes:
                 - id (str)
                 - amount (float)
                 - from_ (str)

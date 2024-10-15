@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Union
+from typing import Literal, Optional, Union
 
 from pydantic import BaseModel, Field, model_validator
 from vonage_utils.types import Dtmf
@@ -24,18 +24,18 @@ class CreateCallRequest(BaseModel):
     """Request model for creating a call. You must supply either `ncco` or `answer_url`.
 
     Args:
-        ncco (Optional[List[Union[Record, Conversation, Connect, Input, Talk, Stream, Notify]]]):
+        ncco (Optional[list[Union[Record, Conversation, Connect, Input, Talk, Stream, Notify]]]):
             The Nexmo Call Control Object (NCCO) to use for the call.
-        answer_url (Optional[List[str]]): The URL to fetch the NCCO from.
+        answer_url (Optional[list[str]]): The URL to fetch the NCCO from.
         answer_method (Optional[Literal['POST', 'GET']]): The HTTP method used to send
             event information to `answer_url`.
-        to (List[Union[ToPhone, Sip, Websocket, Vbc]]): The type of connection to call.
+        to (list[Union[ToPhone, Sip, Websocket, Vbc]]): The type of connection to call.
         from_ (Optional[Phone]): The phone number to use when calling. Mutually exclusive
             with the `random_from_number` property.
         random_from_number (Optional[bool]): Whether to use a random number as the caller's
             phone number. The number will be selected from the list of the numbers assigned
             to the current application. Mutually exclusive with the `from_` property.
-        event_url (Optional[List[str]]): The webhook endpoint where call progress events
+        event_url (Optional[list[str]]): The webhook endpoint where call progress events
             are sent.
         event_method (Optional[Literal['POST', 'GET']]): The HTTP method used to send the call
             events to `event_url`.
@@ -56,14 +56,14 @@ class CreateCallRequest(BaseModel):
         VoiceError: If both `from_` and `random_from_number` are set.
     """
 
-    ncco: List[Union[Record, Conversation, Connect, Input, Talk, Stream, Notify]] = None
-    answer_url: List[str] = None
+    ncco: list[Union[Record, Conversation, Connect, Input, Talk, Stream, Notify]] = None
+    answer_url: list[str] = None
     answer_method: Optional[Literal['POST', 'GET']] = None
-    to: List[Union[ToPhone, Sip, Websocket, Vbc]]
+    to: list[Union[ToPhone, Sip, Websocket, Vbc]]
 
     from_: Optional[Phone] = Field(None, serialization_alias='from')
     random_from_number: Optional[bool] = None
-    event_url: Optional[List[str]] = None
+    event_url: Optional[list[str]] = None
     event_method: Optional[Literal['POST', 'GET']] = None
     machine_detection: Optional[Literal['continue', 'hangup']] = None
     advanced_machine_detection: Optional[AdvancedMachineDetection] = None
@@ -115,14 +115,14 @@ class AudioStreamOptions(BaseModel):
     """Options for streaming audio to a call.
 
     Args:
-        stream_url (List[str]): The URL to stream audio from.
+        stream_url (list[str]): The URL to stream audio from.
         loop (Optional[int]): The number of times to loop the audio. If set to 0, the audio
             will loop indefinitely.`
         level (Optional[float]): The volume level of the audio. The value must be between
             -1 and 1.
     """
 
-    stream_url: List[str]
+    stream_url: list[str]
     loop: Optional[int] = Field(None, ge=0)
     level: Optional[float] = Field(None, ge=-1, le=1)
 

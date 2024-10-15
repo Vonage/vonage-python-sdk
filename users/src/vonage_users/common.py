@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field, model_validator
 from vonage_utils.models import ResourceLink
@@ -109,26 +109,26 @@ class Channels(BaseModel):
     """Model for channels associated with a user account.
 
     Args:
-        sms (List[SmsChannel], Optional): A list of SMS channels.
-        mms (List[MmsChannel], Optional): A list of MMS channels.
-        whatsapp (List[WhatsappChannel], Optional): A list of WhatsApp channels.
-        viber (List[ViberChannel], Optional): A list of Viber channels.
-        messenger (List[MessengerChannel], Optional): A list of Messenger channels.
-        pstn (List[PstnChannel], Optional): A list of PSTN channels.
-        sip (List[SipChannel], Optional): A list of SIP channels.
-        websocket (List[WebsocketChannel], Optional): A list of WebSocket channels.
-        vbc (List[VbcChannel], Optional): A list of VBC channels.
+        sms (list[SmsChannel], Optional): A list of SMS channels.
+        mms (list[MmsChannel], Optional): A list of MMS channels.
+        whatsapp (list[WhatsappChannel], Optional): A list of WhatsApp channels.
+        viber (list[ViberChannel], Optional): A list of Viber channels.
+        messenger (list[MessengerChannel], Optional): A list of Messenger channels.
+        pstn (list[PstnChannel], Optional): A list of PSTN channels.
+        sip (list[SipChannel], Optional): A list of SIP channels.
+        websocket (list[WebsocketChannel], Optional): A list of WebSocket channels.
+        vbc (list[VbcChannel], Optional): A list of VBC channels.
     """
 
-    sms: Optional[List[SmsChannel]] = None
-    mms: Optional[List[MmsChannel]] = None
-    whatsapp: Optional[List[WhatsappChannel]] = None
-    viber: Optional[List[ViberChannel]] = None
-    messenger: Optional[List[MessengerChannel]] = None
-    pstn: Optional[List[PstnChannel]] = None
-    sip: Optional[List[SipChannel]] = None
-    websocket: Optional[List[WebsocketChannel]] = None
-    vbc: Optional[List[VbcChannel]] = None
+    sms: Optional[list[SmsChannel]] = None
+    mms: Optional[list[MmsChannel]] = None
+    whatsapp: Optional[list[WhatsappChannel]] = None
+    viber: Optional[list[ViberChannel]] = None
+    messenger: Optional[list[MessengerChannel]] = None
+    pstn: Optional[list[PstnChannel]] = None
+    sip: Optional[list[SipChannel]] = None
+    websocket: Optional[list[WebsocketChannel]] = None
+    vbc: Optional[list[VbcChannel]] = None
 
 
 class Properties(BaseModel):

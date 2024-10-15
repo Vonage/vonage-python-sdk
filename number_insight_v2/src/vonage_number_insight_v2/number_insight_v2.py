@@ -1,6 +1,6 @@
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import List, Literal, Optional, Union
+from typing import Literal, Optional, Union
 
 from pydantic import BaseModel, field_validator, validate_call
 from vonage_http_client.http_client import HttpClient
@@ -11,7 +11,7 @@ from vonage_utils import format_phone_number
 class FraudCheckRequest(BaseModel):
     phone: Union[str, int]
     insights: Union[
-        Literal['fraud_score', 'sim_swap'], List[Literal['fraud_score', 'sim_swap']]
+        Literal['fraud_score', 'sim_swap'], list[Literal['fraud_score', 'sim_swap']]
     ] = ['fraud_score', 'sim_swap']
     type: Literal['phone'] = 'phone'
 

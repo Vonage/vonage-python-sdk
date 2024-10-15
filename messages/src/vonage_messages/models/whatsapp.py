@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Union
+from typing import Literal, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 from vonage_utils.types import PhoneNumber
@@ -236,14 +236,14 @@ class WhatsappTemplateResource(BaseModel):
         name (str): The name of the template. For WhatsApp use your WhatsApp namespace
             (available via Facebook Business Manager), followed by a colon : and the
             name of the template to use.
-        parameters (Optional[List[str]]): The parameters to be used in the template.
+        parameters (Optional[list[str]]): The parameters to be used in the template.
             An array of strings, with the first string being used for 1 in the template,
             the second being 2, etc. Only required if the template specified by name
             contains parameters.
     """
 
     name: str
-    parameters: Optional[List[str]] = None
+    parameters: Optional[list[str]] = None
 
     model_config = ConfigDict(extra='allow')
 

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field, model_validator
 from vonage_utils.models import Link, ResourceLink
@@ -48,10 +48,10 @@ class Embedded(BaseModel):
     """Model for embedded resources.
 
     Args:
-        users (List[UserSummary]): A list of user summaries.
+        users (list[UserSummary]): A list of user summaries.
     """
 
-    users: List[UserSummary] = []
+    users: list[UserSummary] = []
 
 
 class ListUsersResponse(BaseModel):

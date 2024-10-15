@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import Optional
 from urllib.parse import parse_qs, urlparse
 
 from pydantic import validate_call
@@ -32,7 +32,7 @@ class Users:
     @validate_call
     def list_users(
         self, filter: ListUsersFilter = ListUsersFilter()
-    ) -> Tuple[List[UserSummary], Optional[str]]:
+    ) -> tuple[list[UserSummary], Optional[str]]:
         """List all users.
 
         Retrieves a list of all users. Gets 100 users by default.
@@ -44,7 +44,7 @@ class Users:
                 class that allows you to specify additional parameters for the user listing.
 
         Returns:
-            Tuple[List[UserSummary], Optional[str]]: A tuple containing a list of `UserSummary`
+            tuple[list[UserSummary], Optional[str]]: A tuple containing a list of `UserSummary`
                 objects representing the users and a string representing the next cursor for
                 pagination, if there are more results than the specified `page_size`.
         """

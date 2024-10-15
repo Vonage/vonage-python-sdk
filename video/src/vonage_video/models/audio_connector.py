@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field
 from vonage_video.models.enums import AudioSampleRate
@@ -9,13 +9,13 @@ class AudioConnectorWebSocket(BaseModel):
 
     Args:
         uri (str): The URI.
-        streams (List[str]): Stream IDs to include. If not provided, all streams are included.
+        streams (list[str]): Stream IDs to include. If not provided, all streams are included.
         headers (dict): The headers to send to your WebSocket server.
         audio_rate (AudioSampleRate): The audio sample rate in Hertz.
     """
 
     uri: str
-    streams: Optional[List[str]] = None
+    streams: Optional[list[str]] = None
     headers: Optional[dict] = None
     audio_rate: Optional[AudioSampleRate] = Field(None, serialization_alias='audioRate')
 

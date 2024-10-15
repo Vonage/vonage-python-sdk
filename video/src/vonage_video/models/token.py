@@ -1,5 +1,5 @@
 from time import time
-from typing import List, Literal, Optional
+from typing import Literal, Optional
 from uuid import uuid4
 
 from pydantic import BaseModel, Field, field_validator, model_validator
@@ -15,7 +15,7 @@ class TokenOptions(BaseModel):
         session_id (str): The session ID.
         role (TokenRole): The role of the token. Defaults to 'publisher'.
         connection_data (str): The connection data for the token.
-        initial_layout_class_list (List[str]): The initial layout class list for the token.
+        initial_layout_class_list (list[str]): The initial layout class list for the token.
         exp (int): The expiry date for the token. Defaults to 15 minutes from the current time.
         jti (Union[UUID, str]): The JWT ID for the token. Defaults to a new UUID.
         iat (float): The time the token was issued. Defaults to the current time.
@@ -30,7 +30,7 @@ class TokenOptions(BaseModel):
     session_id: str
     role: Optional[TokenRole] = TokenRole.PUBLISHER
     connection_data: Optional[str] = None
-    initial_layout_class_list: Optional[List[str]] = None
+    initial_layout_class_list: Optional[list[str]] = None
     exp: Optional[int] = None
     jti: str = Field(default_factory=lambda: str(uuid4()))
     iat: int = Field(default_factory=lambda: int(time()))

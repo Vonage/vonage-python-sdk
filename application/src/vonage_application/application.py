@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import Optional
 
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
@@ -26,7 +26,7 @@ class Application:
     @validate_call
     def list_applications(
         self, filter: ListApplicationsFilter = ListApplicationsFilter()
-    ) -> Tuple[List[ApplicationData], Optional[str]]:
+    ) -> tuple[list[ApplicationData], Optional[str]]:
         """List applications.
 
         By default, returns the first 100 applications and the page index of
@@ -36,7 +36,7 @@ class Application:
             filter (ListApplicationsFilter): The filter object.
 
         Returns:
-            Tuple[List[ApplicationData], Optional[str]]: A tuple containing a
+            tuple[list[ApplicationData], Optional[str]]: A tuple containing a
                 list of applications and the next page index.
         """
         response = self._http_client.get(

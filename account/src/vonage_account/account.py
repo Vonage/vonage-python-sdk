@@ -1,5 +1,4 @@
 import re
-from typing import List
 
 from pydantic import validate_call
 from vonage_account.errors import InvalidSecretError
@@ -91,11 +90,11 @@ class Account:
         )
         return SettingsResponse(**response)
 
-    def list_secrets(self) -> List[VonageApiSecret]:
+    def list_secrets(self) -> list[VonageApiSecret]:
         """List all secrets associated with the account.
 
         Returns:
-            List[VonageApiSecret]: List of VonageApiSecret objects.
+            list[VonageApiSecret]: List of VonageApiSecret objects.
         """
         response = self._http_client.get(
             self._http_client.api_host,

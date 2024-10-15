@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from pydantic import BaseModel, Field
 
@@ -62,13 +62,13 @@ class ListSubaccountsResponse(BaseModel):
 
     Args:
         primary_account (PrimaryAccount): The primary account. See `PrimaryAccount`.
-        subaccounts (List[Subaccount]): The subaccounts. See `Subaccount`.
+        subaccounts (list[Subaccount]): The subaccounts. See `Subaccount`.
         total_balance (float): The total balance of all subaccounts.
         total_credit_limit (Union[int, float]): The total credit limit of all subaccounts.
     """
 
     primary_account: PrimaryAccount
-    subaccounts: List[Subaccount]
+    subaccounts: list[Subaccount]
     total_balance: float
     total_credit_limit: Union[int, float]
 

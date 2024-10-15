@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple, Type, Union
+from typing import Optional, Type, Union
 
 from pydantic import validate_call
 from vonage_http_client.errors import HttpRequestError
@@ -91,14 +91,14 @@ class Video:
         return VideoSession(**session_response)
 
     @validate_call
-    def list_streams(self, session_id: str) -> List[StreamInfo]:
+    def list_streams(self, session_id: str) -> list[StreamInfo]:
         """Lists the streams in a session from the Vonage Video API.
 
         Args:
             session_id (str): The session ID.
 
         Returns:
-            List[StreamInfo]: Information about the video streams.
+            list[StreamInfo]: Information about the video streams.
         """
 
         response = self._http_client.get(
@@ -130,7 +130,7 @@ class Video:
     @validate_call
     def change_stream_layout(
         self, session_id: str, stream_layout_options: StreamLayoutOptions
-    ) -> List[StreamInfo]:
+    ) -> list[StreamInfo]:
         """Changes the layout of a stream in a session in the Vonage Video API.
 
         Args:
@@ -138,7 +138,7 @@ class Video:
             stream_layout_options (StreamLayoutOptions): The options for the stream layout.
 
         Returns:
-            List[StreamInfo]: Information about the video streams.
+            list[StreamInfo]: Information about the video streams.
         """
 
         response = self._http_client.put(
@@ -199,13 +199,13 @@ class Video:
 
     @validate_call
     def mute_all_streams(
-        self, session_id: str, excluded_stream_ids: List[str] = None
+        self, session_id: str, excluded_stream_ids: list[str] = None
     ) -> None:
         """Mutes all streams in a session using the Vonage Video API.
 
         Args:
             session_id (str): The session ID.
-            excluded_stream_ids (List[str], Optional): The stream IDs to exclude from muting.
+            excluded_stream_ids (list[str], Optional): The stream IDs to exclude from muting.
         """
         params = {'active': True, 'excludedStreamIds': excluded_stream_ids}
         self._toggle_mute_all_streams(session_id, params)
@@ -305,18 +305,18 @@ class Video:
     @validate_call
     def list_experience_composers(
         self, filter: ListExperienceComposersFilter = ListExperienceComposersFilter()
-    ) -> Tuple[List[ExperienceComposer], int, Optional[int]]:
+    ) -> tuple[list[ExperienceComposer], int, Optional[int]]:
         """Lists Experience Composers associated with your Vonage application.
 
         Args:
             filter (ListExperienceComposersFilter): Filter for the Experience Composers.
 
         Returns:
-            Tuple[List[ExperienceComposer], int, Optional[int]]: A tuple containing a list of experience
+            tuple[list[ExperienceComposer], int, Optional[int]]: A tuple containing a list of experience
                 composer objects, the total count of Experience Composers and the required offset value
                 for the next page, if applicable.
                 i.e.
-                experience_composers: List[ExperienceComposer], count: int, next_page_offset: Optional[int]
+                experience_composers: list[ExperienceComposer], count: int, next_page_offset: Optional[int]
         """
         response = self._http_client.get(
             self._http_client.video_host,
@@ -358,17 +358,17 @@ class Video:
     @validate_call
     def list_archives(
         self, filter: ListArchivesFilter
-    ) -> Tuple[List[Archive], int, Optional[int]]:
+    ) -> tuple[list[Archive], int, Optional[int]]:
         """Lists archives associated with a Vonage Application.
 
         Args:
             filter (ListArchivesFilter): The filters for the archives.
 
         Returns:
-            Tuple[List[Archive], int, Optional[int]]: A tuple containing a list of archive objects,
+            tuple[list[Archive], int, Optional[int]]: A tuple containing a list of archive objects,
                 the total count of archives and the required offset value for the next page, if applicable.
                 i.e.
-                archives: List[Archive], count: int, next_page_offset: Optional[int]
+                archives: list[Archive], count: int, next_page_offset: Optional[int]
         """
         response = self._http_client.get(
             self._http_client.video_host,
@@ -513,17 +513,17 @@ class Video:
     @validate_call
     def list_broadcasts(
         self, filter: ListBroadcastsFilter
-    ) -> Tuple[List[Broadcast], int, Optional[int]]:
+    ) -> tuple[list[Broadcast], int, Optional[int]]:
         """Lists broadcasts associated with a Vonage Application.
 
         Args:
             filter (ListBroadcastsFilter): The filters for the broadcasts.
 
         Returns:
-            Tuple[List[Broadcast], int, Optional[int]]: A tuple containing a list of broadcast objects,
+            tuple[list[Broadcast], int, Optional[int]]: A tuple containing a list of broadcast objects,
                 the total count of broadcasts and the required offset value for the next page, if applicable.
                 i.e.
-                broadcasts: List[Broadcast], count: int, next_page_offset: Optional[int]
+                broadcasts: list[Broadcast], count: int, next_page_offset: Optional[int]
         #
         """
         response = self._http_client.get(
@@ -707,7 +707,7 @@ class Video:
         ],
         response: dict,
         model: Union[Type[Archive], Type[Broadcast], Type[ExperienceComposer]],
-    ) -> Tuple[List[object], int, Optional[int]]:
+    ) -> tuple[list[object], int, Optional[int]]:
         """List objects of a specific model from a response.
 
         Args:
@@ -718,10 +718,10 @@ class Video:
                 model to populate the response into.
 
         Returns:
-            Tuple[List[object], int, Optional[int]]: A tuple containing a list of objects,
+            tuple[list[object], int, Optional[int]]: A tuple containing a list of objects,
                 the total count of objects and the required offset value for the next page, if applicable.
                 i.e.
-                objects: List[object], count: int, next_page_offset: Optional[int]
+                objects: list[object], count: int, next_page_offset: Optional[int]
         """
         index = request_filter.offset + 1 or 1
         page_size = request_filter.page_size

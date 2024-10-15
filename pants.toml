@@ -1,5 +1,5 @@
 [GLOBAL]
-pants_version = '2.23.0a0'
+pants_version = '2.23.0rc0'
 
 backend_packages = [
   'pants.backend.python',
@@ -38,6 +38,7 @@ filter = [
   'jwt/src',
   'messages/src',
   'network_auth/src',
+  'network_number_verification/src',
   'network_sim_swap/src',
   'number_insight/src',
   'number_insight_v2/src',

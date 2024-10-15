@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field, model_validator
 from vonage_video.errors import IndividualArchivePropertyError, NoAudioOrVideoError
@@ -65,7 +65,7 @@ class Archive(BaseModel):
             for each simultaneous archive of an ongoing session.
         event (str, Optional): The event that triggered the response.
         resolution (VideoResolution, Optional): The resolution of the archive.
-        streams (List[VideoStream], Optional): The streams in the archive.
+        streams (list[VideoStream], Optional): The streams in the archive.
         url (str, Optional): The download URL of the available archive file.
             This is only set for an archive with the status set to `available`.
         transcription (Transcription, Optional): Transcription options for the archive.
@@ -91,7 +91,7 @@ class Archive(BaseModel):
     multi_archive_tag: Optional[str] = Field(None, validation_alias='multiArchiveTag')
     event: Optional[str] = None
     resolution: Optional[VideoResolution] = None
-    streams: Optional[List[VideoStream]] = None
+    streams: Optional[list[VideoStream]] = None
     url: Optional[str] = None
     transcription: Optional[Transcription] = None
 

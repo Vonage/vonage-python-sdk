@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -12,7 +12,7 @@ class OwnedNumber(BaseModel):
         mo_http_url (str, Optional): The URL of the webhook endpoint that handles inbound
             messages.
         type (str, Optional): The type of number.
-        features (List[str], Optional): The capabilities of the number.
+        features (list[str], Optional): The capabilities of the number.
         messages_callback_type (str, Optional): The type of webhook for messages.
             This is always `app`.
         messages_callback_value (str, Optional): A Vonage application ID.
@@ -26,7 +26,7 @@ class OwnedNumber(BaseModel):
     msisdn: Optional[str] = None
     mo_http_url: Optional[str] = Field(None, validation_alias='moHttpUrl')
     type: Optional[str] = None
-    features: Optional[List[str]] = None
+    features: Optional[list[str]] = None
     messages_callback_type: Optional[str] = Field(
         None, validation_alias='messagesCallbackType'
     )
@@ -48,14 +48,14 @@ class AvailableNumber(BaseModel):
         msisdn (str, Optional): The phone number in E.164 format.
         type (str, Optional): The type of number.
         cost (str, Optional): The monthly rental cost for this number, in Euros.
-        features (List[str], Optional): The capabilities of the number.
+        features (list[str], Optional): The capabilities of the number.
     """
 
     country: Optional[str] = Field(None, min_length=2, max_length=2)
     msisdn: Optional[str] = None
     type: Optional[str] = None
     cost: Optional[str] = None
-    features: Optional[List[str]] = None
+    features: Optional[list[str]] = None
 
 
 class NumbersStatus(BaseModel):

@@ -1,5 +1,5 @@
 from re import search
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 from vonage_utils.types import PhoneNumber
@@ -139,7 +139,7 @@ class VerifyRequest(BaseModel):
     Args:
         brand (str): The name of the company or service that is sending the verification
             request. This will appear in the body of the SMS or TTS message.
-        workflow (List[Union[SilentAuthChannel, SmsChannel, WhatsappChannel, VoiceChannel, EmailChannel]]):
+        workflow (list[Union[SilentAuthChannel, SmsChannel, WhatsappChannel, VoiceChannel, EmailChannel]]):
             The list of channels to use in the verification workflow. They will be used
             in the order they are listed.
         locale (Locale, Optional): The locale to use for the verification message.
@@ -158,7 +158,7 @@ class VerifyRequest(BaseModel):
     """
 
     brand: str = Field(..., min_length=1, max_length=16)
-    workflow: List[
+    workflow: list[
         Union[
             SilentAuthChannel,
             SmsChannel,

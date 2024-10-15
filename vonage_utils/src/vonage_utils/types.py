@@ -1,5 +1,6 @@
-from pydantic import Field
 from typing import Annotated
+
+from pydantic import Field
 
 PhoneNumber = Annotated[str, Field(pattern=r'^[1-9]\d{6,14}$')]
 """A phone number, which must be between 7 and 15 digits long and not start with 0. Don't

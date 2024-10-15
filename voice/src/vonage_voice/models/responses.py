@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from pydantic import BaseModel, Field, model_validator
 from vonage_utils.models import HalLinks

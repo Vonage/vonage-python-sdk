@@ -6,6 +6,8 @@ from .vonage import (
     Auth,
     HttpClientOptions,
     Messages,
+    NetworkNumberVerification,
+    NetworkSimSwap,
     NumberInsight,
     Numbers,
     Sms,
@@ -19,12 +21,13 @@ from .vonage import (
 )
 
 __all__ = [
-    'Vonage',
-    'Auth',
-    'HttpClientOptions',
     'Account',
     'Application',
+    'Auth',
+    'HttpClientOptions',
     'Messages',
+    'NetworkSimSwap',
+    'NetworkNumberVerification',
     'NumberInsight',
     'Numbers',
     'Sms',
@@ -34,5 +37,6 @@ __all__ = [
     'VerifyV2',
     'Video',
     'Voice',
+    'Vonage',
     'VonageError',
 ]

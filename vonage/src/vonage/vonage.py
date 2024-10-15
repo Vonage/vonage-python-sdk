@@ -4,6 +4,8 @@ from vonage_account.account import Account
 from vonage_application.application import Application
 from vonage_http_client import Auth, HttpClient, HttpClientOptions
 from vonage_messages import Messages
+from vonage_network_number_verification import NetworkNumberVerification
+from vonage_network_sim_swap import NetworkSimSwap
 from vonage_number_insight import NumberInsight
 from vonage_numbers import Numbers
 from vonage_sms import Sms
@@ -38,6 +40,8 @@ class Vonage:
         self.account = Account(self._http_client)
         self.application = Application(self._http_client)
         self.messages = Messages(self._http_client)
+        self.network_sim_swap = NetworkSimSwap(self._http_client)
+        self.network_number_verification = NetworkNumberVerification(self._http_client)
         self.number_insight = NumberInsight(self._http_client)
         self.numbers = Numbers(self._http_client)
         self.sms = Sms(self._http_client)

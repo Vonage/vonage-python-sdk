@@ -25,5 +25,4 @@ toml>=0.10.2
 -e video
 -e voice
 -e vonage_utils
--e vonage_network
 -e vonage

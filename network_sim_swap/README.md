@@ -22,13 +22,13 @@ pip install vonage-network-sim-swap
 
 ## Usage
 
-It is recommended to use this as part of the `vonage-network` package. The examples below assume you've created an instance of the `vonage_network.VonageNetwork` class called `network_client`.
+It is recommended to use this as part of the `vonage` package. The examples below assume you've created an instance of the `vonage.Vonage` class called `vonage_client`.
 
 ### Check if a SIM Has Been Swapped
 
 ```python
 from vonage_network_sim_swap import SwapStatus
-swap_status: SwapStatus = vonage_network.sim_swap.check(phone_number='MY_NUMBER')
+swap_status: SwapStatus = vonage_client.sim_swap.check(phone_number='MY_NUMBER')
 print(swap_status.swapped)
 ```
 
@@ -36,6 +36,6 @@ print(swap_status.swapped)
 
 ```python
 from vonage_network_sim_swap import LastSwapDate
-swap_date: LastSwapDate = vonage_network.sim_swap.get_last_swap_date
+swap_date: LastSwapDate = vonage_client.sim_swap.get_last_swap_date
 print(swap_date.last_swap_date)
 ```

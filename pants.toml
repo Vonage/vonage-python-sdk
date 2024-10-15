@@ -31,7 +31,6 @@ interpreter_constraints = ['>=3.8']
 report = ['html', 'console']
 filter = [
   'vonage/src',
-  'vonage_network/src',
   'http_client/src',
   'account/src',
   'application/src',

@@ -17,7 +17,7 @@ def test_http_client_property():
     assert isinstance(http_client, HttpClient)
 
 
-@patch('vonage_network_auth.NetworkAuth.get_oauth2_user_token')
+@patch('vonage_network_auth.NetworkAuth.get_sim_swap_camara_token')
 @responses.activate
 def test_check_sim_swap(mock_get_oauth2_user_token: MagicMock):
     build_response(
@@ -33,7 +33,7 @@ def test_check_sim_swap(mock_get_oauth2_user_token: MagicMock):
     assert response['swapped'] == True
 
 
-@patch('vonage_network_auth.NetworkAuth.get_oauth2_user_token')
+@patch('vonage_network_auth.NetworkAuth.get_sim_swap_camara_token')
 @responses.activate
 def test_get_last_swap_date(mock_get_oauth2_user_token: MagicMock):
     build_response(

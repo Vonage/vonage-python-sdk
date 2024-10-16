@@ -9,4 +9,6 @@ class NumberVerificationResponse(BaseModel):
             successfully verified.
     """
 
-    device_phone_number_verified: bool = Field(..., alias='devicePhoneNumberVerified')
+    device_phone_number_verified: bool = Field(
+        ..., validation_alias='devicePhoneNumberVerified'
+    )

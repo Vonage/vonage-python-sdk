@@ -137,19 +137,21 @@ class Broadcast(BaseModel):
     """
 
     id: Optional[str] = None
-    session_id: Optional[str] = Field(None, alias='sessionId')
-    multi_broadcast_tag: Optional[str] = Field(None, alias='multiBroadcastTag')
-    application_id: Optional[str] = Field(None, alias='applicationId')
-    created_at: Optional[int] = Field(None, alias='createdAt')
-    updated_at: Optional[int] = Field(None, alias='updatedAt')
-    max_duration: Optional[int] = Field(None, alias='maxDuration')
-    max_bitrate: Optional[int] = Field(None, alias='maxBitrate')
-    broadcast_urls: Optional[BroadcastUrls] = Field(None, alias='broadcastUrls')
+    session_id: Optional[str] = Field(None, validation_alias='sessionId')
+    multi_broadcast_tag: Optional[str] = Field(None, validation_alias='multiBroadcastTag')
+    application_id: Optional[str] = Field(None, validation_alias='applicationId')
+    created_at: Optional[int] = Field(None, validation_alias='createdAt')
+    updated_at: Optional[int] = Field(None, validation_alias='updatedAt')
+    max_duration: Optional[int] = Field(None, validation_alias='maxDuration')
+    max_bitrate: Optional[int] = Field(None, validation_alias='maxBitrate')
+    broadcast_urls: Optional[BroadcastUrls] = Field(
+        None, validation_alias='broadcastUrls'
+    )
     settings: Optional[BroadcastSettings] = None
     resolution: Optional[VideoResolution] = None
-    has_audio: Optional[bool] = Field(None, alias='hasAudio')
-    has_video: Optional[bool] = Field(None, alias='hasVideo')
-    stream_mode: Optional[StreamMode] = Field(None, alias='streamMode')
+    has_audio: Optional[bool] = Field(None, validation_alias='hasAudio')
+    has_video: Optional[bool] = Field(None, validation_alias='hasVideo')
+    stream_mode: Optional[StreamMode] = Field(None, validation_alias='streamMode')
     status: Optional[str] = None
     streams: Optional[list[VideoStream]] = None
 

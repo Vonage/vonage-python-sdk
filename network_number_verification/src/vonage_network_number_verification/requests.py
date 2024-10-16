@@ -1,33 +1,34 @@
-from typing import Optional
-
-from pydantic import BaseModel, Field
-
-
-class CreateOidcUrl(BaseModel):
-    """Model to craft a URL for OIDC authentication.
-
-    Args:
-        redirect_uri (str): The URI to redirect to after authentication.
-        state (str, optional): A unique identifier for the request. Can be any string.
-        login_hint (str, optional): The phone number to use for the request.
-    """
-
-    redirect_uri: str
-    state: Optional[str] = None
-    login_hint: Optional[str] = None
-    scope: Optional[
-        str
-    ] = 'openid dpv:FraudPreventionAndDetection#number-verification-verify-read'
+from pydantic import BaseModel, Field, model_validator
+from vonage_network_number_verification.errors import NetworkNumberVerificationError
 
 
 class NumberVerificationRequest(BaseModel):
     """Model for the request to verify a phone number.
 
     Args:
+        access_token (str): The access token for the request obtained from the
+            three-legged OAuth2 flow.
         phone_number (str): The phone number to verify. Use the E.164 format with
             or without a leading +.
         hashed_phone_number (str): The hashed phone number to verify.
     """
 
-    phone_number: str = Field(..., alias='phoneNumber')
-    hashed_phone_number: str = Field(..., alias='hashedPhoneNumber')
+    access_token: str
+    phone_number: str = Field(None, serialization_alias='phoneNumber')
+    hashed_phone_number: str = Field(None, serialization_alias='hashedPhoneNumber')
+
+    @model_validator(mode='after')
+    def check_only_one_phone_number(self):
+        """Check that only one of `phone_number` and `hashed_phone_number` is set."""
+
+        if self.phone_number is not None and self.hashed_phone_number is not None:
+            raise NetworkNumberVerificationError(
+                'Only one of `phone_number` and `hashed_phone_number` can be set.'
+            )
+
+        if self.phone_number is None and self.hashed_phone_number is None:
+            raise NetworkNumberVerificationError(
+                'One of `phone_number` and `hashed_phone_number` must be set.'
+            )
+
+        return self

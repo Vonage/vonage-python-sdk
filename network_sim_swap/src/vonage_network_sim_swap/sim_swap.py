@@ -36,7 +36,7 @@ class NetworkSimSwap:
         Returns:
             SwapStatus: Class containing the Swap Status response.
         """
-        token = self._network_auth.get_oauth2_user_token(
+        token = self._network_auth.get_sim_swap_camara_token(
             number=phone_number, scope='dpv:FraudPreventionAndDetection#check-sim-swap'
         )
 
@@ -63,7 +63,7 @@ class NetworkSimSwap:
         Returns:
             LastSwapDate: Class containing the Last Swap Date response.
         """
-        token = self._network_auth.get_oauth2_user_token(
+        token = self._network_auth.get_sim_swap_camara_token(
             number=phone_number,
             scope='dpv:FraudPreventionAndDetection#retrieve-sim-swap-date',
         )

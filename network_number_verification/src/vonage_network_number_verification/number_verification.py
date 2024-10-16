@@ -1,9 +1,8 @@
-from urllib.parse import urlencode, urlunparse
-
 from pydantic import validate_call
 from vonage_http_client import HttpClient
 from vonage_network_auth import NetworkAuth
-from vonage_network_number_verification.requests import CreateOidcUrl
+from vonage_network_auth.requests import CreateOidcUrl
+from vonage_network_number_verification.requests import NumberVerificationRequest
 from vonage_network_number_verification.responses import NumberVerificationResponse
 
 
@@ -40,40 +39,24 @@ class NetworkNumberVerification:
         Returns:
             str: The URL to use to make an OIDC request in a front-end application.
         """
-        base_url = 'https://oidc.idp.vonage.com/oauth2/auth'
-
-        params = {
-            'client_id': self._http_client.auth.application_id,
-            'redirect_uri': url_settings.redirect_uri,
-            'response_type': 'code',
-            'scope': url_settings.scope,
-        }
-        if url_settings.state is not None:
-            params['state'] = url_settings.state
-        if url_settings.login_hint is not None:
-            if url_settings.login_hint.startswith('+'):
-                params['login_hint'] = url_settings.login_hint
-            else:
-                params['login_hint'] = f'+{url_settings.login_hint}'
-
-        full_url = urlunparse(('', '', base_url, '', urlencode(params), ''))
-        return full_url
+        return self._network_auth.get_oidc_url(url_settings)
 
     @validate_call
-    def get_oidc_token(
-        self, oidc_response: dict, grant_type: str = 'urn:openid:params:grant-type:ciba'
-    ):
-        """Request a Camara token using an authentication request ID given as a response
-        to the OIDC request."""
-        params = {
-            'grant_type': grant_type,
-            'auth_req_id': oidc_response['auth_req_id'],
-        }
-        return self._request_camara_token(params)
+    def exchange_code_for_token(self, code: str, redirect_uri: str) -> str:
+        """Exchange an OIDC authorization code for a CAMARA access token.
+
+        Args:
+            code (str): The authorization code to use.
+            redirect_uri (str): The URI to redirect to after authentication.
+
+        Returns:
+            str: The access token to use for further requests.
+        """
+        return self._network_auth.get_number_verification_camara_token(code, redirect_uri)
 
     @validate_call
     def verify(
-        self, access_token: str, phone_number: str = None, hashed_phone_number: str = None
+        self, number_verification_params: NumberVerificationRequest
     ) -> NumberVerificationResponse:
         """Verify if the specified phone number matches the one that the user is currently
         using.
@@ -91,13 +74,18 @@ class NetworkNumberVerification:
             NumberVerificationResponse: Class containing the Number Verification response
                 containing the device verification information.
         """
-        return self._http_client.post(
+        params = {}
+        if number_verification_params.phone_number is not None:
+            params = {'phoneNumber': number_verification_params.phone_number}
+        else:
+            params = {'hashedPhoneNumber': number_verification_params.hashed_phone_number}
+
+        response = self._http_client.post(
             self._host,
             '/camara/number-verification/v031/verify',
-            params={
-                'phoneNumber': phone_number,
-                'hashedPhoneNumber': hashed_phone_number,
-            },
+            params=params,
             auth_type=self._auth_type,
-            token=access_token,
+            token=number_verification_params.access_token,
         )
+
+        return NumberVerificationResponse(**response)

@@ -1,3 +1,7 @@
+# 1.0.0
+- Add methods to work with the Vonage Number Verification API
+- Internal refactoring
+
 # 0.1.1b0
 - Add docstrings to data models
 

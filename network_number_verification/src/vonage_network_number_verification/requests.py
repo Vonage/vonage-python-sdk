@@ -6,14 +6,15 @@ class NumberVerificationRequest(BaseModel):
     """Model for the request to verify a phone number.
 
     Args:
-        access_token (str): The access token for the request obtained from the
-            three-legged OAuth2 flow.
+        code (str): The code returned from the OIDC redirect.
+        redirect_uri (str): The URI to redirect to after authentication.
         phone_number (str): The phone number to verify. Use the E.164 format with
             or without a leading +.
         hashed_phone_number (str): The hashed phone number to verify.
     """
 
-    access_token: str
+    code: str
+    redirect_uri: str
     phone_number: str = Field(None, serialization_alias='phoneNumber')
     hashed_phone_number: str = Field(None, serialization_alias='hashedPhoneNumber')
 

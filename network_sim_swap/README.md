@@ -6,8 +6,6 @@ This package is not intended to be used directly, instead being accessed from an
 
 For full API documentation, refer to the [Vonage developer documentation](https://developer.vonage.com).
 
-Please note this package is in beta.
-
 ## Registering to Use the Sim Swap API
 
 To use this API, you must first create and register your business profile with the Vonage Network Registry. [This documentation page](https://developer.vonage.com/en/getting-started-network/registration) explains how this can be done. You need to obtain approval for each network and region you want to use the APIs in.

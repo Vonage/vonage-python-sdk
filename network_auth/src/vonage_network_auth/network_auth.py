@@ -8,7 +8,7 @@ from .responses import OidcResponse, TokenResponse
 
 
 class NetworkAuth:
-    """Class containing methods for authenticating Network APIs following Camara
+    """Class containing methods for authenticating Network APIs following CAMARA
     standards."""
 
     def __init__(self, http_client: HttpClient):

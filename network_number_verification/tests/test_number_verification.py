@@ -39,7 +39,7 @@ def test_get_oidc_url():
 
 @patch('vonage_network_auth.NetworkAuth.get_number_verification_camara_token')
 @responses.activate
-def test_exchange_code_for_token(mock_get_number_verification_camara_token: MagicMock):
+def test_verify_number(mock_get_number_verification_camara_token: MagicMock):
     build_response(
         path,
         'POST',
@@ -49,15 +49,6 @@ def test_exchange_code_for_token(mock_get_number_verification_camara_token: Magi
 
     mock_get_number_verification_camara_token.return_value = 'token'
 
-    response = number_verification.exchange_code_for_token(
-        'code', 'https://example.com/callback'
-    )
-
-    assert response == 'token'
-
-
-@responses.activate
-def test_verify_number():
     build_response(
         path,
         'POST',
@@ -66,15 +57,27 @@ def test_verify_number():
     )
 
     number_verification_params = NumberVerificationRequest(
-        access_token='token', phone_number='447700900000'
+        code='token',
+        redirect_uri='https://example.com/callback',
+        phone_number='447700900000',
     )
     response = number_verification.verify(number_verification_params)
 
     assert response.device_phone_number_verified == True
 
 
+@patch('vonage_network_auth.NetworkAuth.get_number_verification_camara_token')
 @responses.activate
-def test_verify_hashed_number():
+def test_verify_hashed_number(mock_get_number_verification_camara_token: MagicMock):
+    build_response(
+        path,
+        'POST',
+        'https://api-eu.vonage.com/oauth2/token',
+        'token_request.json',
+    )
+
+    mock_get_number_verification_camara_token.return_value = 'token'
+
     build_response(
         path,
         'POST',
@@ -83,7 +86,8 @@ def test_verify_hashed_number():
     )
 
     number_verification_params = NumberVerificationRequest(
-        access_token='token',
+        code='token',
+        redirect_uri='https://example.com/callback',
         hashed_phone_number='d867b6540ac8db72d860d67d3d612a1621adcf3277573e9299be1153b6d0de15',
     )
     response = number_verification.verify(number_verification_params)
@@ -93,12 +97,17 @@ def test_verify_hashed_number():
 
 def test_verify_number_model_errors():
     with raises(NetworkNumberVerificationError):
-        number_verification.verify(NumberVerificationRequest(access_token='token'))
+        number_verification.verify(
+            NumberVerificationRequest(
+                code='code', redirect_uri='https://example.com/callback'
+            )
+        )
 
     with raises(NetworkNumberVerificationError):
         number_verification.verify(
             NumberVerificationRequest(
-                access_token='token',
+                code='code',
+                redirect_uri='https://example.com/callback',
                 phone_number='447700900000',
                 hashed_phone_number='hash',
             )

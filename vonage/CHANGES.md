@@ -1,3 +1,15 @@
+# 4.0.0b0
+A complete, ground-up rewrite of the SDK.
+Key changes:
+- Monorepo structure, with each API under separate packages
+- Usage of data models throughout
+- Use of Pydantic to enforce correct typing
+- Increased use of docstrings to improve developer experience
+- Add support for all features in the [Vonage Video API](https://developer.vonage.com/en/video/overview)
+- Add support for the new network APIs - the [Vonage Sim Swap Network API](https://developer.vonage.com/en/sim-swap/overview) and the [Vonage Number Verification Network API](https://developer.vonage.com/en/number-verification/overview)
+- Targeting Python 3.9+
+- With more to come in v4!
+
 # 3.99.5a0
 - Add support for the [Vonage Video API](https://developer.vonage.com/en/video/overview)
 - Add docstrings for data models across the SDK to increase quality-of-life developer experience

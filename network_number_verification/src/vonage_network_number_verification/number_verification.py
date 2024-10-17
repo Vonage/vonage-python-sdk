@@ -42,38 +42,30 @@ class NetworkNumberVerification:
         return self._network_auth.get_oidc_url(url_settings)
 
     @validate_call
-    def exchange_code_for_token(self, code: str, redirect_uri: str) -> str:
-        """Exchange an OIDC authorization code for a CAMARA access token.
-
-        Args:
-            code (str): The authorization code to use.
-            redirect_uri (str): The URI to redirect to after authentication.
-
-        Returns:
-            str: The access token to use for further requests.
-        """
-        return self._network_auth.get_number_verification_camara_token(code, redirect_uri)
-
-    @validate_call
     def verify(
         self, number_verification_params: NumberVerificationRequest
     ) -> NumberVerificationResponse:
         """Verify if the specified phone number matches the one that the user is currently
         using.
 
-        Note: To use this method, the user must be connected to mobile data rather than
-        Wi-Fi.
-
         Args:
-            access_token (str): The access token to use for the request.
-            phone_number (str, optional): The phone number to verify. Use the E.164 format with
-                or without a leading +.
-            hashed_phone_number (str, optional): The hashed phone number to verify.
+            number_verification_params (NumberVerificationRequest): The parameters to use for
+                the verification. Parameters include:
+                - code (str): The code returned from the OIDC redirect.
+                - redirect_uri (str): The URI to redirect to after authentication.
+                - phone_number (str, optional): The phone number to verify. Use the E.164 format with
+                    or without a leading +.
+                - hashed_phone_number (str, optional): The hashed phone number to verify.
 
         Returns:
-            NumberVerificationResponse: Class containing the Number Verification response
-                containing the device verification information.
+            NumberVerificationResponse: The Number Verification response containing the
+                device verification information.
         """
+
+        access_token = self._network_auth.get_number_verification_camara_token(
+            number_verification_params.code, number_verification_params.redirect_uri
+        )
+
         params = {}
         if number_verification_params.phone_number is not None:
             params = {'phoneNumber': number_verification_params.phone_number}
@@ -85,7 +77,7 @@ class NetworkNumberVerification:
             '/camara/number-verification/v031/verify',
             params=params,
             auth_type=self._auth_type,
-            token=number_verification_params.access_token,
+            token=access_token,
         )
 
         return NumberVerificationResponse(**response)

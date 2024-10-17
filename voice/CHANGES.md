@@ -1,3 +1,6 @@
+# 1.0.5
+- Support for Python 3.13, drop support for 3.8
+
 # 1.0.4
 - Add docstrings to data models
 

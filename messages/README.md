@@ -35,7 +35,7 @@ Some message types have submodels with additional fields. In this case, import t
 e.g.
 
 ```python
-from vonage_messages import MessengerImage, MessengerOptions, MessengerResource
+from vonage_messages.models import MessengerImage, MessengerOptions, MessengerResource
 
 messenger = MessengerImage(
     to='1234567890',

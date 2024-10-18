@@ -12,6 +12,7 @@ This is the Python server SDK for Vonage's API. To use it you'll
 need a Vonage account. Sign up [for free at vonage.com][signup].
 
 - [Installation](#installation)
+- [Migration Guides](#migration-guides)
 - [Calling Vonage APIs](#calling-vonage-apis)
 - [Usage](#usage)
 - [Account API](#account-api)
@@ -19,6 +20,8 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [HTTP Client](#http-client)
 - [JWT Client](#jwt-client)
 - [Messages API](#messages-api)
+- [Network Number Verification API](#network-number-verification-api)
+- [Network Sim Swap API](#network-sim-swap-api)
 - [Number Insight API](#number-insight-api)
 - [Numbers API](#numbers-api)
 - [SMS API](#sms-api)
@@ -35,19 +38,35 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 
 ## Installation
 
-To install the Python client library using pip:
+To install the Python SDK package using pip:
 
-    pip install vonage
+```bash
+pip install vonage
+```
 
 To upgrade your installed client library using pip:
 
-    pip install vonage --upgrade
+```bash
+pip install vonage --upgrade
+```
 
 Alternatively, you can clone the repository via the command line:
 
-    git clone git@github.com:Vonage/vonage-python-sdk.git
+```bash
+git clone git@github.com:Vonage/vonage-python-sdk.git
+```
 
 or by opening it on GitHub desktop.
+
+## Migration Guides
+
+### V3 to V4
+
+This version of the Vonage Python SDK (4.x+) works very differently to the previous SDK. See [the v3 -> v4 migration guide](V3_TO_V4_SDK_MIGRATION_GUIDE.md) for help migrating your application code using v3 of the SDK to the new structure.
+
+### OpenTok to Vonage Video API
+
+This SDK includes support for the [Vonage Video API](https://developer.vonage.com/en/video/overview). If you have an application that uses OpenTok for video and want to migrate (which is highly recommended!) then [A migration guide is available here](video/OPENTOK_TO_VONAGE_MIGRATION.md) which will help you to migrate your applications to use Vonage Video.
 
 ## Calling Vonage APIs
 
@@ -365,7 +384,7 @@ Some message types have submodels with additional fields. In this case, import t
 e.g.
 
 ```python
-from vonage_messages import MessengerImage, MessengerOptions, MessengerResource
+from vonage_messages.models import MessengerImage, MessengerOptions, MessengerResource
 
 messenger = MessengerImage(
     to='1234567890',
@@ -437,6 +456,66 @@ RcsText, RcsImage, RcsVideo, RcsFile, RcsCustom
 WhatsappText, WhatsappImage, WhatsappAudio, WhatsappVideo, WhatsappFile, WhatsappTemplate, WhatsappSticker, WhatsappCustom
 MessengerText, MessengerImage, MessengerAudio, MessengerVideo, MessengerFile
 ViberText, ViberImage, ViberVideo, ViberFile
+```
+
+## Network Number Verification API
+
+The Vonage Number Verification API uses Oauth2 authentication, which this SDK will also help you to do. Verifying a number has 3 stages:
+
+1. Get an OIDC URL for use in your front-end application
+2. Use this URL in your own application to get an authorization code
+3. Make a Number Verification Request using this code to verify the number
+
+This package contains methods to help with Steps 1 and 3.
+
+### Get an OIDC URL
+
+```python
+from vonage_network_number_verification import CreateOidcUrl
+
+url_options = CreateOidcUrl(
+    redirect_uri='https://example.com/redirect',
+    state='c9896ee6-4ff8-464c-b393-d56d6e638f88',
+    login_hint='+990123456',
+)
+
+url = number_verification.get_oidc_url(url_options)
+print(url)
+```
+
+Get your user's device to follow this URL and a code to use for number verification will be returned in the final redirect query parameters. Note: your user must be connected to their mobile network.
+
+### Make a Number Verification Request
+
+```python
+from vonage_network_number_verification import NumberVerificationRequest
+
+response = number_verification.verify(
+    NumberVerificationRequest(
+        code='code',
+        redirect_uri='https://example.com/redirect',
+        phone_number='+990123456',
+    )
+)
+print(response.device_phone_number_verified)
+```
+
+## Network Sim Swap API
+
+### Check if a SIM Has Been Swapped
+
+```python
+from vonage_network_sim_swap import SwapStatus
+swap_status: SwapStatus = vonage_client.sim_swap.check(phone_number='MY_NUMBER')
+print(swap_status.swapped)
+```
+
+### Get the Date of the Last SIM Swap
+
+```python
+from vonage_network_sim_swap import LastSwapDate
+swap_date: LastSwapDate = vonage_client.sim_swap.get_last_swap_date
+print(swap_date.last_swap_date)
 ```
 
 ## Number Insight API

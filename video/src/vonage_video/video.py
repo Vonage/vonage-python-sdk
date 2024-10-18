@@ -265,7 +265,8 @@ class Video:
 
     @validate_call
     def start_audio_connector(self, options: AudioConnectorOptions) -> AudioConnectorData:
-        """Starts an audio connector in a session using the Vonage Video API.
+        """Starts an audio connector in a session using the Vonage Video API. Connects
+        audio streams to a specified WebSocket URI.
 
         Args:
             options (AudioConnectorOptions): Options for the audio connector.

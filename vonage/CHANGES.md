@@ -2,81 +2,51 @@
 A complete, ground-up rewrite of the SDK.
 Key changes:
 - Monorepo structure, with each API under separate packages
-- Usage of data models throughout
-- Use of Pydantic to enforce correct typing
-- Increased use of docstrings to improve developer experience
-- Add support for all features in the [Vonage Video API](https://developer.vonage.com/en/video/overview)
-- Add support for the new network APIs - the [Vonage Sim Swap Network API](https://developer.vonage.com/en/sim-swap/overview) and the [Vonage Number Verification Network API](https://developer.vonage.com/en/number-verification/overview)
 - Targeting Python 3.9+
-- With more to come in v4!
+- Feature parity with v3
+- Add support for the new network APIs - the [Vonage Sim Swap Network API](https://developer.vonage.com/en/sim-swap/overview) and the [Vonage Number Verification Network API](https://developer.vonage.com/en/number-verification/overview)
+- Usage of data models throughout
+- Many new custom errors, improved error data models and error messages
+- Docstrings for methods and data models across the whole SDK to increase quality-of-life developer experience and make in-IDE development easier
+- Use of Pydantic to enforce correct typing throughout
+- Add support for all [Vonage Video API](https://developer.vonage.com/en/video/overview) features
+- Add `http_client` property to each module that has an HTTP Client, e.g. Voice, Sms, Verify
+- Add `last_request` and `last_response` properties to the HTTP Client for easier debugging
+- Migrated the Vonage JWT package into the monorepo
+- With even more enhancements to come!
 
-# 3.99.5a0
+# 3.17.1
+- Add "mark WhatsApp message as read" option for Messages API
+
+# 3.17.0
+- Add RCS message type option for Messages API
+- Add "revoke RCS message" option
+
+# 3.16.1
+- Fix video client token option
+- Fix typos in README
+- Bump minimum versions for dependencies with fixed vulnerabilities
+
+# 3.16.0
+- Add support for the [Vonage Number Verification API](https://developer.vonage.com/number-verification/overview)
+
+# 3.15.0
+- Add support for the [Vonage Sim Swap API](https://developer.vonage.com/en/sim-swap/overview)
+
+# 3.14.0
+- Add publisher-only as a valid Video API client token role
+
+# 3.13.1
+- Fix content-type incorrect serialization
+
+# 3.13.0
+- Migrating to use Pydantic v2 as a dependency
+
+# 3.12.0
 - Add support for the [Vonage Video API](https://developer.vonage.com/en/video/overview)
-- Add docstrings for data models across the SDK to increase quality-of-life developer experience
-- Updated `vonage_subaccounts.ListSubaccountsResponse` for compatibility with Python 3.8
 
-# 3.99.4a0
-- Add support for the [Vonage Numbers API](https://developer.vonage.com/en/numbers/overview)
-
-# 3.99.3a1
-- Updated `vonage_subaccounts.ListSubaccountsResponse` for compatibility with Python 3.8
-
-# 3.99.3a0
-- Add support for the [Vonage Subaccounts API](https://developer.vonage.com/en/use-cases/using-subaccounts)
-
-# 3.99.2a0
-- Add support for the [RCS messaging channel](https://developer.vonage.com/en/messages/concepts/rcs) of the Vonage Messages API
-- Add method to revoke an RCS message
-- Add method to mark a WhatsApp message as read
-
-# 3.99.0a12
-- Add support for the [Vonage Account API](https://developer.vonage.com/en/account/overview).
-- Update package metadata for the `vonage-application` package.
-
-# 3.99.0a11
-- Remove the Number Insight v2 beta which was not in use and is going to be deprecated
-- Lower the VerifyV2 minimum channel timeout to 15s
-
-# 3.99.1a10
-- Migrate the Vonage JWT package
-- Internal refactoring
-
-# 3.99.0a10
-- Add support for the [Vonage Application API](https://developer.vonage.com/en/application/overview).
-
-# 3.99.0a9
-- Internal refactoring
-
-# 3.99.0a8
-- Add support for the [Vonage Number Insight API](https://developer.vonage.com/en/number-insight/overview).
-- Update minimum dependency version
-
-# 3.99.0a7
-- Add support for the [Vonage Voice API](https://developer.vonage.com/en/voice/voice-api/overview).
-- Add `http_client` property to each module that has an HTTP Client, e.g. Voice, Sms, Verify.
-
-# 3.99.0a6
-- Add support for the [Vonage Messages API](https://developer.vonage.com/en/messages/overview).
-
-# 3.99.0a5
-- Add support for the [Vonage Verify V2 API](https://developer.vonage.com/en/verify/overview).
-- Expose error classes at the top level of the `vonage-http-client` package.
-
-# 3.99.0a4
-- Add support for the [Vonage Verify API](https://developer.vonage.com/en/api/verify).
-- Add `last_request` and `last_response` properties to the HTTP Client.
-
-# 3.99.0a3
-- Add support for the [Vonage Users API](https://developer.vonage.com/en/api/application.v2#User).
-
-# 3.99.0a2
-- Internal refactoring
-
-# 3.99.0a1
-- Add support for the [Vonage SMS API](https://developer.vonage.com/en/messaging/sms/overview).
-
-# 3.99.0a0
-Created new monorepo structure - this package `vonage` is now a way to depend on the functionality of all Vonage APIs, which has been moved into separate packages. Additionally, there are many breaking changes.
+# 3.11.1
+- Add checks for silent auth workflow optional parameters `redirect_url` and `sandbox`
 
 # 3.11.0
 - Add method to check JWT signatures of Voice API webhooks: `vonage.Voice.verify_signature`

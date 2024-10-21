@@ -40,6 +40,16 @@ This is the Python server SDK to help you use Vonage APIs in your Python applica
 
 ## Installation
 
+It's recommended to create a new virtual environment to install the SDK. You can do this with
+
+```bash
+# Create the virtual environment
+python3 -m venv venv
+
+# Activate the virtual environment
+. ./venv/bin/activate
+```
+
 To install the Python SDK package using pip:
 
 ```bash

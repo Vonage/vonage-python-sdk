@@ -37,7 +37,7 @@ class NumberInsight:
         return self._http_client
 
     @validate_call
-    def basic_number_insight(self, options: BasicInsightRequest) -> BasicInsightResponse:
+    def get_basic_info(self, options: BasicInsightRequest) -> BasicInsightResponse:
         """Get basic number insight information about a phone number.
 
         Args:
@@ -83,7 +83,7 @@ class NumberInsight:
         return StandardInsightResponse(**response)
 
     @validate_call
-    def advanced_async_number_insight(
+    def get_advanced_info_async(
         self, options: AdvancedAsyncInsightRequest
     ) -> AdvancedAsyncInsightResponse:
         """Get advanced number insight information about a phone number asynchronously.
@@ -108,7 +108,7 @@ class NumberInsight:
         return AdvancedAsyncInsightResponse(**response)
 
     @validate_call
-    def advanced_sync_number_insight(
+    def get_advanced_info_sync(
         self, options: AdvancedSyncInsightRequest
     ) -> AdvancedSyncInsightResponse:
         """Get advanced number insight information about a phone number synchronously.

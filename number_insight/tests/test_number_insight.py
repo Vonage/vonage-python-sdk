@@ -34,7 +34,7 @@ def test_basic_insight():
         'basic_insight.json',
     )
     options = BasicInsightRequest(number='12345678900', country_code='US')
-    response = number_insight.basic_number_insight(options)
+    response = number_insight.get_basic_info(options)
     assert response.status == 0
     assert response.status_message == 'Success'
 
@@ -50,7 +50,7 @@ def test_basic_insight_error():
 
     with raises(NumberInsightError) as e:
         options = BasicInsightRequest(number='1234567890', country_code='US')
-        number_insight.basic_number_insight(options)
+        number_insight.get_basic_info(options)
     assert e.match('Invalid request :: Not valid number format detected')
 
 
@@ -85,7 +85,7 @@ def test_advanced_async_insight():
         country_code='GB',
         cnam=True,
     )
-    response = number_insight.advanced_async_number_insight(options)
+    response = number_insight.get_advanced_info_async(options)
     assert response.status == 0
     assert response.request_id == '434205b5-90ec-4ee2-a337-7b40d9683420'
     assert response.number == '447700900000'
@@ -108,7 +108,7 @@ def test_advanced_async_insight_error():
         cnam=True,
     )
     with raises(NumberInsightError) as e:
-        number_insight.advanced_async_number_insight(options)
+        number_insight.get_advanced_info_async(options)
     assert e.match('Invalid credentials')
 
 
@@ -127,7 +127,7 @@ def test_advanced_async_insight_partial_error(caplog):
         country_code='GB',
         cnam=True,
     )
-    response = number_insight.advanced_async_number_insight(options)
+    response = number_insight.get_advanced_info_async(options)
     assert 'Not all parameters are available' in caplog.text
     assert response.status == 43
 
@@ -143,7 +143,7 @@ def test_advanced_sync_insight(caplog):
     options = AdvancedSyncInsightRequest(
         number='12345678900', country_code='US', cnam=True
     )
-    response = number_insight.advanced_sync_number_insight(options)
+    response = number_insight.get_advanced_info_sync(options)
 
     assert 'Not all parameters are available' in caplog.text
     assert response.status == 44

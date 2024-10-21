@@ -8,8 +8,9 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 ![Total lines](https://sloc.xyz/github/vonage/vonage-python-sdk)
 
-This is the Python server SDK for Vonage's API. To use it you'll
-need a Vonage account. Sign up [for free at vonage.com][signup].
+This is the Python server SDK to help you use Vonage APIs in your Python application. To use it you'll need a Vonage account. [Sign up for free on the Vonage site](https://ui.idp.vonage.com/ui/auth/registration).
+
+### Contents:
 
 - [Installation](#installation)
 - [Migration Guides](#migration-guides)
@@ -35,6 +36,7 @@ need a Vonage account. Sign up [for free at vonage.com][signup].
 - [Frequently Asked Questions](#frequently-asked-questions)
 - [Contributing](#contributing)
 - [License](#license)
+- [Additional Resources](#additional-resources)
 
 ## Installation
 
@@ -1381,7 +1383,6 @@ The following is a list of Vonage APIs and whether the Python SDK provides suppo
 | API                   |  API Release Status  | Supported? |
 | --------------------- | :------------------: | :--------: |
 | Account API           | General Availability |     ✅     |
-| Alerts API            | General Availability |     ✅     |
 | Application API       | General Availability |     ✅     |
 | Audit API             |         Beta         |     ❌     |
 | Conversation API      |         Beta         |     ❌     |
@@ -1405,7 +1406,7 @@ The following is a list of Vonage APIs and whether the Python SDK provides suppo
 
 [asyncio](https://docs.python.org/3/library/asyncio.html) is a library to write **concurrent** code using the **async/await** syntax.
 
-We don't currently support asyncio in the Python SDK but we are planning to do so in upcoming releases.
+We don't currently support asyncio in the Python SDK.
 
 ## Contributing
 
@@ -1414,13 +1415,13 @@ We :heart: contributions! But if you plan to work on something big or controvers
 We recommend working on `vonage-python-sdk` with a [virtualenv][virtualenv]. The following command will install all the Python dependencies you need to run the tests:
 
 ```bash
-make install
+pip install -r requirements.txt
 ```
 
 The tests are all written with pytest. You run them with:
 
 ```bash
-make test
+pytest -v
 ```
 
 We use [Black](https://black.readthedocs.io/en/stable/index.html) for code formatting, with our config in the `pyproject.toml` file. To ensure a PR follows the right format, you can set up and use our pre-commit settings with
@@ -1433,10 +1434,11 @@ Then when you commit code, if it's not in the right format, it will be automatic
 
 ## License
 
-This library is released under the [Apache License][license].
+This library is released under the [Apache License](license).
 
-[virtualenv]: https://virtualenv.pypa.io/en/stable/
-[report-a-bug]: https://github.com/Vonage/vonage-python-sdk/issues/new
-[pull-request]: https://github.com/Vonage/vonage-python-sdk/pulls
-[signup]: https://dashboard.nexmo.com/sign-up?utm_source=DEV_REL&utm_medium=github&utm_campaign=python-client-library
-[license]: LICENSE.txt
+## Additional Resources
+
+- [Vonage Video API Developer Documentation](https://developer.vonage.com/en/video/overview)
+- [Link to the Vonage Python SDK](https://github.com/Vonage/vonage-python-sdk)
+- [Join the Vonage Developer Community Slack](https://developer.vonage.com/en/community/slack)
+- [Submit a Vonage Video API Support Request](https://api.support.vonage.com/hc/en-us)

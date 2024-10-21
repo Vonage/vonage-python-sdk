@@ -1,4 +1,4 @@
-# 4.0.0b0
+# 4.0.0b1
 A complete, ground-up rewrite of the SDK.
 Key changes:
 - Monorepo structure, with each API under separate packages

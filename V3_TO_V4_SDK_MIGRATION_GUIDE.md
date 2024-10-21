@@ -1,8 +1,8 @@
 # Vonage Python SDK v3 to v4 Migration Guide
 
-This is a guide to help you migrate from using v3 of the Vonage Python SDK to using the new v4 `vonage` package. It has feature parity with the v3 package and contains many enhancements and structural changes. We will only be supporting v4 from its release.
+This is a guide to help you migrate from using v3 of the Vonage Python SDK to using the new v4 `vonage` package. It has feature parity with the v3 package and contains many enhancements and structural changes. We will only be supporting v4 from the time of its full release.
 
-The Vonage Python SDK (`vonage`) contains methods and data models to help you use many of Vonage's APIs. It also includes support for the new network APIs announced by Vonage.
+The Vonage Python SDK (`vonage`) contains methods and data models to help you use many of Vonage's APIs. It also includes support for the new mobile network APIs announced by Vonage.
 
 ## Contents
 
@@ -12,7 +12,10 @@ The Vonage Python SDK (`vonage`) contains methods and data models to help you us
 - [Accessing API Methods](#accessing-api-methods)
 - [Accessing API Data Models](#accessing-api-data-models)
 - [Response Objects](#response-objects)
-- [API Changes](#API-changes)
+- [Error Handling](#error-handling)
+- [General API Changes](#general-API-changes)
+- [Specific API Changes](#specific-api-changes)
+- [Method Name Changes](#method-name-changes)
 - [Additional Resources](#additional-resources)
 
 ## Structural Changes and Enhancements
@@ -46,7 +49,7 @@ You will notice that the dependent Vonage packages have been installed as well.
 
 ## Configuration
 
-To get started with the v4 SDK, you'll need to initialize an instance of the `vonage.Vonage` class. This can then be used to access API methods. You need to provide authentication information and can optionally provide configuration options for the HTTP Client that's used (that is in the `vonage-http-client` package). This section will break all of this down then provide an example.
+To get started with the v4 SDK, you'll need to initialize an instance of the `vonage.Vonage` class. This can then be used to access API methods. You need to provide authentication information and can optionally provide configuration options for the HTTP Client used to make requests to Vonage APIs. This section will break all of this down then provide an example.
 
 ### Authentication
 
@@ -120,7 +123,7 @@ response = vonage_client.verify_v2.start_verification(verify_request)
 print(response)
 ```
 
-However, some APIs with a lot of models have them located under the `vonage_api_package.models` package, e.g. `vonage-messages`, `vonage-voice` and `vonage-video`. To access these, simply import from `.models`, e.g. to send an image via Facebook Messenger do this:
+However, some APIs with a lot of models have them located under the `vonage_api_package.models` package, e.g. `vonage-messages`, `vonage-voice` and `vonage-video`. To access these, simply import from `vonage_api_package.models`, e.g. to send an image via Facebook Messenger do this:
 
 ```python
 from vonage_messages.models import MessengerImage, MessengerOptions, MessengerResource
@@ -154,27 +157,57 @@ print(settings.model_dump())
 
 Response fields are also converted into snake_case where applicable, so as to be more pythonic. This means they won't necessarily match the API one-to-one.
 
-## API Changes
+## Error Handling
+
+In v3 of the SDK, most HTTP client errors gave a general `HttpClientError`. In v4 these are finer-grained. Errors in v4 inherit from the general `VonageError` but are more specific and finer-grained, E.g. a `RateLimitedError` when the SDK receives an HTTP 429 response.
+
+These errors will have a descriptive message and will also include the response object returned to the SDK, accessed by `HttpClientError.response` etc.
+
+Some API packages have their own errors for specific cases too.
+
+For older Vonage APIs that always return an HTTP 200, error handling logic has been included to give a similar experience to the newer APIs.
+
+## General API Changes
 
 In v3, you access `vonage.Client`. In v4, it's `vonage.Vonage`.
 
 The methods to get and set host attributes in v3 e.g. `vonage.Client.api_host` have been removed. You now get these options in v4 via the `vonage.Vonage.http_client`. Set these options in v4 by adding the options you want to the `vonage.HttpClientOptions` data model when initializing a `vonage.Vonage` object.
 
-Rather than just returning a `ClientError` when an HTTP Client error is thrown, we now throw more specific errors with more information.
+## Specific API Changes
 
-### Specific API Changes
+### Video API
+
+Methods have been added to help you work with the Live Captions, Audio Connector and Experience Composer APIs. See the [Video API samples](video/README.md) for more information.
+
+### Voice API
+
+Methods have been added to help you moderate a voice call:
+
+- `voice.hangup`
+- `voice.mute`
+- `voice.unmute`
+- `voice.earmuff`
+- `voice.unearmuff`
+
+See the [Voice API samples](voice/README.md) for more information.
+
+### Network Number Verification API
 
 The process for verifying a number using the Network Number Verification API has been simplified. In v3 it was required to exchange a code for a token then use this token in the verify request. In v4, these steps are combined so both functions are taken care of in the `NetworkNumberVerification.verify` method.
 
-Verify v2 functionality is accessed from `verify2` in v3 and `verify_v2` in v4.
+### Verify V2 API
 
-SMS message signing/verifying signatures code in `vonage.Client` in v3 has been moved into the `vonage-http-client` package in v4. This can be accessed via the `vonage` package as we import the `vonage-http-client.Auth` class into its namespace.
+Verify v2 functionality is accessed from `vonage_client.verify2` in v3 and `vonage_client.verify_v2` in v4.
+
+### SMS API
+
+Code for signing/verifying signatures of SMS messages that was in the `vonage.Client` class in v3 has been moved into the `vonage-http-client` package in v4. This can be accessed via the `vonage` package as we import the `vonage-http-client.Auth` class into its namespace.
 
 Old method -> new method
 `vonage.Client.sign_params` -> `vonage.Auth.sign_params`
 `vonage.Client.check_signature` -> `vonage.Auth.check_signature`
 
-### Method Name Changes
+## Method Name Changes
 
 Some methods from v3 have had their names changed in v4. Assuming you access all methods from the `vonage.Vonage` class in v4 with `vonage.Vonage.api_method` or the `vonage.Client` class in v3 with `vonage.Client.api_method`, this table details the changes:
 
@@ -195,6 +228,19 @@ Some methods from v3 have had their names changed in v4. Assuming you access all
 | `verify.check` | `verify.check_code` |
 | `verify2.new_request` | `verify_v2.start_verification` |
 | `video.set_stream_layout` | `video.change_stream_layout` |
+| `video.create_archive` | `video.start_archive` |
+| `video.create_sip_call` | `video.initiate_sip_call` |
+| `voice.get_calls` | `voice.list_calls` |
+| `voice.update_call` | `voice.transfer_call_ncco` and `voice.transfer_call_answer_url` |
+| `voice.send_audio` | `voice.play_audio_into_call` |
+| `voice.stop_audio` | `voice.stop_audio_stream` |
+| `voice.send_speech` | `voice.play_tts_into_call` |
+| `voice.stop_speech` | `voice.stop_tts` |
+| `voice.send_dtmf` | `voice.play_dtmf_into_call` |
 
 ## Additional Resources
 
+- [Vonage Video API Developer Documentation](https://developer.vonage.com/en/video/overview)
+- [Link to the Vonage Python SDK](https://github.com/Vonage/vonage-python-sdk)
+- [Join the Vonage Developer Community Slack](https://developer.vonage.com/en/community/slack)
+- [Submit a Vonage Video API Support Request](https://api.support.vonage.com/hc/en-us)

@@ -21,7 +21,7 @@ toml>=0.10.2
 -e subaccounts
 -e users
 -e verify
--e verify_v2
+-e verify_legacy
 -e video
 -e voice
 -e vonage_utils

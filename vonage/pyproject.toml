@@ -18,8 +18,8 @@ dependencies = [
   "vonage-sms>=1.1.3",
   "vonage-subaccounts>=1.0.3",
   "vonage-users>=1.1.4",
-  "vonage-verify>=1.1.3",
-  "vonage-verify-v2>=1.1.4",
+  "vonage-verify>=2.0.0",
+  "vonage-verify-legacy>=2.0.0",
   "vonage-video>=1.0.1",
   "vonage-voice>=1.0.5",
 ]

@@ -114,12 +114,12 @@ Unlike the methods to call each Vonage API, the data models and errors specific 
 For most APIs, data models and errors can be accessed from the top level of the API package, e.g. to send a Verify request, do this:
 
 ```python
-from vonage_verify_v2 import VerifyRequest, SmsChannel
+from vonage_verify import VerifyRequest, SmsChannel
 
 sms_channel = SmsChannel(to='1234567890')
 verify_request = VerifyRequest(brand='Vonage', workflow=[sms_channel])
 
-response = vonage_client.verify_v2.start_verification(verify_request)
+response = vonage_client.verify.start_verification(verify_request)
 print(response)
 ```
 
@@ -195,9 +195,11 @@ See the [Voice API samples](voice/README.md) for more information.
 
 The process for verifying a number using the Network Number Verification API has been simplified. In v3 it was required to exchange a code for a token then use this token in the verify request. In v4, these steps are combined so both functions are taken care of in the `NetworkNumberVerification.verify` method.
 
-### Verify V2 API
+### Verify API Name Changes
 
-Verify v2 functionality is accessed from `vonage_client.verify2` in v3 and `vonage_client.verify_v2` in v4.
+The functionality previously named "Verify V2" in v3 of the SDK has been renamed "Verify", along with associated methods. The old Verify product in v3 has been renamed "Verify Legacy".
+
+Verify v2 functionality is now accessed from `vonage_client.verify` in v4, which exposes the `vonage_verify.Verify` class. The legacy Verify v1 objects are accessed from `vonage_client.verify_legacy` in v4, in the new package `vonage-verify-legacy`.
 
 ### SMS API
 
@@ -223,10 +225,17 @@ Some methods from v3 have had their names changed in v4. Assuming you access all
 | `numbers.get_account_numbers` | `numbers.list_owned_numbers` |
 | `numbers.get_available_numbers` | `numbers.search_available_numbers` |
 | `sms.send_message` | `sms.send` |
-| `verify.psd2` | `verify.start_psd2_verification` |
-| `verify.check` | `verify.check_code` |
-| `verify.check` | `verify.check_code` |
-| `verify2.new_request` | `verify_v2.start_verification` |
+| `verify.start_verification` | `verify_legacy.start_verification` |
+| `verify.psd2` | `verify_legacy.start_psd2_verification` |
+| `verify.check` | `verify_legacy.check_code` |
+| `verify.search` | `verify_legacy.search` |
+| `verify.cancel_verification` | `verify_legacy.cancel_verification` |
+| `verify.trigger_next_event` | `verify_legacy.trigger_next_event` |
+| `verify.request_network_unblock` | `verify_legacy.request_network_unblock` |
+| `verify2.new_request` | `verify.start_verification` |
+| `verify2.check_code` | `verify.check_code` |
+| `verify2.cancel_verification` | `verify.cancel_verification` |
+| `verify2.trigger_next_workflow` | `verify.trigger_next_workflow` |
 | `video.set_stream_layout` | `video.change_stream_layout` |
 | `video.create_archive` | `video.start_archive` |
 | `video.create_sip_call` | `video.initiate_sip_call` |

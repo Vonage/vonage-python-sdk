@@ -1,25 +1,27 @@
+from .enums import ChannelType, Locale
 from .errors import VerifyError
-from .language_codes import LanguageCode, Psd2LanguageCode
-from .requests import Psd2Request, VerifyRequest
-from .responses import (
-    CheckCodeResponse,
-    NetworkUnblockStatus,
-    StartVerificationResponse,
-    VerifyControlStatus,
-    VerifyStatus,
+from .requests import (
+    EmailChannel,
+    SilentAuthChannel,
+    SmsChannel,
+    VerifyRequest,
+    VoiceChannel,
+    WhatsappChannel,
 )
+from .responses import CheckCodeResponse, StartVerificationResponse
 from .verify import Verify
 
 __all__ = [
     'Verify',
     'VerifyError',
-    'LanguageCode',
-    'Psd2LanguageCode',
-    'Psd2Request',
-    'VerifyRequest',
+    'ChannelType',
     'CheckCodeResponse',
-    'NetworkUnblockStatus',
+    'Locale',
+    'VerifyRequest',
+    'SilentAuthChannel',
+    'SmsChannel',
+    'WhatsappChannel',
+    'VoiceChannel',
+    'EmailChannel',
     'StartVerificationResponse',
-    'VerifyControlStatus',
-    'VerifyStatus',
 ]

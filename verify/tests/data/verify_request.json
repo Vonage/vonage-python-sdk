@@ -1,4 +1,4 @@
 {
-    "request_id": "abcdef0123456789abcdef0123456789",
-    "status": "0"
+    "request_id": "2c59e3f4-a047-499f-a14f-819cd1989d2e",
+    "check_url": "https://api-eu-3.vonage.com/v2/verify/cfbc9a3b-27a2-40d4-a4e0-0c59b3b41901/silent-auth/redirect"
 }

@@ -1,4 +1,4 @@
-# 4.0.0b1
+# 4.0.0b2
 A complete, ground-up rewrite of the SDK.
 Key changes:
 - Monorepo structure, with each API under separate packages
@@ -13,6 +13,7 @@ Key changes:
 - Add `http_client` property to each module that has an HTTP Client, e.g. Voice, Sms, Verify
 - Add `last_request` and `last_response` properties to the HTTP Client for easier debugging
 - Migrated the Vonage JWT package into the monorepo
+- Rename `Verify` -> `VerifyLegacy` and `VerifyV2` -> `Verify`
 - With even more enhancements to come!
 
 # 3.17.1

@@ -48,7 +48,7 @@ filter = [
   'utils/src',
   'testutils',
   'verify/src',
-  'verify_v2/src',
+  'verify_legacy/src',
   'video/src',
   'voice/src',
   'vonage_utils/src',

@@ -28,8 +28,8 @@ This is the Python server SDK to help you use Vonage APIs in your Python applica
 - [SMS API](#sms-api)
 - [Subaccounts API](#subaccounts-api)
 - [Users API](#users-api)
-- [Verify v2 API](#verify-v2-api)
-- [Verify v1 API (Legacy)](#verify-v1-api-legacy)
+- [Verify API](#verify-api)
+- [Verify API (Legacy)](#verify-api-legacy)
 - [Video API](#video-api)
 - [Voice API](#voice-api)
 - [Vonage Utils Package](#vonage-utils-package)
@@ -824,12 +824,12 @@ user = vonage_client.users.update_user(id, user_options)
 vonage_client.users.delete_user(id)
 ```
 
-## Verify v2 API
+## Verify API
 
 ### Make a Verify Request
 
 ```python
-from vonage_verify_v2 import VerifyRequest, SmsChannel
+from vonage_verify import VerifyRequest, SmsChannel
 # All channels have associated models
 sms_channel = SmsChannel(to='1234567890')
 params = {
@@ -838,7 +838,7 @@ params = {
 }
 verify_request = VerifyRequest(**params)
 
-response = vonage_client.verify_v2.start_verification(verify_request)
+response = vonage_client.verify.start_verification(verify_request)
 ```
 
 If using silent authentication, the response will include a `check_url` field with a url that should be accessed on the user's device to proceed with silent authentication. If used, silent auth must be the first element in the `workflow` list.
@@ -852,45 +852,7 @@ params = {
 }
 verify_request = VerifyRequest(**params)
 
-response = vonage_client.verify_v2.start_verification(verify_request)
-```
-
-### Check a Verification Code
-
-```python
-vonage_client.verify_v2.check_code(request_id='my_request_id', code='1234')
-```
-
-### Cancel a Verification
-
-```python
-vonage_client.verify_v2.cancel_verification('my_request_id')
-```
-
-### Trigger the Next Workflow Event
-
-```python
-vonage_client.verify_v2.trigger_next_workflow('my_request_id')
-```
-
-## Verify v1 API (Legacy)
-
-### Make a Verify Request
-
-```python
-from vonage_verify import VerifyRequest
-params = {'number': '1234567890', 'brand': 'Acme Inc.'}
-request = VerifyRequest(**params)
-response = vonage_client.verify.start_verification(request)
-```
-
-### Make a PSD2 (Payment Services Directive v2) Request
-
-```python
-from vonage_verify import Psd2Request
-params = {'number': '1234567890', 'payee': 'Acme Inc.', 'amount': 99.99}
-request = VerifyRequest(**params)
-response = vonage_client.verify.start_verification(request)
+response = vonage_client.verify.start_verification(verify_request)
 ```
 
 ### Check a Verification Code
@@ -899,26 +861,64 @@ response = vonage_client.verify.start_verification(request)
 vonage_client.verify.check_code(request_id='my_request_id', code='1234')
 ```
 
-### Search Verification Requests
-
-```python
-# Search for single request
-response = vonage_client.verify.search('my_request_id')
-
-# Search for multiple requests
-response = vonage_client.verify.search(['my_request_id_1', 'my_request_id_2'])
-```
-
 ### Cancel a Verification
 
 ```python
-response = vonage_client.verify.cancel_verification('my_request_id')
+vonage_client.verify.cancel_verification('my_request_id')
 ```
 
 ### Trigger the Next Workflow Event
 
 ```python
-response = vonage_client.verify.trigger_next_event('my_request_id')
+vonage_client.verify.trigger_next_workflow('my_request_id')
+```
+
+## Verify API (Legacy)
+
+### Make a Verify Request
+
+```python
+from vonage_verify_legacy import VerifyRequest
+params = {'number': '1234567890', 'brand': 'Acme Inc.'}
+request = VerifyRequest(**params)
+response = vonage_client.verify_legacy.start_verification(request)
+```
+
+### Make a PSD2 (Payment Services Directive v2) Request
+
+```python
+from vonage_verify_legacy import Psd2Request
+params = {'number': '1234567890', 'payee': 'Acme Inc.', 'amount': 99.99}
+request = VerifyRequest(**params)
+response = vonage_client.verify_legacy.start_verification(request)
+```
+
+### Check a Verification Code
+
+```python
+vonage_client.verify_legacy.check_code(request_id='my_request_id', code='1234')
+```
+
+### Search Verification Requests
+
+```python
+# Search for single request
+response = vonage_client.verify_legacy.search('my_request_id')
+
+# Search for multiple requests
+response = vonage_client.verify_legacy.search(['my_request_id_1', 'my_request_id_2'])
+```
+
+### Cancel a Verification
+
+```python
+response = vonage_client.verify_legacy.cancel_verification('my_request_id')
+```
+
+### Trigger the Next Workflow Event
+
+```python
+response = vonage_client.verify_legacy.trigger_next_event('my_request_id')
 ```
 
 ### Request a Network Unblock
@@ -926,7 +926,7 @@ response = vonage_client.verify.trigger_next_event('my_request_id')
 Note: Network Unblock is switched off by default. Contact Sales to enable the Network Unblock API for your account.
 
 ```python
-response = vonage_client.verify.request_network_unblock('23410')
+response = vonage_client.verify_legacy.request_network_unblock('23410')
 ```
 
 ## Video API
@@ -1407,8 +1407,8 @@ The following is a list of Vonage APIs and whether the Python SDK provides suppo
 | Reports API           |         Beta         |     ❌     |
 | SMS API               | General Availability |     ✅     |
 | Subaccounts API       | General Availability |     ✅     |
-| Verify API v2         | General Availability |     ✅     |
-| Verify API v1 (Legacy)| General Availability |     ✅     |
+| Verify API            | General Availability |     ✅     |
+| Verify API (Legacy)   | General Availability |     ✅     |
 | Video API             | General Availability |     ✅     |
 | Voice API             | General Availability |     ✅     |
 

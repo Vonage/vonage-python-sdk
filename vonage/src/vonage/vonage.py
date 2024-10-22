@@ -12,7 +12,7 @@ from vonage_sms import Sms
 from vonage_subaccounts import Subaccounts
 from vonage_users import Users
 from vonage_verify import Verify
-from vonage_verify_v2 import VerifyV2
+from vonage_verify_legacy import VerifyLegacy
 from vonage_video import Video
 from vonage_voice import Voice
 
@@ -48,7 +48,7 @@ class Vonage:
         self.subaccounts = Subaccounts(self._http_client)
         self.users = Users(self._http_client)
         self.verify = Verify(self._http_client)
-        self.verify_v2 = VerifyV2(self._http_client)
+        self.verify_legacy = VerifyLegacy(self._http_client)
         self.video = Video(self._http_client)
         self.voice = Voice(self._http_client)
 

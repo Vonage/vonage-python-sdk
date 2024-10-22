@@ -1,120 +1,184 @@
-from logging import getLogger
-from typing import Literal, Optional
+from re import search
+from typing import Optional, Union
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from vonage_utils.types import PhoneNumber
 
-from .language_codes import LanguageCode, Psd2LanguageCode
+from .enums import ChannelType, Locale
+from .errors import VerifyError
 
-logger = getLogger('vonage_verify')
 
-
-class BaseVerifyRequest(BaseModel):
-    """Base request object containing the data and options for a verification request.
+class Channel(BaseModel):
+    """Base model for a channel to use in a verification request.
 
     Args:
-        number (PhoneNumber): The phone number to verify. Unless you are setting country
-            explicitly, this number must be in E.164 format.
-        country (str, Optional): If you do not provide `number` in international format
-            or you are not sure if `number` is correctly formatted, specify the
-            two-character country code in country. Verify will then format the number for
-            you.
-        code_length (int, Optional): The length of the verification code to generate.
-        pin_expiry (int, Optional): How long the generated verification code is valid
-            for, in seconds. When you specify both `pin_expiry` and `next_event_wait`
-            then `pin_expiry` must be an integer multiple of `next_event_wait` otherwise
-            `pin_expiry` is defaulted to equal `next_event_wait`.
-        next_event_wait (int, Optional): The wait time in seconds between attempts to
-            deliver the verification code.
-        workflow_id (int, Optional): Selects the predefined sequence of SMS and TTS (Text
-            To Speech) actions to use in order to convey the PIN to your user.
+        to (PhoneNumber): The phone number to send the verification code to, in the
+            E.164 format without a leading `+` or `00`.
     """
 
-    number: PhoneNumber
-    country: Optional[str] = Field(None, max_length=2)
-    code_length: Optional[Literal[4, 6]] = None
-    pin_expiry: Optional[int] = Field(None, ge=60, le=3600)
-    next_event_wait: Optional[int] = Field(None, ge=60, le=900)
-    workflow_id: Optional[int] = Field(None, ge=1, le=7)
+    to: PhoneNumber
 
-    @model_validator(mode='after')
-    def check_expiry_and_next_event_timing(self):
-        if self.pin_expiry is None or self.next_event_wait is None:
-            return self
-        if self.pin_expiry % self.next_event_wait != 0:
-            logger.warning(
-                f'The pin_expiry should be a multiple of next_event_wait.'
-                f'\nThe current values are: pin_expiry={self.pin_expiry}, next_event_wait={self.next_event_wait}.'
-                f'\nThe value of pin_expiry will be set to next_event_wait.'
+
+class SilentAuthChannel(Channel):
+    """Model for a Silent Authentication channel.
+
+    Args:
+        to (PhoneNumber): The phone number to send the verification code to, in the
+            E.164 format without a leading `+` or `00`.
+        redirect_url (str, Optional): Optional final redirect added at the end of the
+            check_url request/response lifecycle. Will contain the `request_id` and
+            `code` as a url fragment after the URL.
+        sandbox (bool, Optional): Whether you are using the sandbox to test Silent
+            Authentication integrations.
+    """
+
+    redirect_url: Optional[str] = None
+    sandbox: Optional[bool] = None
+    channel: ChannelType = ChannelType.SILENT_AUTH
+
+
+class SmsChannel(Channel):
+    """Model for an SMS channel.
+
+    Args:
+        to (PhoneNumber): The phone number to send the verification code to, in the
+            E.164 format without a leading `+` or `00`.
+        from_ (Union[PhoneNumber, str], Optional): The sender of the SMS. This can be
+            a phone number in E.164 format without a leading `+` or `00`, or a string
+            of 3-11 alphanumeric characters.
+        app_hash (str, Optional): Optional Android Application Hash Key for automatic
+            code detection on a user's device.
+        entity_id (str, Optional): Optional PEID required for SMS delivery using Indian
+            carriers.
+        content_id (str, Optional): Optional PEID required for SMS delivery using Indian
+            carriers.
+
+    Raises:
+        VerifyError: If the `from_` field is not a valid phone number.
+    """
+
+    from_: Optional[Union[PhoneNumber, str]] = Field(None, serialization_alias='from')
+    app_hash: Optional[str] = Field(None, min_length=11, max_length=11)
+    entity_id: Optional[str] = Field(None, pattern=r'^[0-9]{1,20}$')
+    content_id: Optional[str] = Field(None, pattern=r'^[0-9]{1,20}$')
+    channel: ChannelType = ChannelType.SMS
+
+    @field_validator('from_')
+    @classmethod
+    def check_valid_from_field(cls, v):
+        if (
+            v is not None
+            and type(v) is not PhoneNumber
+            and not search(r'^[a-zA-Z0-9]{3,11}$', v)
+        ):
+            raise VerifyError(
+                'You must specify a valid "from_" value if included. '
+                'It must be a valid phone number without the leading +, or a string of 3-11 alphanumeric characters. '
+                f'You set "from_": "{v}".'
             )
-            self.pin_expiry = self.next_event_wait
-        return self
+        return v
 
 
-class VerifyRequest(BaseVerifyRequest):
+class WhatsappChannel(Channel):
+    """Model for a WhatsApp channel.
+
+    Args:
+        to (PhoneNumber): The phone number to send the verification code to, in the
+            E.164 format without a leading `+` or `00`.
+        from_ (Union[PhoneNumber, str]): A WhatsApp Business Account (WABA)-connected
+            sender number, in the E.164 format. Don't use a leading + or 00 when entering
+            a phone number.
+
+    Raises:
+        VerifyError: If the `from_` field is not a valid phone number or string of 3-11
+            alphanumeric characters.
+    """
+
+    from_: Union[PhoneNumber, str] = Field(..., serialization_alias='from')
+    channel: ChannelType = ChannelType.WHATSAPP
+
+    @field_validator('from_')
+    @classmethod
+    def check_valid_sender(cls, v):
+        if type(v) is not PhoneNumber and not search(r'^[a-zA-Z0-9]{3,11}$', v):
+            raise VerifyError(
+                f'You must specify a valid "from_" value. '
+                'It must be a valid phone number without the leading +, or a string of 3-11 alphanumeric characters. '
+                f'You set "from_": "{v}".'
+            )
+        return v
+
+
+class VoiceChannel(Channel):
+    """Model for a Voice channel.
+
+    Args:
+        to (PhoneNumber): The phone number to send the verification code to, in the
+            E.164 format without a leading `+` or `00`.
+    """
+
+    channel: ChannelType = ChannelType.VOICE
+
+
+class EmailChannel(Channel):
+    """Model for an Email channel.
+
+    Args:
+        to (str): The email address to send the verification code to.
+        from_ (str, Optional): The email address of the sender.
+    """
+
+    to: str
+    from_: Optional[str] = Field(None, serialization_alias='from')
+    channel: ChannelType = ChannelType.EMAIL
+
+
+class VerifyRequest(BaseModel):
     """Request object for a verification request.
 
-    You must set the `number` and `brand` fields.
-
     Args:
-        number (PhoneNumber): The phone number to verify. Unless you are setting country
-            explicitly, this number must be in E.164 format.
-        country (str, Optional): If you do not provide `number` in international format
-            or you are not sure if `number` is correctly formatted, specify the
-            two-character country code in country. Verify will then format the number for
-            you.
         brand (str): The name of the company or service that is sending the verification
             request. This will appear in the body of the SMS or TTS message.
-        code_length (int, Optional): The length of the verification code to generate.
-        pin_expiry (int, Optional): How long the generated verification code is valid
-            for, in seconds. When you specify both `pin_expiry` and `next_event_wait`
-            then `pin_expiry` must be an integer multiple of `next_event_wait` otherwise
-            `pin_expiry` is defaulted to equal `next_event_wait`.
-        next_event_wait (int, Optional): The wait time in seconds between attempts to
+        workflow (list[Union[SilentAuthChannel, SmsChannel, WhatsappChannel, VoiceChannel, EmailChannel]]):
+            The list of channels to use in the verification workflow. They will be used
+            in the order they are listed.
+        locale (Locale, Optional): The locale to use for the verification message.
+        channel_timeout (int, Optional): The time in seconds to wait between attempts to
             deliver the verification code.
-        workflow_id (int, Optional): Selects the predefined sequence of SMS and TTS (Text
-            To Speech) actions to use in order to convey the PIN to your user.
-        sender_id (str, Optional): An 11-character alphanumeric string that represents the
-            sender of the verification request. Depending on the location of the phone
-            number, restrictions may apply.
-        lg (LanguageCode, Optional): The language to use for the verification message.
-        pin_code (str, Optional): The verification code to send to the user. If you do not
-            provide this, Vonage will generate a code for you.
+        client_ref (str, Optional): A unique identifier for the verification request. If
+            the client_ref is set when the request is sent, it will be included in the
+            callbacks.
+        code_length (int, Optional): The length of the verification code to generate.
+        code (str, Optional): An optional alphanumeric custom code to use, if you don't
+            want Vonage to generate the code.
+
+    Raises:
+        VerifyError: If the `workflow` list contains a Silent Authentication channel that
+            is not the first channel in the list.
     """
 
-    brand: str = Field(..., max_length=18)
-    sender_id: Optional[str] = Field(None, max_length=11)
-    lg: Optional[LanguageCode] = None
-    pin_code: Optional[str] = Field(None, min_length=4, max_length=10)
+    brand: str = Field(..., min_length=1, max_length=16)
+    workflow: list[
+        Union[
+            SilentAuthChannel,
+            SmsChannel,
+            WhatsappChannel,
+            VoiceChannel,
+            EmailChannel,
+        ]
+    ]
+    locale: Optional[Locale] = None
+    channel_timeout: Optional[int] = Field(None, ge=15, le=900)
+    client_ref: Optional[str] = Field(None, min_length=1, max_length=16)
+    code_length: Optional[int] = Field(None, ge=4, le=10)
+    code: Optional[str] = Field(None, pattern=r'^[a-zA-Z0-9]{4,10}$')
 
-
-class Psd2Request(BaseVerifyRequest):
-    """Request object for a PSD2 verification request.
-
-    You must set the `number`, `payee` and `amount` fields.
-
-    Args:
-        number (PhoneNumber): The phone number to verify. Unless you are setting country
-            explicitly, this number must be in E.164 format.
-        payee (str): An alphanumeric string to indicate to the user the name of the
-            recipient that they are confirming a payment to.
-        amount (float): The decimal amount of the payment to be confirmed, in Euros.
-        country (str, Optional): If you do not provide `number` in international
-            format or you are not sure if `number` is correctly formatted, specify the
-            two-character country code in `country`. Verify will then format the number for
-            you.
-        lg (Psd2LanguageCode, Optional): The language to use for the verification message.
-        code_length (int, Optional): The length of the verification code to generate.
-        pin_expiry (int, Optional): How long the generated verification code is valid
-            for, in seconds. When you specify both `pin_expiry` and `next_event_wait`
-            then `pin_expiry` must be an integer multiple of `next_event_wait` otherwise
-            `pin_expiry` is defaulted to equal `next_event_wait`.
-        next_event_wait (int, Optional): The wait time in seconds between attempts to
-            deliver the verification code.
-        workflow_id (int, Optional): Selects the predefined sequence of SMS and TTS (Text
-            To Speech) actions to use in order to convey the PIN to your user.
-    """
-
-    payee: str = Field(..., max_length=18)
-    amount: float
-    lg: Optional[Psd2LanguageCode] = None
+    @model_validator(mode='after')
+    def check_silent_auth_first_if_present(self):
+        if len(self.workflow) > 1:
+            for i in range(1, len(self.workflow)):
+                if isinstance(self.workflow[i], SilentAuthChannel):
+                    raise VerifyError(
+                        'If using Silent Authentication, it must be the first channel in the "workflow" list.'
+                    )
+        return self

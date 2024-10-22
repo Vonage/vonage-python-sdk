@@ -1,7 +1,7 @@
 from pytest import raises
-from vonage_verify_v2.enums import ChannelType, Locale
-from vonage_verify_v2.errors import VerifyError
-from vonage_verify_v2.requests import *
+from vonage_verify.enums import ChannelType, Locale
+from vonage_verify.errors import VerifyError
+from vonage_verify.requests import *
 
 
 def test_create_silent_auth_channel():

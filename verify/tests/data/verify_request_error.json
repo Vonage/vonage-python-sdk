@@ -1,5 +1,6 @@
 {
-    "request_id": "b6fc2b91d23c43f9b8ea05f9be64415c",
-    "status": "10",
-    "error_text": "Concurrent verifications to the same number are not allowed"
+    "title": "Conflict",
+    "detail": "Concurrent verifications to the same number are not allowed",
+    "instance": "229ececf-382e-4ab6-b380-d8e0e830fd44",
+    "request_id": "f8386e0f-6873-4617-aa99-19016217b2aa"
 }

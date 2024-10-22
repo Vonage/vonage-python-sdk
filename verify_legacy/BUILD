@@ -4,11 +4,11 @@ file(name='readme', source='README.md')
 files(sources=['tests/data/*'])
 
 python_distribution(
-    name='vonage-verify-v2',
+    name='vonage-verify',
     dependencies=[
         ':pyproject',
         ':readme',
-        'verify_v2/src/vonage_verify_v2',
+        'verify_legacy/src/vonage_verify_legacy',
     ],
     provides=python_artifact(),
     generate_setup=False,

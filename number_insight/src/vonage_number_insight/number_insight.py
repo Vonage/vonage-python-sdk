@@ -29,10 +29,10 @@ class NumberInsight:
 
     @property
     def http_client(self) -> HttpClient:
-        """The HTTP client used to make requests to the Verify V2 API.
+        """The HTTP client used to make requests to the Vonage Number Insight API.
 
         Returns:
-            HttpClient: The HTTP client used to make requests to the Verify V2 API.
+            HttpClient: The HTTP client used to make requests to the Number Insight API.
         """
         return self._http_client
 

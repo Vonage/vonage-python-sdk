@@ -1,7 +1,7 @@
 [project]
-name = 'vonage-verify-v2'
+name = 'vonage-verify-legacy'
 dynamic = ["version"]
-description = 'Vonage verify v2 package'
+description = 'Vonage legacy verify package'
 readme = "README.md"
 authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
 requires-python = ">=3.9"
@@ -25,7 +25,7 @@ classifiers = [
 homepage = "https://github.com/Vonage/vonage-python-sdk"
 
 [tool.setuptools.dynamic]
-version = { attr = "vonage_verify_v2._version.__version__" }
+version = { attr = "vonage_verify_legacy._version.__version__" }
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]

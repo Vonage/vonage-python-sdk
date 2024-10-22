@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 import responses
 from vonage_http_client.http_client import HttpClient
 from vonage_network_sim_swap import NetworkSimSwap
+from vonage_network_sim_swap.requests import SimSwapCheckRequest
 
 from testutils import build_response, get_mock_jwt_auth
 
@@ -28,7 +29,9 @@ def test_check_sim_swap(mock_get_oauth2_user_token: MagicMock):
     )
     mock_get_oauth2_user_token.return_value = 'token'
 
-    response = sim_swap.check('447700900000', max_age=24)
+    response = sim_swap.check(
+        SimSwapCheckRequest(phone_number='447700900000', max_age=24)
+    )
 
     assert response['swapped'] == True
 

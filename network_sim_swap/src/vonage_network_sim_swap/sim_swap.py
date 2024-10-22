@@ -1,6 +1,7 @@
 from pydantic import validate_call
 from vonage_http_client import HttpClient
 from vonage_network_auth import NetworkAuth
+from vonage_network_sim_swap.requests import SimSwapCheckRequest
 
 from .responses import LastSwapDate, SwapStatus
 
@@ -25,29 +26,25 @@ class NetworkSimSwap:
         return self._http_client
 
     @validate_call
-    def check(self, phone_number: str, max_age: int = None) -> SwapStatus:
+    def check(self, sim_swap_request: SimSwapCheckRequest) -> SwapStatus:
         """Check if a SIM swap has been performed in a given time frame.
 
         Args:
-            phone_number (str): The phone number to check. Use the E.164 format with
-                or without a leading +.
-            max_age (int, optional): Period in hours to be checked for SIM swap.
+            sim_swap_request (SimSwapCheckRequest): The request model to check if a SIM
+                has been swapped.
 
         Returns:
             SwapStatus: Class containing the Swap Status response.
         """
         token = self._network_auth.get_sim_swap_camara_token(
-            number=phone_number, scope='dpv:FraudPreventionAndDetection#check-sim-swap'
+            number=sim_swap_request.phone_number,
+            scope='dpv:FraudPreventionAndDetection#check-sim-swap',
         )
-
-        params = {'phoneNumber': phone_number}
-        if max_age:
-            params['maxAge'] = max_age
 
         return self._http_client.post(
             self._host,
             '/camara/sim-swap/v040/check',
-            params,
+            params=sim_swap_request.model_dump(by_alias=True, exclude_none=True),
             auth_type=self._auth_type,
             token=token,
         )

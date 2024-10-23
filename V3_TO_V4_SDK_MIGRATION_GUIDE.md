@@ -78,7 +78,7 @@ options = HttpClientOptions(api_host='new-api-host.example.com', timeout=100)
 
 ### Example
 
-Putting this all together, to set up an instance of the `vonage.Vonage` class to call Vonage APIs, do this:
+Putting all this together, to set up an instance of the `vonage.Vonage` class to call Vonage APIs, do this:
 
 ```python
 from vonage import Vonage, Auth, HttpClientOptions
@@ -123,7 +123,7 @@ response = vonage_client.verify.start_verification(verify_request)
 print(response)
 ```
 
-However, some APIs with a lot of models have them located under the `vonage_api_package.models` package, e.g. `vonage-messages`, `vonage-voice` and `vonage-video`. To access these, simply import from `vonage_api_package.models`, e.g. to send an image via Facebook Messenger do this:
+However, some APIs with a lot of models have them located under the `<vonage_api_package>.models` package, e.g. `vonage-messages`, `vonage-voice` and `vonage-video`. To access these, simply import from `<vonage_api_package>.models`, e.g. to send an image via Facebook Messenger do this:
 
 ```python
 from vonage_messages.models import MessengerImage, MessengerOptions, MessengerResource
@@ -159,7 +159,7 @@ Response fields are also converted into snake_case where applicable, so as to be
 
 ## Error Handling
 
-In v3 of the SDK, most HTTP client errors gave a general `HttpClientError`. In v4 these are finer-grained. Errors in v4 inherit from the general `VonageError` but are more specific and finer-grained, E.g. a `RateLimitedError` when the SDK receives an HTTP 429 response.
+In v3 of the SDK, most HTTP client errors gave a general `HttpClientError`. Errors in v4 inherit from the general `VonageError` but are more specific and finer-grained, E.g. a `RateLimitedError` when the SDK receives an HTTP 429 response.
 
 These errors will have a descriptive message and will also include the response object returned to the SDK, accessed by `HttpClientError.response` etc.
 
@@ -249,7 +249,6 @@ Some methods from v3 have had their names changed in v4. Assuming you access all
 
 ## Additional Resources
 
-- [Vonage Video API Developer Documentation](https://developer.vonage.com/en/video/overview)
 - [Link to the Vonage Python SDK](https://github.com/Vonage/vonage-python-sdk)
 - [Join the Vonage Developer Community Slack](https://developer.vonage.com/en/community/slack)
-- [Submit a Vonage Video API Support Request](https://api.support.vonage.com/hc/en-us)
+- [Submit a Vonage API Support Request](https://api.support.vonage.com/hc/en-us)

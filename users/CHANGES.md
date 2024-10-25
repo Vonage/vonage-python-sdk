@@ -1,3 +1,6 @@
+# 1.2.0
+- Expose more properties in the top-level `vonage_users` scope
+
 # 1.1.4
 - Support for Python 3.13, drop support for 3.8
 

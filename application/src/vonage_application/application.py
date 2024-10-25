@@ -56,13 +56,13 @@ class Application:
 
     @validate_call
     def create_application(
-        self, params: Optional[ApplicationConfig] = None
+        self, config: Optional[ApplicationConfig] = None
     ) -> ApplicationData:
         """Create a new application.
 
         Args:
-            params (Optional[ApplicationConfig]): Parameters describing the
-                application options to set.
+            config (Optional[ApplicationConfig]): Configuration options describing the
+                application to create.
 
         Returns:
             ApplicationData: The created application object.
@@ -70,7 +70,7 @@ class Application:
         response = self._http_client.post(
             self._http_client.api_host,
             '/v2/applications',
-            params.model_dump(exclude_none=True) if params is not None else None,
+            config.model_dump(exclude_none=True) if config is not None else None,
             self._auth_type,
         )
         return ApplicationData(**response)
@@ -91,13 +91,13 @@ class Application:
         return ApplicationData(**response)
 
     @validate_call
-    def update_application(self, id: str, params: ApplicationConfig) -> ApplicationData:
+    def update_application(self, id: str, config: ApplicationConfig) -> ApplicationData:
         """Update an application.
 
         Args:
             id (str): The ID of the application to update.
-            params (ApplicationConfig): Parameters describing the
-                application options to update.
+            config (ApplicationConfig): Configuration options describing the application
+                to update.
 
         Returns:
             ApplicationData: The updated application object.
@@ -105,7 +105,7 @@ class Application:
         response = self._http_client.put(
             self._http_client.api_host,
             f'/v2/applications/{id}',
-            params.model_dump(exclude_none=True),
+            config.model_dump(exclude_none=True),
             self._auth_type,
         )
         return ApplicationData(**response)

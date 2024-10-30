@@ -1,3 +1,6 @@
+# 3.17.3
+- Fix bug in JWT generator
+
 # 3.17.2
 - Update `vonage-jwt` dependency version to fix JWT timeout issue
 

@@ -1,3 +1,6 @@
+# 3.17.2
+- Update `vonage-jwt` dependency version to fix JWT timeout issue
+
 # 3.17.1
 - Add "mark WhatsApp message as read" option for Messages API
 

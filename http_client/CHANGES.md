@@ -1,3 +1,6 @@
+# 1.4.3
+- Update JWT dependency version
+
 # 1.4.2
 - Support for Python 3.13, drop support for 3.8
 

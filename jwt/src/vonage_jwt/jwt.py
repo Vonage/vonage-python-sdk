@@ -1,3 +1,4 @@
+from copy import deepcopy
 import re
 from time import time
 from typing import Union
@@ -42,7 +43,7 @@ class JwtClient:
 
         iat = int(time())
 
-        payload = jwt_options
+        payload = deepcopy(jwt_options)
         payload["application_id"] = self._application_id
         payload['iat'] = payload.get("iat", iat)
         payload["jti"] = payload.get("jti", str(uuid4()))

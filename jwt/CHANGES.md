@@ -1,3 +1,6 @@
+# 1.1.4
+- Fix a bug with generating non-default JWTs
+
 # 1.1.3
 - Support for Python 3.13, drop support for 3.8
 

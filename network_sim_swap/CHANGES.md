@@ -1,3 +1,6 @@
+# 1.1.1
+- Update dependency versions
+
 # 1.1.0
 - Add new model `SimSwapCheckRequest` to replace arguments in the `SimSwap.check` method
 

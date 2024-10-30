@@ -1,3 +1,6 @@
+# 1.0.1
+- Update dependency versions
+
 # 1.0.0
 - Add methods to work with the Vonage Number Verification API
 - Internal refactoring

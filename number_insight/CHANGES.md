@@ -1,3 +1,6 @@
+# 1.0.4
+- Update dependency versions
+
 # 1.0.3
 - Rename `basic_number_insight` -> `get_basic_info`, `standard_number_insight` -> `get_standard_info`, `advanced_async_number_insight` -> `get_advanced_info_async`, `advanced_sync_number_insight` -> `get_advanced_info_sync`
 

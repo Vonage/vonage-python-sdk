@@ -1,5 +1,6 @@
 # 2.0.0
 - Rename `vonage-verify-v2` package -> `vonage-verify`, `VerifyV2` -> `Verify`, etc.
+- Update dependency versions
 
 # 1.1.4
 - Support for Python 3.13, drop support for 3.8

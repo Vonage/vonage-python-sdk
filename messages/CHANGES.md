@@ -1,3 +1,6 @@
+# 1.2.3
+- Update dependency versions
+
 # 1.2.2
 - Support for Python 3.13, drop support for 3.8
 

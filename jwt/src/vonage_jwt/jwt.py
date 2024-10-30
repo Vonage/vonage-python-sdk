@@ -1,5 +1,5 @@
-from copy import deepcopy
 import re
+from copy import deepcopy
 from time import time
 from typing import Union
 from uuid import uuid4

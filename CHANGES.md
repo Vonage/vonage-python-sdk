@@ -1,3 +1,6 @@
+# 3.17.4
+- Drop support for Python 3.8, add support for 3.13
+
 # 3.17.3
 - Fix bug in JWT generator
 

@@ -1,8 +1,6 @@
-# 2.0.1
-- Update dependency versions
-
 # 2.0.0
 - Rename `params` -> `config` in method arguments
+- Update dependency versions
 
 # 1.0.3
 - Support for Python 3.13, drop support for 3.8

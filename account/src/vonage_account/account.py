@@ -2,9 +2,21 @@ import re
 
 from pydantic import validate_call
 from vonage_account.errors import InvalidSecretError
+from vonage_account.requests import (
+    GetCountryPricingRequest,
+    GetPrefixPricingRequest,
+    ServiceType,
+)
 from vonage_http_client.http_client import HttpClient
 
-from .responses import Balance, SettingsResponse, TopUpResponse, VonageApiSecret
+from .responses import (
+    Balance,
+    GetMultiplePricingResponse,
+    GetPricingResponse,
+    SettingsResponse,
+    TopUpResponse,
+    VonageApiSecret,
+)
 
 
 class Account:
@@ -89,6 +101,69 @@ class Account:
             sent_data_type='form',
         )
         return SettingsResponse(**response)
+
+    @validate_call
+    def get_country_pricing(
+        self, options: GetCountryPricingRequest
+    ) -> GetPricingResponse:
+        """Get the pricing for a specific country.
+
+        Args:
+            options (GetCountryPricingRequest): The options for the request.
+
+        Returns:
+            GetCountryPricingResponse: The response from the API.
+        """
+        response = self._http_client.get(
+            self._http_client.rest_host,
+            f'/account/get-pricing/outbound/{options.type.value}',
+            params={'country': options.country_code},
+            auth_type=self._auth_type,
+        )
+
+        return GetPricingResponse(**response)
+
+    @validate_call
+    def get_all_countries_pricing(
+        self, service_type: ServiceType
+    ) -> GetMultiplePricingResponse:
+        """Get the pricing for all countries.
+
+        Args:
+            service_type (ServiceType): The type of service to retrieve pricing data about.
+
+        Returns:
+            GetMultiplePricingResponse: Model containing the pricing data for all countries.
+        """
+        response = self._http_client.get(
+            self._http_client.rest_host,
+            f'/account/get-full-pricing/outbound/{service_type.value}',
+            auth_type=self._auth_type,
+        )
+
+        return GetMultiplePricingResponse(**response)
+
+    @validate_call
+    def get_prefix_pricing(
+        self, options: GetPrefixPricingRequest
+    ) -> GetMultiplePricingResponse:
+        """Get the pricing for a specific prefix.
+
+        Args:
+            options (GetPrefixPricingRequest): The options for the request.
+
+        Returns:
+            GetMultiplePricingResponse: Model containing the pricing data for all
+                countries using the dialling prefix.
+        """
+        response = self._http_client.get(
+            self._http_client.rest_host,
+            f'/account/get-prefix-pricing/outbound/{options.type.value}',
+            params={'prefix': options.prefix},
+            auth_type=self._auth_type,
+        )
+
+        return GetMultiplePricingResponse(**response)
 
     def list_secrets(self) -> list[VonageApiSecret]:
         """List all secrets associated with the account.

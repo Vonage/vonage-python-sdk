@@ -22,7 +22,7 @@ class Sms:
     def __init__(self, http_client: HttpClient) -> None:
         self._http_client = http_client
         self._sent_data_type = 'form'
-        if self._http_client._auth._signature_secret:
+        if self._http_client.auth._signature_secret:
             self._auth_type = 'signature'
         else:
             self._auth_type = 'basic'

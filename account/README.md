@@ -2,12 +2,11 @@
 
 This package contains the code to use Vonage's Account API in Python.
 
-It includes methods for managing Vonage accounts.
+It includes methods for managing Vonage accounts, managing account secrets and querying country pricing.
 
 ## Usage
 
 It is recommended to use this as part of the main `vonage` package. The examples below assume you've created an instance of the `vonage.Vonage` class called `vonage_client`.
-
 
 ### Get Account Balance
 
@@ -20,6 +19,35 @@ print(balance)
 
 ```python
 response = vonage_client.account.top_up(trx='1234567890')
+print(response)
+```
+
+### Get Service Pricing for a Specific Country
+
+```python
+from vonage_account import GetCountryPricingRequest
+
+response = vonage_client.account.get_country_pricing(
+    GetCountryPricingRequest(type='sms', country_code='US')
+)
+print(response)
+```
+
+### Get Service Pricing for All Countries
+
+```python
+response = vonage_client.account.get_all_countries_pricing(service_type='sms')
+print(response)
+```
+
+### Get Service Pricing by Dialing Prefix
+
+```python
+from vonage_account import GetPrefixPricingRequest
+
+response = client.account.get_prefix_pricing(
+    GetPrefixPricingRequest(prefix='44', type='sms')
+)
 print(response)
 ```
 

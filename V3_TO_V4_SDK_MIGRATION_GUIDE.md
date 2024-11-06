@@ -142,7 +142,7 @@ vonage_client.messages.send(message)
 
 In v3 of the SDK, the APIs returned Python dictionaries. In v4, almost all responses are now deserialized from the returned JSON into Pydantic models. Response data models are accessed in the same way as the other data models above and are also fully documented with useful docstrings.
 
-If you want to convert the Pydantic responses into dictionaries, just use the `model_dump` method on the response. For example:
+If you want to convert the Pydantic responses into dictionaries, just use the `model_dump` method on the response. You can also use the `model_dump_json` method. For example:
 
 ```python
 from vonage_account import SettingsResponse
@@ -153,6 +153,7 @@ settings: SettingsResponse = vonage_client.account.update_default_sms_webhook(
 )
 
 print(settings.model_dump())
+print(settings.model_dump_json())
 ```
 
 Response fields are also converted into snake_case where applicable, so as to be more pythonic. This means they won't necessarily match the API one-to-one.

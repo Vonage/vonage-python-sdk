@@ -1,5 +1,5 @@
 # 2.0.0
-- Rename `vonage-verify-v2` package -> `vonage-verify`, `VerifyV2` -> `Verify`, etc.
+- Rename `vonage-verify-v2` package -> `vonage-verify`, `VerifyV2` -> `Verify`, etc. This package now contains code for the Verify v2 API
 - Update dependency versions
 
 # 1.1.4

@@ -46,8 +46,11 @@ It's recommended to create a new virtual environment to install the SDK. You can
 # Create the virtual environment
 python3 -m venv venv
 
-# Activate the virtual environment
+# Activate the virtual environment in Mac/Linux
 . ./venv/bin/activate
+
+# Or on Windows Command Prompt
+venv\Scripts\activate
 ```
 
 To install the Python SDK package using pip:
@@ -62,13 +65,7 @@ To upgrade your installed client library using pip:
 pip install vonage --upgrade
 ```
 
-Alternatively, you can clone the repository via the command line:
-
-```bash
-git clone git@github.com:Vonage/vonage-python-sdk.git
-```
-
-or by opening it on GitHub desktop.
+Alternatively, you can clone the repository via the command line, or by opening it on GitHub desktop.
 
 ## Migration Guides
 
@@ -99,6 +96,8 @@ print(response.model_dump(exclude_unset=True))
 
 ## Usage
 
+Many of the use cases require you to buy a Vonage Number, which you can [do in the Vonage Developer Dashboard](https://dashboard.nexmo.com/).
+
 ```python
 from vonage import Vonage, Auth, HttpClientOptions
 
@@ -127,6 +126,17 @@ You can also access the underlying `HttpClient` instance through the `http_clien
 
 ```python
 user_agent = vonage.http_client.user_agent
+```
+
+### Convert a Pydantic Model to Dict or Json
+
+Most responses to API calls in the SDK are Pydantic models. To convert a Pydantic model to a dict, use `model.model_dump`. To convert to a JSON string, use `model.model_dump_json`
+
+```python
+response = vonage.api_package.api_call(...)
+
+response_dict = response.model_dump()
+response_json = response.model_dump_json()
 ```
 
 ## Account API

@@ -7,7 +7,7 @@ requires-python = ">=3.9"
 dependencies = [
   "vonage-utils>=1.1.4",
   "vonage-http-client>=1.4.3",
-  "vonage-account>=1.0.3",
+  "vonage-account>=1.1.0",
   "vonage-application>=2.0.0",
   "vonage-messages>=1.2.3",
   "vonage-network-auth>=1.0.1",
@@ -19,7 +19,7 @@ dependencies = [
   "vonage-subaccounts>=1.0.4",
   "vonage-users>=1.2.0",
   "vonage-verify>=2.0.0",
-  "vonage-verify-legacy>=2.0.0",
+  "vonage-verify-legacy>=1.0.0",
   "vonage-video>=1.0.2",
   "vonage-voice>=1.0.6",
 ]

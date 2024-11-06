@@ -4,6 +4,11 @@ import responses
 from pytest import raises
 from vonage_account.account import Account
 from vonage_account.errors import InvalidSecretError
+from vonage_account.requests import (
+    GetCountryPricingRequest,
+    GetPrefixPricingRequest,
+    ServiceType,
+)
 from vonage_http_client.errors import ForbiddenError
 from vonage_http_client.http_client import HttpClient
 
@@ -68,6 +73,66 @@ def test_update_default_sms_webhook():
     assert settings_response.max_outbound_request == 30
     assert settings_response.max_inbound_request == 30
     assert settings_response.max_calls_per_second == 30
+
+
+@responses.activate
+def test_get_country_pricing():
+    build_response(
+        path,
+        'GET',
+        'https://rest.nexmo.com/account/get-pricing/outbound/sms',
+        'get_country_pricing.json',
+    )
+
+    response = account.get_country_pricing(
+        GetCountryPricingRequest(country_code='ZM', type=ServiceType.SMS)
+    )
+
+    assert response.dialing_prefix == '260'
+    assert response.country_name == 'Zambia'
+    assert response.default_price == '0.28725000'
+    assert response.networks[0].network_name == 'Zambia Premium'
+    assert response.networks[1].mcc == '645'
+
+
+@responses.activate
+def test_get_all_countries_pricing():
+    build_response(
+        path,
+        'GET',
+        'https://rest.nexmo.com/account/get-full-pricing/outbound/sms',
+        'get_multiple_countries_pricing.json',
+    )
+
+    response = account.get_all_countries_pricing(ServiceType.SMS)
+
+    assert response.count == 2
+    assert response.countries[0].country_name == 'Italy'
+    assert response.countries[1].country_name == 'Vatican City'
+    assert response.countries[0].networks[0].network_name == 'Noverca Italia S.r.l.'
+    assert response.countries[0].networks[0].price == '0.08270000'
+
+
+@responses.activate
+def test_get_prefix_pricing():
+    build_response(
+        path,
+        'GET',
+        'https://rest.nexmo.com/account/get-prefix-pricing/outbound/sms',
+        'get_multiple_countries_pricing.json',
+    )
+
+    response = account.get_prefix_pricing(
+        GetPrefixPricingRequest(prefix='39', type=ServiceType.SMS)
+    )
+
+    assert response.count == 2
+    assert response.countries[0].country_name == 'Italy'
+    assert response.countries[0].dialing_prefix == '39'
+    assert response.countries[1].country_name == 'Vatican City'
+    assert response.countries[1].dialing_prefix == '39'
+    assert response.countries[0].networks[0].network_name == 'Noverca Italia S.r.l.'
+    assert response.countries[0].networks[0].price == '0.08270000'
 
 
 @responses.activate

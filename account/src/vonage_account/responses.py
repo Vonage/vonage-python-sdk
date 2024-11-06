@@ -65,6 +65,7 @@ class NetworkPricing(BaseModel):
         network_name (str, Optional): The network name.
         price (str, Optional): The price for the service.
         type (str, Optional): The type of service.
+        ranges (str, Optional): Number ranges.
     """
 
     aliases: Optional[list[str]] = None
@@ -75,6 +76,7 @@ class NetworkPricing(BaseModel):
     network_name: Optional[str] = Field(None, validation_alias='networkName')
     price: Optional[str] = None
     type: Optional[str] = None
+    ranges: Optional[list[int]] = None
 
 
 class GetPricingResponse(BaseModel):

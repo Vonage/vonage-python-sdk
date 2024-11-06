@@ -1,0 +1,47 @@
+{
+    "count": 2,
+    "countries": [
+        {
+            "dialingPrefix": "39",
+            "defaultPrice": "0.08270000",
+            "currency": "EUR",
+            "countryDisplayName": "Italy",
+            "countryCode": "IT",
+            "countryName": "Italy",
+            "networks": [
+                {
+                    "type": "mobile",
+                    "price": "0.08270000",
+                    "currency": "EUR",
+                    "mcc": "222",
+                    "mnc": "07",
+                    "networkCode": "22207",
+                    "networkName": "Noverca Italia S.r.l."
+                },
+                {
+                    "type": "mobile",
+                    "price": "0.08270000",
+                    "currency": "EUR",
+                    "mcc": "222",
+                    "mnc": "08",
+                    "networkCode": "22208",
+                    "networkName": "FastWeb S.p.A."
+                },
+                {
+                    "type": "landline_premium",
+                    "price": "0.08270000",
+                    "currency": "EUR",
+                    "networkCode": "IT-PREMIUM",
+                    "networkName": "Italy Premium"
+                }
+            ]
+        },
+        {
+            "dialingPrefix": "39",
+            "currency": "EUR",
+            "countryDisplayName": "Vatican City",
+            "countryCode": "VA",
+            "countryName": "Vatican City"
+        }
+    ]
+}

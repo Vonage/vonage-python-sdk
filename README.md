@@ -158,6 +158,35 @@ settings: SettingsResponse = vonage_client.account.update_default_sms_webhook(
 print(settings)
 ```
 
+### Get Service Pricing for a Specific Country
+
+```python
+from vonage_account import GetCountryPricingRequest
+
+response = vonage_client.account.get_country_pricing(
+    GetCountryPricingRequest(type='sms', country_code='US')
+)
+print(response)
+```
+
+### Get Service Pricing for All Countries
+
+```python
+response = vonage_client.account.get_all_countries_pricing(service_type='sms')
+print(response)
+```
+
+### Get Service Pricing by Dialing Prefix
+
+```python
+from vonage_account import GetPrefixPricingRequest
+
+response = client.account.get_prefix_pricing(
+    GetPrefixPricingRequest(prefix='44', type='sms')
+)
+print(response)
+```
+
 ### List Secrets Associated with the Account
 
 ```python

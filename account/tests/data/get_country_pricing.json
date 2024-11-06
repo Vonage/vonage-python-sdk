@@ -1,0 +1,79 @@
+{
+    "dialingPrefix": "260",
+    "defaultPrice": "0.28725000",
+    "currency": "EUR",
+    "countryDisplayName": "Zambia",
+    "countryCode": "ZM",
+    "countryName": "Zambia",
+    "networks": [
+        {
+            "type": "landline_premium",
+            "price": "0.28725000",
+            "currency": "EUR",
+            "ranges": [
+                26090
+            ],
+            "networkCode": "ZM-PREMIUM",
+            "networkName": "Zambia Premium"
+        },
+        {
+            "type": "mobile",
+            "price": "0.28725000",
+            "currency": "EUR",
+            "ranges": [
+                2607,
+                26076,
+                26096
+            ],
+            "mcc": "645",
+            "mnc": "02",
+            "networkCode": "64502",
+            "networkName": "MTN Zambia"
+        },
+        {
+            "type": "mobile",
+            "price": "0.28725000",
+            "currency": "EUR",
+            "ranges": [
+                26077,
+                26097
+            ],
+            "mcc": "645",
+            "mnc": "01",
+            "networkCode": "64501",
+            "networkName": "Airtel"
+        },
+        {
+            "type": "landline_tollfree",
+            "price": "0.28725000",
+            "currency": "EUR",
+            "ranges": [
+                2608
+            ],
+            "networkCode": "ZM-TOLL-FREE",
+            "networkName": "Zambia Toll Free"
+        },
+        {
+            "type": "landline",
+            "price": "0.28725000",
+            "currency": "EUR",
+            "ranges": [
+                2602
+            ],
+            "networkCode": "ZM-FIXED",
+            "networkName": "Zambia Landline"
+        },
+        {
+            "type": "mobile",
+            "price": "0.28725000",
+            "currency": "EUR",
+            "ranges": [
+                26095
+            ],
+            "mcc": "645",
+            "mnc": "03",
+            "networkCode": "64503",
+            "networkName": "Zamtel"
+        }
+    ]
+}

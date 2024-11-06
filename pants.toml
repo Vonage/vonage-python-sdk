@@ -1,0 +1,70 @@
+[GLOBAL]
+pants_version = '2.23.0rc1'
+
+backend_packages = [
+  'pants.backend.python',
+  'pants.backend.python.lint.autoflake',
+  'pants.backend.build_files.fmt.black',
+  'pants.backend.python.lint.isort',
+  'pants.backend.python.lint.black',
+  'pants.backend.python.lint.docformatter',
+  'pants.backend.tools.taplo',
+  "pants.backend.experimental.python",
+]
+
+pants_ignore.add = ['!_test_scripts/', '!_dev_scripts/']
+
+[anonymous-telemetry]
+enabled = false
+
+[source]
+root_patterns = ['/', 'src/', 'tests/']
+
+[python]
+interpreter_constraints = ['==3.12.*']
+
+[pytest]
+args = ['-vv', '--no-header']
+
+[coverage-py]
+interpreter_constraints = ['>=3.8']
+report = ['html', 'console']
+filter = [
+  'vonage/src',
+  'http_client/src',
+  'account/src',
+  'application/src',
+  'jwt/src',
+  'messages/src',
+  'network_auth/src',
+  'network_number_verification/src',
+  'network_sim_swap/src',
+  'number_insight/src',
+  'number_insight_v2/src',
+  'number_management/src',
+  'sms/src',
+  'subaccounts/src',
+  'users/src',
+  'utils/src',
+  'testutils',
+  'verify/src',
+  'verify_legacy/src',
+  'video/src',
+  'voice/src',
+  'vonage_utils/src',
+]
+
+[black]
+args = ['--line-length=90', '--skip-string-normalization']
+interpreter_constraints = ['>=3.8']
+
+[isort]
+args = ['--profile=black', '--line-length=90']
+interpreter_constraints = ['>=3.8']
+
+[docformatter]
+args = ['--wrap-summaries=90', '--wrap-descriptions=90']
+interpreter_constraints = ['>=3.8']
+
+[autoflake]
+interpreter_constraints = ['>=3.8']

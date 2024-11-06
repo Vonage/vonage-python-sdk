@@ -1,0 +1,82 @@
+{
+    "_embedded": {
+        "users": [
+            {
+                "_links": {
+                    "self": {
+                        "href": "https://api-us-3.vonage.com/v1/users/USR-2af4d3c5-ec49-4c4a-b74c-ec13ab560af9"
+                    }
+                },
+                "id": "USR-2af4d3c5-ec49-4c4a-b74c-ec13ab560af9",
+                "name": "NAM-6dd4ea1f-3841-47cb-a3d3-e271f5c1e33d"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "https://api-us-3.vonage.com/v1/users/USR-d3a1b6cd-15b1-48e5-bef6-457c447adff5"
+                    }
+                },
+                "id": "USR-d3a1b6cd-15b1-48e5-bef6-457c447adff5",
+                "name": "NAM-9c31641c-03c3-476b-827a-9b0dd1570eed"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "https://api-us-3.vonage.com/v1/users/USR-37a8299f-eaad-417c-a0b3-431b6555c4bf"
+                    }
+                },
+                "display_name": "My Other User Name",
+                "id": "USR-37a8299f-eaad-417c-a0b3-431b6555c4bf",
+                "name": "my_other_user_name"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "https://api-us-3.vonage.com/v1/users/USR-5ab17d58-b8b3-427d-ac42-c31dab7ef423"
+                    }
+                },
+                "display_name": "My User Name",
+                "id": "USR-5ab17d58-b8b3-427d-ac42-c31dab7ef423",
+                "name": "my_user_name"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "https://api-us-3.vonage.com/v1/users/USR-87e3e6b0-cd7b-45ef-a0a7-bcd5566a672b"
+                    }
+                },
+                "display_name": "My New Renamed User Name",
+                "id": "USR-87e3e6b0-cd7b-45ef-a0a7-bcd5566a672b",
+                "name": "new name!"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "https://api-us-3.vonage.com/v1/users/USR-caa2617b-1ea3-4d92-b780-e3c68279022e"
+                    }
+                },
+                "display_name": "My Third User Name",
+                "id": "USR-caa2617b-1ea3-4d92-b780-e3c68279022e",
+                "name": "third_user_name"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "https://api-us-3.vonage.com/v1/users/USR-c4ef37cd-26d3-4b05-bbf3-a70d56d074e2"
+                    }
+                },
+                "id": "USR-c4ef37cd-26d3-4b05-bbf3-a70d56d074e2",
+                "name": "update_name"
+            }
+        ]
+    },
+    "_links": {
+        "first": {
+            "href": "https://api-us-3.vonage.com/v1/users?page_size=10"
+        },
+        "self": {
+            "href": "https://api-us-3.vonage.com/v1/users?page_size=10&cursor=9DiU1E9z%2B6q7pNXgk7VTuJcyY2npz310oI6Ohjq5Sy0rKDf2ld0dYCE%3D"
+        }
+    },
+    "page_size": 10
+}

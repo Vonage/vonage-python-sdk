@@ -1,0 +1,12 @@
+{
+    "type": "https://developer.vonage.com/api-errors/messages#1150",
+    "title": "Invalid params",
+    "detail": "The value of one or more parameters is invalid.",
+    "instance": "bf0ca0bf927b3b52e3cb03217e1a1ddf",
+    "invalid_parameters": [
+        {
+            "name": "messenger.tag",
+            "reason": "invalid value"
+        }
+    ]
+}

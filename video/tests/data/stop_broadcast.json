@@ -1,0 +1,23 @@
+{
+    "id": "f03fad17-4591-4422-8bd3-00a4df1e616a",
+    "sessionId": "test_session_id",
+    "applicationId": "test_application_id",
+    "createdAt": 1728060457664,
+    "broadcastUrls": null,
+    "updatedAt": 1728060581508,
+    "status": "stopped",
+    "streamMode": "auto",
+    "hasAudio": true,
+    "hasVideo": true,
+    "maxDuration": 3600,
+    "multiBroadcastTag": "test-broadcast",
+    "maxBitrate": 1000000,
+    "settings": {
+        "hls": {
+            "lowLatency": false,
+            "dvr": true
+        }
+    },
+    "event": "broadcast",
+    "resolution": "1280x720"
+}

@@ -1,0 +1,48 @@
+{
+    "page_size": 100,
+    "page": 1,
+    "total_items": 1,
+    "total_pages": 1,
+    "_embedded": {
+        "applications": [
+            {
+                "id": "1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+                "name": "dev-application",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\npublic_key_info_goes_here\n-----END PUBLIC KEY-----\n"
+                },
+                "privacy": {
+                    "improve_ai": true
+                },
+                "capabilities": {
+                    "voice": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "http://example.com",
+                                "http_method": "POST"
+                            },
+                            "answer_url": {
+                                "address": "http://example.com",
+                                "http_method": "GET"
+                            }
+                        },
+                        "signed_callbacks": true,
+                        "conversations_ttl": 9000,
+                        "leg_persistence_time": 7
+                    }
+                }
+            }
+        ]
+    },
+    "_links": {
+        "self": {
+            "href": "/v2/applications?page_size=100&page=1"
+        },
+        "first": {
+            "href": "/v2/applications?page_size=100"
+        },
+        "last": {
+            "href": "/v2/applications?page_size=100&page=1"
+        }
+    }
+}

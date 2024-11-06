@@ -1,0 +1,42 @@
+{
+    "count": 3,
+    "items": [
+        {
+            "id": "be7712a4-3a63-4ed7-a2c6-7ffaebefd4a6",
+            "sessionId": "test_session_id",
+            "createdAt": 1727784741000,
+            "updatedAt": 1727784744000,
+            "url": "https://developer.vonage.com",
+            "status": "started",
+            "streamId": "C1B0E149-8169-4AFD-9397-882516EE9430",
+            "event": "render",
+            "applicationId": "test_application_id",
+            "resolution": "1280x720"
+        },
+        {
+            "id": "89559e73-0d49-4388-b373-ddef191e4373",
+            "sessionId": "test_session_id",
+            "createdAt": 1727784421000,
+            "updatedAt": 1727784424000,
+            "url": "https://example.com",
+            "status": "started",
+            "streamId": "F9C3BCD5-850F-4DB7-B6C1-97F615CA9E79",
+            "event": "render",
+            "applicationId": "test_application_id",
+            "resolution": "1280x720"
+        },
+        {
+            "id": "80c3d2d8-0848-41b2-be14-1a5b8936c87d",
+            "sessionId": "test_session_id",
+            "createdAt": 1727781191000,
+            "updatedAt": 1727784793000,
+            "url": "https://example.com",
+            "status": "stopped",
+            "streamId": "95F83A10-D767-4F21-9270-DC6E88067FAC",
+            "reason": "Max duration exceeded",
+            "event": "render",
+            "applicationId": "test_application_id",
+            "resolution": "1280x720"
+        }
+    ]
+}

@@ -1,0 +1,51 @@
+{
+    "count": 2,
+    "items": [
+        {
+            "id": "5b1521e6-115f-4efd-bed9-e527b87f0699",
+            "status": "paused",
+            "name": "first archive test",
+            "reason": "",
+            "sessionId": "test_session_id",
+            "applicationId": "test_application_id",
+            "createdAt": 1727871263000,
+            "size": 0,
+            "duration": 0,
+            "outputMode": "composed",
+            "streamMode": "manual",
+            "hasAudio": true,
+            "hasVideo": true,
+            "hasTranscription": false,
+            "sha256sum": "",
+            "password": "",
+            "updatedAt": 1727871264000,
+            "multiArchiveTag": "my-multi-archive",
+            "event": "archive",
+            "resolution": "1280x720",
+            "url": null
+        },
+        {
+            "id": "a9cdeb69-f6cf-408b-9197-6f99e6eac5aa",
+            "status": "available",
+            "name": "first archive test",
+            "reason": "session ended",
+            "sessionId": "test_session_id",
+            "applicationId": "test_application_id",
+            "createdAt": 1727870435000,
+            "size": 0,
+            "duration": 134,
+            "outputMode": "composed",
+            "streamMode": "manual",
+            "hasAudio": true,
+            "hasVideo": true,
+            "hasTranscription": false,
+            "sha256sum": "test_sha256_sum",
+            "password": "",
+            "updatedAt": 1727870572000,
+            "multiArchiveTag": "my-multi-archive",
+            "event": "archive",
+            "resolution": "1280x720",
+            "url": "https://example.com/archive.mp4"
+        }
+    ]
+}

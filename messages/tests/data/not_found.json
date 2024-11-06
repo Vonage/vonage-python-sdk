@@ -1,0 +1,6 @@
+{
+    "type": "https://developer.vonage.com/api-errors#not-found",
+    "title": "Not Found",
+    "detail": "Message with ID asdf not found",
+    "instance": "617431f2-06b7-4798-af36-1b8151df8359"
+}

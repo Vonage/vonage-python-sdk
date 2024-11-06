@@ -1,0 +1,25 @@
+{
+    "_links": {
+        "self": {
+            "href": "/v1/calls/e154eb57-2962-41e7-baf4-90f63e25e439"
+        }
+    },
+    "conversation_uuid": "CON-d4e1389a-b2c8-4621-97eb-c6f3a2b51c72",
+    "direction": "outbound",
+    "duration": "2",
+    "end_time": "2024-04-19T01:34:20.000Z",
+    "from": {
+        "number": "9876543210",
+        "type": "phone"
+    },
+    "network": "23420",
+    "price": "0.00333333",
+    "rate": "0.10000000",
+    "start_time": "2024-04-19T01:34:18.000Z",
+    "status": "completed",
+    "to": {
+        "number": "1234567890",
+        "type": "phone"
+    },
+    "uuid": "e154eb57-2962-41e7-baf4-90f63e25e439"
+}

@@ -1,0 +1,5 @@
+{
+    "code": 15004,
+    "message": "You can only delete an archive that has one of the following statuses: available OR uploaded OR deleted",
+    "description": "You can only delete an archive that has one of the following statuses: available OR uploaded OR deleted"
+}

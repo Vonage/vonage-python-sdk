@@ -1,0 +1,13 @@
+{
+    "count": 2,
+    "numbers": [
+        {
+            "country": "ES",
+            "msisdn": "3400000000",
+            "type": "mobile-lvn",
+            "features": [
+                "SMS"
+            ]
+        }
+    ]
+}

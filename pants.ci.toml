@@ -1,0 +1,5 @@
+[GLOBAL]
+colors = true
+
+[python]
+interpreter_constraints = ['>=3.8']

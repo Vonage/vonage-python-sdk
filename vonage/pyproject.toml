@@ -1,0 +1,48 @@
+[project]
+name = "vonage"
+dynamic = ["version"]
+description = "Python Server SDK for using Vonage APIs"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "vonage-utils>=1.1.4",
+  "vonage-http-client>=1.4.3",
+  "vonage-account>=1.1.0",
+  "vonage-application>=2.0.0",
+  "vonage-messages>=1.2.3",
+  "vonage-network-auth>=1.0.1",
+  "vonage-network-sim-swap>=1.1.1",
+  "vonage-network-number-verification>=1.0.1",
+  "vonage-number-insight>=1.0.4",
+  "vonage-numbers>=1.0.3",
+  "vonage-sms>=1.1.4",
+  "vonage-subaccounts>=1.0.4",
+  "vonage-users>=1.2.0",
+  "vonage-verify>=2.0.0",
+  "vonage-verify-legacy>=1.0.0",
+  "vonage-video>=1.0.2",
+  "vonage-voice>=1.0.6",
+]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "License :: OSI Approved :: Apache Software License",
+]
+[[project.authors]]
+name = "Vonage"
+email = "devrel@vonage.com"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.urls]
+homepage = "https://github.com/Vonage/vonage-python-sdk"
+
+[tool.setuptools.dynamic.version]
+attr = "vonage._version.__version__"

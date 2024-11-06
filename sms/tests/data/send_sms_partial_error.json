@@ -1,0 +1,17 @@
+{
+    "message-count": "2",
+    "messages": [
+        {
+            "to": "1234567890",
+            "message-id": "3295d748-4e14-4681-af78-166dca3c5aab",
+            "status": "0",
+            "remaining-balance": "38.07243628",
+            "message-price": "0.04120000",
+            "network": "23420"
+        },
+        {
+            "status": "1",
+            "error-text": "Throttled"
+        }
+    ]
+}

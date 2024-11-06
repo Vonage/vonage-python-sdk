@@ -1,0 +1,27 @@
+{
+    "_links": {
+        "self": {
+            "href": "/accounts/test_api_key/balance-transfers"
+        }
+    },
+    "_embedded": {
+        "balance_transfers": [
+            {
+                "from": "test_api_key",
+                "to": "asdfqwer",
+                "amount": 0.01,
+                "reference": "",
+                "id": "6917b0ae-aed3-453c-a918-e37f6ef7b21a",
+                "created_at": "2023-12-22T19:41:19.000Z"
+            },
+            {
+                "from": "test_api_key",
+                "to": "asdfqwer",
+                "amount": 0.5,
+                "reference": "",
+                "id": "049adc07-5da1-4d13-bacd-0ee6a99ef948",
+                "created_at": "2023-12-22T19:40:36.000Z"
+            }
+        ]
+    }
+}

@@ -1,0 +1,39 @@
+{
+    "count": 2,
+    "items": [
+        {
+            "id": "32cd16ee-715b-4025-bbc6-f314c1459e2f",
+            "sessionId": "test_session_id",
+            "applicationId": "test_application_id",
+            "createdAt": 1728038157850,
+            "broadcastUrls": {
+                "rtmp": [
+                    {
+                        "status": "offline",
+                        "id": "test",
+                        "serverUrl": "rtmp://a.rtmp.youtube.com/live2",
+                        "streamName": "stream-key"
+                    }
+                ],
+                "hlsStatus": "ready",
+                "hls": "https://example.com/hls.m3u8"
+            },
+            "updatedAt": 1728038163321,
+            "status": "started",
+            "streamMode": "auto",
+            "hasAudio": true,
+            "hasVideo": true,
+            "maxDuration": 3600,
+            "multiBroadcastTag": "test-broadcast-1",
+            "maxBitrate": 1000000,
+            "settings": {
+                "hls": {
+                    "lowLatency": false,
+                    "dvr": true
+                }
+            },
+            "event": "broadcast",
+            "resolution": "1280x720"
+        }
+    ]
+}

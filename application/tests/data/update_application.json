@@ -1,0 +1,13 @@
+{
+    "id": "1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+    "name": "My Updated Application",
+    "keys": {
+        "public_key": "-----BEGIN PUBLIC KEY-----\nupdated_public_key_info\n-----END PUBLIC KEY-----\n"
+    },
+    "capabilities": {},
+    "_links": {
+        "self": {
+            "href": "/v2/applications/1b1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b"
+        }
+    }
+}

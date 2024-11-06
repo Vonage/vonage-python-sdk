@@ -1,0 +1,95 @@
+{
+    "_embedded": {
+        "calls": [
+            {
+                "_links": {
+                    "self": {
+                        "href": "/v1/calls/e154eb57-2962-41e7-baf4-90f63e25e439"
+                    }
+                },
+                "conversation_uuid": "CON-d4e1389a-b2c8-4621-97eb-c6f3a2b51c72",
+                "direction": "outbound",
+                "duration": "2",
+                "end_time": "2024-04-19T01:34:20.000Z",
+                "from": {
+                    "number": "9876543210",
+                    "type": "phone"
+                },
+                "network": "23420",
+                "price": "0.00333333",
+                "rate": "0.10000000",
+                "start_time": "2024-04-19T01:34:18.000Z",
+                "status": "completed",
+                "to": {
+                    "number": "1234567890",
+                    "type": "phone"
+                },
+                "uuid": "e154eb57-2962-41e7-baf4-90f63e25e439"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "/v1/calls/1acdf499-83ae-4861-a694-9e47a98c505d"
+                    }
+                },
+                "conversation_uuid": "CON-ee83ad86-ee21-4c28-bf7d-4ae67692721e",
+                "direction": "outbound",
+                "duration": "2",
+                "end_time": "2024-04-18T16:01:53.000Z",
+                "from": {
+                    "number": "9876543210",
+                    "type": "phone"
+                },
+                "network": "23420",
+                "price": "0.00333333",
+                "rate": "0.10000000",
+                "start_time": "2024-04-18T16:01:51.000Z",
+                "status": "completed",
+                "to": {
+                    "number": "1234567890",
+                    "type": "phone"
+                },
+                "uuid": "1acdf499-83ae-4861-a694-9e47a98c505d"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "/v1/calls/106a581a-34d0-432a-a625-220221fd434f"
+                    }
+                },
+                "conversation_uuid": "CON-2be039b2-d0a4-4274-afc8-d7b241c7c044",
+                "direction": "outbound",
+                "duration": "2",
+                "end_time": "2024-04-17T14:30:13.000Z",
+                "from": {
+                    "number": "9876543210",
+                    "type": "phone"
+                },
+                "network": "23420",
+                "price": "0.00333333",
+                "rate": "0.10000000",
+                "start_time": "2024-04-17T14:30:11.000Z",
+                "status": "completed",
+                "to": {
+                    "number": "1234567890",
+                    "type": "phone"
+                },
+                "uuid": "106a581a-34d0-432a-a625-220221fd434f"
+            }
+        ]
+    },
+    "_links": {
+        "first": {
+            "href": "/v1/calls?page_size=100"
+        },
+        "last": {
+            "href": "/v1/calls?page_size=100&record_index=0"
+        },
+        "self": {
+            "href": "/v1/calls?page_size=100&record_index=0"
+        }
+    },
+    "count": 3,
+    "page_size": 100,
+    "record_index": 0
+}

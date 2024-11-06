@@ -1,0 +1,28 @@
+[project]
+name = 'vonage-utils'
+dynamic = ["version"]
+description = 'Utils package containing objects for use with Vonage APIs'
+readme = "README.md"
+authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
+dependencies = ["pydantic>=2.9.2"]
+requires-python = ">=3.9"
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "License :: OSI Approved :: Apache Software License",
+]
+
+[project.urls]
+Homepage = "https://github.com/Vonage/vonage-python-sdk"
+
+[tool.setuptools.dynamic]
+version = { attr = "vonage_utils._version.__version__" }
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"

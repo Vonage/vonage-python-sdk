@@ -1,0 +1,17 @@
+{
+    "id": "ba1a6aa3-8ac6-487d-ac5c-be469e77ddb7",
+    "name": "My Application",
+    "keys": {
+        "private_key": "-----BEGIN PRIVATE KEY-----\nprivate_key_info_goes_here\n-----END PRIVATE KEY-----\n",
+        "public_key": "-----BEGIN PUBLIC KEY-----\npublic_key_info_goes_here\n-----END PUBLIC KEY-----\n"
+    },
+    "privacy": {
+        "improve_ai": false
+    },
+    "capabilities": {},
+    "_links": {
+        "self": {
+            "href": "/v2/applications/ba1a6aa3-8ac6-487d-ac5c-be469e77ddb7"
+        }
+    }
+}

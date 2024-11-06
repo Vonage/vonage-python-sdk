@@ -1,0 +1,33 @@
+{
+    "id": "f03fad17-4591-4422-8bd3-00a4df1e616a",
+    "sessionId": "test_session_id",
+    "applicationId": "test_application_id",
+    "createdAt": 1728039361014,
+    "broadcastUrls": {
+        "rtmp": [
+            {
+                "status": "connecting",
+                "id": "test",
+                "serverUrl": "rtmp://a.rtmp.youtube.com/live2",
+                "streamName": "stream-key"
+            }
+        ],
+        "hls": "https://broadcast2-euw1-cdn.media.prod.tokbox.com/broadcast-57d6569497-dj9b2.10293/broadcast-57d6569497-dj9b2.10293_f03fad17-4591-4422-8bd3-00a4df1e616a_29f760f8-7ce1-46c9-ade3-f2dedee4ed5f.2_MX4yOWY3NjBmOC03Y2UxLTQ2YzktYWRlMy1mMmRlZGVlNGVkNWZ-fjE3MjgwMzY0MTUzMDd-V2swbzlzeUppaGZIVTFzYUQwamdYM0Ryfn5-.smil/playlist.m3u8?DVR"
+    },
+    "updatedAt": 1728039361511,
+    "status": "started",
+    "streamMode": "auto",
+    "hasAudio": true,
+    "hasVideo": true,
+    "maxDuration": 3600,
+    "multiBroadcastTag": "test-broadcast-5",
+    "maxBitrate": 1000000,
+    "settings": {
+        "hls": {
+            "lowLatency": false,
+            "dvr": true
+        }
+    },
+    "event": "broadcast",
+    "resolution": "1280x720"
+}

@@ -1,0 +1,20 @@
+{
+    "id": "USR-87e3e6b0-cd7b-45ef-a0a7-bcd5566a672b",
+    "name": "my_user_name",
+    "display_name": "My User Name",
+    "properties": {
+        "custom_data": {}
+    },
+    "_links": {
+        "self": {
+            "href": "https://api-us-3.vonage.com/v1/users/USR-87e3e6b0-cd7b-45ef-a0a7-bcd5566a672b"
+        }
+    },
+    "channels": {
+        "sms": [
+            {
+                "number": "1234567890"
+            }
+        ]
+    }
+}

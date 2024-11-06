@@ -1,0 +1,6 @@
+{
+    "type": "https://developer.vonage.com/api-errors#invalid-param",
+    "title": "Bad Request",
+    "detail": "No Network Application associated with Vonage Application: 29f760f8-7ce1-46c9-ade3-f2dedee4ed5f",
+    "instance": "b45ae630-7621-42b0-8ff0-6c1ad98e6e32"
+}

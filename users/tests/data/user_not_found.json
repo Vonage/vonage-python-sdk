@@ -1,0 +1,6 @@
+{
+    "title": "Not found.",
+    "type": "https://developer.vonage.com/api/conversation#user:error:not-found",
+    "detail": "User does not exist, or you do not have access.",
+    "instance": "00a5916655d650e920ccf0daf40ef4ee"
+}

@@ -1,0 +1,13 @@
+{
+    "id": "be7712a4-3a63-4ed7-a2c6-7ffaebefd4a6",
+    "sessionId": "test_session_id",
+    "createdAt": 1727784741000,
+    "updatedAt": 1727788344000,
+    "url": "https://developer.vonage.com",
+    "status": "stopped",
+    "streamId": "C1B0E149-8169-4AFD-9397-882516EE9430",
+    "reason": "Max duration exceeded",
+    "event": "render",
+    "applicationId": "test_application_id",
+    "resolution": "1280x720"
+}

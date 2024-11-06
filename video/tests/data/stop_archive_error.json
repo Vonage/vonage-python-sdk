@@ -1,0 +1,5 @@
+{
+    "code": 15002,
+    "message": "You can only stop an archive that has one of the following statuses: started OR paused OR stopped",
+    "description": "You can only stop an archive that has one of the following statuses: started OR paused OR stopped"
+}

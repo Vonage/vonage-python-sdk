@@ -1,10 +1,28 @@
--e .
-pytest==7.4.2
-responses==0.22.0
-coverage
-pydantic==2.5.2
+pytest>=8.0.0
+requests>=2.31.0
+responses>=0.24.1
+pydantic>=2.7.1
+typing-extensions>=4.9.0
+pyjwt[crypto]>=1.6.4
+toml>=0.10.2
 
-bump2version
-build
-twine
-pre-commit
+-e jwt
+-e http_client
+-e account
+-e application
+-e messages
+-e network_auth
+-e network_number_verification
+-e network_sim_swap
+-e number_insight
+-e number_insight_v2
+-e number_management
+-e sms
+-e subaccounts
+-e users
+-e verify
+-e verify_legacy
+-e video
+-e voice
+-e vonage_utils
+-e vonage

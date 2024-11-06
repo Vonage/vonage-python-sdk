@@ -1,0 +1,44 @@
+{
+    "caller_identity": {
+        "caller_name": "John Smith",
+        "caller_type": "consumer",
+        "first_name": "John",
+        "last_name": "Smith",
+        "subscription_type": "postpaid"
+    },
+    "caller_name": "John Smith",
+    "caller_type": "consumer",
+    "country_code": "US",
+    "country_code_iso3": "USA",
+    "country_name": "United States of America",
+    "country_prefix": "1",
+    "current_carrier": {
+        "country": "US",
+        "name": "AT&T Mobility",
+        "network_code": "310090",
+        "network_type": "mobile"
+    },
+    "first_name": "John",
+    "international_format_number": "12345678900",
+    "ip_warnings": "unknown",
+    "last_name": "Smith",
+    "lookup_outcome": 1,
+    "lookup_outcome_message": "Partial success - some fields populated",
+    "national_format_number": "(234) 567-8900",
+    "original_carrier": {
+        "country": "US",
+        "name": "AT&T Mobility",
+        "network_code": "310090",
+        "network_type": "mobile"
+    },
+    "ported": "not_ported",
+    "reachable": "unknown",
+    "refund_price": "0.01025000",
+    "remaining_balance": "32.68590294",
+    "request_id": "97e973e7-2e27-4fd3-9e1a-972ea14dd992",
+    "request_price": "0.05025000",
+    "roaming": "unknown",
+    "status": 44,
+    "status_message": "Lookup Handler unable to handle request",
+    "valid_number": "valid"
+}

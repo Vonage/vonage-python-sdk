@@ -101,7 +101,6 @@ There are some changes to methods between the `opentok` SDK and the Video API im
 | `opentok.get_render` | `video.get_experience_composer`|
 | `opentok.stop_render` | `video.stop_experience_composer`|
 | `opentok.connect_audio_to_websocket` | `video.start_audio_connector`|
-| `opentok.connect_audio_to_websocket` | `video.start_audio_connector`|
 
 ## Additional Resources
 

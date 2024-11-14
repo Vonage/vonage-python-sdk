@@ -63,7 +63,7 @@ def test_standard_insight():
         'standard_insight.json',
     )
     options = StandardInsightRequest(number='12345678900', country_code='US', cnam=True)
-    response = number_insight.standard_number_insight(options)
+    response = number_insight.get_standard_info(options)
     assert response.status == 0
     assert response.status_message == 'Success'
     assert response.current_carrier.network_code == '23415'

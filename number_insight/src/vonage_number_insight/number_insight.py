@@ -59,7 +59,7 @@ class NumberInsight:
         return BasicInsightResponse(**response)
 
     @validate_call
-    def standard_number_insight(
+    def get_standard_info(
         self, options: StandardInsightRequest
     ) -> StandardInsightResponse:
         """Get standard number insight information about a phone number.

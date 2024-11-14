@@ -33,9 +33,9 @@ class AdvancedAsyncInsightRequest(StandardInsightRequest):
 
     Args:
         number (PhoneNumber): The phone number to get insight information for.
+        callback (str): The URL to send the asynchronous response to.
         country (str, Optional): The country code for the phone number.
         cnam (bool, Optional): Whether to include the Caller ID Name (CNAM) with the response.
-        callback (str): The URL to send the asynchronous response to.
     """
 
     callback: str

@@ -1,3 +1,7 @@
+# 1.0.5
+- Fix missed method renaming
+- Docstring update
+
 # 1.0.4
 - Update dependency versions
 

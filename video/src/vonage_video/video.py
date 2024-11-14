@@ -310,7 +310,7 @@ class Video:
         """Lists Experience Composers associated with your Vonage application.
 
         Args:
-            filter (ListExperienceComposersFilter): Filter for the Experience Composers.
+            filter (ListExperienceComposersFilter, Optional): Filter for the Experience Composers.
 
         Returns:
             tuple[list[ExperienceComposer], int, Optional[int]]: A tuple containing a list of experience
@@ -358,12 +358,12 @@ class Video:
 
     @validate_call
     def list_archives(
-        self, filter: ListArchivesFilter
+        self, filter: ListArchivesFilter = ListArchivesFilter()
     ) -> tuple[list[Archive], int, Optional[int]]:
         """Lists archives associated with a Vonage Application.
 
         Args:
-            filter (ListArchivesFilter): The filters for the archives.
+            filter (ListArchivesFilter, Optional): The filters for the archives.
 
         Returns:
             tuple[list[Archive], int, Optional[int]]: A tuple containing a list of archive objects,
@@ -513,12 +513,12 @@ class Video:
 
     @validate_call
     def list_broadcasts(
-        self, filter: ListBroadcastsFilter
+        self, filter: ListBroadcastsFilter = ListBroadcastsFilter()
     ) -> tuple[list[Broadcast], int, Optional[int]]:
         """Lists broadcasts associated with a Vonage Application.
 
         Args:
-            filter (ListBroadcastsFilter): The filters for the broadcasts.
+            filter (ListBroadcastsFilter, Optional): The filters for the broadcasts.
 
         Returns:
             tuple[list[Broadcast], int, Optional[int]]: A tuple containing a list of broadcast objects,

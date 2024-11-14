@@ -15,6 +15,15 @@ Key changes:
 - Migrated the Vonage JWT package into the monorepo
 - Rename `Verify` -> `VerifyLegacy` and `VerifyV2` -> `Verify`
 
+# 3.17.4
+- Drop support for Python 3.8, add support for 3.13
+
+# 3.17.3
+- Fix bug in JWT generator
+
+# 3.17.2
+- Update `vonage-jwt` dependency version to fix JWT timeout issue
+
 # 3.17.1
 - Add "mark WhatsApp message as read" option for Messages API
 

@@ -1,8 +1,8 @@
-# 4.0.0b2
+# 4.0.0
 A complete, ground-up rewrite of the SDK.
 Key changes:
 - Monorepo structure, with each API under separate packages
-- Targeting Python 3.9+
+- Support for Python 3.9+
 - Feature parity with v3
 - Add support for the new network APIs - the [Vonage Sim Swap Network API](https://developer.vonage.com/en/sim-swap/overview) and the [Vonage Number Verification Network API](https://developer.vonage.com/en/number-verification/overview)
 - Usage of data models throughout
@@ -14,7 +14,6 @@ Key changes:
 - Add `last_request` and `last_response` properties to the HTTP Client for easier debugging
 - Migrated the Vonage JWT package into the monorepo
 - Rename `Verify` -> `VerifyLegacy` and `VerifyV2` -> `Verify`
-- With even more enhancements to come!
 
 # 3.17.1
 - Add "mark WhatsApp message as read" option for Messages API

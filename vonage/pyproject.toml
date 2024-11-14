@@ -13,14 +13,14 @@ dependencies = [
   "vonage-network-auth>=1.0.1",
   "vonage-network-sim-swap>=1.1.1",
   "vonage-network-number-verification>=1.0.1",
-  "vonage-number-insight>=1.0.4",
+  "vonage-number-insight>=1.0.5",
   "vonage-numbers>=1.0.3",
   "vonage-sms>=1.1.4",
   "vonage-subaccounts>=1.0.4",
   "vonage-users>=1.2.0",
   "vonage-verify>=2.0.0",
   "vonage-verify-legacy>=1.0.0",
-  "vonage-video>=1.0.2",
+  "vonage-video>=1.0.3",
   "vonage-voice>=1.0.6",
 ]
 classifiers = [

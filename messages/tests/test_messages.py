@@ -2,6 +2,7 @@ from os.path import abspath
 
 import responses
 from pytest import raises
+from vonage_http_client.auth import Auth
 from vonage_http_client.errors import HttpRequestError
 from vonage_http_client.http_client import HttpClient, HttpClientOptions
 from vonage_messages.messages import Messages
@@ -13,12 +14,27 @@ from vonage_messages.models.messenger import (
 )
 from vonage_messages.responses import SendMessageResponse
 
-from testutils import build_response, get_mock_jwt_auth
+from testutils import build_response, get_mock_api_key_auth, get_mock_jwt_auth
 
 path = abspath(__file__)
 
 
 messages = Messages(HttpClient(get_mock_jwt_auth()))
+
+
+@responses.activate
+def test_default_auth_type():
+    messages = Messages(
+        HttpClient(
+            Auth(
+                api_key='asdf',
+                api_secret='asdf',
+                application_id='asdf',
+                private_key='-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDZz9Zz\n-----END PRIVATE-KEY----',
+            )
+        )
+    )
+    assert messages._auth_type == 'jwt'
 
 
 @responses.activate
@@ -34,6 +50,24 @@ def test_send_message():
     response = messages.send(sms)
     assert type(response) == SendMessageResponse
     assert response.message_uuid == 'd8f86df1-dec6-442f-870a-2241be27d721'
+    assert messages._auth_type == 'jwt'
+
+
+@responses.activate
+def test_send_message_basic_auth():
+    build_response(
+        path, 'POST', 'https://api.nexmo.com/v1/messages', 'send_message.json', 202
+    )
+    messages = Messages(HttpClient(get_mock_api_key_auth()))
+    sms = Sms(
+        from_='Vonage APIs',
+        to='1234567890',
+        text='Hello, World!',
+    )
+    response = messages.send(sms)
+    assert type(response) == SendMessageResponse
+    assert response.message_uuid == 'd8f86df1-dec6-442f-870a-2241be27d721'
+    assert messages._auth_type == 'basic'
 
 
 @responses.activate

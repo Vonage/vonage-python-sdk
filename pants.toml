@@ -1,5 +1,5 @@
 [GLOBAL]
-pants_version = '2.23.0rc1'
+pants_version = '2.23.0'
 
 backend_packages = [
   'pants.backend.python',
@@ -29,30 +29,6 @@ args = ['-vv', '--no-header']
 [coverage-py]
 interpreter_constraints = ['>=3.8']
 report = ['html', 'console']
-filter = [
-  'vonage/src',
-  'http_client/src',
-  'account/src',
-  'application/src',
-  'jwt/src',
-  'messages/src',
-  'network_auth/src',
-  'network_number_verification/src',
-  'network_sim_swap/src',
-  'number_insight/src',
-  'number_insight_v2/src',
-  'number_management/src',
-  'sms/src',
-  'subaccounts/src',
-  'users/src',
-  'utils/src',
-  'testutils',
-  'verify/src',
-  'verify_legacy/src',
-  'video/src',
-  'voice/src',
-  'vonage_utils/src',
-]
 
 [black]
 args = ['--line-length=90', '--skip-string-normalization']

@@ -1,3 +1,6 @@
+# 4.1.0
+- Add support for API key/secret header authentication for the Messages and Verify APIs (JWT is the default and recommended method)
+
 # 4.0.0
 A complete, ground-up rewrite of the SDK.
 Key changes:

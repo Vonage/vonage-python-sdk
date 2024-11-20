@@ -2,17 +2,33 @@ from os.path import abspath
 
 import responses
 from pytest import raises
+from vonage_http_client.auth import Auth
 from vonage_http_client.errors import HttpRequestError
 from vonage_http_client.http_client import HttpClient
 from vonage_verify.requests import *
 from vonage_verify.verify import Verify
 
-from testutils import build_response, get_mock_jwt_auth
+from testutils import build_response, get_mock_api_key_auth, get_mock_jwt_auth
 
 path = abspath(__file__)
 
 
 verify = Verify(HttpClient(get_mock_jwt_auth()))
+
+
+@responses.activate
+def test_default_auth_type():
+    verify = Verify(
+        HttpClient(
+            Auth(
+                api_key='asdf',
+                api_secret='asdf',
+                application_id='asdf',
+                private_key='-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDZz9Zz\n-----END PRIVATE-KEY----',
+            )
+        )
+    )
+    assert verify._auth_type == 'jwt'
 
 
 @responses.activate
@@ -37,6 +53,27 @@ def test_make_verify_request():
         == 'https://api-eu-3.vonage.com/v2/verify/cfbc9a3b-27a2-40d4-a4e0-0c59b3b41901/silent-auth/redirect'
     )
     assert verify._http_client.last_response.status_code == 202
+    assert verify._auth_type == 'jwt'
+
+
+@responses.activate
+def test_make_verify_request_basic_auth():
+    build_response(
+        path, 'POST', 'https://api.nexmo.com/v2/verify', 'verify_request.json', 202
+    )
+    sms_channel = SmsChannel(channel=ChannelType.SMS, to='1234567890', from_='Vonage')
+    params = {
+        'brand': 'Vonage',
+        'workflow': [sms_channel],
+    }
+    request = VerifyRequest(**params)
+
+    verify = Verify(HttpClient(get_mock_api_key_auth()))
+
+    response = verify.start_verification(request)
+    assert response.request_id == '2c59e3f4-a047-499f-a14f-819cd1989d2e'
+    assert verify._http_client.last_response.status_code == 202
+    assert verify._auth_type == 'basic'
 
 
 @responses.activate
@@ -109,6 +146,23 @@ def test_check_code():
 
 
 @responses.activate
+def test_check_code_basic_auth():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/v2/verify/36e7060d-2b23-4257-bad0-773ab47f85ef',
+        'check_code.json',
+    )
+    verify = Verify(HttpClient(get_mock_api_key_auth()))
+    response = verify.check_code(
+        request_id='36e7060d-2b23-4257-bad0-773ab47f85ef', code='1234'
+    )
+    assert response.request_id == '36e7060d-2b23-4257-bad0-773ab47f85ef'
+    assert response.status == 'completed'
+    assert verify._auth_type == 'basic'
+
+
+@responses.activate
 def test_check_code_invalid_code_error():
     build_response(
         path,
@@ -154,6 +208,20 @@ def test_cancel_verification():
 
 
 @responses.activate
+def test_cancel_verification_basic_auth():
+    responses.add(
+        responses.DELETE,
+        'https://api.nexmo.com/v2/verify/36e7060d-2b23-4257-bad0-773ab47f85ef',
+        status=204,
+    )
+
+    verify = Verify(HttpClient(get_mock_api_key_auth()))
+    assert verify.cancel_verification('36e7060d-2b23-4257-bad0-773ab47f85ef') is None
+    assert verify._http_client.last_response.status_code == 204
+    assert verify._auth_type == 'basic'
+
+
+@responses.activate
 def test_trigger_next_workflow():
     responses.add(
         responses.POST,
@@ -162,6 +230,20 @@ def test_trigger_next_workflow():
     )
     assert verify.trigger_next_workflow('36e7060d-2b23-4257-bad0-773ab47f85ef') is None
     assert verify._http_client.last_response.status_code == 200
+
+
+@responses.activate
+def test_trigger_next_workflow_basic_auth():
+    responses.add(
+        responses.POST,
+        'https://api.nexmo.com/v2/verify/36e7060d-2b23-4257-bad0-773ab47f85ef/next_workflow',
+        status=200,
+    )
+
+    verify = Verify(HttpClient(get_mock_api_key_auth()))
+    assert verify.trigger_next_workflow('36e7060d-2b23-4257-bad0-773ab47f85ef') is None
+    assert verify._http_client.last_response.status_code == 200
+    assert verify._auth_type == 'basic'
 
 
 @responses.activate

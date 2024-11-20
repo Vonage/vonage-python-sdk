@@ -16,6 +16,10 @@ class Messages:
 
     def __init__(self, http_client: HttpClient) -> None:
         self._http_client = http_client
+        self._auth_type = 'jwt'
+
+        if self._http_client.auth.application_id is None:
+            self._auth_type = 'basic'
 
     @property
     def http_client(self) -> HttpClient:
@@ -42,7 +46,9 @@ class Messages:
             self._http_client.api_host,
             '/v1/messages',
             message.model_dump(by_alias=True, exclude_none=True) or message,
+            self._auth_type,
         )
+
         return SendMessageResponse(**response)
 
     @validate_call
@@ -63,6 +69,7 @@ class Messages:
             self._http_client.api_host,
             f'/v1/messages/{message_uuid}',
             {'status': 'read'},
+            self._auth_type,
         )
 
     @validate_call
@@ -83,4 +90,5 @@ class Messages:
             self._http_client.api_host,
             f'/v1/messages/{message_uuid}',
             {'status': 'revoked'},
+            self._auth_type,
         )

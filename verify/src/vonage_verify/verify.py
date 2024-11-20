@@ -10,6 +10,10 @@ class Verify:
 
     def __init__(self, http_client: HttpClient) -> None:
         self._http_client = http_client
+        self._auth_type = 'jwt'
+
+        if self._http_client.auth.application_id is None:
+            self._auth_type = 'basic'
 
     @property
     def http_client(self) -> HttpClient:
@@ -37,6 +41,7 @@ class Verify:
             self._http_client.api_host,
             '/v2/verify',
             verify_request.model_dump(by_alias=True, exclude_none=True),
+            self._auth_type,
         )
 
         return StartVerificationResponse(**response)
@@ -53,7 +58,10 @@ class Verify:
             CheckCodeResponse: The response object containing the verification result.
         """
         response = self._http_client.post(
-            self._http_client.api_host, f'/v2/verify/{request_id}', {'code': code}
+            self._http_client.api_host,
+            f'/v2/verify/{request_id}',
+            {'code': code},
+            self._auth_type,
         )
         return CheckCodeResponse(**response)
 
@@ -64,7 +72,11 @@ class Verify:
         Args:
             request_id (str): The request ID.
         """
-        self._http_client.delete(self._http_client.api_host, f'/v2/verify/{request_id}')
+        self._http_client.delete(
+            self._http_client.api_host,
+            f'/v2/verify/{request_id}',
+            auth_type=self._auth_type,
+        )
 
     @validate_call
     def trigger_next_workflow(self, request_id: str) -> None:
@@ -77,4 +89,5 @@ class Verify:
         self._http_client.post(
             self._http_client.api_host,
             f'/v2/verify/{request_id}/next_workflow',
+            auth_type=self._auth_type,
         )

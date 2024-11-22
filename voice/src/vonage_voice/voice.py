@@ -261,3 +261,16 @@ class Voice:
         )
 
         return CallMessage(**response)
+
+    @validate_call
+    def download_recording(self, url: str, file_path: str) -> bytes:
+        """Downloads a call recording from the specified URL and saves it to a local file.
+
+        Args:
+            url (str): The URL of the recording to get.
+            file_path (str): The path to save the recording to.
+
+        Returns:
+            bytes: The recording data.
+        """
+        self._http_client.download_file_stream(url=url, file_path=file_path)

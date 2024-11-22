@@ -122,6 +122,23 @@ class RateLimitedError(HttpRequestError):
         super().__init__(response, content_type)
 
 
+class FileStreamingError(HttpRequestError):
+    """Exception indicating an error occurred while streaming a file in a Vonage SDK
+    request.
+
+    Args:
+        response (requests.Response): The HTTP response object.
+        content_type (str): The response content type.
+
+    Attributes (inherited from HttpRequestError parent exception):
+        response (requests.Response): The HTTP response object.
+        message (str): The returned error message.
+    """
+
+    def __init__(self, response: Response, content_type: str):
+        super().__init__(response, content_type)
+
+
 class ServerError(HttpRequestError):
     """Exception indicating an error was returned by a Vonage server in response to a
     Vonage SDK request.

@@ -8,6 +8,7 @@ from responses import matchers
 from vonage_http_client.auth import Auth
 from vonage_http_client.errors import (
     AuthenticationError,
+    FileStreamingError,
     ForbiddenError,
     HttpRequestError,
     InvalidHttpClientOptionsError,
@@ -16,7 +17,7 @@ from vonage_http_client.errors import (
 )
 from vonage_http_client.http_client import HttpClient
 
-from testutils import build_response
+from testutils import build_response, get_mock_jwt_auth
 
 path = abspath(__file__)
 
@@ -250,3 +251,44 @@ def test_append_to_user_agent():
     client = HttpClient(Auth())
     client.append_to_user_agent('TestAgent')
     assert 'TestAgent' in client.user_agent
+
+
+@responses.activate
+def test_download_file_stream():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/v1/files/aaaaaaaa-bbbb-cccc-dddd-0123456789ab',
+        'file_stream.mp3',
+    )
+
+    client = HttpClient(get_mock_jwt_auth())
+    client.download_file_stream(
+        url='https://api.nexmo.com/v1/files/aaaaaaaa-bbbb-cccc-dddd-0123456789ab',
+        file_path='file.mp3',
+    )
+
+    with open('file.mp3', 'rb') as file:
+        file_content = file.read()
+        assert file_content.startswith(b'ID3')
+
+
+@responses.activate
+def test_download_file_stream_error():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/v1/files/aaaaaaaa-bbbb-cccc-dddd-0123456789ab',
+        status_code=400,
+    )
+
+    client = HttpClient(get_mock_jwt_auth())
+    try:
+        client.download_file_stream(
+            url='https://api.nexmo.com/v1/files/aaaaaaaa-bbbb-cccc-dddd-0123456789ab',
+            file_path='file.mp3',
+        )
+    except FileStreamingError as err:
+        assert '400 response from' in err.message
+        assert err.response.status_code == 400
+        assert err.response.json()['title'] == 'Bad Request'

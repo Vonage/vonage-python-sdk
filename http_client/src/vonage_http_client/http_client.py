@@ -10,6 +10,7 @@ from requests.sessions import Session
 from vonage_http_client.auth import Auth
 from vonage_http_client.errors import (
     AuthenticationError,
+    FileStreamingError,
     ForbiddenError,
     HttpRequestError,
     InvalidHttpClientOptionsError,
@@ -250,6 +251,34 @@ class HttpClient:
         with self._session.request(**request_params) as response:
             return self._parse_response(response)
 
+    def download_file_stream(self, url: str, file_path: str) -> bytes:
+        """Download a file from a URL and save it to a local file. This method streams the
+        file to disk.
+
+        Args:
+            url (str): The URL of the file to download.
+            file_path (str): The local path to save the file to.
+
+        Returns:
+            bytes: The content of the file.
+        """
+        headers = {
+            'User-Agent': self.user_agent,
+            'Authorization': self.auth.create_jwt_auth_string(),
+        }
+
+        logger.debug(
+            f'Downloading file by streaming from {url} to local location: {file_path}, with headers: {self._headers}'
+        )
+        try:
+            with self._session.get(url, headers=headers, stream=True) as response:
+                with open(file_path, 'wb') as f:
+                    for chunk in response.iter_content(chunk_size=4096):
+                        f.write(chunk)
+        except Exception as e:
+            logger.error(f'Error downloading file from {url}: {e}')
+            raise FileStreamingError(f'Error downloading file from {url}: {e}') from e
+
     def append_to_user_agent(self, string: str):
         """Append a string to the User-Agent header.
 
@@ -267,6 +296,8 @@ class HttpClient:
             try:
                 return response.json()
             except JSONDecodeError:
+                if hasattr(response.headers, 'Content-Type'):
+                    return response.content
                 return None
         if response.status_code >= 400:
             content_type = response.headers['Content-Type'].split(';', 1)[0]

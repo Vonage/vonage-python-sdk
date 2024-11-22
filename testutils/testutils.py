@@ -8,8 +8,12 @@ from pydantic import validate_call
 def _load_mock_data(caller_file_path: str, mock_path: str):
     """Load mock data from a file."""
 
-    with open(join(dirname(caller_file_path), 'data', mock_path)) as file:
-        return file.read()
+    try:
+        with open(join(dirname(caller_file_path), 'data', mock_path)) as file:
+            return file.read()
+    except UnicodeDecodeError:
+        with open(join(dirname(caller_file_path), 'data', mock_path), 'rb') as file:
+            return file.read()
 
 
 def _filter_none_values(data: dict) -> dict:

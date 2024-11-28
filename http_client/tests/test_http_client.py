@@ -1,9 +1,12 @@
+from http.client import RemoteDisconnected
 from json import loads
 from os.path import abspath, dirname, join
+from unittest.mock import patch
 
 import responses
 from pytest import raises
-from requests import PreparedRequest, Response
+from requests import PreparedRequest, Response, Session
+from requests.exceptions import ConnectionError
 from responses import matchers
 from vonage_http_client.auth import Auth
 from vonage_http_client.errors import (
@@ -15,7 +18,7 @@ from vonage_http_client.errors import (
     RateLimitedError,
     ServerError,
 )
-from vonage_http_client.http_client import HttpClient
+from vonage_http_client.http_client import HttpClient, HttpClientOptions
 
 from testutils import build_response, get_mock_jwt_auth
 
@@ -265,10 +268,10 @@ def test_download_file_stream():
     client = HttpClient(get_mock_jwt_auth())
     client.download_file_stream(
         url='https://api.nexmo.com/v1/files/aaaaaaaa-bbbb-cccc-dddd-0123456789ab',
-        file_path='file.mp3',
+        file_path='http_client/tests/data/file_stream.mp3',
     )
 
-    with open('file.mp3', 'rb') as file:
+    with open('http_client/tests/data/file_stream.mp3', 'rb') as file:
         file_content = file.read()
         assert file_content.startswith(b'ID3')
 
@@ -280,15 +283,45 @@ def test_download_file_stream_error():
         'GET',
         'https://api.nexmo.com/v1/files/aaaaaaaa-bbbb-cccc-dddd-0123456789ab',
         status_code=400,
+        mock_path='400.json',
     )
 
     client = HttpClient(get_mock_jwt_auth())
-    try:
+    with raises(FileStreamingError) as e:
         client.download_file_stream(
             url='https://api.nexmo.com/v1/files/aaaaaaaa-bbbb-cccc-dddd-0123456789ab',
             file_path='file.mp3',
         )
-    except FileStreamingError as err:
-        assert '400 response from' in err.message
-        assert err.response.status_code == 400
-        assert err.response.json()['title'] == 'Bad Request'
+    assert '400 response from' in e.exconly()
+
+
+@patch.object(Session, 'request')
+def test_retry_on_remote_disconnected_connection_error(mock_request):
+    mock_request.side_effect = ConnectionError(
+        RemoteDisconnected('Remote end closed connection without response')
+    )
+    client = HttpClient(
+        Auth(application_id=application_id, private_key=private_key),
+        http_client_options=HttpClientOptions(),
+    )
+    params = {
+        'test': 'post request',
+        'testing': 'http client',
+    }
+    with raises(ConnectionError) as e:
+        client.post(host='example.com', request_path='/post_json', params=params)
+    assert mock_request.call_count == 10
+    assert 'Remote end closed connection without response' in str(e.value)
+
+
+@patch.object(Session, 'request')
+def test_dont_retry_on_generic_connection_error(mock_request):
+    mock_request.side_effect = ConnectionError('Error in connection to remote server')
+    client = HttpClient(
+        Auth(application_id=application_id, private_key=private_key),
+        http_client_options=HttpClientOptions(),
+    )
+    with raises(ConnectionError) as e:
+        client.get(host='example.com', request_path='/get_json')
+    assert mock_request.call_count == 1
+    assert 'Error in connection to remote server' in str(e.value)

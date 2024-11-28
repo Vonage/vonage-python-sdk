@@ -1,10 +1,11 @@
 pytest>=8.0.0
 requests>=2.31.0
 responses>=0.24.1
-pydantic>=2.7.1
+pydantic>=2.9.2
 typing-extensions>=4.9.0
 pyjwt[crypto]>=1.6.4
 toml>=0.10.2
+urllib3
 
 -e jwt
 -e http_client

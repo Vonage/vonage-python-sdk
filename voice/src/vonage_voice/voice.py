@@ -2,6 +2,7 @@ from typing import Optional
 
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
+from vonage_jwt.verify_jwt import verify_signature
 from vonage_utils.types import Dtmf
 from vonage_voice.models.ncco import NccoAction
 
@@ -274,3 +275,20 @@ class Voice:
             bytes: The recording data.
         """
         self._http_client.download_file_stream(url=url, file_path=file_path)
+
+    @validate_call
+    def verify_signature(self, token: str, signature: str) -> bool:
+        """Verifies that a token has been signed with the provided signature. Used to
+        verify that a webhook was sent by Vonage.
+
+        Args:
+            token (str): The token to verify.
+            signature (str): The signature to verify the token against.
+
+        Returns:
+            bool: True if the token was signed with the provided signature, False otherwise.
+
+        Raises:
+            VonageVerifyJwtError: The signature could not be verified.
+        """
+        return verify_signature(token, signature)

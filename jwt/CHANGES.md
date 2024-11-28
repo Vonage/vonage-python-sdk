@@ -1,3 +1,6 @@
+# 1.1.5
+- Improve `verify_signature` docstring
+
 # 1.1.4
 - Fix a bug with generating non-default JWTs
 

@@ -6,7 +6,9 @@ from typing import Annotated, Literal, Optional, Union
 from pydantic import BaseModel, Field, ValidationError, validate_call
 from requests import PreparedRequest, Response
 from requests.adapters import HTTPAdapter
+from requests.exceptions import ConnectionError
 from requests.sessions import Session
+from urllib3 import Retry
 from vonage_http_client.auth import Auth
 from vonage_http_client.errors import (
     AuthenticationError,
@@ -90,7 +92,9 @@ class HttpClient:
         self._adapter = HTTPAdapter(
             pool_connections=self._http_client_options.pool_connections,
             pool_maxsize=self._http_client_options.pool_maxsize,
-            max_retries=self._http_client_options.max_retries,
+            max_retries=Retry(
+                total=self._http_client_options.max_retries, backoff_factor=0.1
+            ),
         )
         self._session.mount('https://', self._adapter)
 
@@ -216,6 +220,30 @@ class HttpClient:
         sent_data_type: Literal['json', 'form', 'query_params'] = 'json',
         token: Optional[str] = None,
     ):
+        """Make an HTTP request to the specified host. This method will automatically
+        handle retries in the event of a connection error caused by a RemoteDisconnect
+        exception.
+
+        It will retry the amount of times equal to the maximum number of connections
+        allowed in a connection pool. I.e., assuming if all connections in a given pool
+        are in use but the TCP connections to the Vonage host have failed, it will retry
+        the amount of times equal to the maximum number of connections in the pool.
+
+        Args:
+            request_type (str): The type of request to make (GET, POST, PATCH, PUT, DELETE).
+            host (str): The host to make the request to.
+            request_path (str, optional): The path to make the request to.
+            params (dict, optional): The parameters to send with the request.
+            auth_type (str, optional): The type of authentication to use with the request.
+            sent_data_type (str, optional): The type of data being sent with the request.
+            token (str, optional): The token to use for OAuth2 authentication.
+
+        Returns:
+            dict: The response data from the request.
+
+        Raises:
+            ConnectionError: If the request fails after the maximum number of retries.
+        """
         url = f'https://{host}{request_path}'
         logger.debug(
             f'{request_type} request to {url}, with data: {params}; headers: {self._headers}'
@@ -248,8 +276,23 @@ class HttpClient:
         elif sent_data_type == 'form':
             request_params['data'] = params
 
-        with self._session.request(**request_params) as response:
-            return self._parse_response(response)
+        max_retries = self._http_client_options.pool_maxsize or 10
+        attempt = 0
+        while attempt < max_retries:
+            try:
+                with self._session.request(**request_params) as response:
+                    return self._parse_response(response)
+            except ConnectionError as e:
+                logger.debug(f'Connection Error: {e}')
+                if 'RemoteDisconnected' in str(e.args):
+                    attempt += 1
+                    if attempt >= max_retries:
+                        raise e
+                    logger.debug(
+                        f'ConnectionError caused by RemoteDisconnected exception. Retrying request, attempt {attempt + 1} of {max_retries}'
+                    )
+                else:
+                    raise e
 
     def download_file_stream(self, url: str, file_path: str) -> bytes:
         """Download a file from a URL and save it to a local file. This method streams the
@@ -272,6 +315,8 @@ class HttpClient:
         )
         try:
             with self._session.get(url, headers=headers, stream=True) as response:
+                if response.status_code >= 400:
+                    self._parse_response(response)
                 with open(file_path, 'wb') as f:
                     for chunk in response.iter_content(chunk_size=4096):
                         f.write(chunk)
@@ -296,8 +341,6 @@ class HttpClient:
             try:
                 return response.json()
             except JSONDecodeError:
-                if hasattr(response.headers, 'Content-Type'):
-                    return response.content
                 return None
         if response.status_code >= 400:
             content_type = response.headers['Content-Type'].split(';', 1)[0]

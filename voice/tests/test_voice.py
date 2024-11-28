@@ -408,3 +408,29 @@ def test_play_dtmf_into_call():
     response = voice.play_dtmf_into_call(uuid, dtmf='1234*#')
     assert response.message == 'DTMF sent'
     assert response.uuid == uuid
+
+
+@responses.activate
+def test_download_recording():
+    build_response(
+        path,
+        'GET',
+        'https://api.nexmo.com/v1/files/aaaaaaaa-bbbb-cccc-dddd-0123456789ab',
+        'file_stream.mp3',
+    )
+
+    voice.download_recording(
+        url='https://api.nexmo.com/v1/files/aaaaaaaa-bbbb-cccc-dddd-0123456789ab',
+        file_path='voice/tests/data/file_stream.mp3',
+    )
+
+    with open('voice/tests/data/file_stream.mp3', 'rb') as file:
+        file_content = file.read()
+        assert file_content.startswith(b'ID3')
+
+
+def test_verify_signature():
+    token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE2OTc2MzQ2ODAsImV4cCI6MzMyNTQ1NDA4MjgsImF1ZCI6IiIsInN1YiI6IiJ9.88vJc3I2HhuqEDixHXVhc9R30tA6U_HQHZTC29y6CGM'
+    valid_signature = "qwertyuiopasdfghjklzxcvbnm123456"
+
+    assert voice.verify_signature(token, valid_signature) is True

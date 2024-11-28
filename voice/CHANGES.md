@@ -1,3 +1,8 @@
+# 1.1.0
+- Add `Voice.get_recording` method to get call recordings
+- Add `Voice.verify_signature` method to expose the verification functionality from `vonage-jwt`
+- Updated dependency versions
+
 # 1.0.6
 - Update dependency versions
 

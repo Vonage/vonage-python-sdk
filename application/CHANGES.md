@@ -1,3 +1,6 @@
+# 2.0.1
+- Updated dependency versions
+
 # 2.0.0
 - Rename `params` -> `config` in method arguments
 - Update dependency versions

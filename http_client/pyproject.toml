@@ -7,7 +7,7 @@ authors = [{ name = "Vonage", email = "devrel@vonage.com" }]
 requires-python = ">=3.9"
 dependencies = [
   "vonage-utils>=1.1.4",
-  "vonage-jwt>=1.1.4",
+  "vonage-jwt>=1.1.5",
   "requests>=2.27.0",
   "typing-extensions>=4.9.0",
   "pydantic>=2.9.2",

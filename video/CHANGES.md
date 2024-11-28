@@ -1,3 +1,6 @@
+# 1.0.4
+- Updated dependency versions
+
 # 1.0.3
 - Make the filter optional in `Video.list_archives` and `Video.list_broadcasts`
 

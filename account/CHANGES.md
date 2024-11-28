@@ -1,3 +1,6 @@
+# 1.1.1
+- Update dependency versions
+
 # 1.1.0
 - Add support for the [Vonage Pricing API](https://developer.vonage.com/en/api/pricing)
 - Update dependency versions

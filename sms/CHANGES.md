@@ -1,3 +1,6 @@
+# 1.1.5
+- Updated dependency versions
+
 # 1.1.4
 - Update dependency versions
 

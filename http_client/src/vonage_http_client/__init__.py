@@ -1,6 +1,7 @@
 from .auth import Auth
 from .errors import (
     AuthenticationError,
+    FileStreamingError,
     ForbiddenError,
     HttpRequestError,
     InvalidAuthError,

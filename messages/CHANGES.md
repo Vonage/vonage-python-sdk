@@ -1,5 +1,6 @@
 # 1.3.0
 - Add support for API key/secret header authentication
+- Updated dependency versions
 
 # 1.2.3
 - Update dependency versions

@@ -1,5 +1,6 @@
 # 2.1.0
 - Add support for API key/secret header authentication
+- Updated dependency versions
 
 # 2.0.0
 - Rename `vonage-verify-v2` package -> `vonage-verify`, `VerifyV2` -> `Verify`, etc. This package now contains code for the Verify v2 API

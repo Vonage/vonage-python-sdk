@@ -1,3 +1,6 @@
+# 1.2.1
+- Updated dependency versions
+
 # 1.2.0
 - Expose more properties in the top-level `vonage_users` scope
 - Update dependency versions

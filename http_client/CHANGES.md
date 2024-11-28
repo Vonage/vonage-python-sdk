@@ -1,3 +1,10 @@
+- Updated dependency versions
+# 1.5.0
+- Add new `HttpClient.download_file_stream` method
+- Add new `FileStreamingError` exception type
+- Add backoff exponential timeout increase for HTTP request retries
+- Add retries for `RemoteDisconnected` exceptions
+
 # 1.4.3
 - Update JWT dependency version
 

@@ -1,5 +1,10 @@
 # 4.1.0
 - Add support for API key/secret header authentication for the Messages and Verify APIs (JWT is the default and recommended method)
+- Add `Voice.get_recording` method to get call recordings
+- Add `Voice.verify_signature` method to expose the verification functionality from `vonage-jwt`
+- Add backoff exponential timeout increase for HTTP request retries
+- Add automatic retries for `RemoteDisconnected` exceptions
+- Add new `http_client.FileStreamingError` exception type
 
 # 4.0.0
 A complete, ground-up rewrite of the SDK.

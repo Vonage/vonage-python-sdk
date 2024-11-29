@@ -1,3 +1,6 @@
+# 4.1.1
+- Include new package versions
+
 # 4.1.0
 - Add support for API key/secret header authentication for the Messages and Verify APIs (JWT is the default and recommended method)
 - Add `Voice.get_recording` method to get call recordings

@@ -1,3 +1,6 @@
+# 1.1.1
+- Remove maximum webhook uri length constraint
+
 # 1.1.0
 - Add `Voice.get_recording` method to get call recordings
 - Add `Voice.verify_signature` method to expose the verification functionality from `vonage-jwt`

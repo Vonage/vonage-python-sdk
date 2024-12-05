@@ -37,7 +37,7 @@ class Websocket(BaseModel):
         headers (Optional[dict]): The headers to include with the WebSocket connection.
     """
 
-    uri: str = Field(..., min_length=1, max_length=50)
+    uri: str = Field(..., min_length=1)
     content_type: Literal['audio/l16;rate=8000', 'audio/l16;rate=16000'] = Field(
         'audio/l16;rate=16000', serialization_alias='content-type'
     )

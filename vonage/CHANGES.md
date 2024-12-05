@@ -1,3 +1,6 @@
+# 4.1.2
+- Remove max length constraint in Voice API for webhook URIs
+
 # 4.1.1
 - Include new package versions
 

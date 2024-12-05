@@ -21,7 +21,7 @@ dependencies = [
   "vonage-verify>=2.1.0",
   "vonage-verify-legacy>=1.0.1",
   "vonage-video>=1.0.4",
-  "vonage-voice>=1.1.0",
+  "vonage-voice>=1.1.1",
 ]
 classifiers = [
   "Programming Language :: Python",

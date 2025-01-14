@@ -16,7 +16,6 @@ urllib3
 -e network_number_verification
 -e network_sim_swap
 -e number_insight
--e number_insight_v2
 -e number_management
 -e sms
 -e subaccounts

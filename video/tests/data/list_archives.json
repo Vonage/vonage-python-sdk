@@ -45,7 +45,8 @@
             "multiArchiveTag": "my-multi-archive",
             "event": "archive",
             "resolution": "1280x720",
-            "url": "https://example.com/archive.mp4"
+            "url": "https://example.com/archive.mp4",
+            "maxBitrate": 2000000
         }
     ]
 }

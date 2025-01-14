@@ -127,6 +127,7 @@ def test_list_archives():
     assert archives[1].duration == 134
     assert archives[1].sha256_sum == 'test_sha256_sum'
     assert archives[1].url == 'https://example.com/archive.mp4'
+    assert archives[1].max_bitrate == 2_000_000
 
 
 @responses.activate
@@ -150,6 +151,7 @@ def test_start_archive():
         output_mode=OutputMode.COMPOSED,
         resolution=VideoResolution.RES_1280x720,
         stream_mode=StreamMode.MANUAL,
+        max_bitrate=2_000_000,
     )
 
     archive = video.start_archive(archive_options)
@@ -162,6 +164,7 @@ def test_start_archive():
     assert archive.status == 'started'
     assert archive.name == 'first archive test'
     assert archive.resolution == '1280x720'
+    assert archive.max_bitrate == 2_000_000
 
 
 @responses.activate

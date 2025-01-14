@@ -1,3 +1,6 @@
+# 1.1.2
+- Update incorrect return type annotation for `Voice.download_recording`
+
 # 1.1.1
 - Remove maximum webhook uri length constraint
 

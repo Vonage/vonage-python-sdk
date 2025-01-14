@@ -343,18 +343,17 @@ class HttpClient:
             except JSONDecodeError:
                 return None
         if response.status_code >= 400:
-            content_type = response.headers['Content-Type'].split(';', 1)[0]
             logger.warning(
                 f'Http Response Error! Status code: {response.status_code}; content: {repr(response.text)}; from url: {response.url}'
             )
             if response.status_code == 401:
-                raise AuthenticationError(response, content_type)
+                raise AuthenticationError(response)
             if response.status_code == 403:
-                raise ForbiddenError(response, content_type)
+                raise ForbiddenError(response)
             elif response.status_code == 404:
-                raise NotFoundError(response, content_type)
+                raise NotFoundError(response)
             elif response.status_code == 429:
-                raise RateLimitedError(response, content_type)
+                raise RateLimitedError(response)
             elif response.status_code == 500:
-                raise ServerError(response, content_type)
-        raise HttpRequestError(response, content_type)
+                raise ServerError(response)
+        raise HttpRequestError(response)

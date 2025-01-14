@@ -19,5 +19,6 @@
     "multiArchiveTag": "my-multi-archive",
     "event": "archive",
     "resolution": "1280x720",
-    "url": null
+    "url": null,
+    "maxBitrate": 2000000
 }

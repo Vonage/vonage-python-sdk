@@ -69,6 +69,8 @@ class Archive(BaseModel):
         url (str, Optional): The download URL of the available archive file.
             This is only set for an archive with the status set to `available`.
         transcription (Transcription, Optional): Transcription options for the archive.
+        max_bitrate (int, Optional): The maximum video bitrate of the archive, in bits per
+            second. This is only valid for composed archives.
     """
 
     id: Optional[str] = None
@@ -94,6 +96,7 @@ class Archive(BaseModel):
     streams: Optional[list[VideoStream]] = None
     url: Optional[str] = None
     transcription: Optional[Transcription] = None
+    max_bitrate: Optional[int] = Field(None, validation_alias='maxBitrate')
 
 
 class CreateArchiveRequest(BaseModel):
@@ -114,7 +117,8 @@ class CreateArchiveRequest(BaseModel):
         resolution (VideoResolution, Optional): The resolution of the archive.
         stream_mode (StreamMode, Optional): Whether streams included in the archive are selected
             automatically ("auto", the default) or manually ("manual").
-
+        max_bitrate (int, Optional): The maximum video bitrate of the archive, in bits per
+            second. This is only valid for composed archives.
     Raises:
         NoAudioOrVideoError: If neither `has_audio` nor `has_video` is set.
         IndividualArchivePropertyError: If `resolution` or `layout` is set for individual archives
@@ -133,6 +137,9 @@ class CreateArchiveRequest(BaseModel):
     output_mode: Optional[OutputMode] = Field(None, serialization_alias='outputMode')
     resolution: Optional[VideoResolution] = None
     stream_mode: Optional[StreamMode] = Field(None, serialization_alias='streamMode')
+    max_bitrate: Optional[int] = Field(
+        None, ge=100_000, le=6_000_000, serialization_alias='maxBitrate'
+    )
 
     @model_validator(mode='after')
     def validate_audio_or_video(self):

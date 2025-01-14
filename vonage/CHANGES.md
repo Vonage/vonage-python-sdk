@@ -1,3 +1,8 @@
+# 4.2.0
+- Add new `max_bitrate` field for Video API archives
+- Fix a bug with error types
+- Update an outdated Voice class type hint
+
 # 4.1.2
 - Remove max length constraint in Voice API for webhook URIs
 

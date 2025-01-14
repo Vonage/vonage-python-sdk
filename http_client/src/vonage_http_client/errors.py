@@ -1,4 +1,5 @@
 from json import JSONDecodeError, dumps
+from typing import Optional
 
 from requests import Response
 from vonage_utils.errors import VonageError
@@ -21,32 +22,32 @@ class HttpRequestError(VonageError):
 
     Args:
         response (requests.Response): The HTTP response object.
-        content_type (str): The response content type.
 
     Attributes:
         response (requests.Response): The HTTP response object.
         message (str): The returned error message.
     """
 
-    def __init__(self, response: Response, content_type: str):
+    def __init__(self, response: Response):
         self.response = response
-        self.set_error_message(self.response, content_type)
+        self.message = self._format_error_message()
         super().__init__(self.message)
 
-    def set_error_message(self, response: Response, content_type: str):
-        body = None
-        if content_type == 'application/json':
-            try:
-                body = dumps(response.json(), indent=4)
-            except JSONDecodeError:
-                pass
-        else:
-            body = response.text
+    def _format_error_message(self) -> str:
+        body = self._get_response_body()
+        base_message = f'{self.response.status_code} response from {self.response.url}'
 
         if body:
-            self.message = f'{response.status_code} response from {response.url}. Error response body: \n{body}'
-        else:
-            self.message = f'{response.status_code} response from {response.url}.'
+            return f'{base_message}. Error response body: \n{body}'
+        return base_message
+
+    def _get_response_body(self) -> Optional[str]:
+        if not self.response.content:
+            return None
+        try:
+            return dumps(self.response.json(), indent=4)
+        except JSONDecodeError:
+            return self.response.text
 
 
 class AuthenticationError(HttpRequestError):
@@ -56,15 +57,14 @@ class AuthenticationError(HttpRequestError):
 
     Args:
         response (requests.Response): The HTTP response object.
-        content_type (str): The response content type.
 
     Attributes (inherited from HttpRequestError parent exception):
         response (requests.Response): The HTTP response object.
         message (str): The returned error message.
     """
 
-    def __init__(self, response: Response, content_type: str):
-        super().__init__(response, content_type)
+    def __init__(self, response: Response):
+        super().__init__(response)
 
 
 class ForbiddenError(HttpRequestError):
@@ -74,15 +74,14 @@ class ForbiddenError(HttpRequestError):
 
     Args:
         response (requests.Response): The HTTP response object.
-        content_type (str): The response content type.
 
     Attributes (inherited from HttpRequestError parent exception):
         response (requests.Response): The HTTP response object.
         message (str): The returned error message.
     """
 
-    def __init__(self, response: Response, content_type: str):
-        super().__init__(response, content_type)
+    def __init__(self, response: Response):
+        super().__init__(response)
 
 
 class NotFoundError(HttpRequestError):
@@ -92,15 +91,14 @@ class NotFoundError(HttpRequestError):
 
     Args:
         response (requests.Response): The HTTP response object.
-        content_type (str): The response content type.
 
     Attributes (inherited from HttpRequestError parent exception):
         response (requests.Response): The HTTP response object.
         message (str): The returned error message.
     """
 
-    def __init__(self, response: Response, content_type: str):
-        super().__init__(response, content_type)
+    def __init__(self, response: Response):
+        super().__init__(response)
 
 
 class RateLimitedError(HttpRequestError):
@@ -111,15 +109,14 @@ class RateLimitedError(HttpRequestError):
 
     Args:
         response (requests.Response): The HTTP response object.
-        content_type (str): The response content type.
 
     Attributes (inherited from HttpRequestError parent exception):
         response (requests.Response): The HTTP response object.
         message (str): The returned error message.
     """
 
-    def __init__(self, response: Response, content_type: str):
-        super().__init__(response, content_type)
+    def __init__(self, response: Response):
+        super().__init__(response)
 
 
 class ServerError(HttpRequestError):
@@ -130,15 +127,14 @@ class ServerError(HttpRequestError):
 
     Args:
         response (requests.Response): The HTTP response object.
-        content_type (str): The response content type.
 
     Attributes (inherited from HttpRequestError parent exception):
         response (requests.Response): The HTTP response object.
         message (str): The returned error message.
     """
 
-    def __init__(self, response: Response, content_type: str):
-        super().__init__(response, content_type)
+    def __init__(self, response: Response):
+        super().__init__(response)
 
 
 class FileStreamingError(VonageError):

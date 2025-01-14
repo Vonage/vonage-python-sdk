@@ -250,7 +250,8 @@ class Voice:
 
         Args:
             uuid (str): The UUID of the call to play DTMF tones into.
-            dtmf (Dtmf): The DTMF tones to play.
+            dtmf (Dtmf): The DTMF tones to play, as a string of digits. It can include
+                the characters from 0-9, #, *, and p.
 
         Returns:
             CallMessage: Object with information about the call.
@@ -264,15 +265,12 @@ class Voice:
         return CallMessage(**response)
 
     @validate_call
-    def download_recording(self, url: str, file_path: str) -> bytes:
+    def download_recording(self, url: str, file_path: str) -> None:
         """Downloads a call recording from the specified URL and saves it to a local file.
 
         Args:
             url (str): The URL of the recording to get.
             file_path (str): The path to save the recording to.
-
-        Returns:
-            bytes: The recording data.
         """
         self._http_client.download_file_stream(url=url, file_path=file_path)
 

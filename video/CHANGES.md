@@ -1,3 +1,6 @@
+# 1.1.0
+- Add new `max_bitrate` field for archives
+
 # 1.0.4
 - Updated dependency versions
 

@@ -1,4 +1,6 @@
-- Updated dependency versions
+# 1.5.1
+- Remove unnecessary `Content-Type` check on error
+
 # 1.5.0
 - Add new `HttpClient.download_file_stream` method
 - Add new `FileStreamingError` exception type

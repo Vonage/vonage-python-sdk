@@ -170,7 +170,7 @@ def test_submit_sms_conversion_402():
     try:
         sms.submit_sms_conversion('3295d748-4e14-4681-af78-166dca3c5aab')
     except HttpRequestError as err:
-        assert err.message == '402 response from https://api.nexmo.com/conversions/sms.'
+        assert '402 response from https://api.nexmo.com/conversions/sms.' in err.message
 
 
 def test_http_client_property():

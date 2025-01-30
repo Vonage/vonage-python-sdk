@@ -1,3 +1,6 @@
+# 1.2.0
+- Make all models originally accessed by `vonage_video.models.***` available at the top level of the package, i.e. `vonage_video.***`
+
 # 1.1.0
 - Add new `max_bitrate` field for archives
 

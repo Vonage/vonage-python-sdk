@@ -27,20 +27,20 @@ interpreter_constraints = ['==3.12.*']
 args = ['-vv', '--no-header']
 
 [coverage-py]
-interpreter_constraints = ['>=3.8']
+interpreter_constraints = ['>=3.9']
 report = ['html', 'console']
 
 [black]
 args = ['--line-length=90', '--skip-string-normalization']
-interpreter_constraints = ['>=3.8']
+interpreter_constraints = ['>=3.9']
 
 [isort]
 args = ['--profile=black', '--line-length=90']
-interpreter_constraints = ['>=3.8']
+interpreter_constraints = ['>=3.9']
 
 [docformatter]
 args = ['--wrap-summaries=90', '--wrap-descriptions=90']
-interpreter_constraints = ['>=3.8']
+interpreter_constraints = ['>=3.9']
 
 [autoflake]
-interpreter_constraints = ['>=3.8']
+interpreter_constraints = ['>=3.9']

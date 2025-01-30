@@ -4,14 +4,14 @@ import responses
 from pytest import raises
 from responses.matchers import json_params_matcher
 from vonage_http_client.http_client import HttpClient
-from vonage_voice.errors import VoiceError
-from vonage_voice.models.ncco import Talk
-from vonage_voice.models.requests import (
+from vonage_voice import (
     AudioStreamOptions,
     CreateCallRequest,
     ListCallsFilter,
     TtsStreamOptions,
 )
+from vonage_voice.errors import VoiceError
+from vonage_voice.models.ncco import Talk
 from vonage_voice.models.responses import CreateCallResponse
 from vonage_voice.voice import Voice
 

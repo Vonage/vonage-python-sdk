@@ -1,3 +1,6 @@
+# 1.2.0
+- Make all models originally accessed by `vonage_voice.models.***` available at the top level of the package, i.e. `vonage_voice.***`
+
 # 1.1.2
 - Update incorrect return type annotation for `Voice.download_recording`
 

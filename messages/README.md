@@ -8,10 +8,10 @@ It is recommended to use this as part of the main `vonage` package. The examples
 
 ### How to Construct a Message
 
-In order to send a message, you must construct a message object of the correct type. These are all found under `vonage_messages.models`.
+In order to send a message, you must construct a message object of the correct type.
 
 ```python
-from vonage_messages.models import Sms
+from vonage_messages import Sms
 
 message = Sms(
     from_='Vonage APIs',
@@ -35,7 +35,7 @@ Some message types have submodels with additional fields. In this case, import t
 e.g.
 
 ```python
-from vonage_messages.models import MessengerImage, MessengerOptions, MessengerResource
+from vonage_messages import MessengerImage, MessengerOptions, MessengerResource
 
 messenger = MessengerImage(
     to='1234567890',
@@ -51,7 +51,7 @@ To send a message, access the `Messages.send` method via the main Vonage object,
 
 ```python
 from vonage import Auth, Vonage
-from vonage_messages.models import Sms
+from vonage_messages import Sms
 
 vonage_client = Vonage(Auth(application_id='my-application-id', private_key='my-private-key'))
 

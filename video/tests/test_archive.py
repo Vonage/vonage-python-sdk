@@ -2,7 +2,18 @@ from os.path import abspath
 
 import responses
 from pytest import raises
-from vonage_http_client.http_client import HttpClient
+from vonage_http_client import HttpClient
+from vonage_video import (
+    AddStreamRequest,
+    ComposedLayout,
+    CreateArchiveRequest,
+    LayoutType,
+    ListArchivesFilter,
+    OutputMode,
+    StreamMode,
+    Video,
+    VideoResolution,
+)
 from vonage_video.errors import (
     IndividualArchivePropertyError,
     InvalidArchiveStateError,
@@ -10,14 +21,6 @@ from vonage_video.errors import (
     LayoutStylesheetError,
     NoAudioOrVideoError,
 )
-from vonage_video.models.archive import (
-    ComposedLayout,
-    CreateArchiveRequest,
-    ListArchivesFilter,
-)
-from vonage_video.models.common import AddStreamRequest
-from vonage_video.models.enums import LayoutType, OutputMode, StreamMode, VideoResolution
-from vonage_video.video import Video
 
 from testutils import build_response, get_mock_jwt_auth
 

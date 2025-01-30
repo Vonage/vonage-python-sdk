@@ -1,3 +1,6 @@
+# 1.4.0
+- Make all models originally accessed by `vonage_messages.models.***` available at the top level of the package, i.e. `vonage_messages.***`
+
 # 1.3.0
 - Add support for API key/secret header authentication
 - Updated dependency versions

@@ -60,10 +60,10 @@ vonage_client.video.video_api_method...
 
 ## Accessing Video API Data Models
 
-You can access data models for the Video API, e.g. as arguments to video methods, by importing them from the `vonage_video.models` package, e.g.
+You can access data models for the Video API, e.g. as arguments to video methods, by importing them from the `vonage_video` package, e.g.
 
 ```python
-from vonage_video.models import SessionOptions
+from vonage_video import SessionOptions
 
 session_options = SessionOptions(...)
 
@@ -78,7 +78,7 @@ vonage_client.video.create_session(session_options)
 
 There are some changes to methods between the `opentok` SDK and the Video API implementation in the `vonage-video` SDK.
 
-- Any positional parameters in method signatures have been replaced with data models in the `vonage-video` package, stored at `vonage_video.models`.
+- Any positional parameters in method signatures have been replaced with data models in the `vonage-video` package.
 - Methods now return responses as Pydantic data models.
 - Some methods have been renamed, for clarity and/or to better reflect what the method does. These are listed below:
 

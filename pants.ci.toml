@@ -2,4 +2,4 @@
 colors = true
 
 [python]
-interpreter_constraints = ['>=3.8']
+interpreter_constraints = ['>=3.9']

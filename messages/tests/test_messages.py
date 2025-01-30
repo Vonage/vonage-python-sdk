@@ -2,17 +2,15 @@ from os.path import abspath
 
 import responses
 from pytest import raises
-from vonage_http_client.auth import Auth
-from vonage_http_client.errors import HttpRequestError
-from vonage_http_client.http_client import HttpClient, HttpClientOptions
-from vonage_messages.messages import Messages
-from vonage_messages.models import Sms
-from vonage_messages.models.messenger import (
+from vonage_http_client import Auth, HttpClient, HttpClientOptions, HttpRequestError
+from vonage_messages import (
+    Messages,
     MessengerImage,
     MessengerOptions,
     MessengerResource,
+    SendMessageResponse,
+    Sms,
 )
-from vonage_messages.responses import SendMessageResponse
 
 from testutils import build_response, get_mock_api_key_auth, get_mock_jwt_auth
 

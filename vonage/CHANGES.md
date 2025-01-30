@@ -1,3 +1,8 @@
+# 4.3.0
+- Make all models originally accessed by `vonage_voice.models.***` available at the top level of the package, i.e. `vonage_voice.***`
+- Make all models originally accessed by `vonage_video.models.***` available at the top level of the package, i.e. `vonage_video.***`
+- Make all models originally accessed by `vonage_messages.models.***` available at the top level of the package, i.e. `vonage_messages.***`
+
 # 4.2.0
 - Add new `max_bitrate` field for Video API archives
 - Fix a bug with error types

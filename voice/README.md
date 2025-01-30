@@ -4,7 +4,7 @@ This package contains the code to use [Vonage's Voice API](https://developer.von
 
 ## Structure
 
-There is a `Voice` class which contains the methods used to call Vonage APIs. To call many of the APIs, you need to pass a Pydantic model with the required options. These can be accessed from the `vonage_voice.models` subpackage. Errors can be accessed from the `vonage_voice.errors` module.
+There is a `Voice` class which contains the methods used to call Vonage APIs. To call many of the APIs, you need to pass a Pydantic model with the required options. Errors can be accessed from the `vonage_voice.errors` module.
 
 ## Usage
 
@@ -21,7 +21,7 @@ vonage_client = Vonage(Auth('MY_AUTH_INFO'))
 To create a call, you must pass an instance of the `CreateCallRequest` model to the `create_call` method. If supplying an NCCO, import the NCCO actions you want to use and pass them in as a list to the `ncco` model field.
 
 ```python
-from vonage_voice.models import CreateCallRequest, Talk
+from vonage_voice import CreateCallRequest, Talk
 
 ncco = [Talk(text='Hello world', loop=3, language='en-GB')]
 
@@ -43,7 +43,7 @@ print(response.model_dump())
 calls, next_record_index = vonage_client.voice.list_calls()
 
 # Specify filtering options
-from vonage_voice.models import ListCallsFilter
+from vonage_voice import ListCallsFilter
 
 call_filter = ListCallsFilter(
     status='completed',
@@ -104,7 +104,7 @@ vonage_client.voice.unearmuff('UUID')
 ### Play Audio Into a Call
 
 ```python
-from vonage_voice.models import AudioStreamOptions
+from vonage_voice import AudioStreamOptions
 
 # Only the `stream_url` option is required
 options = AudioStreamOptions(
@@ -122,7 +122,7 @@ vonage_client.voice.stop_audio_stream('UUID')
 ### Play TTS Into a Call
 
 ```python
-from vonage_voice.models import TtsStreamOptions
+from vonage_voice import TtsStreamOptions
 
 # Only the `text` field is required
 options = TtsStreamOptions(

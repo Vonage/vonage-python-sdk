@@ -1,7 +1,7 @@
 from .client import *
 from .ncco_builder.ncco import *
 
-__version__ = "3.17.4"
+__version__ = "3.18.0"
 
 from warnings import warn
 

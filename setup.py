@@ -9,7 +9,7 @@ with io.open(os.path.join(os.path.dirname(__file__), "README.md"), encoding="utf
 
 setup(
     name="vonage",
-    version="3.17.4",
+    version="3.18.0",
     description="Vonage Server SDK for Python (Deprecated - use vonage>=4.0.0)",
     long_description=long_description,
     long_description_content_type="text/markdown",

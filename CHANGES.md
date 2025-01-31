@@ -1,3 +1,6 @@
+# 3.18.0
+- Mark v3 as deprecated
+
 # 3.17.4
 - Drop support for Python 3.8, add support for 3.13
 

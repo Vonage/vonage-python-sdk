@@ -7,6 +7,25 @@
 [![Python versions supported](https://img.shields.io/pypi/pyversions/vonage.svg)](https://pypi.python.org/pypi/vonage)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
+
+-----
+
+# DEPRECATED
+
+⚠️ **NOTE: This version of the Vonage Python SDK is now deprecated. It is strongly recommended to use the current major version of the SDK instead.** ⚠️
+
+Please upgrade to version 4 or later:
+
+```bash
+pip install "vonage>=4.0.0"
+```
+
+### Migration Guide
+
+To help you to move away from using v3, [you can find a migration guide here](https://github.com/Vonage/vonage-python-sdk/blob/main/V3_TO_V4_SDK_MIGRATION_GUIDE.md).
+
+-------
+
 This is the Python server SDK for Vonage's API. To use it you'll
 need a Vonage account. Sign up [for free at vonage.com][signup].
 

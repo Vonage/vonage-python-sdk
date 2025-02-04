@@ -1458,7 +1458,7 @@ We don't currently support asyncio in the Python SDK.
 
 We :heart: contributions! But if you plan to work on something big or controversial, please contact us by raising an issue first!
 
-We recommend working on `vonage-python-sdk` within a virtual environment - belowe we're using the [venv](https://docs.python.org/3/library/venv.html)] module:
+We recommend working on `vonage-python-sdk` within a virtual environment - below we're using the [venv](https://docs.python.org/3/library/venv.html)] module:
 
 ```bash
 # Create the virtual environment

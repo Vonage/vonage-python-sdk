@@ -44,10 +44,10 @@ It's recommended to create a new virtual environment to install the SDK. You can
 
 ```bash
 # Create the virtual environment
-python -m venv venv
+python3 -m venv venv
 
 # Activate the virtual environment in Mac/Linux
-source venv/bin/activate
+. ./venv/bin/activate
 
 # Or on Windows Command Prompt
 venv\Scripts\activate
@@ -1462,10 +1462,10 @@ We recommend working on `vonage-python-sdk` within a virtual environment - below
 
 ```bash
 # Create the virtual environment
-python -m venv venv
+python3 -m venv venv
 
 # Activate the virtual environment in Mac/Linux
-source venv/bin/activate
+. ./venv/bin/activate
 
 # Or on Windows Command Prompt
 venv\Scripts\activate

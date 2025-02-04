@@ -44,10 +44,10 @@ It's recommended to create a new virtual environment to install the SDK. You can
 
 ```bash
 # Create the virtual environment
-python3 -m venv venv
+python -m venv venv
 
 # Activate the virtual environment in Mac/Linux
-. ./venv/bin/activate
+source venv/bin/activate
 
 # Or on Windows Command Prompt
 venv\Scripts\activate
@@ -1458,7 +1458,20 @@ We don't currently support asyncio in the Python SDK.
 
 We :heart: contributions! But if you plan to work on something big or controversial, please contact us by raising an issue first!
 
-We recommend working on `vonage-python-sdk` with a [virtualenv][virtualenv]. The following command will install all the Python dependencies you need to run the tests:
+We recommend working on `vonage-python-sdk` within a virtual environment - belowe we're using the [venv](https://docs.python.org/3/library/venv.html)] module:
+
+```bash
+# Create the virtual environment
+python -m venv venv
+
+# Activate the virtual environment in Mac/Linux
+source venv/bin/activate
+
+# Or on Windows Command Prompt
+venv\Scripts\activate
+```
+
+The following command will install all the Python dependencies you need to run the tests:
 
 ```bash
 pip install -r requirements.txt
@@ -1467,7 +1480,7 @@ pip install -r requirements.txt
 The tests are all written with pytest. You run them with:
 
 ```bash
-pytest -v
+PYTHONPATH=. pytest -v
 ```
 
 We use [Black](https://black.readthedocs.io/en/stable/index.html) for code formatting, with our config in the `pyproject.toml` file. To ensure a PR follows the right format, you can set up and use our pre-commit settings with

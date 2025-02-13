@@ -3,7 +3,6 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 from vonage_utils.types import PhoneNumber, SipUri
 from vonage_voice.models.enums import Channel
-from vonage_voice.models.input_types import Dtmf
 
 
 class Phone(BaseModel):

@@ -1,3 +1,4 @@
+import json
 from os.path import abspath
 
 import responses
@@ -8,6 +9,7 @@ from vonage_voice import (
     AudioStreamOptions,
     CreateCallRequest,
     ListCallsFilter,
+    Sip,
     TtsStreamOptions,
 )
 from vonage_voice.errors import VoiceError
@@ -35,9 +37,42 @@ def test_create_call_basic_ncco():
     ncco = [Talk(text='Hello world')]
     call = CreateCallRequest(
         ncco=ncco,
-        to=[{'type': 'sip', 'uri': 'sip:test@example.com'}],
+        to=[
+            Sip(
+                uri='sip:test@example.com',
+                headers={'location': 'New York City'},
+                standard_headers={'User-to-User': '342342ef34;encoding=hex'},
+            )
+        ],
         random_from_number=True,
     )
+
+    response = voice.create_call(call)
+
+    body = json.loads(voice.http_client.last_request.body)
+    assert body['to'][0]['headers'] == {'location': 'New York City'}
+    assert body['to'][0]['standard_headers'] == {
+        'User-to-User': '342342ef34;encoding=hex'
+    }
+    assert type(response) == CreateCallResponse
+    assert response.uuid == '106a581a-34d0-432a-a625-220221fd434f'
+    assert response.status == 'started'
+    assert response.direction == 'outbound'
+    assert response.conversation_uuid == 'CON-2be039b2-d0a4-4274-afc8-d7b241c7c044'
+
+
+@responses.activate
+def test_create_call_basic_ncco_from_sip():
+    build_response(
+        path, 'POST', 'https://api.nexmo.com/v1/calls', 'create_call.json', 201
+    )
+    ncco = [Talk(text='Hello world')]
+    call = CreateCallRequest(
+        ncco=ncco,
+        to=[Sip(uri='sip:test@example.com')],
+        from_='sip:from_sip_uri@example.com',
+    )
+
     response = voice.create_call(call)
 
     assert type(response) == CreateCallResponse
@@ -427,6 +462,15 @@ def test_download_recording():
     with open('voice/tests/data/file_stream.mp3', 'rb') as file:
         file_content = file.read()
         assert file_content.startswith(b'ID3')
+
+
+def test_download_recording_invalid_url():
+    with raises(VoiceError) as e:
+        voice.download_recording(
+            url='https://invalid.com/v1/files/aaaaaaaa-bbbb-cccc-dddd-0123456789ab',
+            file_path='voice/tests/data/file_stream.mp3',
+        )
+    assert e.match('The recording URL must be from a Vonage or Nexmo hostname.')
 
 
 def test_verify_signature():

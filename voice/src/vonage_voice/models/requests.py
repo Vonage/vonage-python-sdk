@@ -30,8 +30,7 @@ class CreateCallRequest(BaseModel):
         answer_method (Optional[Literal['POST', 'GET']]): The HTTP method used to send
             event information to `answer_url`.
         to (list[Union[ToPhone, Sip, Websocket, Vbc]]): The type of connection to call.
-        from_ (Optional[Phone]): The phone number to use when calling. Mutually exclusive
-            with the `random_from_number` property.
+        from_ (Optional[Union[Phone, str]]): The phone number or SIP URI to use when calling. Mutually exclusive with the `random_from_number` property.
         random_from_number (Optional[bool]): Whether to use a random number as the caller's
             phone number. The number will be selected from the list of the numbers assigned
             to the current application. Mutually exclusive with the `from_` property.
@@ -60,8 +59,7 @@ class CreateCallRequest(BaseModel):
     answer_url: list[str] = None
     answer_method: Optional[Literal['POST', 'GET']] = None
     to: list[Union[ToPhone, Sip, Websocket, Vbc]]
-
-    from_: Optional[Phone] = Field(None, serialization_alias='from')
+    from_: Optional[Union[Phone, str]] = Field(None, serialization_alias='from')
     random_from_number: Optional[bool] = None
     event_url: Optional[list[str]] = None
     event_method: Optional[Literal['POST', 'GET']] = None

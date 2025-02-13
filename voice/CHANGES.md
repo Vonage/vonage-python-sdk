@@ -1,3 +1,9 @@
+# 1.3.0
+- Add new `headers` and `standard_headers` options to the `Sip` data model
+- Add new `standardHeaders` option to the `SipEndpoint` NCCO model
+- Add check for invalid hostnames when downloading a recording with `Voice.download_recording`
+- Allow the `CreateCallRequest` model to accept a SIP URI as well as a phone number in the `from_` field
+
 # 1.2.0
 - Make all models originally accessed by `vonage_voice.models.***` available at the top level of the package, i.e. `vonage_voice.***`
 

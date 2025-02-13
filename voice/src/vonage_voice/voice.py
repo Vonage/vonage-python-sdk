@@ -4,6 +4,7 @@ from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 from vonage_jwt.verify_jwt import verify_signature
 from vonage_utils.types import Dtmf
+from vonage_voice.errors import VoiceError
 from vonage_voice.models.ncco import NccoAction
 
 from .models.requests import (
@@ -272,6 +273,9 @@ class Voice:
             url (str): The URL of the recording to get.
             file_path (str): The path to save the recording to.
         """
+        if not 'vonage.com' in url and not 'nexmo.com' in url:
+            raise VoiceError('The recording URL must be from a Vonage or Nexmo hostname.')
+
         self._http_client.download_file_stream(url=url, file_path=file_path)
 
     @validate_call

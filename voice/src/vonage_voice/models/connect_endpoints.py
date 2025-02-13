@@ -73,10 +73,14 @@ class SipEndpoint(BaseModel):
         headers (Optional[dict]): The headers to include with the SIP connection. To use
             TLS and/or SRTP, include respectively `transport=tls` or `media=srtp` to the URL with
             the semicolon `;` as a delimiter.
+        standardHeaders (Optional[dict]): Standard SIP headers to include in the request. Unlike
+            `headers`, these are not prepended with `X-`. This should be of the form
+            `{'User-to-User': '342342ef34;encoding=hex'}`.
     """
 
     uri: SipUri
     headers: Optional[dict] = None
+    standardHeaders: Optional[dict] = None
     type: ConnectEndpointType = ConnectEndpointType.SIP
 
 

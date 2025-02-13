@@ -113,10 +113,13 @@ def test_create_connect_endpoints():
     }
 
     assert connect_endpoints.SipEndpoint(
-        uri='sip:example@sip.example.com', headers={'qwer': 'asdf'}
+        uri='sip:example@sip.example.com',
+        headers={'qwer': 'asdf'},
+        standardHeaders={'User-to-User': '342342ef34;encoding=hex'},
     ).model_dump() == {
         'uri': 'sip:example@sip.example.com',
         'headers': {'qwer': 'asdf'},
+        'standardHeaders': {'User-to-User': '342342ef34;encoding=hex'},
         'type': 'sip',
     }
 

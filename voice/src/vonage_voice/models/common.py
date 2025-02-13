@@ -3,6 +3,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 from vonage_utils.types import PhoneNumber, SipUri
 from vonage_voice.models.enums import Channel
+from vonage_voice.models.input_types import Dtmf
 
 
 class Phone(BaseModel):
@@ -21,9 +22,14 @@ class Sip(BaseModel):
 
     Args:
         uri (SipUri): The SIP URI.
+        headers (Optional[dict]): Metadata to include in the request. The headers are transmitted as part of the SIP INVITE as `X-key: value` headers.
+        standard_headers (Optional[dict]): Standard SIP headers to include in the request. Unlike `headers`, these are not prepended with `X-`.
+            This should be of the form `{'User-to-User': '342342ef34;encoding=hex'}
     """
 
     uri: SipUri
+    headers: Optional[dict] = None
+    standard_headers: Optional[dict] = None
     type: Channel = Channel.SIP
 
 

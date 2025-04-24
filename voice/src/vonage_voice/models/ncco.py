@@ -88,6 +88,8 @@ class Conversation(NccoAction):
             hear. If not provided, the participant can hear everyone. If an empty list
             is provided, the participant will not hear any other participants.
         mute (Optional[bool]): Mute the participant.
+        eventUrl (Optional[list[str]]): The URL to send asynchronous events to.
+        eventMethod (Optional[str]): The HTTP method used to send the event to `eventUrl`.
 
     Raises:
         NccoActionError: If the `mute` option is used with the `canSpeak` option.
@@ -101,6 +103,8 @@ class Conversation(NccoAction):
     canSpeak: Optional[list[str]] = None
     canHear: Optional[list[str]] = None
     mute: Optional[bool] = None
+    eventUrl: Optional[list] = None
+    eventMethod: Optional[str] = None
     action: NccoActionType = NccoActionType.CONVERSATION
 
     @model_validator(mode='after')

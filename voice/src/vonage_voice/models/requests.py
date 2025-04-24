@@ -65,7 +65,7 @@ class CreateCallRequest(BaseModel):
     event_method: Optional[Literal['POST', 'GET']] = None
     machine_detection: Optional[Literal['continue', 'hangup']] = None
     advanced_machine_detection: Optional[AdvancedMachineDetection] = None
-    length_timer: Optional[int] = Field(None, ge=1, le=7200)
+    length_timer: Optional[int] = Field(None, ge=1, le=86400)
     ringing_timer: Optional[int] = Field(None, ge=1, le=120)
 
     @model_validator(mode='after')

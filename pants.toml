@@ -1,5 +1,5 @@
 [GLOBAL]
-pants_version = '2.23.0'
+pants_version = '2.24.2'
 
 backend_packages = [
   'pants.backend.python',
@@ -21,7 +21,7 @@ enabled = false
 root_patterns = ['/', 'src/', 'tests/']
 
 [python]
-interpreter_constraints = ['==3.12.*']
+interpreter_constraints = ['==3.13.*']
 
 [pytest]
 args = ['-vv', '--no-header']

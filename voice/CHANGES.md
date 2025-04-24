@@ -1,3 +1,7 @@
+# 1.4.0
+- Increase maximum value of call `length_timer` to 86400s
+- Add additional fields `eventUrl` and `eventMethod` to NCCO model
+
 # 1.3.0
 - Add new `headers` and `standard_headers` options to the `Sip` data model
 - Add new `standardHeaders` option to the `SipEndpoint` NCCO model

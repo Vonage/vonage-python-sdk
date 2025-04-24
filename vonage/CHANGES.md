@@ -1,3 +1,6 @@
+# 4.4.1
+- Update some Voice API parameters
+
 # 4.4.0
 Vonage Voice Package:
 - Add new `headers` and `standard_headers` options to the `Sip` data model

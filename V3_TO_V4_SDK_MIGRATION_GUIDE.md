@@ -190,6 +190,8 @@ Methods have been added to help you moderate a voice call:
 - `voice.earmuff`
 - `voice.unearmuff`
 
+Also, the `voice.get_recording` method from v3 has been replaced by `voice.download_recording` in v4. The behaviour also changes as now the method will download the recording for you by streaming the response into a file.
+
 See the [Voice API samples](voice/README.md) for more information.
 
 ### Network Number Verification API

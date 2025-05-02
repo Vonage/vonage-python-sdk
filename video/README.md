@@ -283,7 +283,7 @@ sip_request_params = InitiateSipRequest(
         uri=f'sip:{vonage_number}@sip.nexmo.com;transport=tls',
         from_=f'test@vonage.com',
         headers={'header_key': 'header_value'},
-        auth=SipAuth(username='1485b9e6', password='fL8jvi4W2FmS9som'),
+        auth=SipAuth(username='your_username', password='your_password'),
         secure=False,
         video=False,
         observe_force_mute=True,

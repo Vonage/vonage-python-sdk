@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 
 
@@ -9,3 +10,4 @@ class SendMessageResponse(BaseModel):
     """
 
     message_uuid: str
+    workflow_id: Optional[str] = None

@@ -1,5 +1,5 @@
 [GLOBAL]
-pants_version = '2.24.2'
+pants_version = '2.26.0'
 
 backend_packages = [
   'pants.backend.python',

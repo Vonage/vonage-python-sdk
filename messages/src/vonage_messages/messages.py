@@ -31,21 +31,35 @@ class Messages:
         return self._http_client
 
     @validate_call
-    def send(self, message: BaseMessage) -> SendMessageResponse:
+    def send(
+        self, message: BaseMessage, failover: list[BaseMessage] = None
+    ) -> SendMessageResponse:
         """Send a message using Vonage's Messages API.
 
         Args:
             message (BaseMessage): The message to be sent as a Pydantic model.
                 Use the provided models (in `vonage_messages.models`) to create messages and pass them in to this method.
+            failover (list[BaseMessage]): A list of failover messages to be attempted if the primary message fails.
 
         Returns:
             SendMessageResponse: Response model containing the unique identifier of the sent message.
                 Access the identifier with the `message_uuid` attribute.
         """
+        body = message.model_dump(by_alias=True, exclude_none=True) or message
+
+        if failover is not None:
+            failover_body = [
+                m.model_dump(by_alias=True, exclude_none=True) or m for m in failover
+            ]
+            body = {
+                'message': body,
+                'failover': failover_body,
+            }
+
         response = self._http_client.post(
             self._http_client.api_host,
             '/v1/messages',
-            message.model_dump(by_alias=True, exclude_none=True) or message,
+            body,
             self._auth_type,
         )
 

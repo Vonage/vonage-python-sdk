@@ -1,3 +1,6 @@
+# 1.1.6
+- Make returned response fields optional
+
 # 1.1.5
 - Updated dependency versions
 

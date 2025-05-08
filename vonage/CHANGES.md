@@ -1,3 +1,6 @@
+# 4.4.2
+- vonage-sms: Make returned response fields optional
+
 # 4.4.1
 - Update some Voice API parameters
 

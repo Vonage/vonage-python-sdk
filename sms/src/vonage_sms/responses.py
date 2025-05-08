@@ -20,12 +20,12 @@ class MessageResponse(BaseModel):
             please email support.
     """
 
-    to: str
-    message_id: str = Field(..., validation_alias='message-id')
-    status: str
-    remaining_balance: str = Field(..., validation_alias='remaining-balance')
-    message_price: str = Field(..., validation_alias='message-price')
-    network: str
+    to: Optional[str] = None
+    message_id: Optional[str] = Field(None, validation_alias='message-id')
+    status: Optional[str] = None
+    remaining_balance: Optional[str] = Field(None, validation_alias='remaining-balance')
+    message_price: Optional[str] = Field(None, validation_alias='message-price')
+    network: Optional[str] = None
     client_ref: Optional[str] = Field(None, validation_alias='client-ref')
     account_ref: Optional[str] = Field(None, validation_alias='account-ref')
 

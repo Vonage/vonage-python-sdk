@@ -25,7 +25,7 @@ class NumberInsight:
 
     def __init__(self, http_client: HttpClient) -> None:
         self._http_client = http_client
-        self._auth_type = 'body'
+        self._auth_type = 'basic'
 
     @property
     def http_client(self) -> HttpClient:

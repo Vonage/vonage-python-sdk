@@ -1,5 +1,8 @@
+# 4.4.3
+- vonage-number-insight: use basic header auth instead of request body auth
+
 # 4.4.2
-- vonage-sms: Make returned response fields optional
+- vonage-sms: make returned response fields optional
 
 # 4.4.1
 - Update some Voice API parameters

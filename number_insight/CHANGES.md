@@ -1,3 +1,6 @@
+# 1.0.7
+- Use basic header auth instead of request body auth
+
 # 1.0.6
 - Updated dependency versions
 

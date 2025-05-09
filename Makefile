@@ -1,4 +1,8 @@
-.PHONY: test coverage
+.PHONY: format test coverage coverage-report install
+
+format:
+	pants lint ::
+	pants fix ::
 
 test:
 	pants test ::

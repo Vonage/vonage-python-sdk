@@ -1,3 +1,4 @@
+from json import loads
 from os.path import abspath
 
 import responses
@@ -48,6 +49,51 @@ def test_send_message():
     response = messages.send(sms)
     assert type(response) == SendMessageResponse
     assert response.message_uuid == 'd8f86df1-dec6-442f-870a-2241be27d721'
+    assert messages._auth_type == 'jwt'
+
+
+@responses.activate
+def test_send_message_with_failover():
+    build_response(
+        path,
+        'POST',
+        'https://api.nexmo.com/v1/messages',
+        'send_message_with_failover.json',
+        202,
+    )
+    sms = Sms(
+        from_='Vonage APIs',
+        to='1234567890',
+        text='Hello, World!',
+    )
+    failover = [
+        Sms(from_='Vonage APIs', to='1987654321', text='Failover message'),
+    ]
+
+    response = messages.send(sms, failover=failover)
+    print(messages._http_client.last_request.body)
+    assert loads(messages._http_client.last_request.body) == {
+        "message": {
+            "to": "1234567890",
+            "from": "Vonage APIs",
+            "text": "Hello, World!",
+            "channel": "sms",
+            "message_type": "text",
+        },
+        "failover": [
+            {
+                "to": "1987654321",
+                "from": "Vonage APIs",
+                "text": "Failover message",
+                "channel": "sms",
+                "message_type": "text",
+            }
+        ],
+    }
+    assert response.message_uuid == 'd8f86df1-dec6-442f-870a-2241be27d721'
+    assert (
+        response.workflow_id == '3TcNjguHxr2vcCZ9Ddsnq6tw8yQUpZ9rMHv9QXSxLan5ibMxqSzLdx9'
+    )
     assert messages._auth_type == 'jwt'
 
 

@@ -8,6 +8,7 @@ class SendMessageResponse(BaseModel):
 
     Attributes:
         message_uuid (str): The UUID of the sent message.
+        workflow_id [str]: Workflow ID if the `failover` parameter was used in the request.
     """
 
     message_uuid: str

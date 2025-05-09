@@ -4,8 +4,37 @@ on:
   release:
     types:
       - published
+  workflow_dispatch: # for testing
 
 jobs:
+  publish-package:
+    if: false
+    runs-on: ubuntu-latest
+    name: Publish to PyPI
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      - name: Initialize pants
+        uses: pantsbuild/actions/init-pants@main
+        with:
+          gha-cache-key: cache0-py3.13
+          named-caches-hash: ${{ hashFiles('requirements.txt') }}
+
+      - name: Publish to PyPI
+        run: "pants publish ::"
+        env:
+          PANTS_PYPI_REPOSITORY: pypi
+          PANTS_PYPI_USERNAME: __token__
+          PANTS_PYPI_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+
   notify-release:
     runs-on: ubuntu-latest
     name: Notify Release

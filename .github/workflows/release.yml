@@ -30,9 +30,8 @@ jobs:
       - name: Publish to PyPI
         run: "pants publish ::"
         env:
-          PANTS_PYPI_REPOSITORY: pypi
-          PANTS_PYPI_USERNAME: __token__
-          PANTS_PYPI_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
 
   # notify-release:
   #   runs-on: ubuntu-latest

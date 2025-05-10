@@ -28,7 +28,16 @@ jobs:
           named-caches-hash: ${{ hashFiles('requirements.txt') }}
 
       - name: Publish to PyPI
-        run: "pants publish ::"
+        run: |
+          # Get list of changed targets that are publishable
+          changed_targets=$(pants --changed-since=origin/main filter :: | grep -v "^$")
+
+          if [ -n "$changed_targets" ]; then
+            echo "Publishing changed targets: $changed_targets"
+            pants publish $changed_targets
+          else
+            echo "No changes detected, skipping publish"
+          fi
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}

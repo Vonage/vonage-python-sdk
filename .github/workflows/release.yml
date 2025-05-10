@@ -29,8 +29,12 @@ jobs:
 
       - name: Publish to PyPI
         run: |
-          # Get list of changed targets that are publishable
-          changed_targets=$(pants --changed-since=origin/main list | awk -F/ '{print $1}' | sort -u)
+          # Get the previous tag
+          previous_tag=$(git describe --tags --abbrev=0 HEAD^)
+          echo "Comparing changes since $previous_tag"
+
+          # Get list of changed targets since the previous tag
+          changed_targets=$(pants --changed-since=$previous_tag list | awk -F/ '{print $1}' | sort -u)
 
           if [ -n "$changed_targets" ]; then
             echo "Publishing changed targets: $changed_targets"

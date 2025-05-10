@@ -30,11 +30,13 @@ jobs:
       - name: Publish to PyPI
         run: |
           # Get list of changed targets that are publishable
-          changed_targets=$(pants --changed-since=origin/main filter :: | grep -v "^$")
+          changed_targets=$(pants --changed-since=origin/main list | awk -F/ '{print $1}' | sort -u)
 
           if [ -n "$changed_targets" ]; then
             echo "Publishing changed targets: $changed_targets"
-            pants publish $changed_targets
+            for target in $changed_targets; do
+              pants publish $target::
+            done
           else
             echo "No changes detected, skipping publish"
           fi

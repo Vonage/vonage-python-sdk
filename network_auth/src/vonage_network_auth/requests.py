@@ -15,6 +15,6 @@ class CreateOidcUrl(BaseModel):
     redirect_uri: str
     state: str
     login_hint: str
-    scope: Optional[
-        str
-    ] = 'openid dpv:FraudPreventionAndDetection#number-verification-verify-read'
+    scope: Optional[str] = (
+        'openid dpv:FraudPreventionAndDetection#number-verification-verify-read'
+    )

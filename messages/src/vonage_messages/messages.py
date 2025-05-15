@@ -52,7 +52,7 @@ class Messages:
                 m.model_dump(by_alias=True, exclude_none=True) or m for m in failover
             ]
             body = {
-                'message': body,
+                **body,
                 'failover': failover_body,
             }
 

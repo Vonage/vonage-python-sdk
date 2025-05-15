@@ -73,13 +73,11 @@ def test_send_message_with_failover():
     response = messages.send(sms, failover=failover)
     print(messages._http_client.last_request.body)
     assert loads(messages._http_client.last_request.body) == {
-        "message": {
-            "to": "1234567890",
-            "from": "Vonage APIs",
-            "text": "Hello, World!",
-            "channel": "sms",
-            "message_type": "text",
-        },
+        "to": "1234567890",
+        "from": "Vonage APIs",
+        "text": "Hello, World!",
+        "channel": "sms",
+        "message_type": "text",
         "failover": [
             {
                 "to": "1987654321",

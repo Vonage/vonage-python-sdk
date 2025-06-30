@@ -724,7 +724,7 @@ class Video:
                 i.e.
                 objects: list[object], count: int, next_page_offset: Optional[int]
         """
-        index = request_filter.offset + 1 or 1
+        index = 1 if request_filter is not None else request_filter.offset + 1
         page_size = request_filter.page_size
         objects = []
 

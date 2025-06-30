@@ -132,6 +132,32 @@ def test_list_archives():
     assert archives[1].url == 'https://example.com/archive.mp4'
     assert archives[1].max_bitrate == 2_000_000
 
+    @responses.activate
+    def test_list_archives_no_parameters():
+        build_response(
+            path,
+            'GET',
+            'https://video.api.vonage.com/v2/project/test_application_id/archive',
+            'list_archives.json',
+        )
+
+        filter = ListArchivesFilter(session_id='test_session_id')
+        archives, count, next_page = video.list_archives(filter)
+
+        assert count == 2
+        assert next_page is None
+        assert archives[0].id == '5b1521e6-115f-4efd-bed9-e527b87f0699'
+        assert archives[0].status == 'paused'
+        assert archives[0].resolution == '1280x720'
+        assert archives[0].session_id == 'test_session_id'
+        assert archives[1].id == 'a9cdeb69-f6cf-408b-9197-6f99e6eac5aa'
+        assert archives[1].status == 'available'
+        assert archives[1].reason == 'session ended'
+        assert archives[1].duration == 134
+        assert archives[1].sha256_sum == 'test_sha256_sum'
+        assert archives[1].url == 'https://example.com/archive.mp4'
+        assert archives[1].max_bitrate == 2_000_000
+
 
 @responses.activate
 def test_start_archive():

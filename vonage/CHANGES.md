@@ -1,3 +1,6 @@
+# 4.5.0
+- vonage-messages: add an optional "failover" property to `vonage_messages.Messages.send`
+
 # 4.4.3
 - vonage-number-insight: use basic header auth instead of request body auth
 

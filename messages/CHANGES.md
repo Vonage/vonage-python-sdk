@@ -1,3 +1,6 @@
+# 1.5.0
+- Add an optional "failover" property to `vonage_messages.Messages.send`
+
 # 1.4.0
 - Make all models originally accessed by `vonage_messages.models.***` available at the top level of the package, i.e. `vonage_messages.***`
 

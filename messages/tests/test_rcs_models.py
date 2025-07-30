@@ -25,6 +25,27 @@ def test_create_rcs_text():
     assert rcs_model.model_dump(by_alias=True, exclude_none=True) == rcs_dict
 
 
+def test_create_rcs_text_with_ampersand():
+    """Tests that RCS from fields will allow an ampersand (&) character.
+
+    See also: DEVX-10155
+    """
+    rcs_model = RcsText(
+        to='1234567890',
+        from_='Acme&SonsCo',
+        text='Hello, World!',
+    )
+    rcs_dict = {
+        'to': '1234567890',
+        'from': 'Acme&SonsCo',
+        'text': 'Hello, World!',
+        'channel': 'rcs',
+        'message_type': 'text',
+    }
+
+    assert rcs_model.model_dump(by_alias=True, exclude_none=True) == rcs_dict
+
+
 def test_create_rcs_text_all_fields():
     rcs_model = RcsText(
         to='1234567890',

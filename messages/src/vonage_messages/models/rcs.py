@@ -30,7 +30,7 @@ class BaseRcs(BaseMessage):
     """
 
     to: PhoneNumber
-    from_: str = Field(..., serialization_alias='from', pattern='^[a-zA-Z0-9-_]+$')
+    from_: str = Field(..., serialization_alias='from', pattern='^[a-zA-Z0-9-_&]+$')
     ttl: Optional[int] = Field(None, ge=300, le=259200)
     channel: ChannelType = ChannelType.RCS
 

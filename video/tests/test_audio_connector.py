@@ -20,7 +20,7 @@ video = Video(HttpClient(get_mock_jwt_auth()))
 
 
 def test_audio_connector_options_model():
-    options = AudioConnectorOptions(
+    options_no_flag = AudioConnectorOptions(
         session_id='test_session_id',
         token='test_token',
         websocket=AudioConnectorWebSocket(
@@ -30,8 +30,22 @@ def test_audio_connector_options_model():
             audio_rate=AudioSampleRate.KHZ_16,
         ),
     )
+    websocket_dict = options_no_flag.model_dump(by_alias=True)["websocket"]
+    assert "bidirectional" not in websocket_dict
+    options = AudioConnectorOptions(
+        session_id='test_session_id',
+        token='test_token',
+        websocket=AudioConnectorWebSocket(
+            uri='test_uri',
+            streams=['test_stream_id'],
+            headers={'test_header': 'test_value'},
+            audio_rate=AudioSampleRate.KHZ_16,
+            bidirectional=True,
+        ),
+    )
 
-    assert options.model_dump(by_alias=True) == {
+    actual = options.model_dump(by_alias=True)
+    expected = {
         'sessionId': 'test_session_id',
         'token': 'test_token',
         'websocket': {
@@ -39,8 +53,10 @@ def test_audio_connector_options_model():
             'streams': ['test_stream_id'],
             'headers': {'test_header': 'test_value'},
             'audioRate': 16000,
+            'bidirectional': True,
         },
     }
+    assert actual == expected
 
 
 @responses.activate

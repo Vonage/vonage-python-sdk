@@ -12,12 +12,25 @@ class AudioConnectorWebSocket(BaseModel):
         streams (list[str]): Stream IDs to include. If not provided, all streams are included.
         headers (dict): The headers to send to your WebSocket server.
         audio_rate (AudioSampleRate): The audio sample rate in Hertz.
+        bidirectional (bool): Whether the websocket is bidirectional.
     """
 
     uri: str
     streams: Optional[list[str]] = None
     headers: Optional[dict] = None
     audio_rate: Optional[AudioSampleRate] = Field(None, serialization_alias='audioRate')
+    bidirectional: Optional[bool] = Field(
+        None, description="Whether the websocket is bidirectional."
+    )
+
+    def model_dump(self, *args, **kwargs):
+        data = super().model_dump(*args, **kwargs)
+        if self.bidirectional is not True and 'bidirectional' in data:
+            del data['bidirectional']
+
+        if 'audioRate' in data and isinstance(data['audioRate'], AudioSampleRate):
+            data['audioRate'] = data['audioRate'].value
+        return data
 
 
 class AudioConnectorOptions(BaseModel):
@@ -32,6 +45,12 @@ class AudioConnectorOptions(BaseModel):
     session_id: str = Field(..., serialization_alias='sessionId')
     token: str
     websocket: AudioConnectorWebSocket
+
+    def model_dump(self, *args, **kwargs):
+        data = super().model_dump(*args, **kwargs)
+        if isinstance(self.websocket, AudioConnectorWebSocket):
+            data['websocket'] = self.websocket.model_dump(*args, **kwargs)
+        return data
 
 
 class AudioConnectorData(BaseModel):

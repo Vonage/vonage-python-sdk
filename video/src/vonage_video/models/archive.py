@@ -71,6 +71,9 @@ class Archive(BaseModel):
         transcription (Transcription, Optional): Transcription options for the archive.
         max_bitrate (int, Optional): The maximum video bitrate of the archive, in bits per
             second. This is only valid for composed archives.
+        quantization_parameter (int, Optional): Quantization parameter (QP) for video encoding,
+            smaller values generate higher quality and larger archives, larger values generate
+            lower quality and smaller archives. Range: 15-40. Only valid for composed archives.
     """
 
     id: Optional[str] = None
@@ -97,6 +100,9 @@ class Archive(BaseModel):
     url: Optional[str] = None
     transcription: Optional[Transcription] = None
     max_bitrate: Optional[int] = Field(None, validation_alias='maxBitrate')
+    quantization_parameter: Optional[int] = Field(
+        None, validation_alias='quantizationParameter'
+    )
 
 
 class CreateArchiveRequest(BaseModel):
@@ -119,9 +125,12 @@ class CreateArchiveRequest(BaseModel):
             automatically ("auto", the default) or manually ("manual").
         max_bitrate (int, Optional): The maximum video bitrate of the archive, in bits per
             second. This is only valid for composed archives.
+        quantization_parameter (int, Optional): Quantization parameter (QP) for video encoding,
+            smaller values generate higher quality and larger archives, larger values generate
+            lower quality and smaller archives. Range: 15-40. Only valid for composed archives.
     Raises:
         NoAudioOrVideoError: If neither `has_audio` nor `has_video` is set.
-        IndividualArchivePropertyError: If `resolution` or `layout` is set for individual archives
+        IndividualArchivePropertyError: If `resolution`, `layout`, or `quantization_parameter` is set for individual archives
             or if `has_transcription` is set for composed archives.
     """
 
@@ -139,6 +148,9 @@ class CreateArchiveRequest(BaseModel):
     stream_mode: Optional[StreamMode] = Field(None, serialization_alias='streamMode')
     max_bitrate: Optional[int] = Field(
         None, ge=100_000, le=6_000_000, serialization_alias='maxBitrate'
+    )
+    quantization_parameter: Optional[int] = Field(
+        None, ge=15, le=40, serialization_alias='quantizationParameter'
     )
 
     @model_validator(mode='after')
@@ -158,6 +170,13 @@ class CreateArchiveRequest(BaseModel):
         if self.output_mode == OutputMode.INDIVIDUAL and self.layout is not None:
             raise IndividualArchivePropertyError(
                 'The `layout` property cannot be set for `archive_mode: \'individual\'`.'
+            )
+        if (
+            self.output_mode == OutputMode.INDIVIDUAL
+            and self.quantization_parameter is not None
+        ):
+            raise IndividualArchivePropertyError(
+                'The `quantization_parameter` property cannot be set for `archive_mode: \'individual\'`.'
             )
         return self
 

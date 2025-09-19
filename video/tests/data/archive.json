@@ -20,5 +20,6 @@
     "event": "archive",
     "resolution": "1280x720",
     "url": null,
-    "maxBitrate": 2000000
+    "maxBitrate": 2000000,
+    "quantizationParameter": 25
 }

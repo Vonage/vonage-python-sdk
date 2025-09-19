@@ -89,6 +89,87 @@ def test_create_archive_request_composed_output_mode_with_transcription_error():
         )
 
 
+def test_create_archive_request_valid_quantization_parameter():
+    """Test that quantization_parameter is accepted for composed archives with valid
+    values."""
+    request = CreateArchiveRequest(
+        session_id="1_MX40NTY3NjYzMn5-MTQ4MTY3NjYzMn5",
+        has_audio=True,
+        has_video=True,
+        output_mode=OutputMode.COMPOSED,
+        quantization_parameter=25,
+    )
+    assert request.quantization_parameter == 25
+
+
+def test_create_archive_request_quantization_parameter_boundary_values():
+    """Test that quantization_parameter accepts boundary values (15 and 40)."""
+    # Test minimum value
+    request_min = CreateArchiveRequest(
+        session_id="1_MX40NTY3NjYzMn5-MTQ4MTY3NjYzMn5",
+        has_audio=True,
+        quantization_parameter=15,
+    )
+    assert request_min.quantization_parameter == 15
+
+    # Test maximum value
+    request_max = CreateArchiveRequest(
+        session_id="1_MX40NTY3NjYzMn5-MTQ4MTY3NjYzMn5",
+        has_audio=True,
+        quantization_parameter=40,
+    )
+    assert request_max.quantization_parameter == 40
+
+
+def test_create_archive_request_quantization_parameter_invalid_low():
+    """Test that quantization_parameter rejects values below 15."""
+    with raises(ValueError):
+        CreateArchiveRequest(
+            session_id="1_MX40NTY3NjYzMn5-MTQ4MTY3NjYzMn5",
+            has_audio=True,
+            quantization_parameter=14,
+        )
+
+
+def test_create_archive_request_quantization_parameter_invalid_high():
+    """Test that quantization_parameter rejects values above 40."""
+    with raises(ValueError):
+        CreateArchiveRequest(
+            session_id="1_MX40NTY3NjYzMn5-MTQ4MTY3NjYzMn5",
+            has_audio=True,
+            quantization_parameter=41,
+        )
+
+
+def test_create_archive_request_individual_output_mode_with_quantization_parameter():
+    """Test that quantization_parameter is rejected for individual archives."""
+    with raises(IndividualArchivePropertyError):
+        CreateArchiveRequest(
+            session_id="1_MX40NTY3NjYzMn5-MTQ4MTY3NjYzMn5",
+            has_audio=True,
+            output_mode=OutputMode.INDIVIDUAL,
+            quantization_parameter=25,
+        )
+
+
+def test_create_archive_request_serialization_with_quantization_parameter():
+    """Test that quantization_parameter is properly serialized with the correct alias."""
+    request = CreateArchiveRequest(
+        session_id="1_MX40NTY3NjYzMn5-MTQ4MTY3NjYzMn5",
+        has_audio=True,
+        has_video=True,
+        output_mode=OutputMode.COMPOSED,
+        quantization_parameter=30,
+    )
+
+    serialized = request.model_dump(by_alias=True, exclude_unset=True)
+    assert 'quantizationParameter' in serialized
+    assert serialized['quantizationParameter'] == 30
+    assert (
+        'quantization_parameter' not in serialized
+    )  # Ensure Python field name is not used
+
+
 def test_layout_custom_without_stylesheet():
     with raises(LayoutStylesheetError):
         ComposedLayout(type=LayoutType.CUSTOM)
@@ -194,6 +275,7 @@ def test_start_archive():
     assert archive.name == 'first archive test'
     assert archive.resolution == '1280x720'
     assert archive.max_bitrate == 2_000_000
+    assert archive.quantization_parameter == 25
 
 
 @responses.activate
@@ -215,6 +297,7 @@ def test_get_archive():
     assert archive.status == 'started'
     assert archive.name == 'first archive test'
     assert archive.resolution == '1280x720'
+    assert archive.quantization_parameter == 25
 
 
 @responses.activate

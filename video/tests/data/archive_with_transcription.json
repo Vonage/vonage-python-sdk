@@ -1,0 +1,30 @@
+{
+    "id": "5b1521e6-115f-4efd-bed9-e527b87f0699",
+    "status": "available",
+    "name": "archive with transcription",
+    "reason": "session ended",
+    "sessionId": "test_session_id",
+    "applicationId": "test_application_id",
+    "createdAt": 1727870434974,
+    "size": 1048576,
+    "duration": 180,
+    "outputMode": "individual",
+    "streamMode": "auto",
+    "hasAudio": true,
+    "hasVideo": true,
+    "hasTranscription": true,
+    "sha256sum": "abc123def456",
+    "password": "",
+    "updatedAt": 1727870634977,
+    "multiArchiveTag": "",
+    "event": "archive",
+    "resolution": "1280x720",
+    "url": "https://example.com/archive.mp4",
+    "transcription": {
+        "status": "completed",
+        "reason": "transcription completed successfully",
+        "url": "https://example.com/transcription.json",
+        "primaryLanguageCode": "en-US",
+        "hasSummary": true
+    }
+}

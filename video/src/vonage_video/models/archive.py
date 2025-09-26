@@ -29,10 +29,16 @@ class Transcription(BaseModel):
     Args:
         status (str, Optional): The status of the transcription.
         reason (str, Optional): May give a brief reason for the transcription status.
+        url (str, Optional): The URL of the transcription file.
+        primaryLanguageCode (str, Optional): The primary language code for transcription.
+        hasSummary (bool, Optional): Whether the transcription includes a summary.
     """
 
     status: Optional[str] = None
     reason: Optional[str] = None
+    url: Optional[str] = None
+    primaryLanguageCode: Optional[str] = None
+    hasSummary: Optional[bool] = None
 
 
 class Archive(BaseModel):

@@ -1,3 +1,12 @@
+# 4.7.1
+- vonage-video: Added missing transcription values from archive responses
+
+# 4.7.0
+- vonage-video: Added quantization parameter for video archives
+
+# 4.6.0
+- vonage-video: Added bidirectional websocket flag
+
 # 4.5.0
 - vonage-messages: add an optional "failover" property to `vonage_messages.Messages.send`
 

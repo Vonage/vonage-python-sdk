@@ -21,6 +21,7 @@ from vonage_video.errors import (
     LayoutStylesheetError,
     NoAudioOrVideoError,
 )
+from vonage_video.models.archive import Transcription
 
 from testutils import build_response, get_mock_jwt_auth
 
@@ -409,3 +410,244 @@ def test_change_archive_layout():
 
     assert archive.id == '5b1521e6-115f-4efd-bed9-e527b87f0699'
     assert video.http_client.last_response.status_code == 200
+
+
+# Tests for new Transcription options
+def test_transcription_model_with_all_options():
+    """Test that the Transcription model can be created with all new options."""
+    transcription = Transcription(
+        status="completed",
+        reason="transcription completed successfully",
+        url="https://example.com/transcription.json",
+        primaryLanguageCode="en-US",
+        hasSummary=True
+    )
+    
+    assert transcription.status == "completed"
+    assert transcription.reason == "transcription completed successfully"
+    assert transcription.url == "https://example.com/transcription.json"
+    assert transcription.primaryLanguageCode == "en-US"
+    assert transcription.hasSummary is True
+
+
+def test_transcription_model_with_partial_options():
+    """Test that the Transcription model can be created with only some new options."""
+    transcription = Transcription(
+        status="processing",
+        url="https://example.com/transcription.json"
+    )
+    
+    assert transcription.status == "processing"
+    assert transcription.url == "https://example.com/transcription.json"
+    assert transcription.primaryLanguageCode is None
+    assert transcription.hasSummary is None
+    assert transcription.reason is None
+
+
+def test_transcription_model_with_url_only():
+    """Test that the Transcription model can be created with just the url option."""
+    transcription = Transcription(
+        url="https://example.com/transcription.json"
+    )
+    
+    assert transcription.url == "https://example.com/transcription.json"
+    assert transcription.status is None
+    assert transcription.reason is None
+    assert transcription.primaryLanguageCode is None
+    assert transcription.hasSummary is None
+
+
+def test_transcription_model_with_primary_language_code_only():
+    """Test that the Transcription model can be created with just the primaryLanguageCode option."""
+    transcription = Transcription(
+        primaryLanguageCode="es-ES"
+    )
+    
+    assert transcription.primaryLanguageCode == "es-ES"
+    assert transcription.status is None
+    assert transcription.reason is None
+    assert transcription.url is None
+    assert transcription.hasSummary is None
+
+
+def test_transcription_model_with_has_summary_only():
+    """Test that the Transcription model can be created with just the hasSummary option."""
+    transcription = Transcription(
+        hasSummary=False
+    )
+    
+    assert transcription.hasSummary is False
+    assert transcription.status is None
+    assert transcription.reason is None
+    assert transcription.url is None
+    assert transcription.primaryLanguageCode is None
+
+
+def test_transcription_model_empty():
+    """Test that the Transcription model can be created with no options set."""
+    transcription = Transcription()
+    
+    assert transcription.status is None
+    assert transcription.reason is None
+    assert transcription.url is None
+    assert transcription.primaryLanguageCode is None
+    assert transcription.hasSummary is None
+
+
+def test_transcription_model_serialization():
+    """Test that the Transcription model serializes correctly."""
+    transcription = Transcription(
+        status="completed",
+        reason="success",
+        url="https://example.com/transcription.json",
+        primaryLanguageCode="en-US",
+        hasSummary=True
+    )
+    
+    serialized = transcription.model_dump()
+    expected = {
+        "status": "completed",
+        "reason": "success",
+        "url": "https://example.com/transcription.json",
+        "primaryLanguageCode": "en-US",
+        "hasSummary": True
+    }
+    
+    assert serialized == expected
+
+
+def test_transcription_model_serialization_exclude_unset():
+    """Test that the Transcription model serializes correctly excluding unset values."""
+    transcription = Transcription(
+        url="https://example.com/transcription.json",
+        hasSummary=True
+    )
+    
+    serialized = transcription.model_dump(exclude_unset=True)
+    expected = {
+        "url": "https://example.com/transcription.json",
+        "hasSummary": True
+    }
+    
+    assert serialized == expected
+    assert "status" not in serialized
+    assert "reason" not in serialized
+    assert "primaryLanguageCode" not in serialized
+
+
+def test_transcription_model_deserialization():
+    """Test that the Transcription model can be created from dictionary data."""
+    data = {
+        "status": "completed",
+        "reason": "transcription finished",
+        "url": "https://example.com/transcription.json",
+        "primaryLanguageCode": "fr-FR",
+        "hasSummary": True
+    }
+    
+    transcription = Transcription(**data)
+    
+    assert transcription.status == "completed"
+    assert transcription.reason == "transcription finished"
+    assert transcription.url == "https://example.com/transcription.json"
+    assert transcription.primaryLanguageCode == "fr-FR"
+    assert transcription.hasSummary is True
+
+
+def test_transcription_model_with_various_language_codes():
+    """Test that the Transcription model accepts various language codes."""
+    test_cases = [
+        "en-US",
+        "es-ES", 
+        "fr-FR",
+        "de-DE",
+        "ja-JP",
+        "zh-CN",
+        "pt-BR"
+    ]
+    
+    for lang_code in test_cases:
+        transcription = Transcription(primaryLanguageCode=lang_code)
+        assert transcription.primaryLanguageCode == lang_code
+
+
+def test_transcription_model_with_various_urls():
+    """Test that the Transcription model accepts various URL formats."""
+    test_urls = [
+        "https://example.com/transcription.json",
+        "https://storage.googleapis.com/bucket/file.json",
+        "https://s3.amazonaws.com/bucket/transcription.txt",
+        "http://example.org/path/to/transcription",
+        "https://vonage.example.com/transcriptions/12345"
+    ]
+    
+    for url in test_urls:
+        transcription = Transcription(url=url)
+        assert transcription.url == url
+
+
+def test_transcription_model_boolean_has_summary():
+    """Test that hasSummary properly handles boolean values."""
+    # Test True
+    transcription_true = Transcription(hasSummary=True)
+    assert transcription_true.hasSummary is True
+    
+    # Test False
+    transcription_false = Transcription(hasSummary=False)
+    assert transcription_false.hasSummary is False
+    
+    # Test None (default)
+    transcription_none = Transcription()
+    assert transcription_none.hasSummary is None
+
+
+@responses.activate
+def test_archive_with_transcription_options():
+    """Test that Archive model properly deserializes with transcription containing new options."""
+    build_response(
+        path,
+        'GET',
+        'https://video.api.vonage.com/v2/project/test_application_id/archive/5b1521e6-115f-4efd-bed9-e527b87f0699',
+        'archive_with_transcription.json',
+    )
+
+    archive = video.get_archive('5b1521e6-115f-4efd-bed9-e527b87f0699')
+
+    assert archive.id == '5b1521e6-115f-4efd-bed9-e527b87f0699'
+    assert archive.has_transcription is True
+    
+    # Test transcription object and its new properties
+    assert archive.transcription is not None
+    assert archive.transcription.status == "completed"
+    assert archive.transcription.reason == "transcription completed successfully"
+    assert archive.transcription.url == "https://example.com/transcription.json"
+    assert archive.transcription.primaryLanguageCode == "en-US"
+    assert archive.transcription.hasSummary is True
+
+
+@responses.activate
+def test_list_archives_with_transcription_options():
+    """Test that listing archives properly handles transcription with new options."""
+    # Create a modified list response that includes transcription data
+    build_response(
+        path,
+        'GET',
+        'https://video.api.vonage.com/v2/project/test_application_id/archive',
+        'list_archives_with_transcription.json',
+    )
+
+    filter = ListArchivesFilter(session_id='test_session_id')
+    archives, count, next_page = video.list_archives(filter)
+
+    # Find the archive with transcription
+    transcribed_archive = None
+    for archive in archives:
+        if archive.has_transcription:
+            transcribed_archive = archive
+            break
+    
+    assert transcribed_archive is not None
+    assert transcribed_archive.transcription is not None
+    assert transcribed_archive.transcription.url is not None
+    assert transcribed_archive.transcription.primaryLanguageCode is not None
+    assert transcribed_archive.transcription.hasSummary is not None

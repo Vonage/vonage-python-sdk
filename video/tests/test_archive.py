@@ -420,9 +420,9 @@ def test_transcription_model_with_all_options():
         reason="transcription completed successfully",
         url="https://example.com/transcription.json",
         primaryLanguageCode="en-US",
-        hasSummary=True
+        hasSummary=True,
     )
-    
+
     assert transcription.status == "completed"
     assert transcription.reason == "transcription completed successfully"
     assert transcription.url == "https://example.com/transcription.json"
@@ -433,10 +433,9 @@ def test_transcription_model_with_all_options():
 def test_transcription_model_with_partial_options():
     """Test that the Transcription model can be created with only some new options."""
     transcription = Transcription(
-        status="processing",
-        url="https://example.com/transcription.json"
+        status="processing", url="https://example.com/transcription.json"
     )
-    
+
     assert transcription.status == "processing"
     assert transcription.url == "https://example.com/transcription.json"
     assert transcription.primaryLanguageCode is None
@@ -446,10 +445,8 @@ def test_transcription_model_with_partial_options():
 
 def test_transcription_model_with_url_only():
     """Test that the Transcription model can be created with just the url option."""
-    transcription = Transcription(
-        url="https://example.com/transcription.json"
-    )
-    
+    transcription = Transcription(url="https://example.com/transcription.json")
+
     assert transcription.url == "https://example.com/transcription.json"
     assert transcription.status is None
     assert transcription.reason is None
@@ -458,11 +455,10 @@ def test_transcription_model_with_url_only():
 
 
 def test_transcription_model_with_primary_language_code_only():
-    """Test that the Transcription model can be created with just the primaryLanguageCode option."""
-    transcription = Transcription(
-        primaryLanguageCode="es-ES"
-    )
-    
+    """Test that the Transcription model can be created with just the primaryLanguageCode
+    option."""
+    transcription = Transcription(primaryLanguageCode="es-ES")
+
     assert transcription.primaryLanguageCode == "es-ES"
     assert transcription.status is None
     assert transcription.reason is None
@@ -471,11 +467,10 @@ def test_transcription_model_with_primary_language_code_only():
 
 
 def test_transcription_model_with_has_summary_only():
-    """Test that the Transcription model can be created with just the hasSummary option."""
-    transcription = Transcription(
-        hasSummary=False
-    )
-    
+    """Test that the Transcription model can be created with just the hasSummary
+    option."""
+    transcription = Transcription(hasSummary=False)
+
     assert transcription.hasSummary is False
     assert transcription.status is None
     assert transcription.reason is None
@@ -486,7 +481,7 @@ def test_transcription_model_with_has_summary_only():
 def test_transcription_model_empty():
     """Test that the Transcription model can be created with no options set."""
     transcription = Transcription()
-    
+
     assert transcription.status is None
     assert transcription.reason is None
     assert transcription.url is None
@@ -501,34 +496,30 @@ def test_transcription_model_serialization():
         reason="success",
         url="https://example.com/transcription.json",
         primaryLanguageCode="en-US",
-        hasSummary=True
+        hasSummary=True,
     )
-    
+
     serialized = transcription.model_dump()
     expected = {
         "status": "completed",
         "reason": "success",
         "url": "https://example.com/transcription.json",
         "primaryLanguageCode": "en-US",
-        "hasSummary": True
+        "hasSummary": True,
     }
-    
+
     assert serialized == expected
 
 
 def test_transcription_model_serialization_exclude_unset():
     """Test that the Transcription model serializes correctly excluding unset values."""
     transcription = Transcription(
-        url="https://example.com/transcription.json",
-        hasSummary=True
+        url="https://example.com/transcription.json", hasSummary=True
     )
-    
+
     serialized = transcription.model_dump(exclude_unset=True)
-    expected = {
-        "url": "https://example.com/transcription.json",
-        "hasSummary": True
-    }
-    
+    expected = {"url": "https://example.com/transcription.json", "hasSummary": True}
+
     assert serialized == expected
     assert "status" not in serialized
     assert "reason" not in serialized
@@ -542,11 +533,11 @@ def test_transcription_model_deserialization():
         "reason": "transcription finished",
         "url": "https://example.com/transcription.json",
         "primaryLanguageCode": "fr-FR",
-        "hasSummary": True
+        "hasSummary": True,
     }
-    
+
     transcription = Transcription(**data)
-    
+
     assert transcription.status == "completed"
     assert transcription.reason == "transcription finished"
     assert transcription.url == "https://example.com/transcription.json"
@@ -556,16 +547,8 @@ def test_transcription_model_deserialization():
 
 def test_transcription_model_with_various_language_codes():
     """Test that the Transcription model accepts various language codes."""
-    test_cases = [
-        "en-US",
-        "es-ES", 
-        "fr-FR",
-        "de-DE",
-        "ja-JP",
-        "zh-CN",
-        "pt-BR"
-    ]
-    
+    test_cases = ["en-US", "es-ES", "fr-FR", "de-DE", "ja-JP", "zh-CN", "pt-BR"]
+
     for lang_code in test_cases:
         transcription = Transcription(primaryLanguageCode=lang_code)
         assert transcription.primaryLanguageCode == lang_code
@@ -578,9 +561,9 @@ def test_transcription_model_with_various_urls():
         "https://storage.googleapis.com/bucket/file.json",
         "https://s3.amazonaws.com/bucket/transcription.txt",
         "http://example.org/path/to/transcription",
-        "https://vonage.example.com/transcriptions/12345"
+        "https://vonage.example.com/transcriptions/12345",
     ]
-    
+
     for url in test_urls:
         transcription = Transcription(url=url)
         assert transcription.url == url
@@ -591,11 +574,11 @@ def test_transcription_model_boolean_has_summary():
     # Test True
     transcription_true = Transcription(hasSummary=True)
     assert transcription_true.hasSummary is True
-    
+
     # Test False
     transcription_false = Transcription(hasSummary=False)
     assert transcription_false.hasSummary is False
-    
+
     # Test None (default)
     transcription_none = Transcription()
     assert transcription_none.hasSummary is None
@@ -603,7 +586,8 @@ def test_transcription_model_boolean_has_summary():
 
 @responses.activate
 def test_archive_with_transcription_options():
-    """Test that Archive model properly deserializes with transcription containing new options."""
+    """Test that Archive model properly deserializes with transcription containing new
+    options."""
     build_response(
         path,
         'GET',
@@ -615,7 +599,7 @@ def test_archive_with_transcription_options():
 
     assert archive.id == '5b1521e6-115f-4efd-bed9-e527b87f0699'
     assert archive.has_transcription is True
-    
+
     # Test transcription object and its new properties
     assert archive.transcription is not None
     assert archive.transcription.status == "completed"
@@ -645,7 +629,7 @@ def test_list_archives_with_transcription_options():
         if archive.has_transcription:
             transcribed_archive = archive
             break
-    
+
     assert transcribed_archive is not None
     assert transcribed_archive.transcription is not None
     assert transcribed_archive.transcription.url is not None

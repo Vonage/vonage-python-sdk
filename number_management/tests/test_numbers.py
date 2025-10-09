@@ -1,4 +1,5 @@
 from os.path import abspath
+from urllib.parse import parse_qs
 
 import responses
 from pytest import raises
@@ -205,6 +206,19 @@ def test_buy_number():
     assert response.error_code == '200'
     assert response.error_code_label == 'success'
 
+    # The data is sent as form-encoded, so we need to parse it accordingly
+    request_body = responses.calls[0].request.body
+    form_data = parse_qs(request_body)
+
+    # parse_qs returns values as lists, so we need to extract the first item
+    parsed_data = {key: value[0] for key, value in form_data.items()}
+
+    expected_data = {
+        'country': 'GB',
+        'msisdn': '447000000000',
+    }
+    assert parsed_data == expected_data
+
 
 @responses.activate
 def test_cancel_number():
@@ -219,6 +233,19 @@ def test_cancel_number():
     assert response.error_code == '200'
     assert response.error_code_label == 'success'
 
+    # The data is sent as form-encoded, so we need to parse it accordingly
+    request_body = responses.calls[0].request.body
+    form_data = parse_qs(request_body)
+
+    # parse_qs returns values as lists, so we need to extract the first item
+    parsed_data = {key: value[0] for key, value in form_data.items()}
+
+    expected_data = {
+        'country': 'GB',
+        'msisdn': '447000000000',
+    }
+    assert parsed_data == expected_data
+
 
 @responses.activate
 def test_cancel_number_error_no_number():
@@ -232,6 +259,19 @@ def test_cancel_number_error_no_number():
         numbers.cancel_number(NumberParams(country='GB', msisdn='447000000000'))
 
     assert e.match('method failed')
+
+    # The data is sent as form-encoded, so we need to parse it accordingly
+    request_body = responses.calls[0].request.body
+    form_data = parse_qs(request_body)
+
+    # parse_qs returns values as lists, so we need to extract the first item
+    parsed_data = {key: value[0] for key, value in form_data.items()}
+
+    expected_data = {
+        'country': 'GB',
+        'msisdn': '447000000000',
+    }
+    assert parsed_data == expected_data
 
 
 @responses.activate
@@ -255,8 +295,28 @@ def test_update_number():
         )
     )
 
+    # Verify the response
     assert response.error_code == '200'
     assert response.error_code_label == 'success'
+
+    # The data is sent as form-encoded, so we need to parse it accordingly
+    request_body = responses.calls[0].request.body
+    form_data = parse_qs(request_body)
+
+    # parse_qs returns values as lists, so we need to extract the first item
+    parsed_data = {key: value[0] for key, value in form_data.items()}
+
+    expected_data = {
+        'country': 'GB',
+        'msisdn': '447009000000',
+        'app_id': '29f769u7-7ce1-46c9-ade3-f2dedee4fr4t',
+        'moHttpUrl': 'https://example.com',
+        'moSmppSysType': 'inbound',
+        'voiceCallbackType': 'tel',
+        'voiceCallbackValue': '447009000000',
+        'voiceStatusCallback': 'https://example.com',
+    }
+    assert parsed_data == expected_data
 
 
 def test_update_number_options_error():

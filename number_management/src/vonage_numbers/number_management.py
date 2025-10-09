@@ -167,7 +167,7 @@ class Numbers:
         response = self._http_client.post(
             self._http_client.rest_host,
             '/number/update',
-            params.model_dump(exclude_none=True),
+            params.model_dump(by_alias=True, exclude_none=True),
             self._auth_type,
             self._sent_data_type,
         )

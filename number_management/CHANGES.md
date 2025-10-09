@@ -1,3 +1,6 @@
+# 1.0.5
+- Added `by_alias=True` to the numbers update model
+
 # 1.0.4
 - Updated dependency versions
 

@@ -1,3 +1,6 @@
+# 4.7.2
+- vonage-numbers: Added `by_alias=True` to the numbers update model to correct issue with incorrect body payload
+
 # 4.7.1
 - vonage-video: Added missing transcription values from archive responses
 

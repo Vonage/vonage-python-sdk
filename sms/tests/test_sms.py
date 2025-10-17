@@ -7,7 +7,7 @@ from vonage_http_client.auth import Auth
 from vonage_http_client.errors import HttpRequestError
 from vonage_http_client.http_client import HttpClient
 from vonage_sms import Sms
-from vonage_sms.errors import PartialFailureError, SmsError
+from vonage_sms.errors import PartialFailureError, SmsError, SmsThrottleError
 from vonage_sms.requests import SmsMessage
 
 from testutils import build_response
@@ -143,6 +143,17 @@ def test_send_message_error():
     except SmsError as err:
         assert (
             str(err) == 'Sms.send_message method failed with error code 7: Number barred.'
+        )
+
+@responses.activate
+def test_send_message_error_throttling():
+    build_response(path, 'POST', 'https://rest.nexmo.com/sms/json', 'send_sms_error_throttling.json')
+    message = SmsMessage(to='1234567890', from_='Acme Inc.', text='Hello, World!')
+    try:
+        sms.send(message)
+    except SmsThrottleError as err:
+        assert (
+            str(err) == 'Sms.send_message method failed due to throttling: You are sending SMS faster than the account limit.'
         )
 
 

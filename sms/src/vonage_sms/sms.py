@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 
-from .errors import PartialFailureError, SmsError
+from .errors import PartialFailureError, SmsError, SmsThrottleError
 from .requests import SmsMessage
 from .responses import SmsResponse
 
@@ -86,6 +86,12 @@ class Sms:
     def _check_for_error(self, response_data):
         message = response_data['messages'][0]
         if int(message['status']) != 0:
+            # List of SMS API error codes is available at:
+            # https://developer.vonage.com/en/messaging/sms/guides/troubleshooting-sms#sms-api-error-codes
+            if int(message['status']) == 1:
+                raise SmsThrottleError(
+                    f'Sms.send_message method failed due to throttling: {message["error-text"]}'
+                )
             raise SmsError(
                 f'Sms.send_message method failed with error code {message["status"]}: {message["error-text"]}'
             )

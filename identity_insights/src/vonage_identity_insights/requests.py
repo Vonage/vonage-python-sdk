@@ -12,8 +12,6 @@ class EmptyInsight(BaseModel):
     indicate that the insight is requested.
     """
 
-    pass
-
 
 class SimSwapInsight(BaseModel):
     """Model for a SIM swap insight request.

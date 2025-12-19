@@ -1,7 +1,6 @@
 from os.path import abspath
 
 import responses
-from pydantic import ValidationError
 from pytest import raises
 from vonage_http_client.http_client import HttpClient, HttpClientOptions
 from vonage_identity_insights.errors import IdentityInsightsError

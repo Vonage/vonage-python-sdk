@@ -3,6 +3,7 @@ from typing import Optional
 from vonage_account.account import Account
 from vonage_application.application import Application
 from vonage_http_client import Auth, HttpClient, HttpClientOptions
+from vonage_identity_insights import IdentityInsights
 from vonage_messages import Messages
 from vonage_network_number_verification import NetworkNumberVerification
 from vonage_network_sim_swap import NetworkSimSwap
@@ -51,6 +52,7 @@ class Vonage:
         self.verify_legacy = VerifyLegacy(self._http_client)
         self.video = Video(self._http_client)
         self.voice = Voice(self._http_client)
+        self.identity_insights = IdentityInsights(self._http_client)
 
     @property
     def http_client(self):

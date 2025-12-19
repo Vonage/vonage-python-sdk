@@ -1,0 +1,7 @@
+{
+   "title": "Malformed JSON",
+   "type": "https://developer.vonage.com/api-errors#invalid-json",
+   "instance": "868cf2e9-bd6d-4bac-96ba-2b08120d8cf9",
+   "detail": "Malformed JSON payload"
+}
+

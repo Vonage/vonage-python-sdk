@@ -20,6 +20,7 @@ This is the Python server SDK to help you use Vonage APIs in your Python applica
 - [Application API](#application-api)
 - [HTTP Client](#http-client)
 - [JWT Client](#jwt-client)
+- [Identity Insights](#identity-insights)
 - [Messages API](#messages-api)
 - [Network Number Verification API](#network-number-verification-api)
 - [Network Sim Swap API](#network-sim-swap-api)
@@ -401,6 +402,34 @@ You can use the `verify_jwt.verify_signature` method to verify a JWT signature i
 from vonage_jwt import verify_signature
 
 verify_signature(TOKEN, SIGNATURE_SECRET) # Returns a boolean
+```
+
+## Identity Insights
+
+### Get Insights
+
+```python
+from vonage_identity_insights import (
+    IdentityInsightsRequest,
+    InsightsRequest,
+    EmptyInsight,
+    SimSwapInsight,
+)
+
+options = HttpClientOptions(api_host='api-eu.vonage.com', timeout=30)
+
+client = Vonage(auth=auth, http_client_options=options)
+
+request = IdentityInsightsRequest(
+    phone_number='1234567890',
+    purpose='FraudPreventionAndDetection',
+    insights=InsightsRequest(
+        format=EmptyInsight(),
+        sim_swap=SimSwapInsight(period=240)
+    )
+)
+
+response = client.identity_insights.get_insights(request)
 ```
 
 ## Messages API
@@ -1436,6 +1465,7 @@ The following is a list of Vonage APIs and whether the Python SDK provides suppo
 | External Accounts API |         Beta         |     ❌     |
 | Media API             |         Beta         |     ❌     |
 | Messages API          | General Availability |     ✅     |
+| Identity Insights API | General Availability |     ✅     |
 | Number Insight API    | General Availability |     ✅     |
 | Number Management API | General Availability |     ✅     |
 | Pricing API           | General Availability |     ✅     |

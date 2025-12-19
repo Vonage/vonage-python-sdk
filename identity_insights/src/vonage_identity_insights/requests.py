@@ -1,5 +1,5 @@
-from typing import Optional, Literal
 from datetime import date
+from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 from vonage_utils.types import PhoneNumber
@@ -8,8 +8,8 @@ from vonage_utils.types import PhoneNumber
 class EmptyInsight(BaseModel):
     """Model for an insight request without parameters.
 
-    This model represents insights that must be included as an empty JSON
-    object (`{}`) to indicate that the insight is requested.
+    This model represents insights that must be included as an empty JSON object (`{}`) to
+    indicate that the insight is requested.
     """
 
     pass

@@ -1,19 +1,16 @@
 from . import errors
 from .identity_insights import IdentityInsights
 from .requests import (
+    EmptyInsight,
     IdentityInsightsRequest,
     InsightsRequest,
-    EmptyInsight,
-    SimSwapInsight,
-    SubscriberMatchInsight,
-    LocationVerificationInsight,
     Location,
     LocationCenter,
+    LocationVerificationInsight,
+    SimSwapInsight,
+    SubscriberMatchInsight,
 )
-from .responses import (
-    IdentityInsightsResponse,
-    InsightStatus,
-)
+from .responses import IdentityInsightsResponse, InsightStatus
 
 __all__ = [
     "IdentityInsights",

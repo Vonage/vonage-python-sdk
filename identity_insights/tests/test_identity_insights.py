@@ -1,16 +1,15 @@
 from os.path import abspath
 
-from pydantic import ValidationError
-
 import responses
+from pydantic import ValidationError
 from pytest import raises
 from vonage_http_client.http_client import HttpClient, HttpClientOptions
 from vonage_identity_insights.errors import IdentityInsightsError
-from vonage_identity_insights.identity_insights import IdentityInsights 
+from vonage_identity_insights.identity_insights import IdentityInsights
 from vonage_identity_insights.requests import (
+    EmptyInsight,
     IdentityInsightsRequest,
     InsightsRequest,
-    EmptyInsight,
 )
 
 from testutils import build_response, get_mock_jwt_auth
@@ -37,8 +36,7 @@ def test_format_insight():
     )
 
     options = IdentityInsightsRequest(
-        phone_number="1234567890",
-        insights = InsightsRequest(format=EmptyInsight())
+        phone_number="1234567890", insights=InsightsRequest(format=EmptyInsight())
     )
 
     response = identity_insights.get_insights(options)
@@ -57,12 +55,10 @@ def test_basic_insight_error():
     )
 
     options = IdentityInsightsRequest(
-        phone_number="1234567890",
-        insights=InsightsRequest(format=EmptyInsight())
+        phone_number="1234567890", insights=InsightsRequest(format=EmptyInsight())
     )
 
     with raises(IdentityInsightsError) as e:
         identity_insights.get_insights(options)
 
     assert "Malformed JSON" in str(e.value)
-

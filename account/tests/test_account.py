@@ -2,6 +2,7 @@ from os.path import abspath
 
 import responses
 from pytest import raises
+from testutils import build_response, get_mock_api_key_auth
 from vonage_account.account import Account
 from vonage_account.errors import InvalidSecretError
 from vonage_account.requests import (
@@ -11,8 +12,6 @@ from vonage_account.requests import (
 )
 from vonage_http_client.errors import ForbiddenError
 from vonage_http_client.http_client import HttpClient
-
-from testutils import build_response, get_mock_api_key_auth
 
 path = abspath(__file__)
 

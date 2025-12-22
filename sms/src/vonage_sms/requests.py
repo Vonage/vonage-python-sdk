@@ -41,7 +41,7 @@ class SmsMessage(BaseModel):
             requirements when sending an SMS to specific countries.
         content_id (str, Optional): A string parameter that satisfies regulatory
             requirements when sending an SMS to specific countries.
-        trusted_sender (bool, Optional): overrides, on a per-message basis, any 
+        trusted_sender (bool, Optional): overrides, on a per-message basis, any
             protections set up via Fraud Defender
     """
 

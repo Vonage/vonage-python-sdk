@@ -3,7 +3,7 @@ from logging import getLogger
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 
-from .errors import IdentityInsightsError
+from .errors import EmptyInsightsRequestException, IdentityInsightsError
 from .requests import IdentityInsightsRequest
 from .responses import IdentityInsightsResponse
 
@@ -55,6 +55,10 @@ class IdentityInsights:
                 `application/problem+json` format.
         """
         payload = insights_request.model_dump(exclude_none=True)
+
+        insights = payload.get("insights")
+        if not insights or not isinstance(insights, dict):
+            raise EmptyInsightsRequestException()
 
         response = self._http_client.post(
             self._http_client.api_host,

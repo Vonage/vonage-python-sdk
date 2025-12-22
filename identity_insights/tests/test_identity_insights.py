@@ -3,7 +3,10 @@ from os.path import abspath
 import responses
 from pytest import raises
 from vonage_http_client.http_client import HttpClient, HttpClientOptions
-from vonage_identity_insights.errors import IdentityInsightsError
+from vonage_identity_insights.errors import (
+    EmptyInsightsRequestException,
+    IdentityInsightsError,
+)
 from vonage_identity_insights.identity_insights import IdentityInsights
 from vonage_identity_insights.requests import (
     EmptyInsight,
@@ -61,3 +64,13 @@ def test_basic_insight_error():
         identity_insights.get_insights(options)
 
     assert "Malformed JSON" in str(e.value)
+
+
+@responses.activate
+def test_empty_insights_request_raises_exception():
+    options = IdentityInsightsRequest(
+        phone_number="1234567890", insights=InsightsRequest()
+    )
+
+    with raises(EmptyInsightsRequestException):
+        identity_insights.get_insights(options)

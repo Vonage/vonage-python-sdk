@@ -1,5 +1,4 @@
-from datetime import date
-from typing import Literal, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field
 from vonage_utils.types import PhoneNumber

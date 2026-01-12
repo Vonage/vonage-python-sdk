@@ -29,7 +29,7 @@ request = IdentityInsightsRequest(
     ),
 )
 
-response = client.identity_insights.get_insights(request)
+response = client.identity_insights.requests(request)
 
 ```
 

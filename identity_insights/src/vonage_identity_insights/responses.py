@@ -63,8 +63,8 @@ class SimSwapInsightResponse(BaseModel):
     status: InsightStatus
 
 
-class OriginalCarrierInsightResponse(BaseModel):
-    """Model for the response of the `original_carrier` insight.
+class CarrierInsightResponse(BaseModel):
+    """Model for the response of the `original_carrier` and `current_carrier` insights.
 
     Provides information about the network to which the phone number was
     originally assigned.
@@ -81,127 +81,6 @@ class OriginalCarrierInsightResponse(BaseModel):
     network_type: Optional[str]
     country_code: Optional[str]
     network_code: Optional[str]
-    status: InsightStatus
-
-
-class CurrentCarrierInsightResponse(BaseModel):
-    """Model for the response of the `current_carrier` insight.
-
-    Provides information about the network the phone number is currently
-    assigned to.
-
-    Args:
-        name (str, Optional): Full name of the current carrier.
-        network_type (str, Optional): Type of the network (e.g. MOBILE).
-        country_code (str, Optional): Country code in ISO 3166-1 alpha-2 format.
-        network_code (str, Optional): MCC + MNC network identifier.
-        status (InsightStatus): Processing status of the insight.
-    """
-
-    name: Optional[str]
-    network_type: Optional[str]
-    country_code: Optional[str]
-    network_code: Optional[str]
-    status: InsightStatus
-
-
-class LocationVerificationInsightResponse(BaseModel):
-    """Model for the response of the `location_verification` insight.
-
-    Indicates whether the device associated with the phone number is located
-    within the requested geographic area.
-
-    Args:
-        is_verified (str, Optional): Verification result (TRUE, FALSE, PARTIAL, UNKNOWN).
-        latest_location_at (datetime, Optional): Timestamp of the latest
-            location update, in UTC.
-        match_rate (int, Optional): Percentage indicating the degree of overlap
-            between requested and detected locations.
-        status (InsightStatus): Processing status of the insight.
-    """
-
-    is_verified: Optional[str]
-    latest_location_at: Optional[datetime]
-    match_rate: Optional[int]
-    status: InsightStatus
-
-
-class SubscriberMatchInsightResponse(BaseModel):
-    """Model for the response of the `subscriber_match` insight.
-
-    Provides matching results between customer-provided identity attributes
-    and the operator's verified records.
-
-    Args:
-        id_document_match (str, Optional): Match result for the ID document.
-        given_name_match (str, Optional): Match result for the given name.
-        family_name_match (str, Optional): Match result for the family name.
-        address_match (str, Optional): Match result for the full address.
-        street_name_match (str, Optional): Match result for the street name.
-        street_number_match (str, Optional): Match result for the street number.
-        postal_code_match (str, Optional): Match result for the postal code.
-        locality_match (str, Optional): Match result for the locality.
-        region_match (str, Optional): Match result for the region.
-        country_match (str, Optional): Match result for the country.
-        house_number_extension_match (str, Optional): Match result for the
-            house number extension.
-        birthdate_match (str, Optional): Match result for the birthdate.
-        status (InsightStatus): Processing status of the insight.
-    """
-
-    id_document_match: Optional[str]
-    given_name_match: Optional[str]
-    family_name_match: Optional[str]
-    address_match: Optional[str]
-    street_name_match: Optional[str]
-    street_number_match: Optional[str]
-    postal_code_match: Optional[str]
-    locality_match: Optional[str]
-    region_match: Optional[str]
-    country_match: Optional[str]
-    house_number_extension_match: Optional[str]
-    birthdate_match: Optional[str]
-    status: InsightStatus
-
-
-class RoamingInsightResponse(BaseModel):
-    """Model for the response of the `roaming` insight.
-
-    Indicates whether the device is currently roaming and the associated
-    roaming countries.
-
-    Args:
-        latest_status_at (datetime, Optional): Timestamp of the latest roaming
-            status update, in UTC.
-        is_roaming (bool, Optional): Indicates whether the device is roaming.
-        country_codes (List[str], Optional): Country codes where the device
-            is roaming.
-        status (InsightStatus): Processing status of the insight.
-    """
-
-    latest_status_at: Optional[datetime]
-    is_roaming: Optional[bool]
-    country_codes: Optional[List[str]]
-    status: InsightStatus
-
-
-class ReachabilityInsightResponse(BaseModel):
-    """Model for the response of the `reachability` insight.
-
-    Indicates whether the device is reachable on the mobile network.
-
-    Args:
-        latest_status_at (datetime, Optional): Timestamp of the latest
-            reachability update, in UTC.
-        is_reachable (bool, Optional): Indicates whether the device is reachable.
-        connectivity (List[str], Optional): Connectivity types available
-            (e.g. DATA, SMS).
-        status (InsightStatus): Processing status of the insight.
-    """
-
-    latest_status_at: Optional[datetime]
-    is_reachable: Optional[bool]
-    connectivity: Optional[List[str]]
     status: InsightStatus
 
 
@@ -228,12 +107,8 @@ class InsightsResponse(BaseModel):
 
     format: Optional[FormatInsightResponse] = None
     sim_swap: Optional[SimSwapInsightResponse] = None
-    original_carrier: Optional[OriginalCarrierInsightResponse] = None
-    current_carrier: Optional[CurrentCarrierInsightResponse] = None
-    location_verification: Optional[LocationVerificationInsightResponse] = None
-    subscriber_match: Optional[SubscriberMatchInsightResponse] = None
-    roaming: Optional[RoamingInsightResponse] = None
-    reachability: Optional[ReachabilityInsightResponse] = None
+    original_carrier: Optional[CarrierInsightResponse] = None
+    current_carrier: Optional[CarrierInsightResponse] = None
 
 
 class IdentityInsightsResponse(BaseModel):

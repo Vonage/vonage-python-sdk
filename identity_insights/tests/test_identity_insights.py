@@ -33,7 +33,7 @@ def test_format_insight():
     build_response(
         path,
         'POST',
-        'https://api-eu.vonage.com/v0.1/identity-insights',
+        'https://api-eu.vonage.com/identity-insights/v1/requests',
         'format.json',
     )
 
@@ -41,7 +41,7 @@ def test_format_insight():
         phone_number="1234567890", insights=InsightsRequest(format=EmptyInsight())
     )
 
-    response = identity_insights.get_insights(options)
+    response = identity_insights.requests(options)
 
     assert response.insights.format.status.code == "OK"
     assert response.insights.format.status.message == "Success"
@@ -52,7 +52,7 @@ def test_basic_insight_error():
     build_response(
         path,
         'POST',
-        'https://api-eu.vonage.com/v0.1/identity-insights',
+        'https://api-eu.vonage.com/identity-insights/v1/requests',
         'insight_error.json',
     )
 
@@ -61,7 +61,7 @@ def test_basic_insight_error():
     )
 
     with raises(IdentityInsightsError) as e:
-        identity_insights.get_insights(options)
+        identity_insights.requests(options)
 
     assert "Malformed JSON" in str(e.value)
 
@@ -73,4 +73,4 @@ def test_empty_insights_request_raises_exception():
     )
 
     with raises(EmptyInsightsRequestException):
-        identity_insights.get_insights(options)
+        identity_insights.requests(options)

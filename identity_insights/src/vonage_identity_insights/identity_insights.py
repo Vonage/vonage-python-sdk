@@ -33,7 +33,7 @@ class IdentityInsights:
         return self._http_client
 
     @validate_call
-    def get_insights(
+    def requests(
         self, insights_request: IdentityInsightsRequest
     ) -> IdentityInsightsResponse:
         """Retrieve identity insights for a phone number.
@@ -62,7 +62,7 @@ class IdentityInsights:
 
         response = self._http_client.post(
             self._http_client.api_host,
-            "/v0.1/identity-insights",
+            "/identity-insights/v1/requests",
             payload,
             auth_type=self._auth_type,
         )

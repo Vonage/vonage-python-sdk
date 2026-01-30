@@ -8,6 +8,7 @@ from pytest import raises
 from requests import PreparedRequest, Response, Session
 from requests.exceptions import ConnectionError
 from responses import matchers
+from testutils import build_response, get_mock_jwt_auth
 from vonage_http_client.auth import Auth
 from vonage_http_client.errors import (
     AuthenticationError,
@@ -19,8 +20,6 @@ from vonage_http_client.errors import (
     ServerError,
 )
 from vonage_http_client.http_client import HttpClient, HttpClientOptions
-
-from testutils import build_response, get_mock_jwt_auth
 
 path = abspath(__file__)
 

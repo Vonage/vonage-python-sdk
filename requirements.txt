@@ -11,6 +11,7 @@ urllib3
 -e http_client
 -e account
 -e application
+-e identity_insights
 -e messages
 -e network_auth
 -e network_number_verification

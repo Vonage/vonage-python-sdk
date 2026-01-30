@@ -41,6 +41,8 @@ class SmsMessage(BaseModel):
             requirements when sending an SMS to specific countries.
         content_id (str, Optional): A string parameter that satisfies regulatory
             requirements when sending an SMS to specific countries.
+        trusted_sender (bool, Optional): overrides, on a per-message basis, any
+            protections set up via Fraud Defender
     """
 
     to: str
@@ -67,6 +69,7 @@ class SmsMessage(BaseModel):
     account_ref: Optional[str] = Field(None, serialization_alias='account-ref')
     entity_id: Optional[str] = Field(None, serialization_alias='entity-id')
     content_id: Optional[str] = Field(None, serialization_alias='content-id')
+    trusted_sender: Optional[bool] = Field(None, serialization_alias="trusted_sender")
 
     @field_validator('body', 'udh')
     @classmethod

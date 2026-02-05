@@ -1,0 +1,16 @@
+{
+   "request_id": "aaaaaaaa-bbbb-cccc-dddd-0123456789ab",
+   "insights": {
+      "format": {
+         "status": {
+            "code": "OK"
+         }
+      },
+      "original_carrier": {
+         "status": {
+            "code": "OK",
+            "message": "Success"
+         }
+      }
+   }
+}

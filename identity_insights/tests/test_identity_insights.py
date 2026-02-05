@@ -74,3 +74,35 @@ def test_empty_insights_request_raises_exception():
 
     with raises(EmptyInsightsRequestException):
         identity_insights.requests(options)
+
+
+@responses.activate
+def test_nullable_response_fields():
+    build_response(
+        path,
+        'POST',
+        'https://api-eu.vonage.com/identity-insights/v1/requests',
+        'nullable_response.json',
+    )
+
+    options = IdentityInsightsRequest(
+        phone_number="1234567890", insights=InsightsRequest(format=EmptyInsight())
+    )
+
+    response = identity_insights.requests(options)
+
+    # Verify that optional fields with missing values are None
+    assert response.insights.format.country_code is None
+    assert response.insights.format.country_name is None
+    assert response.insights.format.time_zones is None
+    assert response.insights.format.is_format_valid is None
+    assert response.insights.format.status.code == "OK"
+    assert response.insights.format.status.message is None
+
+    # Verify original_carrier fields are None when not provided
+    assert response.insights.original_carrier.name is None
+    assert response.insights.original_carrier.network_type is None
+    assert response.insights.original_carrier.country_code is None
+    assert response.insights.original_carrier.network_code is None
+    assert response.insights.original_carrier.status.code == "OK"
+    assert response.insights.original_carrier.status.message == "Success"

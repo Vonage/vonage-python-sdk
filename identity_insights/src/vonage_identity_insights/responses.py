@@ -13,7 +13,7 @@ class InsightStatus(BaseModel):
     """
 
     code: str
-    message: Optional[str]
+    message: Optional[str] = None
 
 
 class FormatInsightResponse(BaseModel):
@@ -34,14 +34,14 @@ class FormatInsightResponse(BaseModel):
         status (InsightStatus): Processing status of the insight.
     """
 
-    country_code: Optional[str]
-    country_name: Optional[str]
-    country_prefix: Optional[str]
-    offline_location: Optional[str]
-    time_zones: Optional[List[str]]
-    number_international: Optional[str]
-    number_national: Optional[str]
-    is_format_valid: Optional[bool]
+    country_code: Optional[str] = None
+    country_name: Optional[str] = None
+    country_prefix: Optional[str] = None
+    offline_location: Optional[str] = None
+    time_zones: Optional[List[str]] = None
+    number_international: Optional[str] = None
+    number_national: Optional[str] = None
+    is_format_valid: Optional[bool] = None
     status: InsightStatus
 
 
@@ -77,10 +77,10 @@ class CarrierInsightResponse(BaseModel):
         status (InsightStatus): Processing status of the insight.
     """
 
-    name: Optional[str]
-    network_type: Optional[str]
-    country_code: Optional[str]
-    network_code: Optional[str]
+    name: Optional[str] = None
+    network_type: Optional[str] = None
+    country_code: Optional[str] = None
+    network_code: Optional[str] = None
     status: InsightStatus
 
 

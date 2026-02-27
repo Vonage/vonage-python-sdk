@@ -50,7 +50,7 @@ class WebsocketChannel(BaseModel):
 
     uri: str = Field(pattern=r'^(ws|wss):\/\/[a-zA-Z0-9~#%@&-_?\/.,:;)(\]\[]*$')
     content_type: Optional[str] = Field(
-        None, alias='content-type', pattern='^audio/l16;rate=(8000|16000)$'
+        None, alias='content-type', pattern='^audio/l16;rate=(8000|16000|24000)$'
     )
     headers: Optional[dict] = None
 

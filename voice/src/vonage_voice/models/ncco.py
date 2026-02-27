@@ -296,8 +296,8 @@ class Wait(NccoAction):
 
 
 class Transfer(NccoAction):
-    """Use the Transfer action to move all legs from the current conversation into
-    another existing conversation.
+    """Use the Transfer action to move all legs from the current conversation into another
+    existing conversation.
 
     The transfer action is synchronous and terminal for the current conversation.
     The target conversation's NCCO continues to control its behaviour.

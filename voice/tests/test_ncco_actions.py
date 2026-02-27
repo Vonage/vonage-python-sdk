@@ -325,3 +325,27 @@ def test_notify_options():
         'eventMethod': 'POST',
         'action': 'notify',
     }
+
+
+def test_wait_default_timeout():
+    wait = ncco.Wait()
+    assert wait.model_dump(by_alias=True, exclude_none=True) == {
+        'timeout': 10.0,
+        'action': 'wait',
+    }
+
+
+def test_wait_custom_timeout():
+    wait = ncco.Wait(timeout=0.5)
+    assert wait.model_dump(by_alias=True, exclude_none=True) == {
+        'timeout': 0.5,
+        'action': 'wait',
+    }
+
+
+def test_wait_timeout_clamped_min_max():
+    wait_min = ncco.Wait(timeout=0.01)
+    assert wait_min.timeout == 0.1
+
+    wait_max = ncco.Wait(timeout=10000)
+    assert wait_max.timeout == 7200.0

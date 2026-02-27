@@ -15,7 +15,17 @@ from .enums import (
     TtsLanguageCode,
 )
 from .input_types import Dtmf, Speech
-from .ncco import Connect, Conversation, Input, NccoAction, Notify, Record, Stream, Talk
+from .ncco import (
+    Connect,
+    Conversation,
+    Input,
+    NccoAction,
+    Notify,
+    Record,
+    Stream,
+    Talk,
+    Wait,
+)
 from .requests import (
     AudioStreamOptions,
     CreateCallRequest,
@@ -63,6 +73,7 @@ __all__ = [
     'Speech',
     'Stream',
     'Talk',
+    'Wait',
     'ToPhone',
     'TtsLanguageCode',
     'TtsStreamOptions',

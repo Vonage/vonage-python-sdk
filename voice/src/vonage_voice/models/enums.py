@@ -16,6 +16,7 @@ class NccoActionType(str, Enum):
     STREAM = 'stream'
     INPUT = 'input'
     NOTIFY = 'notify'
+    WAIT = 'wait'
 
 
 class ConnectEndpointType(str, Enum):

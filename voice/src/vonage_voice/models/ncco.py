@@ -267,3 +267,29 @@ class Notify(NccoAction):
     eventUrl: list[str]
     eventMethod: Optional[str] = None
     action: NccoActionType = NccoActionType.NOTIFY
+
+
+class Wait(NccoAction):
+    """Use the Wait action to add a pause to an NCCO.
+
+    The wait period starts when the action is executed and ends after the provided
+    or default timeout value. Execution of the NCCO then resumes with the next action.
+
+    Args:
+        timeout (Optional[float]): Duration of the wait period in seconds. Valid values
+            are from 0.1 to 7200. Values below 0.1 are treated as 0.1; values above
+            7200 are treated as 7200. If not specified, defaults to 10 seconds.
+    """
+
+    timeout: Optional[float] = 10.0
+    action: NccoActionType = NccoActionType.WAIT
+
+    @model_validator(mode='after')
+    def clamp_timeout(self):
+        if self.timeout is None:
+            self.timeout = 10.0
+        elif self.timeout < 0.1:
+            self.timeout = 0.1
+        elif self.timeout > 7200:
+            self.timeout = 7200.0
+        return self

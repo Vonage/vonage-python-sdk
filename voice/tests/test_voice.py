@@ -11,6 +11,7 @@ from vonage_voice import (
     ListCallsFilter,
     Sip,
     TtsStreamOptions,
+    Websocket,
 )
 from vonage_voice.errors import VoiceError
 from vonage_voice.models.ncco import Talk
@@ -112,15 +113,13 @@ def test_create_call_basic_answer_url():
     build_response(
         path, 'POST', 'https://api.nexmo.com/v1/calls', 'create_call.json', 201
     )
+    ws = Websocket(
+        uri='wss://example.com/websocket',
+        content_type='audio/l16;rate=8000',
+        headers={'key': 'value'},
+    )
     call = CreateCallRequest(
-        to=[
-            {
-                'type': 'websocket',
-                'uri': 'wss://example.com/websocket',
-                'content_type': 'audio/l16;rate=8000',
-                'headers': {'key': 'value'},
-            }
-        ],
+        to=[ws],
         answer_url=['https://example.com/answer'],
         random_from_number=True,
     )
@@ -131,6 +130,33 @@ def test_create_call_basic_answer_url():
     assert response.status == 'started'
     assert response.direction == 'outbound'
     assert response.conversation_uuid == 'CON-2be039b2-d0a4-4274-afc8-d7b241c7c044'
+
+
+@responses.activate
+def test_create_call_websocket_authorization_custom():
+    build_response(
+        path, 'POST', 'https://api.nexmo.com/v1/calls', 'create_call.json', 201
+    )
+    ncco = [Talk(text='Hello world')]
+    ws = Websocket(
+        uri='wss://example.com/websocket',
+        content_type='audio/l16;rate=16000',
+        headers={'key': 'value'},
+        authorization={'type': 'custom', 'value': 'Bearer eyJhbGciOi...'},
+    )
+    call = CreateCallRequest(
+        ncco=ncco,
+        to=[ws],
+        random_from_number=True,
+    )
+
+    response = voice.create_call(call)
+    body = json.loads(voice.http_client.last_request.body)
+    assert body['to'][0]['authorization'] == {
+        'type': 'custom',
+        'value': 'Bearer eyJhbGciOi...',
+    }
+    assert type(response) == CreateCallResponse
 
 
 @responses.activate

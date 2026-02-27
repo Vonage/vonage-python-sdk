@@ -3,6 +3,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 from vonage_utils.types import Dtmf, PhoneNumber, SipUri
 
+from .common import WebsocketAuthorization
 from .enums import ConnectEndpointType
 
 
@@ -55,6 +56,8 @@ class WebsocketEndpoint(BaseModel):
         contentType (Literal['audio/l16;rate=8000', 'audio/l16;rate=16000']): The internet
             media type for the audio you are streaming.
         headers (Optional[dict]): The headers to include with the WebSocket connection.
+        authorization (WebsocketAuthorization, Optional): Authorization configuration for
+            the WebSocket handshake.
     """
 
     uri: str
@@ -62,6 +65,7 @@ class WebsocketEndpoint(BaseModel):
         None, serialization_alias='content-type'
     )
     headers: Optional[dict] = None
+    authorization: Optional[WebsocketAuthorization] = None
     type: ConnectEndpointType = ConnectEndpointType.WEBSOCKET
 
 

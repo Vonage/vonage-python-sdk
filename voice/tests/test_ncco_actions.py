@@ -349,3 +349,38 @@ def test_wait_timeout_clamped_min_max():
 
     wait_max = ncco.Wait(timeout=10000)
     assert wait_max.timeout == 7200.0
+
+
+def test_transfer_basic():
+    transfer = ncco.Transfer(conversationId='CON-1234567890')
+    assert transfer.model_dump(by_alias=True, exclude_none=True) == {
+        'conversationId': 'CON-1234567890',
+        'action': 'transfer',
+    }
+
+
+def test_transfer_options():
+    transfer = ncco.Transfer(
+        conversationId='CON-1234567890',
+        canHear=['leg-a'],
+        canSpeak=['leg-b', 'leg-c'],
+        mute=False,
+    )
+    assert transfer.model_dump(by_alias=True, exclude_none=True) == {
+        'conversationId': 'CON-1234567890',
+        'canHear': ['leg-a'],
+        'canSpeak': ['leg-b', 'leg-c'],
+        'mute': False,
+        'action': 'transfer',
+    }
+
+
+def test_transfer_mute_with_canspeak_error():
+    with raises(NccoActionError) as e:
+        ncco.Transfer(
+            conversationId='CON-1234567890',
+            canSpeak=['leg-a'],
+            mute=True,
+        )
+
+    assert e.match('Cannot use mute option if canSpeak option is specified.')

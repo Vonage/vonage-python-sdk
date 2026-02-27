@@ -293,3 +293,40 @@ class Wait(NccoAction):
         elif self.timeout > 7200:
             self.timeout = 7200.0
         return self
+
+
+class Transfer(NccoAction):
+    """Use the Transfer action to move all legs from the current conversation into
+    another existing conversation.
+
+    The transfer action is synchronous and terminal for the current conversation.
+    The target conversation's NCCO continues to control its behaviour.
+
+    Args:
+        conversationId (str): The target conversation ID.
+        canHear (Optional[list[str]]): Leg UUIDs this participant can hear. If not
+            provided, the participant can hear everyone. If an empty list is provided,
+            the participant will not hear any other participants.
+        canSpeak (Optional[list[str]]): Leg UUIDs this participant can be heard by. If
+            not provided, the participant can be heard by everyone. If an empty list is
+            provided, the participant will not be heard by anyone.
+        mute (Optional[bool]): Set to `True` to mute the participant. When using
+            `canSpeak`, the `mute` parameter is not supported.
+
+    Raises:
+        NccoActionError: If the `mute` option is used with the `canSpeak` option.
+    """
+
+    conversationId: str
+    canHear: Optional[list[str]] = None
+    canSpeak: Optional[list[str]] = None
+    mute: Optional[bool] = None
+    action: NccoActionType = NccoActionType.TRANSFER
+
+    @model_validator(mode='after')
+    def validate_mute_and_can_speak(self):
+        if self.canSpeak and self.mute:
+            raise NccoActionError(
+                'Cannot use mute option if canSpeak option is specified.'
+            )
+        return self

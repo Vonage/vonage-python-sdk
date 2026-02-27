@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 from vonage_utils.models import ResourceLink
 from vonage_utils.types import PhoneNumber
 
@@ -47,6 +47,8 @@ class WebsocketChannel(BaseModel):
         content_type (str, Optional): Content type for the WebSocket.
         headers (dict, Optional): Headers sent to the WebSocket.
     """
+
+    model_config = ConfigDict(populate_by_name=True)
 
     uri: str = Field(pattern=r'^(ws|wss):\/\/[a-zA-Z0-9~#%@&-_?\/.,:;)(\]\[]*$')
     content_type: Optional[str] = Field(

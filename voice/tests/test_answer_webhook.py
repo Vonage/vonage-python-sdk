@@ -22,4 +22,3 @@ def test_answer_webhook_sipheader_user_to_user_alias():
     assert (
         dumped['SipHeader_User-to-User'] == '1234567890abcdef;encoding=hex'
     ), 'Field should serialize back with the SipHeader_User-to-User key'
-

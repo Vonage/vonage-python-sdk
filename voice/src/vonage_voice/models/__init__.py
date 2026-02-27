@@ -23,7 +23,6 @@ from .requests import (
     ToPhone,
     TtsStreamOptions,
 )
-from .webhooks import AnswerWebhook
 from .responses import (
     CallInfo,
     CallList,
@@ -32,6 +31,7 @@ from .responses import (
     Embedded,
     HalLinks,
 )
+from .webhooks import AnswerWebhook
 
 __all__ = [
     'AdvancedMachineDetection',

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class AnswerWebhook(BaseModel):
@@ -19,6 +19,8 @@ class AnswerWebhook(BaseModel):
             received as the `SipHeader_User-to-User` parameter on the webhook.
     """
 
+    model_config = ConfigDict(populate_by_name=True)
+
     to: Optional[str] = None
     from_: Optional[str] = Field(None, alias='from')
     from_user: Optional[str] = None
@@ -28,6 +30,7 @@ class AnswerWebhook(BaseModel):
     region_url: Optional[str] = None
     custom_data: Optional[dict] = None
     sipheader_user_to_user: Optional[str] = Field(
-        None, serialization_alias='SipHeader_User-to-User'
+        None,
+        validation_alias='SipHeader_User-to-User',
+        serialization_alias='SipHeader_User-to-User',
     )
-

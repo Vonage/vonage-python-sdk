@@ -28,8 +28,8 @@ class SilentAuthChannel(Channel):
         redirect_url (str, Optional): Optional final redirect added at the end of the
             check_url request/response lifecycle. Will contain the `request_id` and
             `code` as a url fragment after the URL.
-        sandbox (bool, Optional): Whether you are using the sandbox to test Silent
-            Authentication integrations.
+        sandbox (bool, Optional): [Deprecated] Whether you are using the sandbox to test
+            Silent Authentication integrations.
     """
 
     redirect_url: Optional[str] = None

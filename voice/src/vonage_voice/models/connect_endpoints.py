@@ -27,11 +27,13 @@ class PhoneEndpoint(BaseModel):
         number (PhoneNumber): The phone number to call.
         dtmfAnswer (Optional[Dtmf]): The DTMF tones to send when the call is answered.
         onAnswer (Optional[OnAnswer]): Settings for what to do when the call is answered.
+        shaken (Optional[str]): STIR/SHAKEN Identity header content to use for this call.
     """
 
     number: PhoneNumber
     dtmfAnswer: Optional[Dtmf] = None
     onAnswer: Optional[OnAnswer] = None
+    shaken: Optional[str] = None
     type: ConnectEndpointType = ConnectEndpointType.PHONE
 
 

@@ -89,10 +89,12 @@ def test_create_connect_endpoints():
         number='447000000000',
         dtmfAnswer='1234',
         onAnswer={'url': 'https://example.com', 'ringbackTone': 'http://example.com'},
+        shaken='shaken-token',
     ).model_dump() == {
         'number': '447000000000',
         'dtmfAnswer': '1234',
         'onAnswer': {'url': 'https://example.com', 'ringbackTone': 'http://example.com'},
+        'shaken': 'shaken-token',
         'type': 'phone',
     }
 

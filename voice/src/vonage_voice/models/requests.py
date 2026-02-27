@@ -15,9 +15,11 @@ class ToPhone(Phone):
     Args:
         number (PhoneNumber): The phone number.
         dtmf_answer (Optional[Dtmf]): The DTMF tones to send when the call is answered.
+        shaken (Optional[str]): STIR/SHAKEN Identity header content to use for this call.
     """
 
     dtmf_answer: Optional[Dtmf] = Field(None, serialization_alias='dtmfAnswer')
+    shaken: Optional[str] = None
 
 
 class CreateCallRequest(BaseModel):

@@ -9,6 +9,7 @@ from vonage_messages.models import (
     RcsVideo,
     RcsSuggestionBase,
     RcsSuggestionReply,
+    RcsSuggestionActionDial,
 )
 
 
@@ -213,7 +214,6 @@ def test_rcs_suggestion_reply():
     assert suggestion.model_dump(by_alias=True, exclude_none=True) == suggestion_dict
 
 
-@pytest.mark.skip(reason="Not yet implemented.")
 def test_rcs_suggestion_dial():
     suggestion = RcsSuggestionActionDial(
         text='Call us',
@@ -230,7 +230,6 @@ def test_rcs_suggestion_dial():
     assert suggestion.model_dump(by_alias=True, exclude_none=True) == suggestion_dict
 
 
-@pytest.mark.skip(reason="Not yet implemented.")
 def test_rcs_suggestion_action_dial_without_phone_number():
     with pytest.raises(ValidationError) as err:
         suggestion = RcsSuggestionActionDial(

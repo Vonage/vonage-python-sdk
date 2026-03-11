@@ -43,3 +43,4 @@ class SuggestionType(str, Enum):
     """The type of RCS suggestion."""
 
     REPLY = 'reply'
+    DIAL = 'dial'

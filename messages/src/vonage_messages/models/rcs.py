@@ -40,6 +40,18 @@ class RcsSuggestionReply(RcsSuggestionBase):
     type_: SuggestionType = Field(SuggestionType.REPLY, serialization_alias='type')
 
 
+class RcsSuggestionActionDial(RcsSuggestionBase):
+    """Model for a dial action suggestion in an RCS message.
+
+    Args:
+        text (str): The text to display on the suggestion chip.
+        postback_data (str): The data that will be sent via the Inbound Message webhook when the suggestion is selected.
+        phone_number (str): The phone number to dial when the suggestion is selected. In E.164 format without the leading plus sign.
+    """
+
+    type_: SuggestionType = Field(SuggestionType.DIAL, serialization_alias='type')
+    phone_number: PhoneNumber
+
 class BaseRcs(BaseMessage):
     """Model for a base RCS message.
 

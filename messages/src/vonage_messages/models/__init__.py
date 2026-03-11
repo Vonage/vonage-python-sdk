@@ -10,7 +10,7 @@ from .messenger import (
     MessengerVideo,
 )
 from .mms import MmsAudio, MmsImage, MmsResource, MmsVcard, MmsVideo
-from .rcs import RcsCustom, RcsFile, RcsImage, RcsResource, RcsText, RcsVideo, RcsSuggestionBase, RcsSuggestionReply
+from .rcs import RcsCustom, RcsFile, RcsImage, RcsResource, RcsText, RcsVideo, RcsSuggestionBase, RcsSuggestionReply, RcsSuggestionActionDial
 from .sms import Sms, SmsOptions
 from .viber import (
     ViberAction,

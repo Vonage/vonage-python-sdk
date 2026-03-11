@@ -211,3 +211,30 @@ def test_rcs_suggestion_reply():
     }
 
     assert suggestion.model_dump(by_alias=True, exclude_none=True) == suggestion_dict
+
+
+@pytest.mark.skip(reason="Not yet implemented.")
+def test_rcs_suggestion_dial():
+    suggestion = RcsSuggestionActionDial(
+        text='Call us',
+        postback_data='postback-data',
+        phone_number='447900000000',
+    )
+    suggestion_dict = {
+        'type': 'dial',
+        'text': 'Call us',
+        'postback_data': 'postback-data',
+        'phone_number': '447900000000',
+    }
+
+    assert suggestion.model_dump(by_alias=True, exclude_none=True) == suggestion_dict
+
+
+@pytest.mark.skip(reason="Not yet implemented.")
+def test_rcs_suggestion_action_dial_without_phone_number():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionDial(
+            text='Call us',
+            postback_data='postback-data',
+        )
+    assert "Field required" in str(err.value)

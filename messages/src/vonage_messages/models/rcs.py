@@ -52,6 +52,26 @@ class RcsSuggestionActionDial(RcsSuggestionBase):
     type_: SuggestionType = Field(SuggestionType.DIAL, serialization_alias='type')
     phone_number: PhoneNumber
 
+
+class RcsSuggestionActionViewLocation(RcsSuggestionBase):
+    """Model for a view location action suggestion in an RCS message.
+
+    Args:
+        text (str): The text to display on the suggestion chip.
+        postback_data (str): The data that will be sent via the Inbound Message webhook when the suggestion is selected.
+        latitude (float): The latitude of the location to view when the suggestion is selected.
+        longitude (float): The longitude of the location to view when the suggestion is selected.
+        pin_label (str): The label to display on the location pin.
+        fallback_url (str, Optional): The URL to open if the device doesn't support the view location action.
+    """
+
+    type_: SuggestionType = Field('view_location', serialization_alias='type')
+    latitude: str
+    longitude: str
+    pin_label: str
+    fallback_url: Optional[str] = None
+
+
 class BaseRcs(BaseMessage):
     """Model for a base RCS message.
 

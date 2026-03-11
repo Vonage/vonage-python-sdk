@@ -10,6 +10,7 @@ from vonage_messages.models import (
     RcsSuggestionBase,
     RcsSuggestionReply,
     RcsSuggestionActionDial,
+    RcsSuggestionActionViewLocation,
 )
 
 
@@ -235,5 +236,62 @@ def test_rcs_suggestion_action_dial_without_phone_number():
         suggestion = RcsSuggestionActionDial(
             text='Call us',
             postback_data='postback-data',
+        )
+    assert "Field required" in str(err.value)
+
+
+def test_rcs_suggestion_action_view_location():
+    suggestion = RcsSuggestionActionViewLocation(
+        text='View location',
+        postback_data='postback-data',
+        latitude='51.5074',
+        longitude='-0.1278',
+        pin_label='London',
+        fallback_url='https://example.com/location',
+    )
+    suggestion_dict = {
+        'type': 'view_location',
+        'text': 'View location',
+        'postback_data': 'postback-data',
+        'latitude': '51.5074',
+        'longitude': '-0.1278',
+        'pin_label': 'London',
+        'fallback_url': 'https://example.com/location',
+    }
+    assert suggestion.model_dump(by_alias=True, exclude_none=True) == suggestion_dict
+
+
+def test_rcs_suggestion_action_view_location_without_latitude():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionViewLocation(
+            text='View location',
+            postback_data='postback-data',
+            longitude='-0.1278',
+            pin_label='London',
+            fallback_url='https://example.com/location',
+        )
+    assert "Field required" in str(err.value)
+
+
+def test_rcs_suggestion_action_view_location_without_longitude():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionViewLocation(
+            text='View location',
+            postback_data='postback-data',
+            latitude='51.5074',
+            pin_label='London',
+            fallback_url='https://example.com/location',
+        )
+    assert "Field required" in str(err.value)
+
+
+def test_rcs_suggestion_action_view_location_without_pin_label():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionViewLocation(
+            text='View location',
+            postback_data='postback-data',
+            latitude='51.5074',
+            longitude='-0.1278',
+            fallback_url='https://example.com/location',
         )
     assert "Field required" in str(err.value)

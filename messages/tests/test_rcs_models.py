@@ -1,4 +1,5 @@
 import pytest
+from pydantic import ValidationError
 from vonage_messages.models import (
     RcsCustom,
     RcsFile,
@@ -6,6 +7,7 @@ from vonage_messages.models import (
     RcsResource,
     RcsText,
     RcsVideo,
+    RcsSuggestionBase,
 )
 
 
@@ -149,7 +151,7 @@ def test_create_rcs_custom():
 
     assert rcs_model.model_dump(by_alias=True, exclude_none=True) == rcs_dict
 
-@pytest.mark.skip(reason="not yet implemented")
+
 def test_rcs_suggestion_base():
     suggestion = RcsSuggestionBase(
         text='Reply',
@@ -162,36 +164,36 @@ def test_rcs_suggestion_base():
 
     assert suggestion.model_dump(by_alias=True, exclude_none=True) == suggestion_dict
 
-@pytest.mark.skip(reason="not yet implemented")
+
 def test_rcs_suggestion_base_without_text():
     with pytest.raises(ValidationError) as err:
         suggestion = RcsSuggestionBase(
             postback_data='postback-data',
         )
-    assert "field required" in err.value.errors[0]['msg']
+    assert "Field required" in str(err.value)
 
-@pytest.mark.skip(reason="not yet implemented")
+
 def test_rcs_suggestion_base_without_postback_data():
     with pytest.raises(ValidationError) as err:
         suggestion = RcsSuggestionBase(
             text='Reply',
         )
-    assert "field required" in err.value.errors[0]['msg']
+    assert "Field required" in str(err.value)
 
-@pytest.mark.skip(reason="not yet implemented")
+
 def test_rcs_suggestion_base_with_text_too_short():
     with pytest.raises(ValidationError) as err:
         suggestion = RcsSuggestionBase(
             text='',
             postback_data='postback-data',
         )
-    assert "ensure this value has at least 1 characters" in err.value.errors[0]['msg']
+    assert "String should have at least 1 character" in str(err.value)
 
-@pytest.mark.skip(reason="not yet implemented")
+
 def test_rcs_suggestion_base_with_text_too_long():
     with pytest.raises(ValidationError) as err:
         suggestion = RcsSuggestionBase(
             text='A' * 25 + 'B',
             postback_data='postback-data',
         )
-    assert "ensure this value has at most 25 characters" in err.value.errors[0]['msg']
+    assert "String should have at most 25 characters" in str(err.value)

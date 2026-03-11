@@ -17,6 +17,18 @@ class RcsResource(BaseModel):
     url: str
 
 
+class RcsSuggestionBase(BaseModel):
+    """Model for a suggestion in an RCS message.
+
+    Args:
+        text (str): The text to display on the suggestion chip.
+        postback_data (str): The data that will be sent via the Inbound Message webhook when the suggestion is selected.
+    """
+
+    text: str = Field(..., min_length=1, max_length=25)
+    postback_data: str
+
+
 class BaseRcs(BaseMessage):
     """Model for a base RCS message.
 

@@ -65,11 +65,22 @@ class RcsSuggestionActionViewLocation(RcsSuggestionBase):
         fallback_url (str, Optional): The URL to open if the device doesn't support the view location action.
     """
 
-    type_: SuggestionType = Field('view_location', serialization_alias='type')
+    type_: SuggestionType = Field(SuggestionType.VIEW_LOCATION, serialization_alias='type')
     latitude: str
     longitude: str
     pin_label: str
     fallback_url: Optional[str] = None
+
+
+class RcsSuggestionActionShareLocation(RcsSuggestionBase):
+    """Model for a share location action suggestion in an RCS message.
+
+    Args:
+        text (str): The text to display on the suggestion chip.
+        postback_data (str): The data that will be sent via the Inbound Message webhook when the suggestion is selected.
+    """
+
+    type_: SuggestionType = Field(SuggestionType.SHARE_LOCATION, serialization_alias='type')
 
 
 class BaseRcs(BaseMessage):

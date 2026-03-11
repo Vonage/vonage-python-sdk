@@ -45,3 +45,4 @@ class SuggestionType(str, Enum):
     REPLY = 'reply'
     DIAL = 'dial'
     VIEW_LOCATION = 'view_location'
+    SHARE_LOCATION = 'share_location'

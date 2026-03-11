@@ -11,6 +11,7 @@ from vonage_messages.models import (
     RcsSuggestionReply,
     RcsSuggestionActionDial,
     RcsSuggestionActionViewLocation,
+    RcsSuggestionActionShareLocation,
 )
 
 
@@ -295,3 +296,16 @@ def test_rcs_suggestion_action_view_location_without_pin_label():
             fallback_url='https://example.com/location',
         )
     assert "Field required" in str(err.value)
+
+
+def test_rcs_suggestion_action_share_location():
+    suggestion = RcsSuggestionActionShareLocation(
+        text='Share location',
+        postback_data='postback-data',
+    )
+    suggestion_dict = {
+        'type': 'share_location',
+        'text': 'Share location',
+        'postback_data': 'postback-data',
+    }
+    assert suggestion.model_dump(by_alias=True, exclude_none=True) == suggestion_dict

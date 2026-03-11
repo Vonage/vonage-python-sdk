@@ -8,6 +8,7 @@ from vonage_messages.models import (
     RcsText,
     RcsVideo,
     RcsSuggestionBase,
+    RcsSuggestionReply,
 )
 
 

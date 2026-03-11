@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from vonage_utils.types import PhoneNumber
 
 from .base_message import BaseMessage
-from .enums import ChannelType, MessageType
+from .enums import ChannelType, MessageType, SuggestionType
 
 
 class RcsResource(BaseModel):
@@ -27,6 +27,17 @@ class RcsSuggestionBase(BaseModel):
 
     text: str = Field(..., min_length=1, max_length=25)
     postback_data: str
+
+
+class RcsSuggestionReply(RcsSuggestionBase):
+    """Model for a reply suggestion in an RCS message.
+
+    Args:
+        text (str): The text to display on the suggestion chip.
+        postback_data (str): The data that will be sent via the Inbound Message webhook when the suggestion is selected.
+    """
+
+    type_: SuggestionType = Field(SuggestionType.REPLY, serialization_alias='type')
 
 
 class BaseRcs(BaseMessage):

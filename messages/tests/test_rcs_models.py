@@ -197,3 +197,16 @@ def test_rcs_suggestion_base_with_text_too_long():
             postback_data='postback-data',
         )
     assert "String should have at most 25 characters" in str(err.value)
+
+def test_rcs_suggestion_reply():
+    suggestion = RcsSuggestionReply(
+        text='Reply',
+        postback_data='postback-data',
+    )
+    suggestion_dict = {
+        'type': 'reply',
+        'text': 'Reply',
+        'postback_data': 'postback-data',
+    }
+
+    assert suggestion.model_dump(by_alias=True, exclude_none=True) == suggestion_dict

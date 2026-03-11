@@ -47,3 +47,12 @@ class SuggestionType(str, Enum):
     VIEW_LOCATION = 'view_location'
     SHARE_LOCATION = 'share_location'
     OPEN_URL = 'open_url'
+    OPEN_URL_IN_WEBVIEW = 'open_url_in_webview'
+
+
+class UrlWebviewViewMode(str, Enum):
+    """The view mode for an RCS suggestion that opens a URL in a webview."""
+
+    FULL = 'FULL'
+    TALL = 'TALL'
+    HALF = 'HALF'

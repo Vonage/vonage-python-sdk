@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from vonage_utils.types import PhoneNumber
 
 from .base_message import BaseMessage
-from .enums import ChannelType, MessageType, SuggestionType
+from .enums import ChannelType, MessageType, SuggestionType, UrlWebviewViewMode
 
 
 class RcsResource(BaseModel):
@@ -95,6 +95,20 @@ class RcsSuggestionActionOpenUrl(RcsSuggestionBase):
     type_: SuggestionType = Field(SuggestionType.OPEN_URL, serialization_alias='type')
     url: str
     description: str = Field(..., min_length=1, max_length=500)
+
+
+class RcsSuggestionActionOpenUrlWebview(RcsSuggestionActionOpenUrl):
+    """Model for an open URL in webview action suggestion in an RCS message.
+
+    Args:
+        text (str): The text to display on the suggestion chip.
+        postback_data (str): The data that will be sent via the Inbound Message webhook when the suggestion is selected.
+        url (str): The URL to open in a webview when the suggestion is selected.
+        view_mode (str, Optional): The view mode for the webview. If not specified, the default view mode will be used.
+    """
+
+    type_: SuggestionType = Field(SuggestionType.OPEN_URL_IN_WEBVIEW, serialization_alias='type')
+    view_mode: Optional[UrlWebviewViewMode] = None
 
 
 class BaseRcs(BaseMessage):

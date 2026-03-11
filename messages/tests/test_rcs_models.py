@@ -13,6 +13,7 @@ from vonage_messages.models import (
     RcsSuggestionActionViewLocation,
     RcsSuggestionActionShareLocation,
     RcsSuggestionActionOpenUrl,
+    RcsSuggestionActionOpenUrlWebview,
 )
 
 
@@ -369,3 +370,80 @@ def test_rcs_suggestion_action_open_url_with_description_too_long():
             description='A' * 500 + 'B',
         )
     assert "String should have at most 500 characters" in str(err.value)
+
+
+def test_rcs_suggestion_action_open_url_in_webview():
+    suggestion = RcsSuggestionActionOpenUrlWebview(
+        text='Open URL',
+        postback_data='postback-data',
+        url='https://example.com',
+        description='Click to open the URL',
+        view_mode='FULL',
+    )
+    suggestion_dict = {
+        'type': 'open_url_in_webview',
+        'text': 'Open URL',
+        'postback_data': 'postback-data',
+        'url': 'https://example.com',
+        'description': 'Click to open the URL',
+        'view_mode': 'FULL',
+    }
+    assert suggestion.model_dump(by_alias=True, exclude_none=True) == suggestion_dict
+
+
+# @pytest.mark.skip(reason="Not yet implemented")
+def test_rcs_suggestion_action_open_url_in_webview_without_url():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionOpenUrlWebview(
+            text='Open URL',
+            postback_data='postback-data',
+            description='Click to open the URL',
+        )
+    assert "Field required" in str(err.value)
+
+
+# @pytest.mark.skip(reason="Not yet implemented")
+def test_rcs_suggestion_action_open_url_in_webview_without_description():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionOpenUrlWebview(
+            text='Open URL',
+            postback_data='postback-data',
+            url='https://example.com',
+        )
+    assert "Field required" in str(err.value)
+
+
+# @pytest.mark.skip(reason="Not yet implemented")
+def test_rcs_suggestion_action_open_url_in_webview_with_description_too_short():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionOpenUrlWebview(
+            text='Open URL',
+            postback_data='postback-data',
+            url='https://example.com',
+            description='',
+        )
+    assert "String should have at least 1 character" in str(err.value)
+
+
+# @pytest.mark.skip(reason="Not yet implemented")
+def test_rcs_suggestion_action_open_url_in_webview_with_description_too_long():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionOpenUrlWebview(
+            text='Open URL',
+            postback_data='postback-data',
+            url='https://example.com',
+            description='A' * 500 + 'B',
+        )
+    assert "String should have at most 500 characters" in str(err.value)
+
+
+def test_rcs_suggestion_action_open_url_in_webview_with_invalid_view_mode():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionOpenUrlWebview(
+            text='Open URL',
+            postback_data='postback-data',
+            url='https://example.com',
+            description='Click to open the URL',
+            view_mode='INVALID_VIEW_MODE',
+        )
+    assert "Input should be 'FULL', 'TALL' or 'HALF'" in str(err.value)

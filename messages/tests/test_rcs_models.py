@@ -14,6 +14,7 @@ from vonage_messages.models import (
     RcsSuggestionActionShareLocation,
     RcsSuggestionActionOpenUrl,
     RcsSuggestionActionOpenUrlWebview,
+    RcsSuggestionActionCreateCalendarEvent,
 )
 
 
@@ -391,7 +392,6 @@ def test_rcs_suggestion_action_open_url_in_webview():
     assert suggestion.model_dump(by_alias=True, exclude_none=True) == suggestion_dict
 
 
-# @pytest.mark.skip(reason="Not yet implemented")
 def test_rcs_suggestion_action_open_url_in_webview_without_url():
     with pytest.raises(ValidationError) as err:
         suggestion = RcsSuggestionActionOpenUrlWebview(
@@ -402,7 +402,6 @@ def test_rcs_suggestion_action_open_url_in_webview_without_url():
     assert "Field required" in str(err.value)
 
 
-# @pytest.mark.skip(reason="Not yet implemented")
 def test_rcs_suggestion_action_open_url_in_webview_without_description():
     with pytest.raises(ValidationError) as err:
         suggestion = RcsSuggestionActionOpenUrlWebview(
@@ -413,7 +412,6 @@ def test_rcs_suggestion_action_open_url_in_webview_without_description():
     assert "Field required" in str(err.value)
 
 
-# @pytest.mark.skip(reason="Not yet implemented")
 def test_rcs_suggestion_action_open_url_in_webview_with_description_too_short():
     with pytest.raises(ValidationError) as err:
         suggestion = RcsSuggestionActionOpenUrlWebview(
@@ -425,7 +423,6 @@ def test_rcs_suggestion_action_open_url_in_webview_with_description_too_short():
     assert "String should have at least 1 character" in str(err.value)
 
 
-# @pytest.mark.skip(reason="Not yet implemented")
 def test_rcs_suggestion_action_open_url_in_webview_with_description_too_long():
     with pytest.raises(ValidationError) as err:
         suggestion = RcsSuggestionActionOpenUrlWebview(
@@ -447,3 +444,126 @@ def test_rcs_suggestion_action_open_url_in_webview_with_invalid_view_mode():
             view_mode='INVALID_VIEW_MODE',
         )
     assert "Input should be 'FULL', 'TALL' or 'HALF'" in str(err.value)
+
+
+def test_rcs_suggestion_action_create_calendar_event():
+    suggestion = RcsSuggestionActionCreateCalendarEvent(
+        text='Add to calendar',
+        postback_data='postback-data',
+        start_time='2024-01-01T12:00:00Z',
+        end_time='2024-01-01T13:00:00Z',
+        title='Meeting with Bob',
+        description='Discuss project updates',
+        fallback_url='https://example.com/calendar-event',
+    )
+    suggestion_dict = {
+        'type': 'create_calendar_event',
+        'text': 'Add to calendar',
+        'postback_data': 'postback-data',
+        'start_time': '2024-01-01T12:00:00Z',
+        'end_time': '2024-01-01T13:00:00Z',
+        'title': 'Meeting with Bob',
+        'description': 'Discuss project updates',
+        'fallback_url': 'https://example.com/calendar-event',
+    }
+    assert suggestion.model_dump(by_alias=True, exclude_none=True) == suggestion_dict
+
+
+def test_rcs_suggestion_action_create_calendar_event_without_start_time():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionCreateCalendarEvent(
+            text='Add to calendar',
+            postback_data='postback-data',
+            end_time='2024-01-01T13:00:00Z',
+            title='Meeting with Bob',
+            description='Discuss project updates',
+        )
+    assert "Field required" in str(err.value)
+
+
+def test_rcs_suggestion_action_create_calendar_event_without_end_time():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionCreateCalendarEvent(
+            text='Add to calendar',
+            postback_data='postback-data',
+            start_time='2024-01-01T12:00:00Z',
+            title='Meeting with Bob',
+            description='Discuss project updates',
+        )
+    assert "Field required" in str(err.value)
+
+
+def test_rcs_suggestion_action_create_calendar_event_without_title():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionCreateCalendarEvent(
+            text='Add to calendar',
+            postback_data='postback-data',
+            start_time='2024-01-01T12:00:00Z',
+            end_time='2024-01-01T13:00:00Z',
+            description='Discuss project updates',
+        )
+    assert "Field required" in str(err.value)
+
+
+def test_rcs_suggestion_action_create_calendar_event_without_description():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionCreateCalendarEvent(
+            text='Add to calendar',
+            postback_data='postback-data',
+            start_time='2024-01-01T12:00:00Z',
+            end_time='2024-01-01T13:00:00Z',
+            title='Meeting with Bob',
+        )
+    assert "Field required" in str(err.value)
+
+
+def test_rcs_suggestion_action_create_calendar_event_with_title_too_short():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionCreateCalendarEvent(
+            text='Add to calendar',
+            postback_data='postback-data',
+            start_time='2024-01-01T12:00:00Z',
+            end_time='2024-01-01T13:00:00Z',
+            title='',
+            description='Discuss project updates',
+        )
+    assert "String should have at least 1 character" in str(err.value)
+
+
+def test_rcs_suggestion_action_create_calendar_event_with_title_too_long():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionCreateCalendarEvent(
+            text='Add to calendar',
+            postback_data='postback-data',
+            start_time='2024-01-01T12:00:00Z',
+            end_time='2024-01-01T13:00:00Z',
+            title='A' * 100 + 'B',
+            description='Discuss project updates',
+        )
+    assert "String should have at most 100 characters" in str(err.value)
+
+
+def test_rcs_suggestion_action_create_calendar_event_with_description_too_short():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionCreateCalendarEvent(
+            text='Add to calendar',
+            postback_data='postback-data',
+            start_time='2024-01-01T12:00:00Z',
+            end_time='2024-01-01T13:00:00Z',
+            title='Meeting with Bob',
+            description='',
+        )
+    assert "String should have at least 1 character" in str(err.value)
+
+
+def test_rcs_suggestion_action_create_calendar_event_with_description_too_long():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionCreateCalendarEvent(
+            text='Add to calendar',
+            postback_data='postback-data',
+            start_time='2024-01-01T12:00:00Z',
+            end_time='2024-01-01T13:00:00Z',
+            title='Meeting with Bob',
+            description='A' * 500 + 'B',
+        )
+    assert "String should have at most 500 characters" in str(err.value)

@@ -110,6 +110,26 @@ class RcsSuggestionActionOpenUrlWebview(RcsSuggestionActionOpenUrl):
     type_: SuggestionType = Field(SuggestionType.OPEN_URL_IN_WEBVIEW, serialization_alias='type')
     view_mode: Optional[UrlWebviewViewMode] = None
 
+class RcsSuggestionActionCreateCalendarEvent(RcsSuggestionBase):
+    """Model for a create calendar event action suggestion in an RCS message.
+
+    Args:
+        text (str): The text to display on the suggestion chip.
+        postback_data (str): The data that will be sent via the Inbound Message webhook when the suggestion is selected.
+        start_time (str): The start time of the calendar event in ISO 8601 format.
+        end_time (str): The end time of the calendar event in ISO 8601 format
+        title (str): The title of the calendar event.
+        description (str): The description of the calendar event.
+        fallback_url (str, Optional): The URL to open if the device doesn't support the create calendar event action.
+    """
+
+    type_: SuggestionType = Field(SuggestionType.CREATE_CALENDAR_EVENT, serialization_alias='type')
+    start_time: str
+    end_time: str
+    title: str = Field(..., min_length=1, max_length=100)
+    description: str = Field(..., min_length=1, max_length=500)
+    fallback_url: Optional[str] = None
+
 
 class BaseRcs(BaseMessage):
     """Model for a base RCS message.

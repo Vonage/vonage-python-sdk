@@ -48,6 +48,7 @@ class SuggestionType(str, Enum):
     SHARE_LOCATION = 'share_location'
     OPEN_URL = 'open_url'
     OPEN_URL_IN_WEBVIEW = 'open_url_in_webview'
+    CREATE_CALENDAR_EVENT = 'create_calendar_event'
 
 
 class UrlWebviewViewMode(str, Enum):

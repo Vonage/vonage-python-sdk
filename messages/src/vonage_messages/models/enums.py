@@ -46,3 +46,4 @@ class SuggestionType(str, Enum):
     DIAL = 'dial'
     VIEW_LOCATION = 'view_location'
     SHARE_LOCATION = 'share_location'
+    OPEN_URL = 'open_url'

@@ -83,6 +83,20 @@ class RcsSuggestionActionShareLocation(RcsSuggestionBase):
     type_: SuggestionType = Field(SuggestionType.SHARE_LOCATION, serialization_alias='type')
 
 
+class RcsSuggestionActionOpenUrl(RcsSuggestionBase):
+    """Model for an open URL action suggestion in an RCS message.
+
+    Args:
+        text (str): The text to display on the suggestion chip.
+        postback_data (str): The data that will be sent via the Inbound Message webhook when the suggestion is selected.
+        url (str): The URL to open when the suggestion is selected.
+    """
+
+    type_: SuggestionType = Field(SuggestionType.OPEN_URL, serialization_alias='type')
+    url: str
+    description: str = Field(..., min_length=1, max_length=500)
+
+
 class BaseRcs(BaseMessage):
     """Model for a base RCS message.
 

@@ -12,6 +12,7 @@ from vonage_messages.models import (
     RcsSuggestionActionDial,
     RcsSuggestionActionViewLocation,
     RcsSuggestionActionShareLocation,
+    RcsSuggestionActionOpenUrl,
 )
 
 
@@ -309,3 +310,62 @@ def test_rcs_suggestion_action_share_location():
         'postback_data': 'postback-data',
     }
     assert suggestion.model_dump(by_alias=True, exclude_none=True) == suggestion_dict
+
+
+def test_rcs_suggestion_action_open_url():
+    suggestion = RcsSuggestionActionOpenUrl(
+        text='Open URL',
+        postback_data='postback-data',
+        url='https://example.com',
+        description='Click to open the URL',
+    )
+    suggestion_dict = {
+        'type': 'open_url',
+        'text': 'Open URL',
+        'postback_data': 'postback-data',
+        'url': 'https://example.com',
+        'description': 'Click to open the URL',
+    }
+    assert suggestion.model_dump(by_alias=True, exclude_none=True) == suggestion_dict
+
+
+def test_rcs_suggestion_action_open_url_without_url():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionOpenUrl(
+            text='Open URL',
+            postback_data='postback-data',
+            description='Click to open the URL',
+        )
+    assert "Field required" in str(err.value)
+
+
+def test_rcs_suggestion_action_open_url_without_description():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionOpenUrl(
+            text='Open URL',
+            postback_data='postback-data',
+            url='https://example.com',
+        )
+    assert "Field required" in str(err.value)
+
+
+def test_rcs_suggestion_action_open_url_with_description_too_short():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionOpenUrl(
+            text='Open URL',
+            postback_data='postback-data',
+            url='https://example.com',
+            description='',
+        )
+    assert "String should have at least 1 character" in str(err.value)
+
+
+def test_rcs_suggestion_action_open_url_with_description_too_long():
+    with pytest.raises(ValidationError) as err:
+        suggestion = RcsSuggestionActionOpenUrl(
+            text='Open URL',
+            postback_data='postback-data',
+            url='https://example.com',
+            description='A' * 500 + 'B',
+        )
+    assert "String should have at most 500 characters" in str(err.value)

@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from vonage_utils.types import PhoneNumber
 
 from .base_message import BaseMessage
-from .enums import ChannelType, MessageType, SuggestionType, UrlWebviewViewMode
+from .enums import ChannelType, MessageType, SuggestionType, UrlWebviewViewMode, RcsCategory
 
 
 class RcsResource(BaseModel):
@@ -129,6 +129,17 @@ class RcsSuggestionActionCreateCalendarEvent(RcsSuggestionBase):
     title: str = Field(..., min_length=1, max_length=100)
     description: str = Field(..., min_length=1, max_length=500)
     fallback_url: Optional[str] = None
+
+
+
+class RcsOptions(BaseModel):
+    """Model for RCS message options.
+
+    Args:
+        category (str, Optional): The category of the RCS message.
+    """
+
+    category: Optional[RcsCategory] = None
 
 
 class BaseRcs(BaseMessage):

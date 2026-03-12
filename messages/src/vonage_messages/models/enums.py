@@ -57,3 +57,13 @@ class UrlWebviewViewMode(str, Enum):
     FULL = 'FULL'
     TALL = 'TALL'
     HALF = 'HALF'
+
+
+class RcsCategory(str, Enum):
+    """The category of an RCS message."""
+
+    ACKNOWLEDGEMENT = 'acknowledgement'
+    AUTHENTICATION = 'authentication'
+    PROMOTION = 'promotion'
+    SERVICE_REQUEST = 'service-request'
+    TRANSACTION = 'transaction'

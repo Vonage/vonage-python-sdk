@@ -15,6 +15,7 @@ from vonage_messages.models import (
     RcsSuggestionActionOpenUrl,
     RcsSuggestionActionOpenUrlWebview,
     RcsSuggestionActionCreateCalendarEvent,
+    RcsOptions,
 )
 
 
@@ -567,3 +568,33 @@ def test_rcs_suggestion_action_create_calendar_event_with_description_too_long()
             description='A' * 500 + 'B',
         )
     assert "String should have at most 500 characters" in str(err.value)
+
+
+def test_create_rcs_options():
+    options = RcsOptions(
+        category='transaction',
+    )
+    options_dict = {
+        'category': 'transaction',
+    }
+    assert options.model_dump(by_alias=True, exclude_none=True) == options_dict
+
+
+def test_create_rcs_options_with_each_valid_category():
+    valid_options = ['acknowledgement', 'authentication', 'promotion', 'service-request', 'transaction']
+    for option in valid_options:
+        options = RcsOptions(
+            category=option,
+        )
+        options_dict = {
+            'category': option,
+        }
+        assert options.model_dump(by_alias=True, exclude_none=True) == options_dict
+
+
+def test_create_rcs_options_with_invalid_category():
+    with pytest.raises(ValidationError) as err:
+        options = RcsOptions(
+            category='invalid-category',
+        )
+    assert "Input should be 'acknowledgement', 'authentication', 'promotion', 'service-request' or 'transaction'" in str(err.value)

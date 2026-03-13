@@ -2,6 +2,7 @@ import pytest
 from pydantic import ValidationError
 from vonage_messages.models import (
     RcsCustom,
+    RcsCard,
     RcsFile,
     RcsImage,
     RcsResource,
@@ -17,6 +18,7 @@ from vonage_messages.models import (
     RcsSuggestionActionCreateCalendarEvent,
     RcsOptions,
     RcsOptionsCard,
+    RcsOptionsCarousel,
 )
 
 
@@ -66,6 +68,9 @@ def test_create_rcs_text_all_fields():
         client_ref='client-ref',
         webhook_url='https://example.com',
         ttl=600,
+        rcs=RcsOptions(
+            category='transaction',
+        ),
     )
     rcs_dict = {
         'to': '1234567890',
@@ -76,9 +81,212 @@ def test_create_rcs_text_all_fields():
         'ttl': 600,
         'channel': 'rcs',
         'message_type': 'text',
+        'rcs': {
+            'category': 'transaction',
+        }
     }
 
     assert rcs_model.model_dump(by_alias=True, exclude_none=True) == rcs_dict
+
+
+def test_create_rcs_text_with_suggestions():
+    rcs_model = RcsText(
+        to='1234567890',
+        from_='asdf1234',
+        text='Hello, World!',
+        suggestions=[
+            RcsSuggestionReply(
+                text='Reply',
+                postback_data='postback-data',
+            ),
+            RcsSuggestionActionDial(
+                text='Call us',
+                postback_data='postback-data',
+                phone_number='447900000000',
+            ),
+        ],
+    )
+    rcs_dict = {
+        'to': '1234567890',
+        'from': 'asdf1234',
+        'text': 'Hello, World!',
+        'suggestions': [
+            {
+                'type': 'reply',
+                'text': 'Reply',
+                'postback_data': 'postback-data',
+            },
+            {
+                'type': 'dial',
+                'text': 'Call us',
+                'postback_data': 'postback-data',
+                'phone_number': '447900000000',
+            },
+        ],
+        'channel': 'rcs',
+        'message_type': 'text',
+    }
+
+    assert rcs_model.model_dump(by_alias=True, exclude_none=True) == rcs_dict
+
+
+def test_create_rcs_text_with_all_suggestion_types():
+    rcs_model = RcsText(
+        to='1234567890',
+        from_='asdf1234',
+        text='Hello, World!',
+        suggestions=[
+            RcsSuggestionReply(
+                text='Reply',
+                postback_data='postback-data',
+            ),
+            RcsSuggestionActionDial(
+                text='Call us',
+                postback_data='postback-data',
+                phone_number='447900000000',
+            ),
+            RcsSuggestionActionViewLocation(
+                text='View location',
+                postback_data='postback-data',
+                latitude='51.5074',
+                longitude='-0.1278',
+                pin_label='London',
+                fallback_url='https://example.com/location',
+            ),
+            RcsSuggestionActionShareLocation(
+                text='Share location',
+                postback_data='postback-data',
+            ),
+            RcsSuggestionActionOpenUrl(
+                text='Open URL',
+                postback_data='postback-data',
+                url='https://example.com',
+                description='Click to open the URL',
+            ),
+            RcsSuggestionActionOpenUrlWebview(
+                text='Open URL in webview',
+                postback_data='postback-data',
+                url='https://example.com',
+                description='Click to open the URL in a webview',
+                view_mode='FULL',
+            ),
+            RcsSuggestionActionCreateCalendarEvent(
+                text='Add to calendar',
+                postback_data='postback-data',
+                start_time='2024-01-01T12:00:00Z',
+                end_time='2024-01-01T13:00:00Z',
+                title='Meeting with Bob',
+                description='Discuss project updates',
+                fallback_url='https://example.com/calendar-event',
+            ),
+        ],
+    )
+    rcs_dict = {
+        'to': '1234567890',
+        'from': 'asdf1234',
+        'text': 'Hello, World!',
+        'suggestions': [
+            {
+                'type': 'reply',
+                'text': 'Reply',
+                'postback_data': 'postback-data',
+            },
+            {
+                'type': 'dial',
+                'text': 'Call us',
+                'postback_data': 'postback-data',
+                'phone_number': '447900000000',
+            },
+            {
+                'type': 'view_location',
+                'text': 'View location',
+                'postback_data': 'postback-data',
+                'latitude': '51.5074',
+                'longitude': '-0.1278',
+                'pin_label': 'London',
+                'fallback_url': 'https://example.com/location',
+            },
+            {
+                'type': 'share_location',
+                'text': 'Share location',
+                'postback_data': 'postback-data',
+            },
+            {
+                'type': 'open_url',
+                'text': 'Open URL',
+                'postback_data': 'postback-data',
+                'url': 'https://example.com',
+                'description': 'Click to open the URL',
+            },
+            {
+                'type': 'open_url_in_webview',
+                'text': 'Open URL in webview',
+                'postback_data': 'postback-data',
+                'url': 'https://example.com',
+                'description': 'Click to open the URL in a webview',
+                'view_mode': 'FULL',
+            },
+            {
+                'type': 'create_calendar_event',
+                'text': 'Add to calendar',
+                'postback_data': 'postback-data',
+                'start_time': '2024-01-01T12:00:00Z',
+                'end_time': '2024-01-01T13:00:00Z',
+                'title': 'Meeting with Bob',
+                'description': 'Discuss project updates',
+                'fallback_url': 'https://example.com/calendar-event',
+            }
+        ],
+        'channel': 'rcs',
+        'message_type': 'text',
+    }
+
+
+    assert rcs_model.model_dump(by_alias=True, exclude_none=True) == rcs_dict
+
+
+def test_create_rcs_text_with_insuffient_suggestions():
+    with pytest.raises(ValidationError) as err:
+        rcs_model = RcsText(
+            to='1234567890',
+            from_='asdf1234',
+            text='Hello, World!',
+            suggestions=[],
+        )
+    assert "List should have at least 1 item" in str(err.value)
+
+
+def test_create_rcs_text_with_too_many_suggestions():
+    with pytest.raises(ValidationError) as err:
+        rcs_model = RcsText(
+            to='1234567890',
+            from_='asdf1234',
+            text='Hello, World!',
+            suggestions=[
+                RcsSuggestionReply(
+                    text='Reply',
+                    postback_data='postback-data',
+                ),
+            ] * 12,
+        )
+    assert "List should have at most 11 items" in str(err.value)
+
+
+def test_create_rcs_text_with_inavalid_suggestion_types():
+    with pytest.raises(ValidationError) as err:
+        rcs_model = RcsText(
+            to='1234567890',
+            from_='asdf1234',
+            text='Hello, World!',
+            suggestions=[
+                RcsSuggestionReply(
+                    text='Reply',
+                    postback_data='postback-data',
+                ),
+                "Invalid suggestion type",
+            ],
+        )
+    assert "Input should be a valid dictionary or instance" in str(err.value)
 
 
 def test_create_rcs_image():
@@ -142,6 +350,106 @@ def test_create_rcs_file():
     }
 
     assert rcs_model.model_dump(by_alias=True, exclude_none=True) == rcs_dict
+
+
+def test_create_rcs_card():
+    card = RcsCard(
+        to='1234567890',
+        from_='asdf1234',
+        title='Card title',
+        text='Card description',
+        media_url='https://example.com/image.jpg',
+    )
+    card_dict = {
+        'to': '1234567890',
+        'from': 'asdf1234',
+        'title': 'Card title',
+        'text': 'Card description',
+        'media_url': 'https://example.com/image.jpg',
+        'channel': 'rcs',
+        'message_type': 'card',
+    }
+    assert card.model_dump(by_alias=True, exclude_none=True) == card_dict
+
+
+def test_create_rcs_card_with_optional_params():
+    card = RcsCard(
+        to='1234567890',
+        from_='asdf1234',
+        title='Card title',
+        text='Card description',
+        media_url='https://example.com/image.jpg',
+        media_description='Image description',
+        media_height='MEDIUM',
+        thumbnail_url='https://example.com/thumbnail.jpg',
+        media_force_refresh=True,
+        rcs=RcsOptionsCard(
+            card_orientation='VERTICAL',
+            image_alignment='LEFT',
+        ),
+    )
+    card_dict = {
+        'to': '1234567890',
+        'from': 'asdf1234',
+        'title': 'Card title',
+        'text': 'Card description',
+        'media_url': 'https://example.com/image.jpg',
+        'media_description': 'Image description',
+        'media_height': 'MEDIUM',
+        'thumbnail_url': 'https://example.com/thumbnail.jpg',
+        'media_force_refresh': True,
+        'rcs': {
+            'card_orientation': 'VERTICAL',
+            'image_alignment': 'LEFT',
+        },
+        'channel': 'rcs',
+        'message_type': 'card',
+    }
+    assert card.model_dump(by_alias=True, exclude_none=True) == card_dict
+
+
+def test_create_rcs_card_with_suggestions():
+    card = RcsCard(
+        to='1234567890',
+        from_='asdf1234',
+        title='Card title',
+        text='Card description',
+        media_url='https://example.com/image.jpg',
+        suggestions=[
+            RcsSuggestionReply(
+                text='Reply',
+                postback_data='postback-data',
+            ),
+            RcsSuggestionActionDial(
+                text='Call us',
+                postback_data='postback-data',
+                phone_number='447900000000',
+            ),
+        ],
+    )
+    card_dict = {
+        'to': '1234567890',
+        'from': 'asdf1234',
+        'title': 'Card title',
+        'text': 'Card description',
+        'media_url': 'https://example.com/image.jpg',
+        'suggestions': [
+            {
+                'type': 'reply',
+                'text': 'Reply',
+                'postback_data': 'postback-data',
+            },
+            {
+                'type': 'dial',
+                'text': 'Call us',
+                'postback_data': 'postback-data',
+                'phone_number': '447900000000',
+            },
+        ],
+        'channel': 'rcs',
+        'message_type': 'card',
+    }
+    assert card.model_dump(by_alias=True, exclude_none=True) == card_dict
 
 
 def test_create_rcs_custom():
@@ -656,3 +964,33 @@ def test_create_rcs_options_card_image_alignment_with_invalid_option():
             image_alignment='INVALID_ALIGNMENT'
         )
     assert "Input should be 'LEFT' or 'RIGHT'" in str(err.value)
+
+
+def test_create_rcs_options_carousel():
+    options = RcsOptionsCarousel(
+        card_width='MEDIUM',
+    )
+    options_dict = {
+        'card_width': 'MEDIUM',
+    }
+    assert options.model_dump(by_alias=True, exclude_none=True) == options_dict
+
+
+def test_create_rcs_options_carousel_card_width_with_each_valid_option():
+    valid_widths = ['SMALL', 'MEDIUM']
+    for width in valid_widths:
+        options = RcsOptionsCarousel(
+            card_width=width,
+        )
+        options_dict = {
+            'card_width': width,
+        }
+        assert options.model_dump(by_alias=True, exclude_none=True) == options_dict
+
+
+def test_create_rcs_options_carousel_card_width_with_invalid_option():
+    with pytest.raises(ValidationError) as err:
+        options = RcsOptionsCarousel(
+            card_width='INVALID_WIDTH',
+        )
+    assert "Input should be 'SMALL' or 'MEDIUM'" in str(err.value)

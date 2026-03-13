@@ -13,6 +13,7 @@ class MessageType(str, Enum):
     STICKER = 'sticker'
     CUSTOM = 'custom'
     VCARD = 'vcard'
+    CARD = 'card'
 
 
 class ChannelType(str, Enum):
@@ -81,3 +82,18 @@ class RcsImageAlignment(str, Enum):
 
     LEFT = 'LEFT'
     RIGHT = 'RIGHT'
+
+
+class RcsCardWidth(str, Enum):
+    """The width of a card in an RCS carousel."""
+
+    SMALL = 'SMALL'
+    MEDIUM = 'MEDIUM'
+
+
+class RcsMediaHeight(str, Enum):
+    """The height of media on an RCS card."""
+
+    SHORT = 'SHORT'
+    MEDIUM = 'MEDIUM'
+    TALL = 'TALL'

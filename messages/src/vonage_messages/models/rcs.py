@@ -1,10 +1,10 @@
-from typing import Optional
+from typing import Optional, List, Union
 
 from pydantic import BaseModel, Field
 from vonage_utils.types import PhoneNumber
 
 from .base_message import BaseMessage
-from .enums import ChannelType, MessageType, SuggestionType, UrlWebviewViewMode, RcsCategory, RcsCardOrientation, RcsImageAlignment
+from .enums import ChannelType, MessageType, SuggestionType, UrlWebviewViewMode, RcsCategory, RcsCardOrientation, RcsImageAlignment, RcsCardWidth, RcsMediaHeight
 
 
 class RcsResource(BaseModel):
@@ -131,7 +131,6 @@ class RcsSuggestionActionCreateCalendarEvent(RcsSuggestionBase):
     fallback_url: Optional[str] = None
 
 
-
 class RcsOptions(BaseModel):
     """Model for RCS message options.
 
@@ -143,7 +142,7 @@ class RcsOptions(BaseModel):
 
 
 class RcsOptionsCard(RcsOptions):
-    """Model for an RCS message options card.
+    """Model for an RCS card message options.
 
     Args:
         category (str, Optional): The category of the RCS message.
@@ -153,6 +152,17 @@ class RcsOptionsCard(RcsOptions):
 
     card_orientation: Optional[RcsCardOrientation] = None
     image_alignment: Optional[RcsImageAlignment] = None
+
+
+class RcsOptionsCarousel(RcsOptions):
+    """Model for an RCS carousel message options.
+
+    Args:
+        card_width (str): The width of each card in the carousel (SMALL or MEDIUM).
+    """
+
+    card_width: RcsCardWidth
+
 
 class BaseRcs(BaseMessage):
     """Model for a base RCS message.
@@ -187,6 +197,20 @@ class RcsText(BaseRcs):
 
     text: str = Field(..., min_length=1, max_length=3072)
     message_type: MessageType = MessageType.TEXT
+    suggestions: Optional[
+        List[
+            Union[
+                RcsSuggestionReply,
+                RcsSuggestionActionDial,
+                RcsSuggestionActionViewLocation,
+                RcsSuggestionActionShareLocation,
+                RcsSuggestionActionOpenUrl,
+                RcsSuggestionActionOpenUrlWebview,
+                RcsSuggestionActionCreateCalendarEvent,
+            ]
+        ]
+    ] = Field(None, min_length=1, max_length=11)
+    rcs: Optional[RcsOptions] = None
 
 
 class RcsImage(BaseRcs):
@@ -238,6 +262,46 @@ class RcsFile(BaseRcs):
 
     file: RcsResource
     message_type: MessageType = MessageType.FILE
+
+
+class RcsCard(BaseRcs):
+    """Model for an RCS card message.
+
+    Args:
+        title (str): The title of the card.
+        description (str): The description of the card.
+        media (RcsResource, Optional): The media resource for the card. Can be an image or a video.
+        suggestions (List[Union[RcsSuggestionReply, RcsSuggestionActionDial, RcsSuggestionActionViewLocation, RcsSuggestionActionShareLocation, RcsSuggestionActionOpenUrl, RcsSuggestionActionOpenUrlWebview, RcsSuggestionActionCreateCalendarEvent], Optional): A list of suggestions to include on the card. Can include up to 8 suggestions.
+        to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a leading plus sign.
+        from_ (str): The sender's phone number in E.164 format. Don't use a leading plus sign.
+        ttl (int, Optional): The duration in seconds for which the message is valid.
+        client_ref (str, Optional): An optional client reference.
+        webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
+        webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
+    """
+
+    title: str = Field(..., min_length=1, max_length=200)
+    text: str = Field(..., min_length=1, max_length=2000)
+    media_url: str
+    media_description: Optional[str] = None
+    media_height: Optional[RcsMediaHeight] = None
+    thumbnail_url: Optional[str] = None
+    media_force_refresh: Optional[bool] = None
+    suggestions: Optional[
+        List[
+            Union[
+                RcsSuggestionReply,
+                RcsSuggestionActionDial,
+                RcsSuggestionActionViewLocation,
+                RcsSuggestionActionShareLocation,
+                RcsSuggestionActionOpenUrl,
+                RcsSuggestionActionOpenUrlWebview,
+                RcsSuggestionActionCreateCalendarEvent,
+            ]
+        ]
+    ] = Field(None, min_length=1, max_length=8)
+    rcs: Optional[RcsOptionsCard] = None
+    message_type: MessageType = MessageType.CARD
 
 
 class RcsCustom(BaseRcs):

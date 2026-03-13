@@ -12,6 +12,7 @@ from .messenger import (
 from .mms import MmsAudio, MmsImage, MmsResource, MmsVcard, MmsVideo
 from .rcs import (
     RcsCustom,
+    RcsCard,
     RcsFile,
     RcsImage,
     RcsResource,
@@ -27,6 +28,7 @@ from .rcs import (
     RcsSuggestionActionCreateCalendarEvent,
     RcsOptions,
     RcsOptionsCard,
+    RcsOptionsCarousel,
 )
 from .sms import Sms, SmsOptions
 from .viber import (

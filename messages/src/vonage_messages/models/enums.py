@@ -67,3 +67,17 @@ class RcsCategory(str, Enum):
     PROMOTION = 'promotion'
     SERVICE_REQUEST = 'service-request'
     TRANSACTION = 'transaction'
+
+
+class RcsCardOrientation(str, Enum):
+    """The orientation of an RCS card."""
+
+    VERTICAL = 'VERTICAL'
+    HORIZONTAL = 'HORIZONTAL'
+
+
+class RcsImageAlignment(str, Enum):
+    """The alignment of an image on an RCS card."""
+
+    LEFT = 'LEFT'
+    RIGHT = 'RIGHT'

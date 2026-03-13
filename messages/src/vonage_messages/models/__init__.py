@@ -26,6 +26,7 @@ from .rcs import (
     RcsSuggestionActionOpenUrlWebview,
     RcsSuggestionActionCreateCalendarEvent,
     RcsOptions,
+    RcsOptionsCard,
 )
 from .sms import Sms, SmsOptions
 from .viber import (

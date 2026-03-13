@@ -16,6 +16,7 @@ from vonage_messages.models import (
     RcsSuggestionActionOpenUrlWebview,
     RcsSuggestionActionCreateCalendarEvent,
     RcsOptions,
+    RcsOptionsCard,
 )
 
 
@@ -598,3 +599,60 @@ def test_create_rcs_options_with_invalid_category():
             category='invalid-category',
         )
     assert "Input should be 'acknowledgement', 'authentication', 'promotion', 'service-request' or 'transaction'" in str(err.value)
+
+
+def test_create_rcs_options_card():
+    options = RcsOptionsCard(
+        card_orientation='HORIZONTAL',
+        image_alignment='LEFT'
+    )
+    options_dict = {
+        'card_orientation': 'HORIZONTAL',
+        'image_alignment': 'LEFT',
+    }
+    assert options.model_dump(by_alias=True, exclude_none=True) == options_dict
+
+
+def test_create_rcs_options_card_card_orientation_with_each_valid_option():
+    valid_orientations = ['VERTICAL', 'HORIZONTAL']
+    for orientation in valid_orientations:
+        options = RcsOptionsCard(
+            card_orientation=orientation,
+            image_alignment='LEFT'
+        )
+        options_dict = {
+            'card_orientation': orientation,
+            'image_alignment': 'LEFT',
+        }
+        assert options.model_dump(by_alias=True, exclude_none=True) == options_dict
+
+
+def test_create_rcs_options_card_image_alignment_with_each_valid_option():
+    valid_alignments = ['LEFT', 'RIGHT']
+    for alignment in valid_alignments:
+        options = RcsOptionsCard(
+            card_orientation='HORIZONTAL',
+            image_alignment=alignment
+        )
+        options_dict = {
+            'card_orientation': 'HORIZONTAL',
+            'image_alignment': alignment,
+        }
+        assert options.model_dump(by_alias=True, exclude_none=True) == options_dict
+
+
+def test_create_rcs_options_card_card_orientation_with_invalid_option():
+    with pytest.raises(ValidationError) as err:
+        options = RcsOptionsCard(
+            card_orientation='INVALID_ORIENTATION',
+            image_alignment='LEFT'
+        )
+    assert "Input should be 'VERTICAL' or 'HORIZONTAL'" in str(err.value)
+
+def test_create_rcs_options_card_image_alignment_with_invalid_option():
+    with pytest.raises(ValidationError) as err:
+        options = RcsOptionsCard(
+            card_orientation='HORIZONTAL',
+            image_alignment='INVALID_ALIGNMENT'
+        )
+    assert "Input should be 'LEFT' or 'RIGHT'" in str(err.value)

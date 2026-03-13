@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from vonage_utils.types import PhoneNumber
 
 from .base_message import BaseMessage
-from .enums import ChannelType, MessageType, SuggestionType, UrlWebviewViewMode, RcsCategory
+from .enums import ChannelType, MessageType, SuggestionType, UrlWebviewViewMode, RcsCategory, RcsCardOrientation, RcsImageAlignment
 
 
 class RcsResource(BaseModel):
@@ -141,6 +141,18 @@ class RcsOptions(BaseModel):
 
     category: Optional[RcsCategory] = None
 
+
+class RcsOptionsCard(RcsOptions):
+    """Model for an RCS message options card.
+
+    Args:
+        category (str, Optional): The category of the RCS message.
+        card_orientation (str): The orientation of the card (HORIZONTAL or VERTICAL).
+        image_alignment (str): The alignment of the image on the card (LEFT or RIGHT).
+    """
+
+    card_orientation: Optional[RcsCardOrientation] = None
+    image_alignment: Optional[RcsImageAlignment] = None
 
 class BaseRcs(BaseMessage):
     """Model for a base RCS message.

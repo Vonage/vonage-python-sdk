@@ -14,6 +14,7 @@ class MessageType(str, Enum):
     CUSTOM = 'custom'
     VCARD = 'vcard'
     CARD = 'card'
+    CAROUSEL = 'carousel'
 
 
 class ChannelType(str, Enum):

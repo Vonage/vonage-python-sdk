@@ -263,6 +263,37 @@ class RcsFile(BaseRcs):
     file: RcsResource
     message_type: MessageType = MessageType.FILE
 
+class RcsCardContent(BaseModel):
+    """Model for the content of an RCS card.
+
+    Args:
+        title (str): The title of the card.
+        text (str): The text of the card.
+        media_url (str): The media URL for the card. Can be an image or a video.
+        suggestions (List[Union[RcsSuggestionReply, RcsSuggestionActionDial, RcsSuggestionActionViewLocation, RcsSuggestionActionShareLocation, RcsSuggestionActionOpenUrl, RcsSuggestionActionOpenUrlWebview, RcsSuggestionActionCreateCalendarEvent], Optional): A list of suggestions to include on the card. Can include up to 4 suggestions.
+    """
+
+    title: str = Field(..., min_length=1, max_length=200)
+    text: str = Field(..., min_length=1, max_length=2000)
+    media_url: str
+    media_description: Optional[str] = None
+    media_height: Optional[RcsMediaHeight] = None
+    thumbnail_url: Optional[str] = None
+    media_force_refresh: Optional[bool] = None
+    suggestions: Optional[
+        List[
+            Union[
+                RcsSuggestionReply,
+                RcsSuggestionActionDial,
+                RcsSuggestionActionViewLocation,
+                RcsSuggestionActionShareLocation,
+                RcsSuggestionActionOpenUrl,
+                RcsSuggestionActionOpenUrlWebview,
+                RcsSuggestionActionCreateCalendarEvent,
+            ]
+        ]
+    ] = Field(None, min_length=1, max_length=4)
+
 
 class RcsCard(BaseRcs):
     """Model for an RCS card message.
@@ -270,8 +301,8 @@ class RcsCard(BaseRcs):
     Args:
         title (str): The title of the card.
         description (str): The description of the card.
-        media (RcsResource, Optional): The media resource for the card. Can be an image or a video.
-        suggestions (List[Union[RcsSuggestionReply, RcsSuggestionActionDial, RcsSuggestionActionViewLocation, RcsSuggestionActionShareLocation, RcsSuggestionActionOpenUrl, RcsSuggestionActionOpenUrlWebview, RcsSuggestionActionCreateCalendarEvent], Optional): A list of suggestions to include on the card. Can include up to 8 suggestions.
+        media_url (str, Optional): The media URL for the card. Can be an image or a video.
+        suggestions (List[Union[RcsSuggestionReply, RcsSuggestionActionDial, RcsSuggestionActionViewLocation, RcsSuggestionActionShareLocation, RcsSuggestionActionOpenUrl, RcsSuggestionActionOpenUrlWebview, RcsSuggestionActionCreateCalendarEvent], Optional): A list of suggestions to include on the card. Can include up to 4 suggestions.
         to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a leading plus sign.
         from_ (str): The sender's phone number in E.164 format. Don't use a leading plus sign.
         ttl (int, Optional): The duration in seconds for which the message is valid.
@@ -302,6 +333,24 @@ class RcsCard(BaseRcs):
     ] = Field(None, min_length=1, max_length=4)
     rcs: Optional[RcsOptionsCard] = None
     message_type: MessageType = MessageType.CARD
+
+
+class RcsCarousel(BaseRcs):
+    """Model for an RCS carousel message.
+
+    Args:
+        cards (List[RcsCard]): A list of cards to include in the carousel. Can include up to 10 cards.
+        to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a leading plus sign.
+        from_ (str): The sender's phone number in E.164 format. Don't use a leading plus sign.
+        ttl (int, Optional): The duration in seconds for which the message is valid.
+        client_ref (str, Optional): An optional client reference.
+        webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
+        webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
+    """
+
+    cards: List[RcsCard] = Field(..., min_length=1, max_length=10)
+    rcs: Optional[RcsOptionsCarousel] = None
+    message_type: MessageType = MessageType.CAROUSEL
 
 
 class RcsCustom(BaseRcs):

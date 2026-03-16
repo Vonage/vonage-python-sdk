@@ -12,6 +12,8 @@ from .messenger import (
 from .mms import MmsAudio, MmsImage, MmsResource, MmsVcard, MmsVideo
 from .rcs import (
     RcsCustom,
+    RcsCarousel,
+    RcsCardContent,
     RcsCard,
     RcsFile,
     RcsImage,

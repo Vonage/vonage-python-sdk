@@ -299,7 +299,7 @@ class RcsCard(BaseRcs):
                 RcsSuggestionActionCreateCalendarEvent,
             ]
         ]
-    ] = Field(None, min_length=1, max_length=8)
+    ] = Field(None, min_length=1, max_length=4)
     rcs: Optional[RcsOptionsCard] = None
     message_type: MessageType = MessageType.CARD
 

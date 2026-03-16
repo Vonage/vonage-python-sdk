@@ -452,6 +452,275 @@ def test_create_rcs_card_with_suggestions():
     assert card.model_dump(by_alias=True, exclude_none=True) == card_dict
 
 
+def test_create_rcs_cards_with_all_suggestion_types():
+    card_1 = RcsCard(
+        to='1234567890',
+        from_='asdf1234',
+        title='Card title',
+        text='Card description',
+        media_url='https://example.com/image.jpg',
+        suggestions=[
+            RcsSuggestionReply(
+                text='Reply',
+                postback_data='postback-data',
+            ),
+            RcsSuggestionActionDial(
+                text='Call us',
+                postback_data='postback-data',
+                phone_number='447900000000',
+            ),
+            RcsSuggestionActionViewLocation(
+                text='View location',
+                postback_data='postback-data',
+                latitude='51.5074',
+                longitude='-0.1278',
+                pin_label='London',
+                fallback_url='https://example.com/location',
+            ),
+            RcsSuggestionActionShareLocation(
+                text='Share location',
+                postback_data='postback-data',
+            ),
+        ],
+    )
+    card_2 = RcsCard(
+        to='1234567890',
+        from_='asdf1234',
+        title='Card title',
+        text='Card description',
+        media_url='https://example.com/image.jpg',
+        suggestions=[
+            RcsSuggestionActionOpenUrl(
+                text='Open URL',
+                postback_data='postback-data',
+                url='https://example.com',
+                description='Click to open the URL',
+            ),
+            RcsSuggestionActionOpenUrlWebview(
+                text='Open URL in webview',
+                postback_data='postback-data',
+                url='https://example.com',
+                description='Click to open the URL in a webview',
+                view_mode='FULL',
+            ),
+            RcsSuggestionActionCreateCalendarEvent(
+                text='Add to calendar',
+                postback_data='postback-data',
+                start_time='2024-01-01T12:00:00Z',
+                end_time='2024-01-01T13:00:00Z',
+                title='Meeting with Bob',
+                description='Discuss project updates',
+                fallback_url='https://example.com/calendar-event',
+            ),
+        ],
+    )
+    card_dict_1 = {
+        'to': '1234567890',
+        'from': 'asdf1234',
+        'title': 'Card title',
+        'text': 'Card description',
+        'media_url': 'https://example.com/image.jpg',
+        'suggestions': [
+            {
+                'type': 'reply',
+                'text': 'Reply',
+                'postback_data': 'postback-data',
+            },
+            {
+                'type': 'dial',
+                'text': 'Call us',
+                'postback_data': 'postback-data',
+                'phone_number': '447900000000',
+            },
+            {
+                'type': 'view_location',
+                'text': 'View location',
+                'postback_data': 'postback-data',
+                'latitude': '51.5074',
+                'longitude': '-0.1278',
+                'pin_label': 'London',
+                'fallback_url': 'https://example.com/location',
+            },
+            {
+                'type': 'share_location',
+                'text': 'Share location',
+                'postback_data': 'postback-data',
+            }
+        ],
+        'channel': 'rcs',
+        'message_type': 'card',
+    }
+    card_dict_2 = {
+        'to': '1234567890',
+        'from': 'asdf1234',
+        'title': 'Card title',
+        'text': 'Card description',
+        'media_url': 'https://example.com/image.jpg',
+        'suggestions': [
+            {
+                'type': 'open_url',
+                'text': 'Open URL',
+                'postback_data': 'postback-data',
+                'url': 'https://example.com',
+                'description': 'Click to open the URL',
+            },
+            {
+                'type': 'open_url_in_webview',
+                'text': 'Open URL in webview',
+                'postback_data': 'postback-data',
+                'url': 'https://example.com',
+                'description': 'Click to open the URL in a webview',
+                'view_mode': 'FULL',
+            },
+            {
+                'type': 'create_calendar_event',
+                'text': 'Add to calendar',
+                'postback_data': 'postback-data',
+                'start_time': '2024-01-01T12:00:00Z',
+                'end_time': '2024-01-01T13:00:00Z',
+                'title': 'Meeting with Bob',
+                'description': 'Discuss project updates',
+                'fallback_url': 'https://example.com/calendar-event',
+            }
+        ],
+        'channel': 'rcs',
+        'message_type': 'card',
+    }
+    assert card_1.model_dump(by_alias=True, exclude_none=True) == card_dict_1
+    assert card_2.model_dump(by_alias=True, exclude_none=True) == card_dict_2
+
+
+def test_create_rcs_card_without_title():
+    with pytest.raises(ValidationError) as err:
+        card = RcsCard(
+            to='1234567890',
+            from_='asdf1234',
+            text='Card description',
+            media_url='https://example.com/image.jpg',
+        )
+    assert "Field required" in str(err.value)
+
+
+def test_create_rcs_card_without_text():
+    with pytest.raises(ValidationError) as err:
+        card = RcsCard(
+            to='1234567890',
+            from_='asdf1234',
+            title='Card title',
+            media_url='https://example.com/image.jpg',
+        )
+    assert "Field required" in str(err.value)
+
+
+def test_create_rcs_card_without_media_url():
+    with pytest.raises(ValidationError) as err:
+        card = RcsCard(
+            to='1234567890',
+            from_='asdf1234',
+            title='Card title',
+            text='Card description',
+        )
+    assert "Field required" in str(err.value)
+
+
+def test_create_rcs_card_with_title_too_short():
+    with pytest.raises(ValidationError) as err:
+        card = RcsCard(
+            to='1234567890',
+            from_='asdf1234',
+            title='',
+            text='Card description',
+            media_url='https://example.com/image.jpg',
+        )
+    assert "String should have at least 1 character" in str(err.value)
+
+
+def test_create_rcs_card_with_title_too_long():
+    with pytest.raises(ValidationError) as err:
+        card = RcsCard(
+            to='1234567890',
+            from_='asdf1234',
+            title='A' * 200 + 'B',
+            text='Card description',
+            media_url='https://example.com/image.jpg',
+        )
+    assert "String should have at most 200 characters" in str(err.value)
+
+
+def test_create_rcs_card_with_text_too_short():
+    with pytest.raises(ValidationError) as err:
+        card = RcsCard(
+            to='1234567890',
+            from_='asdf1234',
+            title='Card title',
+            text='',
+            media_url='https://example.com/image.jpg',
+        )
+    assert "String should have at least 1 character" in str(err.value)
+
+
+def test_create_rcs_card_with_text_too_long():
+    with pytest.raises(ValidationError) as err:
+        card = RcsCard(
+            to='1234567890',
+            from_='asdf1234',
+            title='Card title',
+            text='A' * 2000 + 'B',
+            media_url='https://example.com/image.jpg',
+        )
+    assert "String should have at most 2000 characters" in str(err.value)
+
+
+def test_create_rcs_card_with_insuffient_suggestions():
+    with pytest.raises(ValidationError) as err:
+        card = RcsCard(
+            to='1234567890',
+            from_='asdf1234',
+            title='Card title',
+            text='Card description',
+            media_url='https://example.com/image.jpg',
+            suggestions=[],
+        )
+    assert "List should have at least 1 item" in str(err.value)
+
+
+def test_create_rcs_card_with_too_many_suggestions():
+    with pytest.raises(ValidationError) as err:
+        card = RcsCard(
+            to='1234567890',
+            from_='asdf1234',
+            title='Card title',
+            text='Card description',
+            media_url='https://example.com/image.jpg',
+            suggestions=[
+                RcsSuggestionReply(
+                    text='Reply',
+                    postback_data='postback-data',
+                ),
+            ] * 5,
+        )
+    assert "List should have at most 4 items" in str(err.value)
+
+
+def test_create_rcs_card_with_inavalid_suggestion_types():
+    with pytest.raises(ValidationError) as err:
+        card = RcsCard(
+            to='1234567890',
+            from_='asdf1234',
+            title='Card title',
+            text='Card description',
+            media_url='https://example.com/image.jpg',
+            suggestions=[
+                RcsSuggestionReply(
+                    text='Reply',
+                    postback_data='postback-data',
+                ),
+                "Invalid suggestion type",
+            ],
+        )
+    assert "Input should be a valid dictionary or instance" in str(err.value)
+
+
 def test_create_rcs_custom():
     rcs_model = RcsCustom(
         to='1234567890',

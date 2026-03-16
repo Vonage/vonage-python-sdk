@@ -928,8 +928,6 @@ def test_create_rcs_cards_with_all_suggestion_types():
 def test_create_rcs_card_content_without_title():
     with pytest.raises(ValidationError) as err:
         card = RcsCardContent(
-            to='1234567890',
-            from_='asdf1234',
             text='Card description',
             media_url='https://example.com/image.jpg',
         )
@@ -939,8 +937,6 @@ def test_create_rcs_card_content_without_title():
 def test_create_rcs_card_content_without_text():
     with pytest.raises(ValidationError) as err:
         card = RcsCardContent(
-            to='1234567890',
-            from_='asdf1234',
             title='Card title',
             media_url='https://example.com/image.jpg',
         )
@@ -950,8 +946,6 @@ def test_create_rcs_card_content_without_text():
 def test_create_rcs_card_content_without_media_url():
     with pytest.raises(ValidationError) as err:
         card = RcsCardContent(
-            to='1234567890',
-            from_='asdf1234',
             title='Card title',
             text='Card description',
         )
@@ -961,8 +955,6 @@ def test_create_rcs_card_content_without_media_url():
 def test_create_rcs_card_content_with_title_too_short():
     with pytest.raises(ValidationError) as err:
         card = RcsCardContent(
-            to='1234567890',
-            from_='asdf1234',
             title='',
             text='Card description',
             media_url='https://example.com/image.jpg',
@@ -973,8 +965,6 @@ def test_create_rcs_card_content_with_title_too_short():
 def test_create_rcs_card_content_with_title_too_long():
     with pytest.raises(ValidationError) as err:
         card = RcsCardContent(
-            to='1234567890',
-            from_='asdf1234',
             title='A' * 200 + 'B',
             text='Card description',
             media_url='https://example.com/image.jpg',
@@ -985,8 +975,6 @@ def test_create_rcs_card_content_with_title_too_long():
 def test_create_rcs_card_content_with_text_too_short():
     with pytest.raises(ValidationError) as err:
         card = RcsCardContent(
-            to='1234567890',
-            from_='asdf1234',
             title='Card title',
             text='',
             media_url='https://example.com/image.jpg',
@@ -997,8 +985,6 @@ def test_create_rcs_card_content_with_text_too_short():
 def test_create_rcs_card_content_with_text_too_long():
     with pytest.raises(ValidationError) as err:
         card = RcsCardContent(
-            to='1234567890',
-            from_='asdf1234',
             title='Card title',
             text='A' * 2000 + 'B',
             media_url='https://example.com/image.jpg',
@@ -1009,8 +995,6 @@ def test_create_rcs_card_content_with_text_too_long():
 def test_create_rcs_card_content_with_insuffient_suggestions():
     with pytest.raises(ValidationError) as err:
         card = RcsCardContent(
-            to='1234567890',
-            from_='asdf1234',
             title='Card title',
             text='Card description',
             media_url='https://example.com/image.jpg',
@@ -1022,8 +1006,6 @@ def test_create_rcs_card_content_with_insuffient_suggestions():
 def test_create_rcs_card_content_with_too_many_suggestions():
     with pytest.raises(ValidationError) as err:
         card = RcsCardContent(
-            to='1234567890',
-            from_='asdf1234',
             title='Card title',
             text='Card description',
             media_url='https://example.com/image.jpg',
@@ -1040,8 +1022,6 @@ def test_create_rcs_card_content_with_too_many_suggestions():
 def test_create_rcs_card_content_with_inavalid_suggestion_types():
     with pytest.raises(ValidationError) as err:
         card = RcsCardContent(
-            to='1234567890',
-            from_='asdf1234',
             title='Card title',
             text='Card description',
             media_url='https://example.com/image.jpg',
@@ -1056,13 +1036,12 @@ def test_create_rcs_card_content_with_inavalid_suggestion_types():
     assert "Input should be a valid dictionary or instance" in str(err.value)
 
 
-@pytest.mark.skip(reason="Not fully implemented yet")
 def test_create_rcs_carousel():
     carousel = RcsCarousel(
+        to='1234567890',
+        from_='asdf1234',
         cards=[
-            RcsCard(
-                to='1234567890',
-                from_='asdf1234',
+            RcsCardContent(
                 title='Card title',
                 text='Card description',
                 media_url='https://example.com/image.jpg',
@@ -1070,15 +1049,57 @@ def test_create_rcs_carousel():
         ] * 2,
     )
     carousel_dict = {
+        'to': '1234567890',
+        'from': 'asdf1234',
         'cards': [
             {
                 'title': 'Card title',
                 'text': 'Card description',
                 'media_url': 'https://example.com/image.jpg',
-                'channel': 'rcs',
-                'message_type': 'card',
             }
         ] * 2,
+        'channel': 'rcs',
+        'message_type': 'carousel',
+    }
+    assert carousel.model_dump(by_alias=True, exclude_none=True) == carousel_dict
+
+
+def test_create_rcs_carousel_with_optional_params():
+    carousel = RcsCarousel(
+        to='1234567890',
+        from_='asdf1234',
+        cards=[
+            RcsCardContent(
+                title='Card title',
+                text='Card description',
+                media_url='https://example.com/image.jpg',
+                media_description='Image description',
+                media_height='MEDIUM',
+                thumbnail_url='https://example.com/thumbnail.jpg',
+                media_force_refresh=True,
+            )
+        ] * 2,
+        rcs=RcsOptionsCarousel(
+            card_width='MEDIUM',
+        ),
+    )
+    carousel_dict = {
+        'to': '1234567890',
+        'from': 'asdf1234',
+        'cards': [
+            {
+                'title': 'Card title',
+                'text': 'Card description',
+                'media_url': 'https://example.com/image.jpg',
+                'media_description': 'Image description',
+                'media_height': 'MEDIUM',
+                'thumbnail_url': 'https://example.com/thumbnail.jpg',
+                'media_force_refresh': True,
+            }
+        ] * 2,
+        'rcs': {
+            'card_width': 'MEDIUM',
+        },
         'channel': 'rcs',
         'message_type': 'carousel',
     }

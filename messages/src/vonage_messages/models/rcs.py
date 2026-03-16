@@ -295,7 +295,7 @@ class RcsCardContent(BaseModel):
     ] = Field(None, min_length=1, max_length=4)
 
 
-class RcsCard(BaseRcs):
+class RcsCard(RcsCardContent, BaseRcs):
     """Model for an RCS card message.
 
     Args:
@@ -311,26 +311,6 @@ class RcsCard(BaseRcs):
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
     """
 
-    title: str = Field(..., min_length=1, max_length=200)
-    text: str = Field(..., min_length=1, max_length=2000)
-    media_url: str
-    media_description: Optional[str] = None
-    media_height: Optional[RcsMediaHeight] = None
-    thumbnail_url: Optional[str] = None
-    media_force_refresh: Optional[bool] = None
-    suggestions: Optional[
-        List[
-            Union[
-                RcsSuggestionReply,
-                RcsSuggestionActionDial,
-                RcsSuggestionActionViewLocation,
-                RcsSuggestionActionShareLocation,
-                RcsSuggestionActionOpenUrl,
-                RcsSuggestionActionOpenUrlWebview,
-                RcsSuggestionActionCreateCalendarEvent,
-            ]
-        ]
-    ] = Field(None, min_length=1, max_length=4)
     rcs: Optional[RcsOptionsCard] = None
     message_type: MessageType = MessageType.CARD
 

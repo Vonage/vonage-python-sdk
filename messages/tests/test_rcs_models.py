@@ -1,27 +1,27 @@
 import pytest
 from pydantic import ValidationError
 from vonage_messages.models import (
-    RcsCustom,
-    RcsCarousel,
+    RcsCardBase,
     RcsCardItem,
     RcsCardMessage,
-    RcsCardBase,
+    RcsCarousel,
+    RcsCustom,
     RcsFile,
     RcsImage,
-    RcsResource,
-    RcsText,
-    RcsVideo,
-    RcsSuggestionBase,
-    RcsSuggestionReply,
-    RcsSuggestionActionDial,
-    RcsSuggestionActionViewLocation,
-    RcsSuggestionActionShareLocation,
-    RcsSuggestionActionOpenUrl,
-    RcsSuggestionActionOpenUrlWebview,
-    RcsSuggestionActionCreateCalendarEvent,
     RcsOptions,
     RcsOptionsCard,
     RcsOptionsCarousel,
+    RcsResource,
+    RcsSuggestionActionCreateCalendarEvent,
+    RcsSuggestionActionDial,
+    RcsSuggestionActionOpenUrl,
+    RcsSuggestionActionOpenUrlWebview,
+    RcsSuggestionActionShareLocation,
+    RcsSuggestionActionViewLocation,
+    RcsSuggestionBase,
+    RcsSuggestionReply,
+    RcsText,
+    RcsVideo,
 )
 
 
@@ -86,7 +86,7 @@ def test_create_rcs_text_all_fields():
         'message_type': 'text',
         'rcs': {
             'category': 'transaction',
-        }
+        },
     }
 
     assert rcs_model.model_dump(by_alias=True, exclude_none=True) == rcs_dict
@@ -238,12 +238,11 @@ def test_create_rcs_text_with_all_suggestion_types():
                 'title': 'Meeting with Bob',
                 'description': 'Discuss project updates',
                 'fallback_url': 'https://example.com/calendar-event',
-            }
+            },
         ],
         'channel': 'rcs',
         'message_type': 'text',
     }
-
 
     assert rcs_model.model_dump(by_alias=True, exclude_none=True) == rcs_dict
 
@@ -270,7 +269,8 @@ def test_create_rcs_text_with_too_many_suggestions():
                     text='Reply',
                     postback_data='postback-data',
                 ),
-            ] * 12,
+            ]
+            * 12,
         )
     assert "List should have at most 11 items" in str(err.value)
 
@@ -353,6 +353,7 @@ def test_create_rcs_file():
     }
 
     assert rcs_model.model_dump(by_alias=True, exclude_none=True) == rcs_dict
+
 
 def test_create_rcs_card_base():
     card_base = RcsCardBase(
@@ -515,7 +516,7 @@ def test_create_rcs_card_base_with_all_suggestion_types():
                 'type': 'share_location',
                 'text': 'Share location',
                 'postback_data': 'postback-data',
-            }
+            },
         ],
     }
     card_base_dict_2 = {
@@ -547,7 +548,7 @@ def test_create_rcs_card_base_with_all_suggestion_types():
                 'title': 'Meeting with Bob',
                 'description': 'Discuss project updates',
                 'fallback_url': 'https://example.com/calendar-event',
-            }
+            },
         ],
     }
     assert card_base_1.model_dump(by_alias=True, exclude_none=True) == card_base_dict_1
@@ -647,7 +648,8 @@ def test_create_rcs_card_base_with_too_many_suggestions():
                     text='Reply',
                     postback_data='postback-data',
                 ),
-            ] * 5,
+            ]
+            * 5,
         )
     assert "List should have at most 4 items" in str(err.value)
 
@@ -876,7 +878,8 @@ def test_create_rcs_card_message_with_too_many_suggestions():
                     text='Reply',
                     postback_data='postback-data',
                 ),
-            ] * 5,
+            ]
+            * 5,
         )
     assert "List should have at most 4 items" in str(err.value)
 
@@ -1010,7 +1013,7 @@ def test_create_rcs_card_item_without_media_height():
         card = RcsCardItem(
             title='Card title',
             text='Card description',
-            media_url='https://example.com/image.jpg'
+            media_url='https://example.com/image.jpg',
         )
     assert "Field required" in str(err.value)
 
@@ -1077,7 +1080,8 @@ def test_create_rcs_card_item_with_too_many_suggestions():
                     text='Reply',
                     postback_data='postback-data',
                 ),
-            ] * 5,
+            ]
+            * 5,
         )
     assert "List should have at most 4 items" in str(err.value)
 
@@ -1110,7 +1114,8 @@ def test_create_rcs_carousel():
                 media_url='https://example.com/image.jpg',
                 media_height='MEDIUM',
             )
-        ] * 2,
+        ]
+        * 2,
     )
     carousel_dict = {
         'to': '1234567890',
@@ -1122,7 +1127,8 @@ def test_create_rcs_carousel():
                 'media_url': 'https://example.com/image.jpg',
                 'media_height': 'MEDIUM',
             }
-        ] * 2,
+        ]
+        * 2,
         'channel': 'rcs',
         'message_type': 'carousel',
     }
@@ -1143,7 +1149,8 @@ def test_create_rcs_carousel_with_optional_params():
                 thumbnail_url='https://example.com/thumbnail.jpg',
                 media_force_refresh=True,
             )
-        ] * 2,
+        ]
+        * 2,
         rcs=RcsOptionsCarousel(
             card_width='MEDIUM',
         ),
@@ -1161,7 +1168,8 @@ def test_create_rcs_carousel_with_optional_params():
                 'thumbnail_url': 'https://example.com/thumbnail.jpg',
                 'media_force_refresh': True,
             }
-        ] * 2,
+        ]
+        * 2,
         'rcs': {
             'card_width': 'MEDIUM',
         },
@@ -1182,7 +1190,8 @@ def test_create_rcs_carousel_with_suggestions():
                 media_url='https://example.com/image.jpg',
                 media_height='MEDIUM',
             )
-        ] * 2,
+        ]
+        * 2,
         suggestions=[
             RcsSuggestionReply(
                 text='Reply',
@@ -1205,7 +1214,8 @@ def test_create_rcs_carousel_with_suggestions():
                 'media_url': 'https://example.com/image.jpg',
                 'media_height': 'MEDIUM',
             }
-        ] * 2,
+        ]
+        * 2,
         'suggestions': [
             {
                 'type': 'reply',
@@ -1236,7 +1246,8 @@ def test_create_rcs_carousel_with_all_suggestion_types():
                 media_url='https://example.com/image.jpg',
                 media_height='MEDIUM',
             )
-        ] * 2,
+        ]
+        * 2,
         suggestions=[
             RcsSuggestionReply(
                 text='Reply',
@@ -1293,7 +1304,8 @@ def test_create_rcs_carousel_with_all_suggestion_types():
                 'media_url': 'https://example.com/image.jpg',
                 'media_height': 'MEDIUM',
             }
-        ] * 2,
+        ]
+        * 2,
         'suggestions': [
             {
                 'type': 'reply',
@@ -1344,7 +1356,7 @@ def test_create_rcs_carousel_with_all_suggestion_types():
                 'title': 'Meeting with Bob',
                 'description': 'Discuss project updates',
                 'fallback_url': 'https://example.com/calendar-event',
-            }
+            },
         ],
         'channel': 'rcs',
         'message_type': 'carousel',
@@ -1414,6 +1426,7 @@ def test_rcs_suggestion_base_with_text_too_long():
             postback_data='postback-data',
         )
     assert "String should have at most 25 characters" in str(err.value)
+
 
 def test_rcs_suggestion_reply():
     suggestion = RcsSuggestionReply(
@@ -1790,7 +1803,13 @@ def test_create_rcs_options():
 
 
 def test_create_rcs_options_with_each_valid_category():
-    valid_options = ['acknowledgement', 'authentication', 'promotion', 'service-request', 'transaction']
+    valid_options = [
+        'acknowledgement',
+        'authentication',
+        'promotion',
+        'service-request',
+        'transaction',
+    ]
     for option in valid_options:
         options = RcsOptions(
             category=option,
@@ -1806,14 +1825,14 @@ def test_create_rcs_options_with_invalid_category():
         options = RcsOptions(
             category='invalid-category',
         )
-    assert "Input should be 'acknowledgement', 'authentication', 'promotion', 'service-request' or 'transaction'" in str(err.value)
+    assert (
+        "Input should be 'acknowledgement', 'authentication', 'promotion', 'service-request' or 'transaction'"
+        in str(err.value)
+    )
 
 
 def test_create_rcs_options_card():
-    options = RcsOptionsCard(
-        card_orientation='HORIZONTAL',
-        image_alignment='LEFT'
-    )
+    options = RcsOptionsCard(card_orientation='HORIZONTAL', image_alignment='LEFT')
     options_dict = {
         'card_orientation': 'HORIZONTAL',
         'image_alignment': 'LEFT',
@@ -1824,10 +1843,7 @@ def test_create_rcs_options_card():
 def test_create_rcs_options_card_card_orientation_with_each_valid_option():
     valid_orientations = ['VERTICAL', 'HORIZONTAL']
     for orientation in valid_orientations:
-        options = RcsOptionsCard(
-            card_orientation=orientation,
-            image_alignment='LEFT'
-        )
+        options = RcsOptionsCard(card_orientation=orientation, image_alignment='LEFT')
         options_dict = {
             'card_orientation': orientation,
             'image_alignment': 'LEFT',
@@ -1838,10 +1854,7 @@ def test_create_rcs_options_card_card_orientation_with_each_valid_option():
 def test_create_rcs_options_card_image_alignment_with_each_valid_option():
     valid_alignments = ['LEFT', 'RIGHT']
     for alignment in valid_alignments:
-        options = RcsOptionsCard(
-            card_orientation='HORIZONTAL',
-            image_alignment=alignment
-        )
+        options = RcsOptionsCard(card_orientation='HORIZONTAL', image_alignment=alignment)
         options_dict = {
             'card_orientation': 'HORIZONTAL',
             'image_alignment': alignment,
@@ -1852,16 +1865,15 @@ def test_create_rcs_options_card_image_alignment_with_each_valid_option():
 def test_create_rcs_options_card_card_orientation_with_invalid_option():
     with pytest.raises(ValidationError) as err:
         options = RcsOptionsCard(
-            card_orientation='INVALID_ORIENTATION',
-            image_alignment='LEFT'
+            card_orientation='INVALID_ORIENTATION', image_alignment='LEFT'
         )
     assert "Input should be 'VERTICAL' or 'HORIZONTAL'" in str(err.value)
+
 
 def test_create_rcs_options_card_image_alignment_with_invalid_option():
     with pytest.raises(ValidationError) as err:
         options = RcsOptionsCard(
-            card_orientation='HORIZONTAL',
-            image_alignment='INVALID_ALIGNMENT'
+            card_orientation='HORIZONTAL', image_alignment='INVALID_ALIGNMENT'
         )
     assert "Input should be 'LEFT' or 'RIGHT'" in str(err.value)
 

@@ -1,10 +1,20 @@
-from typing import Optional, List, Union
+from typing import List, Optional, Union
 
 from pydantic import BaseModel, Field
 from vonage_utils.types import PhoneNumber
 
 from .base_message import BaseMessage
-from .enums import ChannelType, MessageType, SuggestionType, UrlWebviewViewMode, RcsCategory, RcsCardOrientation, RcsImageAlignment, RcsCardWidth, RcsMediaHeight
+from .enums import (
+    ChannelType,
+    MessageType,
+    RcsCardOrientation,
+    RcsCardWidth,
+    RcsCategory,
+    RcsImageAlignment,
+    RcsMediaHeight,
+    SuggestionType,
+    UrlWebviewViewMode,
+)
 
 
 class RcsResource(BaseModel):
@@ -65,7 +75,9 @@ class RcsSuggestionActionViewLocation(RcsSuggestionBase):
         fallback_url (str, Optional): The URL to open if the device doesn't support the view location action.
     """
 
-    type_: SuggestionType = Field(SuggestionType.VIEW_LOCATION, serialization_alias='type')
+    type_: SuggestionType = Field(
+        SuggestionType.VIEW_LOCATION, serialization_alias='type'
+    )
     latitude: str
     longitude: str
     pin_label: str
@@ -80,7 +92,9 @@ class RcsSuggestionActionShareLocation(RcsSuggestionBase):
         postback_data (str): The data that will be sent via the Inbound Message webhook when the suggestion is selected.
     """
 
-    type_: SuggestionType = Field(SuggestionType.SHARE_LOCATION, serialization_alias='type')
+    type_: SuggestionType = Field(
+        SuggestionType.SHARE_LOCATION, serialization_alias='type'
+    )
 
 
 class RcsSuggestionActionOpenUrl(RcsSuggestionBase):
@@ -107,8 +121,11 @@ class RcsSuggestionActionOpenUrlWebview(RcsSuggestionActionOpenUrl):
         view_mode (str, Optional): The view mode for the webview. If not specified, the default view mode will be used.
     """
 
-    type_: SuggestionType = Field(SuggestionType.OPEN_URL_IN_WEBVIEW, serialization_alias='type')
+    type_: SuggestionType = Field(
+        SuggestionType.OPEN_URL_IN_WEBVIEW, serialization_alias='type'
+    )
     view_mode: Optional[UrlWebviewViewMode] = None
+
 
 class RcsSuggestionActionCreateCalendarEvent(RcsSuggestionBase):
     """Model for a create calendar event action suggestion in an RCS message.
@@ -123,7 +140,9 @@ class RcsSuggestionActionCreateCalendarEvent(RcsSuggestionBase):
         fallback_url (str, Optional): The URL to open if the device doesn't support the create calendar event action.
     """
 
-    type_: SuggestionType = Field(SuggestionType.CREATE_CALENDAR_EVENT, serialization_alias='type')
+    type_: SuggestionType = Field(
+        SuggestionType.CREATE_CALENDAR_EVENT, serialization_alias='type'
+    )
     start_time: str
     end_time: str
     title: str = Field(..., min_length=1, max_length=100)

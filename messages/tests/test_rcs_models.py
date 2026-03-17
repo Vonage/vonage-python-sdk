@@ -1394,7 +1394,8 @@ def test_create_rcs_carousel_without_rcs_options():
                     media_url='https://example.com/image.jpg',
                     media_height='MEDIUM',
                 )
-            ] * 2,
+            ]
+            * 2,
         )
     assert "Field required" in str(err.value)
 
@@ -1529,7 +1530,8 @@ def test_create_rcs_carousel_with_inavalid_suggestion_types():
                     media_url='https://example.com/image.jpg',
                     media_height='MEDIUM',
                 )
-            ] * 2,
+            ]
+            * 2,
             suggestions=[
                 RcsSuggestionReply(
                     text='Reply',

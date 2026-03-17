@@ -361,7 +361,7 @@ class RcsCarousel(BaseRcs):
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
     """
 
-    cards: List[RcsCardItem] = Field(..., min_length=1, max_length=10)
+    cards: List[RcsCardItem] = Field(..., min_length=2, max_length=10)
     suggestions: Optional[
         List[
             Union[
@@ -375,7 +375,7 @@ class RcsCarousel(BaseRcs):
             ]
         ]
     ] = Field(None, min_length=1, max_length=11)
-    rcs: Optional[RcsOptionsCarousel] = None
+    rcs: RcsOptionsCarousel
     message_type: MessageType = MessageType.CAROUSEL
 
 

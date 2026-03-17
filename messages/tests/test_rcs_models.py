@@ -1116,6 +1116,9 @@ def test_create_rcs_carousel():
             )
         ]
         * 2,
+        rcs=RcsOptionsCarousel(
+            card_width='MEDIUM',
+        ),
     )
     carousel_dict = {
         'to': '1234567890',
@@ -1129,6 +1132,9 @@ def test_create_rcs_carousel():
             }
         ]
         * 2,
+        'rcs': {
+            'card_width': 'MEDIUM',
+        },
         'channel': 'rcs',
         'message_type': 'carousel',
     }
@@ -1203,6 +1209,9 @@ def test_create_rcs_carousel_with_suggestions():
                 phone_number='447900000000',
             ),
         ],
+        rcs=RcsOptionsCarousel(
+            card_width='MEDIUM',
+        ),
     )
     carousel_dict = {
         'to': '1234567890',
@@ -1229,6 +1238,9 @@ def test_create_rcs_carousel_with_suggestions():
                 'phone_number': '447900000000',
             },
         ],
+        'rcs': {
+            'card_width': 'MEDIUM',
+        },
         'channel': 'rcs',
         'message_type': 'carousel',
     }
@@ -1293,6 +1305,9 @@ def test_create_rcs_carousel_with_all_suggestion_types():
                 fallback_url='https://example.com/calendar-event',
             ),
         ],
+        rcs=RcsOptionsCarousel(
+            card_width='MEDIUM',
+        ),
     )
     carousel_dict = {
         'to': '1234567890',
@@ -1358,10 +1373,175 @@ def test_create_rcs_carousel_with_all_suggestion_types():
                 'fallback_url': 'https://example.com/calendar-event',
             },
         ],
+        'rcs': {
+            'card_width': 'MEDIUM',
+        },
         'channel': 'rcs',
         'message_type': 'carousel',
     }
     assert carousel.model_dump(by_alias=True, exclude_none=True) == carousel_dict
+
+
+def test_create_rcs_carousel_without_rcs_options():
+    with pytest.raises(ValidationError) as err:
+        carousel = RcsCarousel(
+            to='1234567890',
+            from_='asdf1234',
+            cards=[
+                RcsCardItem(
+                    title='Card title',
+                    text='Card description',
+                    media_url='https://example.com/image.jpg',
+                    media_height='MEDIUM',
+                )
+            ] * 2,
+        )
+    assert "Field required" in str(err.value)
+
+
+def test_create_rcs_carousel_with_insufficient_cards():
+    with pytest.raises(ValidationError) as err:
+        carousel = RcsCarousel(
+            to='1234567890',
+            from_='asdf1234',
+            cards=[
+                RcsCardItem(
+                    title='Card title',
+                    text='Card description',
+                    media_url='https://example.com/image.jpg',
+                    media_height='MEDIUM',
+                )
+            ],
+            rcs=RcsOptionsCarousel(
+                card_width='MEDIUM',
+            ),
+        )
+    assert "List should have at least 2 items" in str(err.value)
+
+
+def test_create_rcs_carousel_with_too_many_cards():
+    with pytest.raises(ValidationError) as err:
+        carousel = RcsCarousel(
+            to='1234567890',
+            from_='asdf1234',
+            cards=[
+                RcsCardItem(
+                    title='Card title',
+                    text='Card description',
+                    media_url='https://example.com/image.jpg',
+                    media_height='MEDIUM',
+                )
+            ]
+            * 11,
+            rcs=RcsOptionsCarousel(
+                card_width='MEDIUM',
+            ),
+        )
+    assert "List should have at most 10 items" in str(err.value)
+
+
+def test_create_rcs_carousel_with_invalid_card_type():
+    with pytest.raises(ValidationError) as err:
+        carousel = RcsCarousel(
+            to='1234567890',
+            from_='asdf1234',
+            cards=[
+                RcsCardItem(
+                    title='Card title',
+                    text='Card description',
+                    media_url='https://example.com/image.jpg',
+                    media_height='MEDIUM',
+                ),
+                RcsCardMessage(
+                    to='1234567890',
+                    from_='asdf1234',
+                    title='Card title',
+                    text='Card description',
+                    media_url='https://example.com/image.jpg',
+                ),
+            ],
+            rcs=RcsOptionsCarousel(
+                card_width='MEDIUM',
+            ),
+        )
+    assert "Input should be a valid dictionary or instance" in str(err.value)
+
+
+def test_create_rcs_carousel_with_insuffient_suggestions():
+    with pytest.raises(ValidationError) as err:
+        carousel = RcsCarousel(
+            to='1234567890',
+            from_='asdf1234',
+            cards=[
+                RcsCardItem(
+                    title='Card title',
+                    text='Card description',
+                    media_url='https://example.com/image.jpg',
+                    media_height='MEDIUM',
+                )
+            ]
+            * 2,
+            suggestions=[],
+            rcs=RcsOptionsCarousel(
+                card_width='MEDIUM',
+            ),
+        )
+    assert "List should have at least 1 item" in str(err.value)
+
+
+def test_create_rcs_carousel_with_too_many_suggestions():
+    with pytest.raises(ValidationError) as err:
+        carousel = RcsCarousel(
+            to='1234567890',
+            from_='asdf1234',
+            cards=[
+                RcsCardItem(
+                    title='Card title',
+                    text='Card description',
+                    media_url='https://example.com/image.jpg',
+                    media_height='MEDIUM',
+                )
+            ]
+            * 2,
+            suggestions=[
+                RcsSuggestionReply(
+                    text='Reply',
+                    postback_data='postback-data',
+                ),
+            ]
+            * 12,
+            rcs=RcsOptionsCarousel(
+                card_width='MEDIUM',
+            ),
+        )
+    assert "List should have at most 11 items" in str(err.value)
+
+
+def test_create_rcs_carousel_with_inavalid_suggestion_types():
+    with pytest.raises(ValidationError) as err:
+        carousel = RcsCarousel(
+            to='1234567890',
+            from_='asdf1234',
+            cards=[
+                RcsCardItem(
+                    title='Card title',
+                    text='Card description',
+                    media_url='https://example.com/image.jpg',
+                    media_height='MEDIUM',
+                )
+            ] * 2,
+            suggestions=[
+                RcsSuggestionReply(
+                    text='Reply',
+                    postback_data='postback-data',
+                ),
+                "Invalid suggestion type",
+            ],
+            rcs=RcsOptionsCarousel(
+                card_width='MEDIUM',
+            ),
+        )
+    assert "Input should be a valid dictionary or instance" in str(err.value)
 
 
 def test_create_rcs_custom():
@@ -1840,6 +2020,20 @@ def test_create_rcs_options_card():
     assert options.model_dump(by_alias=True, exclude_none=True) == options_dict
 
 
+def test_create_rcs_options_card_with_all_options():
+    options = RcsOptionsCard(
+        card_orientation='HORIZONTAL',
+        image_alignment='LEFT',
+        category='transaction',
+    )
+    options_dict = {
+        'card_orientation': 'HORIZONTAL',
+        'image_alignment': 'LEFT',
+        'category': 'transaction',
+    }
+    assert options.model_dump(by_alias=True, exclude_none=True) == options_dict
+
+
 def test_create_rcs_options_card_card_orientation_with_each_valid_option():
     valid_orientations = ['VERTICAL', 'HORIZONTAL']
     for orientation in valid_orientations:
@@ -1886,6 +2080,26 @@ def test_create_rcs_options_carousel():
         'card_width': 'MEDIUM',
     }
     assert options.model_dump(by_alias=True, exclude_none=True) == options_dict
+
+
+def test_create_rcs_options_carousel_with_all_options():
+    options = RcsOptionsCarousel(
+        card_width='MEDIUM',
+        category='transaction',
+    )
+    options_dict = {
+        'card_width': 'MEDIUM',
+        'category': 'transaction',
+    }
+    assert options.model_dump(by_alias=True, exclude_none=True) == options_dict
+
+
+def test_create_rcs_options_carousel_without_card_width():
+    with pytest.raises(ValidationError) as err:
+        options = RcsOptionsCarousel(
+            category='transaction',
+        )
+    assert "Field required" in str(err.value)
 
 
 def test_create_rcs_options_carousel_card_width_with_each_valid_option():

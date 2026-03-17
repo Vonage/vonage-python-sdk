@@ -13,8 +13,9 @@ from .mms import MmsAudio, MmsImage, MmsResource, MmsVcard, MmsVideo
 from .rcs import (
     RcsCustom,
     RcsCarousel,
-    RcsCardContent,
-    RcsCard,
+    RcsCardItem,
+    RcsCardMessage,
+    RcsCardBase,
     RcsFile,
     RcsImage,
     RcsResource,

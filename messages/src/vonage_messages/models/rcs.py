@@ -263,7 +263,8 @@ class RcsFile(BaseRcs):
     file: RcsResource
     message_type: MessageType = MessageType.FILE
 
-class RcsCardContent(BaseModel):
+
+class RcsCardBase(BaseModel):
     """Model for the content of an RCS card.
 
     Args:
@@ -295,7 +296,20 @@ class RcsCardContent(BaseModel):
     ] = Field(None, min_length=1, max_length=4)
 
 
-class RcsCard(RcsCardContent, BaseRcs):
+class RcsCardItem(RcsCardBase):
+    """Model for the content of an RCS card.
+
+    Args:
+        title (str): The title of the card.
+        text (str): The text of the card.
+        media_url (str): The media URL for the card. Can be an image or a video.
+        suggestions (List[Union[RcsSuggestionReply, RcsSuggestionActionDial, RcsSuggestionActionViewLocation, RcsSuggestionActionShareLocation, RcsSuggestionActionOpenUrl, RcsSuggestionActionOpenUrlWebview, RcsSuggestionActionCreateCalendarEvent], Optional): A list of suggestions to include on the card. Can include up to 4 suggestions.
+    """
+
+    media_height: RcsMediaHeight
+
+
+class RcsCardMessage(RcsCardBase, BaseRcs):
     """Model for an RCS card message.
 
     Args:
@@ -328,7 +342,20 @@ class RcsCarousel(BaseRcs):
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
     """
 
-    cards: List[RcsCardContent] = Field(..., min_length=1, max_length=10)
+    cards: List[RcsCardItem] = Field(..., min_length=1, max_length=10)
+    suggestions: Optional[
+        List[
+            Union[
+                RcsSuggestionReply,
+                RcsSuggestionActionDial,
+                RcsSuggestionActionViewLocation,
+                RcsSuggestionActionShareLocation,
+                RcsSuggestionActionOpenUrl,
+                RcsSuggestionActionOpenUrlWebview,
+                RcsSuggestionActionCreateCalendarEvent,
+            ]
+        ]
+    ] = Field(None, min_length=1, max_length=11)
     rcs: Optional[RcsOptionsCarousel] = None
     message_type: MessageType = MessageType.CAROUSEL
 

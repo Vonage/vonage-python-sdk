@@ -1629,12 +1629,14 @@ def test_rcs_suggestion_dial():
         text='Call us',
         postback_data='postback-data',
         phone_number='447900000000',
+        fallback_url='https://example.com/dial',
     )
     suggestion_dict = {
         'type': 'dial',
         'text': 'Call us',
         'postback_data': 'postback-data',
         'phone_number': '447900000000',
+        'fallback_url': 'https://example.com/dial',
     }
 
     assert suggestion.model_dump(by_alias=True, exclude_none=True) == suggestion_dict

@@ -1,4 +1,4 @@
-from .enums import ChannelType, Locale
+from .enums import ChannelType, Locale, WhatsappMode
 from .errors import VerifyError
 from .requests import (
     EmailChannel,
@@ -21,6 +21,7 @@ __all__ = [
     'SilentAuthChannel',
     'SmsChannel',
     'WhatsappChannel',
+    'WhatsappMode',
     'VoiceChannel',
     'EmailChannel',
     'StartVerificationResponse',

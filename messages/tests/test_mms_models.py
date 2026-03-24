@@ -54,6 +54,50 @@ def test_create_mms_resource_with_caption_too_long():
     assert "String should have at most 3000 characters" in str(err.value)
 
 
+def test_create_mms_text():
+    mms_model = MmsText(
+        to='1234567890',
+        from_='1234567890',
+        text='Hello, world!',
+    )
+    mms_dict = {
+        'to': '1234567890',
+        'from': '1234567890',
+        'text': 'Hello, world!',
+        'channel': 'mms',
+        'message_type': 'text',
+    }
+
+    assert mms_model.model_dump(by_alias=True, exclude_none=True) == mms_dict
+
+
+def test_create_mms_text_all_fields():
+    mms_model = MmsText(
+        to='1234567890',
+        from_='1234567890',
+        text='Hello, world!',
+        client_ref='client-ref',
+        webhook_url='https://example.com',
+        webhook_version=WebhookVersion.V1,
+        ttl=600,
+        trusted_recipient=True,
+    )
+    mms_dict = {
+        'to': '1234567890',
+        'from': '1234567890',
+        'text': 'Hello, world!',
+        'client_ref': 'client-ref',
+        'webhook_url': 'https://example.com',
+        'webhook_version': 'v1',
+        'ttl': 600,
+        'trusted_recipient': True,
+        'channel': 'mms',
+        'message_type': 'text',
+    }
+
+    assert mms_model.model_dump(by_alias=True) == mms_dict
+
+
 def test_create_mms_image():
     mms_model = MmsImage(
         to='1234567890',

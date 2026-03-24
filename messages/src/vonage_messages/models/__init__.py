@@ -9,7 +9,7 @@ from .messenger import (
     MessengerText,
     MessengerVideo,
 )
-from .mms import MmsAudio, MmsImage, MmsResource, MmsVcard, MmsVideo
+from .mms import MmsAudio, MmsImage, MmsResource, MmsText, MmsVcard, MmsVideo
 from .rcs import (
     RcsCardBase,
     RcsCardItem,
@@ -83,6 +83,7 @@ __all__ = [
     'MmsAudio',
     'MmsImage',
     'MmsResource',
+    'MmsText',
     'MmsVcard',
     'MmsVideo',
     'RcsCardBase',

@@ -39,6 +39,23 @@ class BaseMms(BaseMessage):
     channel: ChannelType = ChannelType.MMS
 
 
+class MmsText(BaseMms):
+    """Model for an MMS text message.
+
+    Args:
+        text (str): The text of the message.
+        to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a leading plus sign.
+        from_ (Union[PhoneNumber, str]): The sender's phone number in E.164 format. Don't use a leading plus sign.
+        ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
+        client_ref (str, Optional): An optional client reference.
+        webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
+        webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
+    """
+    text: str
+    message_type: MessageType = MessageType.TEXT
+
+
 class MmsImage(BaseMms):
     """Model for an MMS image message.
 

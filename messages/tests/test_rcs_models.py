@@ -71,6 +71,7 @@ def test_create_rcs_text_all_fields():
         client_ref='client-ref',
         webhook_url='https://example.com',
         ttl=600,
+        trusted_recipient=True,
         rcs=RcsOptions(
             category='transaction',
         ),
@@ -82,6 +83,7 @@ def test_create_rcs_text_all_fields():
         'client_ref': 'client-ref',
         'webhook_url': 'https://example.com',
         'ttl': 600,
+        'trusted_recipient': True,
         'channel': 'rcs',
         'message_type': 'text',
         'rcs': {

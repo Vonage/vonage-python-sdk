@@ -38,6 +38,7 @@ class Sms(BaseMessage):
             Don't use a leading plus sign.
         text (str): The text of the message.
         ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         sms (SmsOptions, Optional): SMS options.
         client_ref (str, Optional): An optional client reference.
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.

@@ -195,6 +195,7 @@ class BaseRcs(BaseMessage):
         to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a leading plus sign.
         from_ (str): The RCS Agent ID.
         ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         client_ref (str, Optional): An optional client reference.
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
@@ -218,6 +219,7 @@ class RcsText(BaseRcs):
         text (str): The text of the message.
         suggestions (List, Optional): An optional list of suggestions to include in the message. Can include up to 11 suggestions.
         ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         client_ref (str, Optional): An optional client reference.
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
@@ -249,6 +251,7 @@ class RcsImage(BaseRcs):
         from_ (str): The RCS Agent ID.
         image (RcsResource): The image resource.
         ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         client_ref (str, Optional): An optional client reference.
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
@@ -267,6 +270,7 @@ class RcsVideo(BaseRcs):
         from_ (str): The RCS Agent ID.
         video (RcsResource): The video resource.
         ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         client_ref (str, Optional): An optional client reference.
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
@@ -285,6 +289,7 @@ class RcsFile(BaseRcs):
         from_ (str): The RCS Agent ID.
         file (RcsResource): The file resource.
         ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         client_ref (str, Optional): An optional client reference.
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
@@ -363,6 +368,7 @@ class RcsCardMessage(RcsCardBase, BaseRcs):
         media_force_refresh (bool, Optional): Whether to force refresh the media on the card. If true, the media will be refreshed on the device even if the media URL is the same as a previous message. Defaults to false.
         suggestions (List, Optional): An optional list of suggestions to include in the message. A card can include up to 4 suggestions.
         ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         client_ref (str, Optional): An optional client reference.
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
@@ -382,6 +388,7 @@ class RcsCarousel(BaseRcs):
         cards (List[RcsCardItem]): A list of card items to include in the carousel. Can include up to 10 cards.
         suggestions (List, Optional): An optional list of suggestions to include in the message. Can include up to 11 suggestions.
         ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         client_ref (str, Optional): An optional client reference.
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
@@ -414,6 +421,7 @@ class RcsCustom(BaseRcs):
         from_ (str): The sender's phone number in E.164 format. Don't use a leading plus sign.
         custom (dict): The custom message data.
         ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         client_ref (str, Optional): An optional client reference.
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.

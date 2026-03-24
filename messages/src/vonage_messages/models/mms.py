@@ -12,7 +12,7 @@ class MmsResource(BaseModel):
 
     Args:
         url (str): The URL of the resource.
-        caption (str, Optional): Additional text to accompany the resource.
+        caption (str, Optional): Additional text to accompany the resource, with a maximum length of 3000 characters.
     """
 
     url: str
@@ -26,6 +26,7 @@ class BaseMms(BaseMessage):
         to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a leading plus sign.
         from_ (Union[PhoneNumber, str]): The sender's phone number in E.164 format. Don't use a leading plus sign.
         ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         client_ref (str, Optional): An optional client reference.
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
@@ -46,6 +47,7 @@ class MmsImage(BaseMms):
         to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a leading plus sign.
         from_ (Union[PhoneNumber, str]): The sender's phone number in E.164 format. Don't use a leading plus sign.
         ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         client_ref (str, Optional): An optional client reference.
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
@@ -63,6 +65,7 @@ class MmsVcard(BaseMms):
         to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a leading plus sign.
         from_ (Union[PhoneNumber, str]): The sender's phone number in E.164 format. Don't use a leading plus sign.
         ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         client_ref (str, Optional): An optional client reference.
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
@@ -80,6 +83,7 @@ class MmsAudio(BaseMms):
         to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a leading plus sign.
         from_ (Union[PhoneNumber, str]): The sender's phone number in E.164 format. Don't use a leading plus sign.
         ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         client_ref (str, Optional): An optional client reference.
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
@@ -97,6 +101,7 @@ class MmsVideo(BaseMms):
         to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a leading plus sign.
         from_ (Union[PhoneNumber, str]): The sender's phone number in E.164 format. Don't use a leading plus sign.
         ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         client_ref (str, Optional): An optional client reference.
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.

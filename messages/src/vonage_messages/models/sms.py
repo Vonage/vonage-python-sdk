@@ -21,6 +21,10 @@ class SmsOptions(BaseModel):
         entity_id (str, Optional):  A string parameter that satisfies regulatory
             requirements when sending an SMS to specific countries. Not needed unless
             sending SMS in a country that requires a specific entity ID.
+        pool_id (str, Optional): The ID of the Number Pool to use as the sender of this message.
+            If specified, a number from the pool will be used as the from number.
+            The from number is still required even when specifying a pool_id and will be used as a fall-back if the number pool cannot be used.
+            See the Number Pools documentation for more information: https://developer.vonage.com/numbers/number-pools-api/overview.
     """
 
     encoding_type: Optional[EncodingType] = None

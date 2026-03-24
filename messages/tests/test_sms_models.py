@@ -34,6 +34,7 @@ def test_create_sms_all_fields():
         webhook_version=WebhookVersion.V1,
         ttl=600,
         trusted_recipient=True,
+        pool_id='abc123',
     )
     sms_dict = {
         'to': '1234567890',
@@ -49,6 +50,7 @@ def test_create_sms_all_fields():
         'webhook_version': 'v1',
         'ttl': 600,
         'trusted_recipient': True,
+        'pool_id': 'abc123',
         'channel': 'sms',
         'message_type': 'text',
     }

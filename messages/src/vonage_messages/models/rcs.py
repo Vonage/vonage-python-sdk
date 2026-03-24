@@ -204,6 +204,7 @@ class BaseRcs(BaseMessage):
     to: PhoneNumber
     from_: str = Field(..., serialization_alias='from', pattern='^[a-zA-Z0-9-_&]+$')
     ttl: Optional[int] = Field(None, ge=20, le=259200)
+    trusted_recipient: Optional[bool] = None
     rcs: Optional[RcsOptions] = None
     channel: ChannelType = ChannelType.RCS
 

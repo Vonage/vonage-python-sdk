@@ -31,27 +31,28 @@ def test_create_mms_resource_with_caption():
 def test_create_mms_resource_without_url():
     with pytest.raises(ValidationError) as err:
         mms_resource = MmsResource(
-        caption='Resource caption',
-    )
+            caption='Resource caption',
+        )
     assert "Field required" in str(err.value)
 
 
 def test_create_mms_resource_with_caption_too_short():
     with pytest.raises(ValidationError) as err:
         mms_resource = MmsResource(
-        url='https://example.com/resource',
-        caption='',
-    )
+            url='https://example.com/resource',
+            caption='',
+        )
     assert "String should have at least 1 character" in str(err.value)
 
 
 def test_create_mms_resource_with_caption_too_long():
     with pytest.raises(ValidationError) as err:
         mms_resource = MmsResource(
-        url='https://example.com/resource',
-        caption='a' * 3001,
-    )
+            url='https://example.com/resource',
+            caption='a' * 3001,
+        )
     assert "String should have at most 3000 characters" in str(err.value)
+
 
 def test_create_mms_image():
     mms_model = MmsImage(

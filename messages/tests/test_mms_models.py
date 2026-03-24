@@ -1,6 +1,57 @@
+import pytest
+from pydantic import ValidationError
 from vonage_messages.models import MmsAudio, MmsImage, MmsResource, MmsVcard, MmsVideo
 from vonage_messages.models.enums import WebhookVersion
 
+
+def test_create_mms_resource():
+    mms_resource = MmsResource(
+        url='https://example.com/resource',
+    )
+    mms_resource_dict = {
+        'url': 'https://example.com/resource',
+    }
+
+    assert mms_resource.model_dump(exclude_none=True) == mms_resource_dict
+
+
+def test_create_mms_resource_with_caption():
+    mms_resource = MmsResource(
+        url='https://example.com/resource',
+        caption='Resource caption',
+    )
+    mms_resource_dict = {
+        'url': 'https://example.com/resource',
+        'caption': 'Resource caption',
+    }
+
+    assert mms_resource.model_dump(exclude_none=True) == mms_resource_dict
+
+
+def test_create_mms_resource_without_url():
+    with pytest.raises(ValidationError) as err:
+        mms_resource = MmsResource(
+        caption='Resource caption',
+    )
+    assert "Field required" in str(err.value)
+
+
+def test_create_mms_resource_with_caption_too_short():
+    with pytest.raises(ValidationError) as err:
+        mms_resource = MmsResource(
+        url='https://example.com/resource',
+        caption='',
+    )
+    assert "String should have at least 1 character" in str(err.value)
+
+
+def test_create_mms_resource_with_caption_too_long():
+    with pytest.raises(ValidationError) as err:
+        mms_resource = MmsResource(
+        url='https://example.com/resource',
+        caption='a' * 3001,
+    )
+    assert "String should have at most 3000 characters" in str(err.value)
 
 def test_create_mms_image():
     mms_model = MmsImage(

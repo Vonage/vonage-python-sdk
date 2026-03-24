@@ -16,7 +16,7 @@ class MmsResource(BaseModel):
     """
 
     url: str
-    caption: Optional[str] = Field(None, min_length=1, max_length=2000)
+    caption: Optional[str] = Field(None, min_length=1, max_length=3000)
 
 
 class BaseMms(BaseMessage):

@@ -86,6 +86,7 @@ def test_create_mms_image_all_fields():
         webhook_url='https://example.com',
         webhook_version=WebhookVersion.V1,
         ttl=600,
+        trusted_recipient=True,
     )
     mms_dict = {
         'to': '1234567890',
@@ -98,6 +99,7 @@ def test_create_mms_image_all_fields():
         'webhook_url': 'https://example.com',
         'webhook_version': 'v1',
         'ttl': 600,
+        'trusted_recipient': True,
         'channel': 'mms',
         'message_type': 'image',
     }
@@ -138,6 +140,7 @@ def test_create_mms_vcard_all_fields():
         webhook_url='https://example.com',
         webhook_version=WebhookVersion.V1,
         ttl=600,
+        trusted_recipient=True,
     )
     mms_dict = {
         'to': '1234567890',
@@ -150,6 +153,7 @@ def test_create_mms_vcard_all_fields():
         'webhook_url': 'https://example.com',
         'webhook_version': 'v1',
         'ttl': 600,
+        'trusted_recipient': True,
         'channel': 'mms',
         'message_type': 'vcard',
     }
@@ -190,6 +194,7 @@ def test_create_mms_audio_all_fields():
         webhook_url='https://example.com',
         webhook_version=WebhookVersion.V1,
         ttl=600,
+        trusted_recipient=True,
     )
     mms_dict = {
         'to': '1234567890',
@@ -202,6 +207,7 @@ def test_create_mms_audio_all_fields():
         'webhook_url': 'https://example.com',
         'webhook_version': 'v1',
         'ttl': 600,
+        'trusted_recipient': True,
         'channel': 'mms',
         'message_type': 'audio',
     }
@@ -242,6 +248,7 @@ def test_create_mms_video_all_fields():
         webhook_url='https://example.com',
         webhook_version=WebhookVersion.V1,
         ttl=600,
+        trusted_recipient=True,
     )
     mms_dict = {
         'to': '1234567890',
@@ -254,6 +261,7 @@ def test_create_mms_video_all_fields():
         'webhook_url': 'https://example.com',
         'webhook_version': 'v1',
         'ttl': 600,
+        'trusted_recipient': True,
         'channel': 'mms',
         'message_type': 'video',
     }

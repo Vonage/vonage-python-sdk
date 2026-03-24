@@ -34,6 +34,7 @@ class BaseMms(BaseMessage):
     to: PhoneNumber
     from_: Union[PhoneNumber, str] = Field(..., serialization_alias='from')
     ttl: Optional[int] = Field(None, ge=300, le=259200)
+    trusted_recipient: Optional[bool] = None
     channel: ChannelType = ChannelType.MMS
 
 

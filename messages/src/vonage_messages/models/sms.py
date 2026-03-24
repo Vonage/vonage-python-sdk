@@ -26,6 +26,7 @@ class SmsOptions(BaseModel):
     encoding_type: Optional[EncodingType] = None
     content_id: Optional[str] = None
     entity_id: Optional[str] = None
+    pool_id: Optional[str] = None
 
 
 class Sms(BaseMessage):

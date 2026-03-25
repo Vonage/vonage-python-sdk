@@ -147,32 +147,6 @@ class MmsFile(BaseMms):
     message_type: MessageType = MessageType.FILE
 
 
-class MmsContent(BaseMms):
-    """Model for an MMS message with content that can be of various types.
-
-    Args:
-        content (list[MmsContentItem]): A list of content items for the message (images, audio, video, files, or vCards).
-        to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a leading plus sign.
-        from_ (Union[PhoneNumber, str]): The sender's phone number in E.164 format. Don't use a leading plus sign.
-        ttl (int, Optional): The duration in seconds for which the message is valid.
-        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
-        client_ref (str, Optional): An optional client reference.
-        webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
-        webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
-    """
-
-    content: list[
-        Union[
-            MmsContentItemImage,
-            MmsContentItemAudio,
-            MmsContentItemVideo,
-            MmsContentItemFile,
-            MmsContentItemVcard,
-        ]
-    ]
-    message_type: MessageType = MessageType.CONTENT
-
-
 class MmsContentItemImage(MmsResource):
     """Model for an image content item in an MMS Content message.
 
@@ -234,3 +208,29 @@ class MmsContentItemVcard(MmsResource):
     type_: MmsContentItemType = Field(
         MmsContentItemType.VCARD, serialization_alias='type'
     )
+
+
+class MmsContent(BaseMms):
+    """Model for an MMS message with content that can be of various types.
+
+    Args:
+        content (list[MmsContentItem]): A list of content items for the message (images, audio, video, files, or vCards).
+        to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a leading plus sign.
+        from_ (Union[PhoneNumber, str]): The sender's phone number in E.164 format. Don't use a leading plus sign.
+        ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
+        client_ref (str, Optional): An optional client reference.
+        webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
+        webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
+    """
+
+    content: list[
+        Union[
+            MmsContentItemImage,
+            MmsContentItemAudio,
+            MmsContentItemVideo,
+            MmsContentItemFile,
+            MmsContentItemVcard,
+        ]
+    ]
+    message_type: MessageType = MessageType.CONTENT

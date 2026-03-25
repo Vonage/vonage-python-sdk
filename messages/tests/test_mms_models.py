@@ -1,6 +1,20 @@
 import pytest
 from pydantic import ValidationError
-from vonage_messages.models import MmsAudio, MmsContent, MmsContentItemImage, MmsContentItemAudio, MmsContentItemVideo, MmsContentItemFile, MmsContentItemVcard, MmsFile, MmsImage, MmsResource, MmsText, MmsVcard, MmsVideo
+from vonage_messages.models import (
+    MmsAudio,
+    MmsContent,
+    MmsContentItemAudio,
+    MmsContentItemFile,
+    MmsContentItemImage,
+    MmsContentItemVcard,
+    MmsContentItemVideo,
+    MmsFile,
+    MmsImage,
+    MmsResource,
+    MmsText,
+    MmsVcard,
+    MmsVideo,
+)
 from vonage_messages.models.enums import WebhookVersion
 
 

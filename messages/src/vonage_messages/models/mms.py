@@ -52,6 +52,7 @@ class MmsText(BaseMms):
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
         webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
     """
+
     text: str
     message_type: MessageType = MessageType.TEXT
 
@@ -166,7 +167,7 @@ class MmsContent(BaseMms):
             MmsContentItemAudio,
             MmsContentItemVideo,
             MmsContentItemFile,
-            MmsContentItemVcard
+            MmsContentItemVcard,
         ]
     ]
     message_type: MessageType = MessageType.CONTENT
@@ -180,7 +181,9 @@ class MmsContentItemImage(MmsResource):
         caption (str, Optional): Additional text to accompany the content item, with a maximum length of 3000 characters.
     """
 
-    type_: MmsContentItemType = Field(MmsContentItemType.IMAGE, serialization_alias='type')
+    type_: MmsContentItemType = Field(
+        MmsContentItemType.IMAGE, serialization_alias='type'
+    )
 
 
 class MmsContentItemAudio(MmsResource):
@@ -191,7 +194,9 @@ class MmsContentItemAudio(MmsResource):
         caption (str, Optional): Additional text to accompany the content item, with a maximum length of 3000 characters.
     """
 
-    type_: MmsContentItemType = Field(MmsContentItemType.AUDIO, serialization_alias='type')
+    type_: MmsContentItemType = Field(
+        MmsContentItemType.AUDIO, serialization_alias='type'
+    )
 
 
 class MmsContentItemVideo(MmsResource):
@@ -202,7 +207,9 @@ class MmsContentItemVideo(MmsResource):
         caption (str, Optional): Additional text to accompany the content item, with a maximum length of 3000 characters.
     """
 
-    type_: MmsContentItemType = Field(MmsContentItemType.VIDEO, serialization_alias='type')
+    type_: MmsContentItemType = Field(
+        MmsContentItemType.VIDEO, serialization_alias='type'
+    )
 
 
 class MmsContentItemFile(MmsResource):
@@ -224,4 +231,6 @@ class MmsContentItemVcard(MmsResource):
         caption (str, Optional): Additional text to accompany the content item, with a maximum length of 3000 characters.
     """
 
-    type_: MmsContentItemType = Field(MmsContentItemType.VCARD, serialization_alias='type')
+    type_: MmsContentItemType = Field(
+        MmsContentItemType.VCARD, serialization_alias='type'
+    )

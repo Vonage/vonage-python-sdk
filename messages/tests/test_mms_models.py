@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from vonage_messages.models import MmsAudio, MmsImage, MmsResource, MmsText, MmsVcard, MmsVideo
+from vonage_messages.models import MmsAudio, MmsFile, MmsImage, MmsResource, MmsText, MmsVcard, MmsVideo
 from vonage_messages.models.enums import WebhookVersion
 
 
@@ -309,6 +309,60 @@ def test_create_mms_video_all_fields():
         'trusted_recipient': True,
         'channel': 'mms',
         'message_type': 'video',
+    }
+
+    assert mms_model.model_dump(by_alias=True) == mms_dict
+
+
+def test_create_mms_file():
+    mms_model = MmsFile(
+        to='1234567890',
+        from_='1234567890',
+        file=MmsResource(
+            url='https://example.com/file.pdf',
+        ),
+    )
+    mms_dict = {
+        'to': '1234567890',
+        'from': '1234567890',
+        'file': {
+            'url': 'https://example.com/file.pdf',
+        },
+        'channel': 'mms',
+        'message_type': 'file',
+    }
+
+    assert mms_model.model_dump(by_alias=True, exclude_none=True) == mms_dict
+
+
+def test_create_mms_file_all_fields():
+    mms_model = MmsFile(
+        to='1234567890',
+        from_='1234567890',
+        file=MmsResource(
+            url='https://example.com/file.pdf',
+            caption='File caption',
+        ),
+        client_ref='client-ref',
+        webhook_url='https://example.com',
+        webhook_version=WebhookVersion.V1,
+        ttl=600,
+        trusted_recipient=True,
+    )
+    mms_dict = {
+        'to': '1234567890',
+        'from': '1234567890',
+        'file': {
+            'url': 'https://example.com/file.pdf',
+            'caption': 'File caption',
+        },
+        'client_ref': 'client-ref',
+        'webhook_url': 'https://example.com',
+        'webhook_version': 'v1',
+        'ttl': 600,
+        'trusted_recipient': True,
+        'channel': 'mms',
+        'message_type': 'file',
     }
 
     assert mms_model.model_dump(by_alias=True) == mms_dict

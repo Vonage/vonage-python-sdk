@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from vonage_messages.models import MmsAudio, MmsFile, MmsImage, MmsResource, MmsText, MmsVcard, MmsVideo
+from vonage_messages.models import MmsAudio, MmsContent, MmsContentItemImage, MmsContentItemAudio, MmsContentItemVideo, MmsContentItemFile, MmsContentItemVcard, MmsFile, MmsImage, MmsResource, MmsText, MmsVcard, MmsVideo
 from vonage_messages.models.enums import WebhookVersion
 
 
@@ -365,4 +365,144 @@ def test_create_mms_file_all_fields():
         'message_type': 'file',
     }
 
-    assert mms_model.model_dump(by_alias=True) == mms_dict
+    assert mms_model.model_dump(by_alias=True, exclude_none=True) == mms_dict
+
+
+def test_create_mms_content():
+    mms_model = MmsContent(
+        to='1234567890',
+        from_='1234567890',
+        content=[
+            MmsContentItemImage(
+                url='https://example.com/image.jpg',
+                caption='Image caption',
+            ),
+        ],
+    )
+    mms_dict = {
+        'to': '1234567890',
+        'from': '1234567890',
+        'content': [
+            {
+                'type': 'image',
+                'url': 'https://example.com/image.jpg',
+                'caption': 'Image caption',
+            },
+        ],
+        'channel': 'mms',
+        'message_type': 'content',
+    }
+
+    assert mms_model.model_dump(by_alias=True, exclude_none=True) == mms_dict
+
+
+def test_create_mms_content_all_fields():
+    mms_model = MmsContent(
+        to='1234567890',
+        from_='1234567890',
+        content=[
+            MmsContentItemImage(
+                url='https://example.com/image.jpg',
+                caption='Image caption',
+            ),
+        ],
+        client_ref='client-ref',
+        webhook_url='https://example.com',
+        webhook_version=WebhookVersion.V1,
+        ttl=600,
+        trusted_recipient=True,
+    )
+    mms_dict = {
+        'to': '1234567890',
+        'from': '1234567890',
+        'content': [
+            {
+                'type': 'image',
+                'url': 'https://example.com/image.jpg',
+                'caption': 'Image caption',
+            },
+        ],
+        'client_ref': 'client-ref',
+        'webhook_url': 'https://example.com',
+        'webhook_version': 'v1',
+        'ttl': 600,
+        'trusted_recipient': True,
+        'channel': 'mms',
+        'message_type': 'content',
+    }
+
+
+def test_create_mms_content_all_content_types():
+    mms_model = MmsContent(
+        to='1234567890',
+        from_='1234567890',
+        content=[
+            MmsContentItemImage(
+                url='https://example.com/image.jpg',
+                caption='Image caption',
+            ),
+            MmsContentItemAudio(
+                url='https://example.com/audio.mp3',
+                caption='Audio caption',
+            ),
+            MmsContentItemVideo(
+                url='https://example.com/video.mp4',
+                caption='Video caption',
+            ),
+            MmsContentItemFile(
+                url='https://example.com/file.pdf',
+                caption='File caption',
+            ),
+            MmsContentItemVcard(
+                url='https://example.com/vcard.vcf',
+                caption='Vcard caption',
+            ),
+        ],
+    )
+    mms_dict = {
+        'to': '1234567890',
+        'from': '1234567890',
+        'content': [
+            {
+                'type': 'image',
+                'url': 'https://example.com/image.jpg',
+                'caption': 'Image caption',
+            },
+            {
+                'type': 'audio',
+                'url': 'https://example.com/audio.mp3',
+                'caption': 'Audio caption',
+            },
+            {
+                'type': 'video',
+                'url': 'https://example.com/video.mp4',
+                'caption': 'Video caption',
+            },
+            {
+                'type': 'file',
+                'url': 'https://example.com/file.pdf',
+                'caption': 'File caption',
+            },
+            {
+                'type': 'vcard',
+                'url': 'https://example.com/vcard.vcf',
+                'caption': 'Vcard caption',
+            },
+        ],
+        'channel': 'mms',
+        'message_type': 'content',
+    }
+
+
+def test_create_mms_content_with_invalid_content_item():
+    with pytest.raises(ValidationError) as err:
+        mms_model = MmsContent(
+            to='1234567890',
+            from_='1234567890',
+            content=[
+                MmsResource(
+                    url='https://example.com/resource',
+                ),
+            ],
+        )
+    assert "Input should be a valid dictionary or instance" in str(err.value)

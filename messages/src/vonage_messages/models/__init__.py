@@ -1,5 +1,5 @@
 from .base_message import BaseMessage
-from .enums import ChannelType, EncodingType, MessageType, WebhookVersion
+from .enums import ChannelType, EncodingType, MessageType, WebhookVersion, SuggestionType, UrlWebviewViewMode, MmsContentItemType
 from .messenger import (
     MessengerAudio,
     MessengerFile,
@@ -9,7 +9,7 @@ from .messenger import (
     MessengerText,
     MessengerVideo,
 )
-from .mms import MmsAudio, MmsFile, MmsImage, MmsResource, MmsText, MmsVcard, MmsVideo
+from .mms import MmsAudio, MmsContent, MmsContentItemImage, MmsContentItemAudio, MmsContentItemVideo, MmsContentItemFile, MmsContentItemVcard, MmsFile, MmsImage, MmsResource, MmsText, MmsVcard, MmsVideo
 from .rcs import (
     RcsCardBase,
     RcsCardItem,
@@ -81,6 +81,12 @@ __all__ = [
     'MessengerText',
     'MessengerVideo',
     'MmsAudio',
+    'MmsContent',
+    'MmsContentItemImage',
+    'MmsContentItemAudio',
+    'MmsContentItemVideo',
+    'MmsContentItemFile',
+    'MmsContentItemVcard',
     'MmsFile',
     'MmsImage',
     'MmsResource',

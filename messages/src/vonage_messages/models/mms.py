@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from vonage_utils.types import PhoneNumber
 
 from .base_message import BaseMessage
-from .enums import ChannelType, MessageType
+from .enums import ChannelType, MessageType, MmsContentItemType
 
 
 class MmsResource(BaseModel):
@@ -144,3 +144,84 @@ class MmsFile(BaseMms):
 
     file: MmsResource
     message_type: MessageType = MessageType.FILE
+
+
+class MmsContent(BaseMms):
+    """Model for an MMS message with content that can be of various types.
+
+    Args:
+        content (list[MmsContentItem]): A list of content items for the message (images, audio, video, files, or vCards).
+        to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a leading plus sign.
+        from_ (Union[PhoneNumber, str]): The sender's phone number in E.164 format. Don't use a leading plus sign.
+        ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
+        client_ref (str, Optional): An optional client reference.
+        webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
+        webhook_version (WebhookVersion, Optional): Which version of the Messages API will be used to send Status Webhook messages for this particular message.
+    """
+
+    content: list[
+        Union[
+            MmsContentItemImage,
+            MmsContentItemAudio,
+            MmsContentItemVideo,
+            MmsContentItemFile,
+            MmsContentItemVcard
+        ]
+    ]
+    message_type: MessageType = MessageType.CONTENT
+
+
+class MmsContentItemImage(MmsResource):
+    """Model for an image content item in an MMS Content message.
+
+    Args:
+        url (str): The URL of the content item.
+        caption (str, Optional): Additional text to accompany the content item, with a maximum length of 3000 characters.
+    """
+
+    type_: MmsContentItemType = Field(MmsContentItemType.IMAGE, serialization_alias='type')
+
+
+class MmsContentItemAudio(MmsResource):
+    """Model for an audio content item in an MMS Content message.
+
+    Args:
+        url (str): The URL of the content item.
+        caption (str, Optional): Additional text to accompany the content item, with a maximum length of 3000 characters.
+    """
+
+    type_: MmsContentItemType = Field(MmsContentItemType.AUDIO, serialization_alias='type')
+
+
+class MmsContentItemVideo(MmsResource):
+    """Model for a video content item in an MMS Content message.
+
+    Args:
+        url (str): The URL of the content item.
+        caption (str, Optional): Additional text to accompany the content item, with a maximum length of 3000 characters.
+    """
+
+    type_: MmsContentItemType = Field(MmsContentItemType.VIDEO, serialization_alias='type')
+
+
+class MmsContentItemFile(MmsResource):
+    """Model for a file content item in an MMS Content message.
+
+    Args:
+        url (str): The URL of the content item.
+        caption (str, Optional): Additional text to accompany the content item, with a maximum length of 3000 characters.
+    """
+
+    type_: MmsContentItemType = Field(MmsContentItemType.FILE, serialization_alias='type')
+
+
+class MmsContentItemVcard(MmsResource):
+    """Model for a vCard content item in an MMS Content message.
+
+    Args:
+        url (str): The URL of the content item.
+        caption (str, Optional): Additional text to accompany the content item, with a maximum length of 3000 characters.
+    """
+
+    type_: MmsContentItemType = Field(MmsContentItemType.VCARD, serialization_alias='type')

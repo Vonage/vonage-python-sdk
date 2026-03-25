@@ -15,6 +15,7 @@ class MessageType(str, Enum):
     VCARD = 'vcard'
     CARD = 'card'
     CAROUSEL = 'carousel'
+    CONTENT = 'content'
 
 
 class ChannelType(str, Enum):
@@ -98,3 +99,13 @@ class RcsMediaHeight(str, Enum):
     SHORT = 'SHORT'
     MEDIUM = 'MEDIUM'
     TALL = 'TALL'
+
+
+class MmsContentItemType(str, Enum):
+    """The type of a content item in an MMS Content message."""
+
+    IMAGE = 'image'
+    AUDIO = 'audio'
+    VIDEO = 'video'
+    FILE = 'file'
+    VCARD = 'vcard'

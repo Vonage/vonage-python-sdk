@@ -109,3 +109,9 @@ class MmsContentItemType(str, Enum):
     VIDEO = 'video'
     FILE = 'file'
     VCARD = 'vcard'
+
+
+class ReplyingIndicatorType(str, Enum):
+    """The type of a WhatsApp replying indicator."""
+
+    TEXT = 'text'

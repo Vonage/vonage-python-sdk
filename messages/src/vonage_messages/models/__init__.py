@@ -74,6 +74,7 @@ from .viber import (
     ViberVideoResource,
 )
 from .whatsapp import (
+    ReplyingIndicatorText,
     WhatsappAudio,
     WhatsappAudioResource,
     WhatsappContext,
@@ -145,6 +146,7 @@ __all__ = [
     'RcsImageAlignment',
     'RcsCardWidth',
     'RcsMediaHeight',
+    'ReplyingIndicatorText',
     'Sms',
     'SmsOptions',
     'ViberAction',

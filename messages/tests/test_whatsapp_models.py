@@ -1,6 +1,7 @@
 from copy import deepcopy
 
 from vonage_messages.models import (
+    ReplyingIndicatorText,
     WhatsappAudio,
     WhatsappAudioResource,
     WhatsappContext,
@@ -382,3 +383,14 @@ def test_whatsapp_custom_all_fields():
     }
 
     assert whatsapp_model.model_dump(by_alias=True) == whatsapp_dict
+
+
+def test_create_replying_indicator():
+    whatsapp_model = ReplyingIndicatorText(
+        show=True,
+    )
+    whatsapp_dict = {
+        'show': True,
+        'type': 'text',
+    }
+    assert whatsapp_model.model_dump(by_alias=True, exclude_none=True) == whatsapp_dict

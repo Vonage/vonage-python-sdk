@@ -66,7 +66,9 @@ class Messages:
         return SendMessageResponse(**response)
 
     @validate_call
-    def mark_whatsapp_message_read(self, message_uuid: str, replying_indicator: ReplyingIndicatorText = None) -> None:
+    def mark_whatsapp_message_read(
+        self, message_uuid: str, replying_indicator: ReplyingIndicatorText = None
+    ) -> None:
         """Mark a WhatsApp message as read.
 
         Note: to use this method, update the `api_host` attribute of the
@@ -82,7 +84,9 @@ class Messages:
         """
         body = {'status': 'read'}
         if replying_indicator is not None:
-            body['replying_indicator'] = replying_indicator.model_dump(by_alias=True, exclude_none=True)
+            body['replying_indicator'] = replying_indicator.model_dump(
+                by_alias=True, exclude_none=True
+            )
 
         self._http_client.patch(
             self._http_client.api_host,

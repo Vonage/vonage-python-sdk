@@ -373,4 +373,6 @@ class ReplyingIndicatorText(BaseModel):
     """
 
     show: bool
-    type_: ReplyingIndicatorType = Field(ReplyingIndicatorType.TEXT, serialization_alias='type')
+    type_: ReplyingIndicatorType = Field(
+        ReplyingIndicatorType.TEXT, serialization_alias='type'
+    )

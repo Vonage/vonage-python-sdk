@@ -2,7 +2,6 @@ from json import loads
 from os.path import abspath
 
 import responses
-import re
 from pytest import raises
 from vonage_http_client import Auth, HttpClient, HttpClientOptions, HttpRequestError
 from vonage_messages import (
@@ -213,10 +212,7 @@ def test_mark_whatsapp_message_read_with_replying_indicator():
     request_body = loads(responses.calls[0].request.body)
     assert request_body == {
         "status": "read",
-        "replying_indicator": {
-            "show": True,
-            "type": "text"
-        }
+        "replying_indicator": {"show": True, "type": "text"},
     }
 
 

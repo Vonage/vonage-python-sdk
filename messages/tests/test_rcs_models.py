@@ -785,7 +785,8 @@ def test_create_rcs_carousel_with_too_many_cards():
                     media_url='https://example.com/image.jpg',
                     media_height='MEDIUM',
                 )
-            ] * 11,
+            ]
+            * 11,
         )
     assert "List should have at most 10 items" in str(err.value)
 
@@ -804,7 +805,7 @@ def test_create_rcs_carousel_with_invalid_card_type():
                     to='1234567890',
                     from_='asdf1234',
                     card=RcsCard(
-                    title='Card title',
+                        title='Card title',
                         text='Card description',
                         media_url='https://example.com/image.jpg',
                     ),

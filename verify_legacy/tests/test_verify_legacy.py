@@ -10,7 +10,7 @@ from vonage_verify_legacy.requests import Psd2Request, VerifyRequest
 from vonage_verify_legacy.responses import NetworkUnblockStatus, VerifyControlStatus
 from vonage_verify_legacy.verify_legacy import VerifyLegacy
 
-from testutils import build_response, get_mock_api_key_auth
+from testutils import build_response, get_mock_api_key_auth, get_base64_encoded_api_key_and_secret
 
 path = abspath(__file__)
 
@@ -30,6 +30,12 @@ data = {
 def test_http_client_property():
     verify = VerifyLegacy(HttpClient(get_mock_api_key_auth()))
     assert isinstance(verify.http_client, HttpClient)
+
+
+@responses.activate
+def test_default_auth_type():
+    verify = VerifyLegacy(HttpClient(get_mock_api_key_auth()))
+    assert verify._auth_type == 'basic'
 
 
 def test_create_verify_request_model():
@@ -67,6 +73,9 @@ def test_make_verify_request():
     assert response.request_id == 'abcdef0123456789abcdef0123456789'
     assert response.status == '0'
 
+    request_headers = responses.calls[0].request.headers
+    assert request_headers["Authorization"] == "Basic " + get_base64_encoded_api_key_and_secret()
+
 
 @responses.activate
 def test_make_psd2_request():
@@ -79,6 +88,9 @@ def test_make_psd2_request():
     response = verify.start_psd2_verification(request)
     assert response.request_id == 'abcdef0123456789abcdef0123456789'
     assert response.status == '0'
+
+    request_headers = responses.calls[0].request.headers
+    assert request_headers["Authorization"] == "Basic " + get_base64_encoded_api_key_and_secret()
 
 
 @responses.activate
@@ -129,6 +141,9 @@ def test_check_code():
     assert response.currency == 'EUR'
     assert response.estimated_price_messages_sent == '0.04675'
 
+    request_headers = responses.calls[0].request.headers
+    assert request_headers["Authorization"] == "Basic " + get_base64_encoded_api_key_and_secret()
+
 
 @responses.activate
 def test_check_code_error():
@@ -170,6 +185,9 @@ def test_search():
     assert response.events[0].type == 'sms'
     assert response.events[0].id == '23f3a13d-6d03-4262-8f4d-67f12a56e1c8'
 
+    request_headers = responses.calls[0].request.headers
+    assert request_headers["Authorization"] == "Basic " + get_base64_encoded_api_key_and_secret()
+
 
 @responses.activate
 def test_search_list_of_ids():
@@ -186,6 +204,9 @@ def test_search_list_of_ids():
     assert response1.request_id == 'c5037cb8b47449158ed6611afde58990'
     assert response1.status == 'SUCCESS'
     assert response1.checks[0].status == 'VALID'
+
+    request_headers = responses.calls[0].request.headers
+    assert request_headers["Authorization"] == "Basic " + get_base64_encoded_api_key_and_secret()
 
 
 @responses.activate
@@ -216,6 +237,9 @@ def test_cancel_verification():
     assert type(response) == VerifyControlStatus
     assert response.status == '0'
     assert response.command == 'cancel'
+
+    request_headers = responses.calls[0].request.headers
+    assert request_headers["Authorization"] == "Basic " + get_base64_encoded_api_key_and_secret()
 
 
 @responses.activate
@@ -248,6 +272,9 @@ def test_trigger_next_event():
     assert type(response) == VerifyControlStatus
     assert response.status == '0'
     assert response.command == 'trigger_next_event'
+
+    request_headers = responses.calls[0].request.headers
+    assert request_headers["Authorization"] == "Basic " + get_base64_encoded_api_key_and_secret()
 
 
 @responses.activate
@@ -282,6 +309,9 @@ def test_request_network_unblock():
     assert type(response) == NetworkUnblockStatus
     assert response.network == '23410'
     assert response.unblocked_until == '2024-04-22T08:34:58Z'
+
+    request_headers = responses.calls[0].request.headers
+    assert request_headers["Authorization"] == "Basic " + get_base64_encoded_api_key_and_secret()
 
 
 @responses.activate

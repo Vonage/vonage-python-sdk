@@ -1,5 +1,5 @@
-from os.path import dirname, join
 from base64 import b64encode
+from os.path import dirname, join
 
 from vonage_http_client.auth import Auth
 

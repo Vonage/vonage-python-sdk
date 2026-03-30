@@ -1,10 +1,10 @@
 import pytest
 from pydantic import ValidationError
 from vonage_messages.models import (
-    RcsCardBase,
-    RcsCardItem,
+    RcsCard,
     RcsCardMessage,
     RcsCarousel,
+    RcsCarouselMessage,
     RcsCustom,
     RcsFile,
     RcsImage,
@@ -357,22 +357,22 @@ def test_create_rcs_file():
     assert rcs_model.model_dump(by_alias=True, exclude_none=True) == rcs_dict
 
 
-def test_create_rcs_card_base():
-    card_base = RcsCardBase(
+def test_create_rcs_card():
+    card = RcsCard(
         title='Card title',
         text='Card description',
         media_url='https://example.com/image.jpg',
     )
-    card_base_dict = {
+    card_dict = {
         'title': 'Card title',
         'text': 'Card description',
         'media_url': 'https://example.com/image.jpg',
     }
-    assert card_base.model_dump(by_alias=True, exclude_none=True) == card_base_dict
+    assert card.model_dump(by_alias=True, exclude_none=True) == card_dict
 
 
-def test_create_rcs_card_base_with_optional_params():
-    card_base = RcsCardBase(
+def test_create_rcs_card_with_optional_params():
+    card = RcsCard(
         title='Card title',
         text='Card description',
         media_url='https://example.com/image.jpg',
@@ -381,7 +381,7 @@ def test_create_rcs_card_base_with_optional_params():
         thumbnail_url='https://example.com/thumbnail.jpg',
         media_force_refresh=True,
     )
-    card_base_dict = {
+    card_dict = {
         'title': 'Card title',
         'text': 'Card description',
         'media_url': 'https://example.com/image.jpg',
@@ -390,11 +390,11 @@ def test_create_rcs_card_base_with_optional_params():
         'thumbnail_url': 'https://example.com/thumbnail.jpg',
         'media_force_refresh': True,
     }
-    assert card_base.model_dump(by_alias=True, exclude_none=True) == card_base_dict
+    assert card.model_dump(by_alias=True, exclude_none=True) == card_dict
 
 
-def test_create_rcs_card_base_with_suggestions():
-    card_base = RcsCardBase(
+def test_create_rcs_card_with_suggestions():
+    card = RcsCard(
         title='Card title',
         text='Card description',
         media_url='https://example.com/image.jpg',
@@ -410,7 +410,7 @@ def test_create_rcs_card_base_with_suggestions():
             ),
         ],
     )
-    card_base_dict = {
+    card_dict = {
         'title': 'Card title',
         'text': 'Card description',
         'media_url': 'https://example.com/image.jpg',
@@ -428,11 +428,11 @@ def test_create_rcs_card_base_with_suggestions():
             },
         ],
     }
-    assert card_base.model_dump(by_alias=True, exclude_none=True) == card_base_dict
+    assert card.model_dump(by_alias=True, exclude_none=True) == card_dict
 
 
-def test_create_rcs_card_base_with_all_suggestion_types():
-    card_base_1 = RcsCardBase(
+def test_create_rcs_card_with_all_suggestion_types():
+    card_1 = RcsCard(
         title='Card title',
         text='Card description',
         media_url='https://example.com/image.jpg',
@@ -460,7 +460,7 @@ def test_create_rcs_card_base_with_all_suggestion_types():
             ),
         ],
     )
-    card_base_2 = RcsCardBase(
+    card_2 = RcsCard(
         title='Card title',
         text='Card description',
         media_url='https://example.com/image.jpg',
@@ -489,7 +489,7 @@ def test_create_rcs_card_base_with_all_suggestion_types():
             ),
         ],
     )
-    card_base_dict_1 = {
+    card_dict_1 = {
         'title': 'Card title',
         'text': 'Card description',
         'media_url': 'https://example.com/image.jpg',
@@ -521,7 +521,7 @@ def test_create_rcs_card_base_with_all_suggestion_types():
             },
         ],
     }
-    card_base_dict_2 = {
+    card_dict_2 = {
         'title': 'Card title',
         'text': 'Card description',
         'media_url': 'https://example.com/image.jpg',
@@ -553,40 +553,40 @@ def test_create_rcs_card_base_with_all_suggestion_types():
             },
         ],
     }
-    assert card_base_1.model_dump(by_alias=True, exclude_none=True) == card_base_dict_1
-    assert card_base_2.model_dump(by_alias=True, exclude_none=True) == card_base_dict_2
+    assert card_1.model_dump(by_alias=True, exclude_none=True) == card_dict_1
+    assert card_2.model_dump(by_alias=True, exclude_none=True) == card_dict_2
 
 
-def test_create_rcs_card_base_without_title():
+def test_create_rcs_card_without_title():
     with pytest.raises(ValidationError) as err:
-        card_base = RcsCardBase(
+        card = RcsCard(
             text='Card description',
             media_url='https://example.com/image.jpg',
         )
     assert "Field required" in str(err.value)
 
 
-def test_create_rcs_card_base_without_text():
+def test_create_rcs_card_without_text():
     with pytest.raises(ValidationError) as err:
-        card_base = RcsCardBase(
+        card = RcsCard(
             title='Card title',
             media_url='https://example.com/image.jpg',
         )
     assert "Field required" in str(err.value)
 
 
-def test_create_rcs_card_base_without_media_url():
+def test_create_rcs_card_without_media_url():
     with pytest.raises(ValidationError) as err:
-        card_base = RcsCardBase(
+        card = RcsCard(
             title='Card title',
             text='Card description',
         )
     assert "Field required" in str(err.value)
 
 
-def test_create_rcs_card_base_with_title_too_short():
+def test_create_rcs_card_with_title_too_short():
     with pytest.raises(ValidationError) as err:
-        card_base = RcsCardBase(
+        card = RcsCard(
             title='',
             text='Card description',
             media_url='https://example.com/image.jpg',
@@ -594,9 +594,9 @@ def test_create_rcs_card_base_with_title_too_short():
     assert "String should have at least 1 character" in str(err.value)
 
 
-def test_create_rcs_card_base_with_title_too_long():
+def test_create_rcs_card_with_title_too_long():
     with pytest.raises(ValidationError) as err:
-        card_base = RcsCardBase(
+        card = RcsCard(
             title='A' * 200 + 'B',
             text='Card description',
             media_url='https://example.com/image.jpg',
@@ -604,11 +604,9 @@ def test_create_rcs_card_base_with_title_too_long():
     assert "String should have at most 200 characters" in str(err.value)
 
 
-def test_create_rcs_card_base_with_text_too_short():
+def test_create_rcs_card_with_text_too_short():
     with pytest.raises(ValidationError) as err:
-        card_base = RcsCardBase(
-            to='1234567890',
-            from_='asdf1234',
+        card = RcsCard(
             title='Card title',
             text='',
             media_url='https://example.com/image.jpg',
@@ -616,11 +614,9 @@ def test_create_rcs_card_base_with_text_too_short():
     assert "String should have at least 1 character" in str(err.value)
 
 
-def test_create_rcs_card_base_with_text_too_long():
+def test_create_rcs_card_with_text_too_long():
     with pytest.raises(ValidationError) as err:
-        card_base = RcsCardBase(
-            to='1234567890',
-            from_='asdf1234',
+        card = RcsCard(
             title='Card title',
             text='A' * 2000 + 'B',
             media_url='https://example.com/image.jpg',
@@ -628,9 +624,9 @@ def test_create_rcs_card_base_with_text_too_long():
     assert "String should have at most 2000 characters" in str(err.value)
 
 
-def test_create_rcs_card_base_with_insuffient_suggestions():
+def test_create_rcs_card_with_insuffient_suggestions():
     with pytest.raises(ValidationError) as err:
-        card_base = RcsCardBase(
+        card = RcsCard(
             title='Card title',
             text='Card description',
             media_url='https://example.com/image.jpg',
@@ -639,9 +635,9 @@ def test_create_rcs_card_base_with_insuffient_suggestions():
     assert "List should have at least 1 item" in str(err.value)
 
 
-def test_create_rcs_card_base_with_too_many_suggestions():
+def test_create_rcs_card_with_too_many_suggestions():
     with pytest.raises(ValidationError) as err:
-        card_base = RcsCardBase(
+        card = RcsCard(
             title='Card title',
             text='Card description',
             media_url='https://example.com/image.jpg',
@@ -656,9 +652,9 @@ def test_create_rcs_card_base_with_too_many_suggestions():
     assert "List should have at most 4 items" in str(err.value)
 
 
-def test_create_rcs_card_base_with_inavalid_suggestion_types():
+def test_create_rcs_card_with_inavalid_suggestion_types():
     with pytest.raises(ValidationError) as err:
-        card_base = RcsCardBase(
+        card = RcsCard(
             title='Card title',
             text='Card description',
             media_url='https://example.com/image.jpg',
@@ -677,16 +673,20 @@ def test_create_rcs_card_message():
     card = RcsCardMessage(
         to='1234567890',
         from_='asdf1234',
-        title='Card title',
-        text='Card description',
-        media_url='https://example.com/image.jpg',
+        card=RcsCard(
+            title='Card title',
+            text='Card description',
+            media_url='https://example.com/image.jpg',
+        ),
     )
     card_dict = {
         'to': '1234567890',
         'from': 'asdf1234',
-        'title': 'Card title',
-        'text': 'Card description',
-        'media_url': 'https://example.com/image.jpg',
+        'card': {
+            'title': 'Card title',
+            'text': 'Card description',
+            'media_url': 'https://example.com/image.jpg',
+        },
         'channel': 'rcs',
         'message_type': 'card',
     }
@@ -697,13 +697,11 @@ def test_create_rcs_card_message_with_optional_params():
     card = RcsCardMessage(
         to='1234567890',
         from_='asdf1234',
-        title='Card title',
-        text='Card description',
-        media_url='https://example.com/image.jpg',
-        media_description='Image description',
-        media_height='MEDIUM',
-        thumbnail_url='https://example.com/thumbnail.jpg',
-        media_force_refresh=True,
+        card=RcsCard(
+            title='Card title',
+            text='Card description',
+            media_url='https://example.com/image.jpg',
+        ),
         rcs=RcsOptionsCard(
             card_orientation='VERTICAL',
             image_alignment='LEFT',
@@ -712,13 +710,11 @@ def test_create_rcs_card_message_with_optional_params():
     card_dict = {
         'to': '1234567890',
         'from': 'asdf1234',
-        'title': 'Card title',
-        'text': 'Card description',
-        'media_url': 'https://example.com/image.jpg',
-        'media_description': 'Image description',
-        'media_height': 'MEDIUM',
-        'thumbnail_url': 'https://example.com/thumbnail.jpg',
-        'media_force_refresh': True,
+        'card': {
+            'title': 'Card title',
+            'text': 'Card description',
+            'media_url': 'https://example.com/image.jpg',
+        },
         'rcs': {
             'card_orientation': 'VERTICAL',
             'image_alignment': 'LEFT',
@@ -729,388 +725,19 @@ def test_create_rcs_card_message_with_optional_params():
     assert card.model_dump(by_alias=True, exclude_none=True) == card_dict
 
 
-def test_create_rcs_card_message_with_suggestions():
-    card = RcsCardMessage(
-        to='1234567890',
-        from_='asdf1234',
-        title='Card title',
-        text='Card description',
-        media_url='https://example.com/image.jpg',
-        suggestions=[
-            RcsSuggestionReply(
-                text='Reply',
-                postback_data='postback-data',
-            ),
-            RcsSuggestionActionDial(
-                text='Call us',
-                postback_data='postback-data',
-                phone_number='447900000000',
-            ),
-        ],
-    )
-    card_dict = {
-        'to': '1234567890',
-        'from': 'asdf1234',
-        'title': 'Card title',
-        'text': 'Card description',
-        'media_url': 'https://example.com/image.jpg',
-        'suggestions': [
-            {
-                'type': 'reply',
-                'text': 'Reply',
-                'postback_data': 'postback-data',
-            },
-            {
-                'type': 'dial',
-                'text': 'Call us',
-                'postback_data': 'postback-data',
-                'phone_number': '447900000000',
-            },
-        ],
-        'channel': 'rcs',
-        'message_type': 'card',
-    }
-    assert card.model_dump(by_alias=True, exclude_none=True) == card_dict
-
-
-def test_create_rcs_card_message_without_title():
+def test_create_rcs_card_message_without_card():
     with pytest.raises(ValidationError) as err:
         card = RcsCardMessage(
             to='1234567890',
             from_='asdf1234',
-            text='Card description',
-            media_url='https://example.com/image.jpg',
         )
     assert "Field required" in str(err.value)
-
-
-def test_create_rcs_card_message_without_text():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardMessage(
-            to='1234567890',
-            from_='asdf1234',
-            title='Card title',
-            media_url='https://example.com/image.jpg',
-        )
-    assert "Field required" in str(err.value)
-
-
-def test_create_rcs_card_message_without_media_url():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardMessage(
-            to='1234567890',
-            from_='asdf1234',
-            title='Card title',
-            text='Card description',
-        )
-    assert "Field required" in str(err.value)
-
-
-def test_create_rcs_card_message_with_title_too_short():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardMessage(
-            to='1234567890',
-            from_='asdf1234',
-            title='',
-            text='Card description',
-            media_url='https://example.com/image.jpg',
-        )
-    assert "String should have at least 1 character" in str(err.value)
-
-
-def test_create_rcs_card_message_with_title_too_long():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardMessage(
-            to='1234567890',
-            from_='asdf1234',
-            title='A' * 200 + 'B',
-            text='Card description',
-            media_url='https://example.com/image.jpg',
-        )
-    assert "String should have at most 200 characters" in str(err.value)
-
-
-def test_create_rcs_card_message_with_text_too_short():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardMessage(
-            to='1234567890',
-            from_='asdf1234',
-            title='Card title',
-            text='',
-            media_url='https://example.com/image.jpg',
-        )
-    assert "String should have at least 1 character" in str(err.value)
-
-
-def test_create_rcs_card_message_with_text_too_long():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardMessage(
-            to='1234567890',
-            from_='asdf1234',
-            title='Card title',
-            text='A' * 2000 + 'B',
-            media_url='https://example.com/image.jpg',
-        )
-    assert "String should have at most 2000 characters" in str(err.value)
-
-
-def test_create_rcs_card_message_with_insuffient_suggestions():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardMessage(
-            to='1234567890',
-            from_='asdf1234',
-            title='Card title',
-            text='Card description',
-            media_url='https://example.com/image.jpg',
-            suggestions=[],
-        )
-    assert "List should have at least 1 item" in str(err.value)
-
-
-def test_create_rcs_card_message_with_too_many_suggestions():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardMessage(
-            to='1234567890',
-            from_='asdf1234',
-            title='Card title',
-            text='Card description',
-            media_url='https://example.com/image.jpg',
-            suggestions=[
-                RcsSuggestionReply(
-                    text='Reply',
-                    postback_data='postback-data',
-                ),
-            ]
-            * 5,
-        )
-    assert "List should have at most 4 items" in str(err.value)
-
-
-def test_create_rcs_card_message_with_inavalid_suggestion_types():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardMessage(
-            to='1234567890',
-            from_='asdf1234',
-            title='Card title',
-            text='Card description',
-            media_url='https://example.com/image.jpg',
-            suggestions=[
-                RcsSuggestionReply(
-                    text='Reply',
-                    postback_data='postback-data',
-                ),
-                "Invalid suggestion type",
-            ],
-        )
-    assert "Input should be a valid dictionary or instance" in str(err.value)
-
-
-def test_create_rcs_card_item():
-    card_content = RcsCardItem(
-        title='Card title',
-        text='Card description',
-        media_url='https://example.com/image.jpg',
-        media_height='MEDIUM',
-    )
-    card_item_dict = {
-        'title': 'Card title',
-        'text': 'Card description',
-        'media_url': 'https://example.com/image.jpg',
-        'media_height': 'MEDIUM',
-    }
-    assert card_content.model_dump(by_alias=True, exclude_none=True) == card_item_dict
-
-
-def test_create_rcs_card_item_with_optional_params():
-    card_content = RcsCardItem(
-        title='Card title',
-        text='Card description',
-        media_url='https://example.com/image.jpg',
-        media_description='Image description',
-        media_height='MEDIUM',
-        thumbnail_url='https://example.com/thumbnail.jpg',
-        media_force_refresh=True,
-    )
-    card_item_dict = {
-        'title': 'Card title',
-        'text': 'Card description',
-        'media_url': 'https://example.com/image.jpg',
-        'media_description': 'Image description',
-        'media_height': 'MEDIUM',
-        'thumbnail_url': 'https://example.com/thumbnail.jpg',
-        'media_force_refresh': True,
-    }
-    assert card_content.model_dump(by_alias=True, exclude_none=True) == card_item_dict
-
-
-def test_create_rcs_card_item_with_suggestions():
-    card_content = RcsCardItem(
-        title='Card title',
-        text='Card description',
-        media_url='https://example.com/image.jpg',
-        media_height='MEDIUM',
-        suggestions=[
-            RcsSuggestionReply(
-                text='Reply',
-                postback_data='postback-data',
-            ),
-            RcsSuggestionActionDial(
-                text='Call us',
-                postback_data='postback-data',
-                phone_number='447900000000',
-            ),
-        ],
-    )
-    card_item_dict = {
-        'title': 'Card title',
-        'text': 'Card description',
-        'media_url': 'https://example.com/image.jpg',
-        'media_height': 'MEDIUM',
-        'suggestions': [
-            {
-                'type': 'reply',
-                'text': 'Reply',
-                'postback_data': 'postback-data',
-            },
-            {
-                'type': 'dial',
-                'text': 'Call us',
-                'postback_data': 'postback-data',
-                'phone_number': '447900000000',
-            },
-        ],
-    }
-    assert card_content.model_dump(by_alias=True, exclude_none=True) == card_item_dict
-
-
-def test_create_rcs_card_item_without_title():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardItem(
-            text='Card description',
-            media_url='https://example.com/image.jpg',
-        )
-    assert "Field required" in str(err.value)
-
-
-def test_create_rcs_card_item_without_text():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardItem(
-            title='Card title',
-            media_url='https://example.com/image.jpg',
-        )
-    assert "Field required" in str(err.value)
-
-
-def test_create_rcs_card_item_without_media_url():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardItem(
-            title='Card title',
-            text='Card description',
-        )
-    assert "Field required" in str(err.value)
-
-
-def test_create_rcs_card_item_without_media_height():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardItem(
-            title='Card title',
-            text='Card description',
-            media_url='https://example.com/image.jpg',
-        )
-    assert "Field required" in str(err.value)
-
-
-def test_create_rcs_card_item_with_title_too_short():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardItem(
-            title='',
-            text='Card description',
-            media_url='https://example.com/image.jpg',
-        )
-    assert "String should have at least 1 character" in str(err.value)
-
-
-def test_create_rcs_card_item_with_title_too_long():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardItem(
-            title='A' * 200 + 'B',
-            text='Card description',
-            media_url='https://example.com/image.jpg',
-        )
-    assert "String should have at most 200 characters" in str(err.value)
-
-
-def test_create_rcs_card_item_with_text_too_short():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardItem(
-            title='Card title',
-            text='',
-            media_url='https://example.com/image.jpg',
-        )
-    assert "String should have at least 1 character" in str(err.value)
-
-
-def test_create_rcs_card_item_with_text_too_long():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardItem(
-            title='Card title',
-            text='A' * 2000 + 'B',
-            media_url='https://example.com/image.jpg',
-        )
-    assert "String should have at most 2000 characters" in str(err.value)
-
-
-def test_create_rcs_card_item_with_insuffient_suggestions():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardItem(
-            title='Card title',
-            text='Card description',
-            media_url='https://example.com/image.jpg',
-            suggestions=[],
-        )
-    assert "List should have at least 1 item" in str(err.value)
-
-
-def test_create_rcs_card_item_with_too_many_suggestions():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardItem(
-            title='Card title',
-            text='Card description',
-            media_url='https://example.com/image.jpg',
-            suggestions=[
-                RcsSuggestionReply(
-                    text='Reply',
-                    postback_data='postback-data',
-                ),
-            ]
-            * 5,
-        )
-    assert "List should have at most 4 items" in str(err.value)
-
-
-def test_create_rcs_card_item_with_inavalid_suggestion_types():
-    with pytest.raises(ValidationError) as err:
-        card = RcsCardItem(
-            title='Card title',
-            text='Card description',
-            media_url='https://example.com/image.jpg',
-            suggestions=[
-                RcsSuggestionReply(
-                    text='Reply',
-                    postback_data='postback-data',
-                ),
-                "Invalid suggestion type",
-            ],
-        )
-    assert "Input should be a valid dictionary or instance" in str(err.value)
 
 
 def test_create_rcs_carousel():
     carousel = RcsCarousel(
-        to='1234567890',
-        from_='asdf1234',
         cards=[
-            RcsCardItem(
+            RcsCard(
                 title='Card title',
                 text='Card description',
                 media_url='https://example.com/image.jpg',
@@ -1118,13 +745,8 @@ def test_create_rcs_carousel():
             )
         ]
         * 2,
-        rcs=RcsOptionsCarousel(
-            card_width='MEDIUM',
-        ),
     )
     carousel_dict = {
-        'to': '1234567890',
-        'from': 'asdf1234',
         'cards': [
             {
                 'title': 'Card title',
@@ -1134,31 +756,79 @@ def test_create_rcs_carousel():
             }
         ]
         * 2,
-        'rcs': {
-            'card_width': 'MEDIUM',
-        },
-        'channel': 'rcs',
-        'message_type': 'carousel',
     }
     assert carousel.model_dump(by_alias=True, exclude_none=True) == carousel_dict
 
 
-def test_create_rcs_carousel_with_optional_params():
-    carousel = RcsCarousel(
+def test_create_rcs_carousel_with_insufficient_cards():
+    with pytest.raises(ValidationError) as err:
+        carousel = RcsCarousel(
+            cards=[
+                RcsCard(
+                    title='Card title',
+                    text='Card description',
+                    media_url='https://example.com/image.jpg',
+                    media_height='MEDIUM',
+                )
+            ],
+        )
+    assert "List should have at least 2 items" in str(err.value)
+
+
+def test_create_rcs_carousel_with_too_many_cards():
+    with pytest.raises(ValidationError) as err:
+        carousel = RcsCarousel(
+            cards=[
+                RcsCard(
+                    title='Card title',
+                    text='Card description',
+                    media_url='https://example.com/image.jpg',
+                    media_height='MEDIUM',
+                )
+            ] * 11,
+        )
+    assert "List should have at most 10 items" in str(err.value)
+
+
+def test_create_rcs_carousel_with_invalid_card_type():
+    with pytest.raises(ValidationError) as err:
+        carousel = RcsCarousel(
+            cards=[
+                RcsCard(
+                    title='Card title',
+                    text='Card description',
+                    media_url='https://example.com/image.jpg',
+                    media_height='MEDIUM',
+                ),
+                RcsCardMessage(
+                    to='1234567890',
+                    from_='asdf1234',
+                    card=RcsCard(
+                    title='Card title',
+                        text='Card description',
+                        media_url='https://example.com/image.jpg',
+                    ),
+                ),
+            ],
+        )
+    assert "Input should be a valid dictionary or instance" in str(err.value)
+
+
+def test_create_rcs_carousel_message():
+    carousel = RcsCarouselMessage(
         to='1234567890',
         from_='asdf1234',
-        cards=[
-            RcsCardItem(
-                title='Card title',
-                text='Card description',
-                media_url='https://example.com/image.jpg',
-                media_description='Image description',
-                media_height='MEDIUM',
-                thumbnail_url='https://example.com/thumbnail.jpg',
-                media_force_refresh=True,
-            )
-        ]
-        * 2,
+        carousel=RcsCarousel(
+            cards=[
+                RcsCard(
+                    title='Card title',
+                    text='Card description',
+                    media_url='https://example.com/image.jpg',
+                    media_height='MEDIUM',
+                )
+            ]
+            * 2,
+        ),
         rcs=RcsOptionsCarousel(
             card_width='MEDIUM',
         ),
@@ -1166,18 +836,17 @@ def test_create_rcs_carousel_with_optional_params():
     carousel_dict = {
         'to': '1234567890',
         'from': 'asdf1234',
-        'cards': [
-            {
-                'title': 'Card title',
-                'text': 'Card description',
-                'media_url': 'https://example.com/image.jpg',
-                'media_description': 'Image description',
-                'media_height': 'MEDIUM',
-                'thumbnail_url': 'https://example.com/thumbnail.jpg',
-                'media_force_refresh': True,
-            }
-        ]
-        * 2,
+        'carousel': {
+            'cards': [
+                {
+                    'title': 'Card title',
+                    'text': 'Card description',
+                    'media_url': 'https://example.com/image.jpg',
+                    'media_height': 'MEDIUM',
+                }
+            ]
+            * 2,
+        },
         'rcs': {
             'card_width': 'MEDIUM',
         },
@@ -1187,19 +856,69 @@ def test_create_rcs_carousel_with_optional_params():
     assert carousel.model_dump(by_alias=True, exclude_none=True) == carousel_dict
 
 
-def test_create_rcs_carousel_with_suggestions():
-    carousel = RcsCarousel(
+def test_create_rcs_carousel_message_with_optional_params():
+    carousel = RcsCarouselMessage(
         to='1234567890',
         from_='asdf1234',
-        cards=[
-            RcsCardItem(
-                title='Card title',
-                text='Card description',
-                media_url='https://example.com/image.jpg',
-                media_height='MEDIUM',
-            )
-        ]
-        * 2,
+        carousel=RcsCarousel(
+            cards=[
+                RcsCard(
+                    title='Card title',
+                    text='Card description',
+                    media_url='https://example.com/image.jpg',
+                    media_description='Image description',
+                    media_height='MEDIUM',
+                    thumbnail_url='https://example.com/thumbnail.jpg',
+                    media_force_refresh=True,
+                )
+            ]
+            * 2,
+        ),
+        rcs=RcsOptionsCarousel(
+            card_width='MEDIUM',
+        ),
+    )
+    carousel_dict = {
+        'to': '1234567890',
+        'from': 'asdf1234',
+        'carousel': {
+            'cards': [
+                {
+                    'title': 'Card title',
+                    'text': 'Card description',
+                    'media_url': 'https://example.com/image.jpg',
+                    'media_description': 'Image description',
+                    'media_height': 'MEDIUM',
+                    'thumbnail_url': 'https://example.com/thumbnail.jpg',
+                    'media_force_refresh': True,
+                }
+            ]
+            * 2,
+        },
+        'rcs': {
+            'card_width': 'MEDIUM',
+        },
+        'channel': 'rcs',
+        'message_type': 'carousel',
+    }
+    assert carousel.model_dump(by_alias=True, exclude_none=True) == carousel_dict
+
+
+def test_create_rcs_carousel_message_with_suggestions():
+    carousel = RcsCarouselMessage(
+        to='1234567890',
+        from_='asdf1234',
+        carousel=RcsCarousel(
+            cards=[
+                RcsCard(
+                    title='Card title',
+                    text='Card description',
+                    media_url='https://example.com/image.jpg',
+                    media_height='MEDIUM',
+                )
+            ]
+            * 2,
+        ),
         suggestions=[
             RcsSuggestionReply(
                 text='Reply',
@@ -1218,15 +937,17 @@ def test_create_rcs_carousel_with_suggestions():
     carousel_dict = {
         'to': '1234567890',
         'from': 'asdf1234',
-        'cards': [
-            {
-                'title': 'Card title',
-                'text': 'Card description',
-                'media_url': 'https://example.com/image.jpg',
-                'media_height': 'MEDIUM',
-            }
-        ]
-        * 2,
+        'carousel': {
+            'cards': [
+                {
+                    'title': 'Card title',
+                    'text': 'Card description',
+                    'media_url': 'https://example.com/image.jpg',
+                    'media_height': 'MEDIUM',
+                }
+            ]
+            * 2,
+        },
         'suggestions': [
             {
                 'type': 'reply',
@@ -1249,19 +970,21 @@ def test_create_rcs_carousel_with_suggestions():
     assert carousel.model_dump(by_alias=True, exclude_none=True) == carousel_dict
 
 
-def test_create_rcs_carousel_with_all_suggestion_types():
-    carousel = RcsCarousel(
+def test_create_rcs_carousel_message_with_all_suggestion_types():
+    carousel = RcsCarouselMessage(
         to='1234567890',
         from_='asdf1234',
-        cards=[
-            RcsCardItem(
-                title='Card title',
-                text='Card description',
-                media_url='https://example.com/image.jpg',
-                media_height='MEDIUM',
-            )
-        ]
-        * 2,
+        carousel=RcsCarousel(
+            cards=[
+                RcsCard(
+                    title='Card title',
+                    text='Card description',
+                    media_url='https://example.com/image.jpg',
+                    media_height='MEDIUM',
+                )
+            ]
+            * 2,
+        ),
         suggestions=[
             RcsSuggestionReply(
                 text='Reply',
@@ -1314,15 +1037,17 @@ def test_create_rcs_carousel_with_all_suggestion_types():
     carousel_dict = {
         'to': '1234567890',
         'from': 'asdf1234',
-        'cards': [
-            {
-                'title': 'Card title',
-                'text': 'Card description',
-                'media_url': 'https://example.com/image.jpg',
-                'media_height': 'MEDIUM',
-            }
-        ]
-        * 2,
+        'carousel': {
+            'cards': [
+                {
+                    'title': 'Card title',
+                    'text': 'Card description',
+                    'media_url': 'https://example.com/image.jpg',
+                    'media_height': 'MEDIUM',
+                }
+            ]
+            * 2,
+        },
         'suggestions': [
             {
                 'type': 'reply',
@@ -1384,106 +1109,54 @@ def test_create_rcs_carousel_with_all_suggestion_types():
     assert carousel.model_dump(by_alias=True, exclude_none=True) == carousel_dict
 
 
-def test_create_rcs_carousel_without_rcs_options():
+def test_create_rcs_carousel_message_without_carousel():
     with pytest.raises(ValidationError) as err:
-        carousel = RcsCarousel(
+        carousel = RcsCarouselMessage(
             to='1234567890',
             from_='asdf1234',
-            cards=[
-                RcsCardItem(
-                    title='Card title',
-                    text='Card description',
-                    media_url='https://example.com/image.jpg',
-                    media_height='MEDIUM',
-                )
-            ]
-            * 2,
+            rcs=RcsOptionsCarousel(
+                card_width='MEDIUM',
+            ),
         )
     assert "Field required" in str(err.value)
 
 
-def test_create_rcs_carousel_with_insufficient_cards():
+def test_create_rcs_carousel_message_without_rcs_options():
     with pytest.raises(ValidationError) as err:
-        carousel = RcsCarousel(
+        carousel = RcsCarouselMessage(
             to='1234567890',
             from_='asdf1234',
-            cards=[
-                RcsCardItem(
-                    title='Card title',
-                    text='Card description',
-                    media_url='https://example.com/image.jpg',
-                    media_height='MEDIUM',
-                )
-            ],
-            rcs=RcsOptionsCarousel(
-                card_width='MEDIUM',
+            carousel=RcsCarousel(
+                cards=[
+                    RcsCard(
+                        title='Card title',
+                        text='Card description',
+                        media_url='https://example.com/image.jpg',
+                        media_height='MEDIUM',
+                    )
+                ]
+                * 2,
             ),
         )
-    assert "List should have at least 2 items" in str(err.value)
+    assert "Field required" in str(err.value)
 
 
-def test_create_rcs_carousel_with_too_many_cards():
+def test_create_rcs_carousel_message_with_insuffient_suggestions():
     with pytest.raises(ValidationError) as err:
-        carousel = RcsCarousel(
+        carousel = RcsCarouselMessage(
             to='1234567890',
             from_='asdf1234',
-            cards=[
-                RcsCardItem(
-                    title='Card title',
-                    text='Card description',
-                    media_url='https://example.com/image.jpg',
-                    media_height='MEDIUM',
-                )
-            ]
-            * 11,
-            rcs=RcsOptionsCarousel(
-                card_width='MEDIUM',
+            carousel=RcsCarousel(
+                cards=[
+                    RcsCard(
+                        title='Card title',
+                        text='Card description',
+                        media_url='https://example.com/image.jpg',
+                        media_height='MEDIUM',
+                    )
+                ]
+                * 2,
             ),
-        )
-    assert "List should have at most 10 items" in str(err.value)
-
-
-def test_create_rcs_carousel_with_invalid_card_type():
-    with pytest.raises(ValidationError) as err:
-        carousel = RcsCarousel(
-            to='1234567890',
-            from_='asdf1234',
-            cards=[
-                RcsCardItem(
-                    title='Card title',
-                    text='Card description',
-                    media_url='https://example.com/image.jpg',
-                    media_height='MEDIUM',
-                ),
-                RcsCardMessage(
-                    to='1234567890',
-                    from_='asdf1234',
-                    title='Card title',
-                    text='Card description',
-                    media_url='https://example.com/image.jpg',
-                ),
-            ],
-            rcs=RcsOptionsCarousel(
-                card_width='MEDIUM',
-            ),
-        )
-    assert "Input should be a valid dictionary or instance" in str(err.value)
-
-
-def test_create_rcs_carousel_with_insuffient_suggestions():
-    with pytest.raises(ValidationError) as err:
-        carousel = RcsCarousel(
-            to='1234567890',
-            from_='asdf1234',
-            cards=[
-                RcsCardItem(
-                    title='Card title',
-                    text='Card description',
-                    media_url='https://example.com/image.jpg',
-                    media_height='MEDIUM',
-                )
-            ]
-            * 2,
             suggestions=[],
             rcs=RcsOptionsCarousel(
                 card_width='MEDIUM',
@@ -1492,20 +1165,22 @@ def test_create_rcs_carousel_with_insuffient_suggestions():
     assert "List should have at least 1 item" in str(err.value)
 
 
-def test_create_rcs_carousel_with_too_many_suggestions():
+def test_create_rcs_carousel_message_with_too_many_suggestions():
     with pytest.raises(ValidationError) as err:
-        carousel = RcsCarousel(
+        carousel = RcsCarouselMessage(
             to='1234567890',
             from_='asdf1234',
-            cards=[
-                RcsCardItem(
-                    title='Card title',
-                    text='Card description',
-                    media_url='https://example.com/image.jpg',
-                    media_height='MEDIUM',
-                )
-            ]
-            * 2,
+            carousel=RcsCarousel(
+                cards=[
+                    RcsCard(
+                        title='Card title',
+                        text='Card description',
+                        media_url='https://example.com/image.jpg',
+                        media_height='MEDIUM',
+                    )
+                ]
+                * 2,
+            ),
             suggestions=[
                 RcsSuggestionReply(
                     text='Reply',
@@ -1520,20 +1195,22 @@ def test_create_rcs_carousel_with_too_many_suggestions():
     assert "List should have at most 11 items" in str(err.value)
 
 
-def test_create_rcs_carousel_with_inavalid_suggestion_types():
+def test_create_rcs_carousel_message_with_inavalid_suggestion_types():
     with pytest.raises(ValidationError) as err:
-        carousel = RcsCarousel(
+        carousel = RcsCarouselMessage(
             to='1234567890',
             from_='asdf1234',
-            cards=[
-                RcsCardItem(
-                    title='Card title',
-                    text='Card description',
-                    media_url='https://example.com/image.jpg',
-                    media_height='MEDIUM',
-                )
-            ]
-            * 2,
+            carousel=RcsCarousel(
+                cards=[
+                    RcsCard(
+                        title='Card title',
+                        text='Card description',
+                        media_url='https://example.com/image.jpg',
+                        media_height='MEDIUM',
+                    )
+                ]
+                * 2,
+            ),
             suggestions=[
                 RcsSuggestionReply(
                     text='Reply',

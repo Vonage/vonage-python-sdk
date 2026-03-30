@@ -300,7 +300,7 @@ class RcsFile(BaseRcs):
     message_type: MessageType = MessageType.FILE
 
 
-class RcsCardBase(BaseModel):
+class RcsCard(BaseModel):
     """Base model for the content of an RCS card.
 
     Args:
@@ -336,37 +336,13 @@ class RcsCardBase(BaseModel):
     ] = Field(None, min_length=1, max_length=4)
 
 
-class RcsCardItem(RcsCardBase):
-    """Model for the content of an RCS card.
-
-    Args:
-        title (str): The title of the card.
-        text (str): The text of the card.
-        media_url (str): The media URL for the card. Can be an image or a video.
-        media_height (str): The height of the media on the card (SHORT, MEDIUM, TALL).
-        media_description (str, Optional): A description of the media for accessibility purposes.
-        thumbnail_url (str, Optional): The URL of the thumbnail image for the media. If not specified, the media URL will be used as the thumbnail.
-        media_force_refresh (bool, Optional): Whether to force refresh the media on the card. If true, the media will be refreshed on the device even if the media URL is the same as a previous message. Defaults to false.
-        suggestions (List, Optional): An optional list of suggestions to include in the message. A card can include up to 4 suggestions.
-    """
-
-    media_height: RcsMediaHeight
-
-
-class RcsCardMessage(RcsCardBase, BaseRcs):
+class RcsCardMessage(BaseRcs):
     """Model for an RCS card message.
 
     Args:
         to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a leading plus sign.
         from_ (str): The sender's phone number in E.164 format. Don't use a leading plus sign.
-        title (str): The title of the card.
-        text (str): The text of the card.
-        media_url (str): The media URL for the card. Can be an image or a video.
-        media_height (str, Optional): The height of the media on the card (SHORT, MEDIUM, TALL).
-        media_description (str, Optional): A description of the media for accessibility purposes.
-        thumbnail_url (str, Optional): The URL of the thumbnail image for the media. If not specified, the media URL will be used as the thumbnail.
-        media_force_refresh (bool, Optional): Whether to force refresh the media on the card. If true, the media will be refreshed on the device even if the media URL is the same as a previous message. Defaults to false.
-        suggestions (List, Optional): An optional list of suggestions to include in the message. A card can include up to 4 suggestions.
+        card (RcsCard): The content of the card.
         ttl (int, Optional): The duration in seconds for which the message is valid.
         trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         client_ref (str, Optional): An optional client reference.
@@ -375,17 +351,28 @@ class RcsCardMessage(RcsCardBase, BaseRcs):
         rcs: (RcsOptionsCard, Optional): An optional RcsOptionsCard object to include in the message.
     """
 
+    card: RcsCard
     rcs: Optional[RcsOptionsCard] = None
     message_type: MessageType = MessageType.CARD
 
 
-class RcsCarousel(BaseRcs):
+class RcsCarousel(BaseModel):
+    """Model for the content of an RCS carousel.
+
+    Args:
+        cards (List[RcsCard]): A list of card items to include in the carousel. Can include up to 10 cards.
+    """
+
+    cards: List[RcsCard] = Field(..., min_length=2, max_length=10)
+
+
+class RcsCarouselMessage(BaseRcs):
     """Model for an RCS carousel message.
 
     Args:
         to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a leading plus sign.
         from_ (str): The sender's phone number in E.164 format. Don't use a leading plus sign.
-        cards (List[RcsCardItem]): A list of card items to include in the carousel. Can include up to 10 cards.
+        carousel (RcsCarousel): The content of the carousel.
         suggestions (List, Optional): An optional list of suggestions to include in the message. Can include up to 11 suggestions.
         ttl (int, Optional): The duration in seconds for which the message is valid.
         trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
@@ -395,7 +382,7 @@ class RcsCarousel(BaseRcs):
         rcs: (RcsOptionsCarousel): An RcsOptionsCarousel object to include in the message.
     """
 
-    cards: List[RcsCardItem] = Field(..., min_length=2, max_length=10)
+    carousel: RcsCarousel
     suggestions: Optional[
         List[
             Union[

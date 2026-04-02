@@ -1804,3 +1804,55 @@ def test_create_rcs_options_carousel_card_width_with_invalid_option():
             card_width='INVALID_WIDTH',
         )
     assert "Input should be 'SMALL' or 'MEDIUM'" in str(err.value)
+
+
+def test_create_rcs_text_too_short():
+    with pytest.raises(ValidationError) as err:
+        RcsText(
+            to='1234567890',
+            from_='asdf1234',
+            text='',
+        )
+    assert 'String should have at least 1 character' in str(err.value)
+
+
+def test_create_rcs_text_too_long():
+    with pytest.raises(ValidationError) as err:
+        RcsText(
+            to='1234567890',
+            from_='asdf1234',
+            text='a' * 3073,
+        )
+    assert 'String should have at most 3072 characters' in str(err.value)
+
+
+def test_create_rcs_with_ttl_too_low():
+    with pytest.raises(ValidationError) as err:
+        RcsText(
+            to='1234567890',
+            from_='asdf1234',
+            text='Hello, World!',
+            ttl=19,
+        )
+    assert 'greater than or equal to 20' in str(err.value)
+
+
+def test_create_rcs_with_ttl_too_high():
+    with pytest.raises(ValidationError) as err:
+        RcsText(
+            to='1234567890',
+            from_='asdf1234',
+            text='Hello, World!',
+            ttl=259201,
+        )
+    assert 'less than or equal to 259200' in str(err.value)
+
+
+def test_create_rcs_with_invalid_from_field():
+    with pytest.raises(ValidationError) as err:
+        RcsText(
+            to='1234567890',
+            from_='invalid from!',
+            text='Hello, World!',
+        )
+    assert 'String should match pattern' in str(err.value)

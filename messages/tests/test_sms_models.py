@@ -1,3 +1,5 @@
+import pytest
+from pydantic import ValidationError
 from vonage_messages.models import Sms, SmsOptions
 from vonage_messages.models.enums import EncodingType, WebhookVersion
 
@@ -56,3 +58,24 @@ def test_create_sms_all_fields():
     }
 
     assert sms_model.model_dump(by_alias=True) == sms_dict
+
+
+def test_create_sms_text_too_long():
+    with pytest.raises(ValidationError) as err:
+        Sms(
+            to='1234567890',
+            from_='1234567890',
+            text='a' * 1001,
+        )
+    assert 'String should have at most 1000 characters' in str(err.value)
+
+
+def test_create_sms_with_invalid_encoding_type():
+    with pytest.raises(ValidationError) as err:
+        Sms(
+            to='1234567890',
+            from_='1234567890',
+            text='Hello, World!',
+            sms=SmsOptions(encoding_type='invalid'),
+        )
+    assert 'Input should be' in str(err.value)

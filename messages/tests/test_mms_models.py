@@ -520,3 +520,25 @@ def test_create_mms_content_with_invalid_content_item():
             ],
         )
     assert "Input should be a valid dictionary or instance" in str(err.value)
+
+
+def test_create_mms_with_ttl_too_low():
+    with pytest.raises(ValidationError) as err:
+        MmsImage(
+            to='1234567890',
+            from_='1234567890',
+            image=MmsResource(url='https://example.com/image.jpg'),
+            ttl=299,
+        )
+    assert 'greater than or equal to 300' in str(err.value)
+
+
+def test_create_mms_with_ttl_too_high():
+    with pytest.raises(ValidationError) as err:
+        MmsImage(
+            to='1234567890',
+            from_='1234567890',
+            image=MmsResource(url='https://example.com/image.jpg'),
+            ttl=259201,
+        )
+    assert 'less than or equal to 259200' in str(err.value)

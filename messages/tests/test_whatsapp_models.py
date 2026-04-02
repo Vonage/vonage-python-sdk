@@ -1,5 +1,7 @@
 from copy import deepcopy
 
+import pytest
+from pydantic import ValidationError
 from vonage_messages.models import (
     ReplyingIndicatorText,
     WhatsappAudio,
@@ -394,3 +396,55 @@ def test_create_replying_indicator():
         'type': 'text',
     }
     assert whatsapp_model.model_dump(by_alias=True, exclude_none=True) == whatsapp_dict
+
+
+def test_whatsapp_text_too_long():
+    with pytest.raises(ValidationError) as err:
+        WhatsappText(
+            to='1234567890',
+            from_='1234567890',
+            text='a' * 4097,
+        )
+    assert 'String should have at most 4096 characters' in str(err.value)
+
+
+def test_whatsapp_audio_url_too_short():
+    with pytest.raises(ValidationError) as err:
+        WhatsappAudio(
+            to='1234567890',
+            from_='1234567890',
+            audio=WhatsappAudioResource(url='short'),
+        )
+    assert 'String should have at least 10 characters' in str(err.value)
+
+
+def test_whatsapp_audio_url_too_long():
+    with pytest.raises(ValidationError) as err:
+        WhatsappAudio(
+            to='1234567890',
+            from_='1234567890',
+            audio=WhatsappAudioResource(url='https://' + 'a' * 2000),
+        )
+    assert 'String should have at most 2000 characters' in str(err.value)
+
+
+def test_whatsapp_image_caption_too_short():
+    with pytest.raises(ValidationError) as err:
+        WhatsappImage(
+            to='1234567890',
+            from_='1234567890',
+            image=WhatsappImageResource(url='https://example.com/image.jpg', caption=''),
+        )
+    assert 'String should have at least 1 character' in str(err.value)
+
+
+def test_whatsapp_image_caption_too_long():
+    with pytest.raises(ValidationError) as err:
+        WhatsappImage(
+            to='1234567890',
+            from_='1234567890',
+            image=WhatsappImageResource(
+                url='https://example.com/image.jpg', caption='a' * 3001
+            ),
+        )
+    assert 'String should have at most 3000 characters' in str(err.value)

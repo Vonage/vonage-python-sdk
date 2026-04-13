@@ -1,7 +1,7 @@
 from pydantic import validate_call
 from vonage_http_client.http_client import HttpClient
 
-from .models import BaseMessage
+from .models import BaseMessage, ReplyingIndicatorText
 from .responses import SendMessageResponse
 
 
@@ -66,7 +66,9 @@ class Messages:
         return SendMessageResponse(**response)
 
     @validate_call
-    def mark_whatsapp_message_read(self, message_uuid: str) -> None:
+    def mark_whatsapp_message_read(
+        self, message_uuid: str, replying_indicator: ReplyingIndicatorText = None
+    ) -> None:
         """Mark a WhatsApp message as read.
 
         Note: to use this method, update the `api_host` attribute of the
@@ -78,11 +80,18 @@ class Messages:
 
         Args:
             message_uuid (str): The unique identifier of the WhatsApp message to mark as read.
+            replying_indicator (ReplyingIndicatorText, optional): An object indicating whether to show the replying indicator on the WhatsApp message.
         """
+        body = {'status': 'read'}
+        if replying_indicator is not None:
+            body['replying_indicator'] = replying_indicator.model_dump(
+                by_alias=True, exclude_none=True
+            )
+
         self._http_client.patch(
             self._http_client.api_host,
             f'/v1/messages/{message_uuid}',
-            {'status': 'read'},
+            body,
             self._auth_type,
         )
 

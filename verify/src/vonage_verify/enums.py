@@ -9,6 +9,11 @@ class ChannelType(str, Enum):
     EMAIL = 'email'
 
 
+class WhatsappMode(str, Enum):
+    ZERO_TAP = 'zero_tap'
+    OTP_CODE = 'otp_code'
+
+
 class Locale(str, Enum):
     EN_US = 'en-us'
     EN_GB = 'en-gb'

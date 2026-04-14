@@ -1,5 +1,5 @@
 from pytest import raises
-from vonage_verify.enums import ChannelType, Locale
+from vonage_verify.enums import ChannelType, Locale, WhatsappMode
 from vonage_verify.errors import VerifyError
 from vonage_verify.requests import *
 
@@ -43,12 +43,29 @@ def test_create_whatsapp_channel():
     }
     channel = WhatsappChannel(**params)
 
-    assert channel.model_dump() == params
+    assert channel.model_dump() == {**params, 'mode': None}
     assert channel.model_dump(by_alias=True)['from'] == 'Vonage'
 
     params['from_'] = 'this.is!invalid'
     with raises(VerifyError):
         WhatsappChannel(**params)
+
+
+def test_create_whatsapp_channel_with_mode():
+    params = {
+        'channel': ChannelType.WHATSAPP,
+        'to': '1234567890',
+        'from_': 'Vonage',
+        'mode': WhatsappMode.ZERO_TAP,
+    }
+    channel = WhatsappChannel(**params)
+
+    assert channel.mode == WhatsappMode.ZERO_TAP
+    assert channel.model_dump()['mode'] == WhatsappMode.ZERO_TAP
+
+    params['mode'] = WhatsappMode.OTP_CODE
+    channel = WhatsappChannel(**params)
+    assert channel.mode == WhatsappMode.OTP_CODE
 
 
 def test_create_voice_channel():

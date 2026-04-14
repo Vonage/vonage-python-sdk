@@ -21,11 +21,16 @@ class SmsOptions(BaseModel):
         entity_id (str, Optional):  A string parameter that satisfies regulatory
             requirements when sending an SMS to specific countries. Not needed unless
             sending SMS in a country that requires a specific entity ID.
+        pool_id (str, Optional): The ID of the Number Pool to use as the sender of this message.
+            If specified, a number from the pool will be used as the from number.
+            The from number is still required even when specifying a pool_id and will be used as a fall-back if the number pool cannot be used.
+            See the Number Pools documentation for more information: https://developer.vonage.com/numbers/number-pools-api/overview.
     """
 
     encoding_type: Optional[EncodingType] = None
     content_id: Optional[str] = None
     entity_id: Optional[str] = None
+    pool_id: Optional[str] = None
 
 
 class Sms(BaseMessage):
@@ -38,6 +43,7 @@ class Sms(BaseMessage):
             Don't use a leading plus sign.
         text (str): The text of the message.
         ttl (int, Optional): The duration in seconds for which the message is valid.
+        trusted_recipient (bool, Optional): Whether the recipient is a trusted recipient. Setting this parameter to true overrides, on a per-message basis, any protections set up via Fraud Defender. Defaults to false.
         sms (SmsOptions, Optional): SMS options.
         client_ref (str, Optional): An optional client reference.
         webhook_url (str, Optional): The URL to which Status Webhook messages will be sent for this particular message.
@@ -47,6 +53,7 @@ class Sms(BaseMessage):
     from_: Union[PhoneNumber, str] = Field(..., serialization_alias='from')
     text: str = Field(..., max_length=1000)
     ttl: Optional[int] = None
+    trusted_recipient: Optional[bool] = None
     sms: Optional[SmsOptions] = None
     channel: ChannelType = ChannelType.SMS
     message_type: MessageType = MessageType.TEXT

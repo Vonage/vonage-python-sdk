@@ -107,10 +107,18 @@ def test_create_connect_endpoints():
         uri='wss://example.com',
         contentType='audio/l16;rate=8000',
         headers={'asdf': 'qwer'},
+        authorization={
+            'type': 'custom',
+            'value': 'Bearer eyJhbGciOi...',
+        },
     ).model_dump(by_alias=True) == {
         'uri': 'wss://example.com',
         'content-type': 'audio/l16;rate=8000',
         'headers': {'asdf': 'qwer'},
+        'authorization': {
+            'type': 'custom',
+            'value': 'Bearer eyJhbGciOi...',
+        },
         'type': 'websocket',
     }
 
@@ -327,3 +335,62 @@ def test_notify_options():
         'eventMethod': 'POST',
         'action': 'notify',
     }
+
+
+def test_wait_default_timeout():
+    wait = ncco.Wait()
+    assert wait.model_dump(by_alias=True, exclude_none=True) == {
+        'timeout': 10.0,
+        'action': 'wait',
+    }
+
+
+def test_wait_custom_timeout():
+    wait = ncco.Wait(timeout=0.5)
+    assert wait.model_dump(by_alias=True, exclude_none=True) == {
+        'timeout': 0.5,
+        'action': 'wait',
+    }
+
+
+def test_wait_timeout_clamped_min_max():
+    wait_min = ncco.Wait(timeout=0.01)
+    assert wait_min.timeout == 0.1
+
+    wait_max = ncco.Wait(timeout=10000)
+    assert wait_max.timeout == 7200.0
+
+
+def test_transfer_basic():
+    transfer = ncco.Transfer(conversationId='CON-1234567890')
+    assert transfer.model_dump(by_alias=True, exclude_none=True) == {
+        'conversationId': 'CON-1234567890',
+        'action': 'transfer',
+    }
+
+
+def test_transfer_options():
+    transfer = ncco.Transfer(
+        conversationId='CON-1234567890',
+        canHear=['leg-a'],
+        canSpeak=['leg-b', 'leg-c'],
+        mute=False,
+    )
+    assert transfer.model_dump(by_alias=True, exclude_none=True) == {
+        'conversationId': 'CON-1234567890',
+        'canHear': ['leg-a'],
+        'canSpeak': ['leg-b', 'leg-c'],
+        'mute': False,
+        'action': 'transfer',
+    }
+
+
+def test_transfer_mute_with_canspeak_error():
+    with raises(NccoActionError) as e:
+        ncco.Transfer(
+            conversationId='CON-1234567890',
+            canSpeak=['leg-a'],
+            mute=True,
+        )
+
+    assert e.match('Cannot use mute option if canSpeak option is specified.')

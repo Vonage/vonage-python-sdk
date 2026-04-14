@@ -4,6 +4,7 @@ from os.path import abspath
 import responses
 from pytest import raises
 from responses.matchers import json_params_matcher
+from testutils import build_response, get_mock_jwt_auth
 from vonage_http_client.http_client import HttpClient
 from vonage_voice import (
     AudioStreamOptions,
@@ -17,8 +18,6 @@ from vonage_voice.errors import VoiceError
 from vonage_voice.models.ncco import Talk
 from vonage_voice.models.responses import CreateCallResponse
 from vonage_voice.voice import Voice
-
-from testutils import build_response, get_mock_jwt_auth
 
 path = abspath(__file__)
 

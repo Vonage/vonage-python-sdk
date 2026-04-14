@@ -267,3 +267,66 @@ class Notify(NccoAction):
     eventUrl: list[str]
     eventMethod: Optional[str] = None
     action: NccoActionType = NccoActionType.NOTIFY
+
+
+class Wait(NccoAction):
+    """Use the Wait action to add a pause to an NCCO.
+
+    The wait period starts when the action is executed and ends after the provided
+    or default timeout value. Execution of the NCCO then resumes with the next action.
+
+    Args:
+        timeout (Optional[float]): Duration of the wait period in seconds. Valid values
+            are from 0.1 to 7200. Values below 0.1 are treated as 0.1; values above
+            7200 are treated as 7200. If not specified, defaults to 10 seconds.
+    """
+
+    timeout: Optional[float] = 10.0
+    action: NccoActionType = NccoActionType.WAIT
+
+    @model_validator(mode='after')
+    def clamp_timeout(self):
+        if self.timeout is None:
+            self.timeout = 10.0
+        elif self.timeout < 0.1:
+            self.timeout = 0.1
+        elif self.timeout > 7200:
+            self.timeout = 7200.0
+        return self
+
+
+class Transfer(NccoAction):
+    """Use the Transfer action to move all legs from the current conversation into another
+    existing conversation.
+
+    The transfer action is synchronous and terminal for the current conversation.
+    The target conversation's NCCO continues to control its behaviour.
+
+    Args:
+        conversationId (str): The target conversation ID.
+        canHear (Optional[list[str]]): Leg UUIDs this participant can hear. If not
+            provided, the participant can hear everyone. If an empty list is provided,
+            the participant will not hear any other participants.
+        canSpeak (Optional[list[str]]): Leg UUIDs this participant can be heard by. If
+            not provided, the participant can be heard by everyone. If an empty list is
+            provided, the participant will not be heard by anyone.
+        mute (Optional[bool]): Set to `True` to mute the participant. When using
+            `canSpeak`, the `mute` parameter is not supported.
+
+    Raises:
+        NccoActionError: If the `mute` option is used with the `canSpeak` option.
+    """
+
+    conversationId: str
+    canHear: Optional[list[str]] = None
+    canSpeak: Optional[list[str]] = None
+    mute: Optional[bool] = None
+    action: NccoActionType = NccoActionType.TRANSFER
+
+    @model_validator(mode='after')
+    def validate_mute_and_can_speak(self):
+        if self.canSpeak and self.mute:
+            raise NccoActionError(
+                'Cannot use mute option if canSpeak option is specified.'
+            )
+        return self

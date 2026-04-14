@@ -4,7 +4,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from vonage_utils.types import PhoneNumber
 
 from .base_message import BaseMessage
-from .enums import ChannelType, MessageType
+from .enums import ChannelType, MessageType, ReplyingIndicatorType
 
 
 class WhatsappContext(BaseModel):
@@ -361,3 +361,18 @@ class WhatsappCustom(BaseWhatsapp):
 
     custom: Optional[dict] = None
     message_type: MessageType = MessageType.CUSTOM
+
+
+class ReplyingIndicatorText(BaseModel):
+    """Model for the replying indicator of type `text` in a WhatsApp conversation.
+
+    This is used to indicate activity within the WhatsApp UI that a message is being replied to.
+
+    Args:
+        show (bool): Must be set to True to activate the replying indicator. If not included or set to False, the replying indicator will not be shown in the WhatsApp UI.
+    """
+
+    show: bool
+    type_: ReplyingIndicatorType = Field(
+        ReplyingIndicatorType.TEXT, serialization_alias='type'
+    )

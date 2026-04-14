@@ -32,6 +32,21 @@ class Sip(BaseModel):
     type: Channel = Channel.SIP
 
 
+class WebsocketAuthorization(BaseModel):
+    """Authorization settings for a WebSocket endpoint.
+
+    Args:
+        type (Literal['vonage', 'custom']): The authorization mode. Use `vonage` to have
+            Vonage generate and send a JWT for you, or `custom` to provide your own
+            Authorization header value.
+        value (str, Optional): Authorization header value to send when `type` is
+            `custom`. Ignored for `vonage`.
+    """
+
+    type: Literal['vonage', 'custom']
+    value: Optional[str] = None
+
+
 class Websocket(BaseModel):
     """Model for a WebSocket connection.
 
@@ -40,6 +55,8 @@ class Websocket(BaseModel):
         content_type (Literal['audio/l16;rate=8000', 'audio/l16;rate=16000']): The content
             type of the audio stream.
         headers (Optional[dict]): The headers to include with the WebSocket connection.
+        authorization (WebsocketAuthorization, Optional): Authorization configuration for
+            the WebSocket handshake.
     """
 
     uri: str = Field(..., min_length=1)
@@ -47,6 +64,7 @@ class Websocket(BaseModel):
         'audio/l16;rate=16000', serialization_alias='content-type'
     )
     headers: Optional[dict] = None
+    authorization: Optional[WebsocketAuthorization] = None
     type: Channel = Channel.WEBSOCKET
 
 

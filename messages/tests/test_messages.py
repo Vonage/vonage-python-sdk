@@ -9,6 +9,7 @@ from vonage_messages import (
     MessengerImage,
     MessengerOptions,
     MessengerResource,
+    ReplyingIndicatorText,
     SendMessageResponse,
     Sms,
 )
@@ -189,6 +190,30 @@ def test_mark_whatsapp_message_read_not_found():
 
     assert e.value.response.status_code == 404
     assert e.value.response.json()['title'] == 'Not Found'
+
+
+@responses.activate
+def test_mark_whatsapp_message_read_with_replying_indicator():
+    responses.add(
+        responses.PATCH,
+        'https://api-eu.vonage.com/v1/messages/asdf',
+    )
+    messages = Messages(
+        HttpClient(get_mock_jwt_auth(), HttpClientOptions(api_host='api-eu.vonage.com'))
+    )
+    messages.http_client.http_client_options.api_host = 'api-eu.vonage.com'
+    messages.mark_whatsapp_message_read(
+        message_uuid='asdf',
+        replying_indicator=ReplyingIndicatorText(
+            show=True,
+        ),
+    )
+
+    request_body = loads(responses.calls[0].request.body)
+    assert request_body == {
+        "status": "read",
+        "replying_indicator": {"show": True, "type": "text"},
+    }
 
 
 @responses.activate

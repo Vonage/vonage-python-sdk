@@ -122,6 +122,13 @@ def test_create_connect_endpoints():
         'type': 'websocket',
     }
 
+    ws_24k = connect_endpoints.WebsocketEndpoint(
+        uri='wss://example.com',
+        contentType='audio/l16;rate=24000',
+        headers={'asdf': 'qwer'},
+    )
+    assert ws_24k.model_dump(by_alias=True)['content-type'] == 'audio/l16;rate=24000'
+
     assert connect_endpoints.SipEndpoint(
         uri='sip:example@sip.example.com',
         headers={'qwer': 'asdf'},

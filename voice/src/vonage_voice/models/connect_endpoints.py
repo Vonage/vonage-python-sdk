@@ -55,17 +55,17 @@ class WebsocketEndpoint(BaseModel):
 
     Args:
         uri (str): The URI of the WebSocket connection.
-        contentType (Literal['audio/l16;rate=8000', 'audio/l16;rate=16000']): The internet
-            media type for the audio you are streaming.
+        contentType (Literal['audio/l16;rate=8000', 'audio/l16;rate=16000', 'audio/l16;rate=24000']):
+            The internet media type for the audio you are streaming.
         headers (Optional[dict]): The headers to include with the WebSocket connection.
         authorization (WebsocketAuthorization, Optional): Authorization configuration for
             the WebSocket handshake.
     """
 
     uri: str
-    contentType: Literal['audio/l16;rate=16000', 'audio/l16;rate=8000'] = Field(
-        None, serialization_alias='content-type'
-    )
+    contentType: Literal[
+        'audio/l16;rate=8000', 'audio/l16;rate=16000', 'audio/l16;rate=24000'
+    ] = Field(None, serialization_alias='content-type')
     headers: Optional[dict] = None
     authorization: Optional[WebsocketAuthorization] = None
     type: ConnectEndpointType = ConnectEndpointType.WEBSOCKET

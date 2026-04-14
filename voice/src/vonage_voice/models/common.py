@@ -52,17 +52,17 @@ class Websocket(BaseModel):
 
     Args:
         uri (str): The URI of the WebSocket connection.
-        content_type (Literal['audio/l16;rate=8000', 'audio/l16;rate=16000']): The content
-            type of the audio stream.
+        content_type (Literal['audio/l16;rate=8000', 'audio/l16;rate=16000', 'audio/l16;rate=24000']):
+            The content type of the audio stream.
         headers (Optional[dict]): The headers to include with the WebSocket connection.
         authorization (WebsocketAuthorization, Optional): Authorization configuration for
             the WebSocket handshake.
     """
 
     uri: str = Field(..., min_length=1)
-    content_type: Literal['audio/l16;rate=8000', 'audio/l16;rate=16000'] = Field(
-        'audio/l16;rate=16000', serialization_alias='content-type'
-    )
+    content_type: Literal[
+        "audio/l16;rate=8000", "audio/l16;rate=16000", "audio/l16;rate=24000"
+    ] = Field("audio/l16;rate=16000", serialization_alias="content-type")
     headers: Optional[dict] = None
     authorization: Optional[WebsocketAuthorization] = None
     type: Channel = Channel.WEBSOCKET
@@ -92,6 +92,6 @@ class AdvancedMachineDetection(BaseModel):
             machine beep to be detected.
     """
 
-    behavior: Optional[Literal['continue', 'hangup']] = None
-    mode: Optional[Literal['default', 'detect', 'detect_beep']] = None
+    behavior: Optional[Literal["continue", "hangup"]] = None
+    mode: Optional[Literal["default", "detect", "detect_beep"]] = None
     beep_timeout: Optional[int] = Field(None, ge=45, le=120)

@@ -105,10 +105,18 @@ def test_create_connect_endpoints():
         uri='wss://example.com',
         contentType='audio/l16;rate=8000',
         headers={'asdf': 'qwer'},
+        authorization={
+            'type': 'custom',
+            'value': 'Bearer eyJhbGciOi...',
+        },
     ).model_dump(by_alias=True) == {
         'uri': 'wss://example.com',
         'content-type': 'audio/l16;rate=8000',
         'headers': {'asdf': 'qwer'},
+        'authorization': {
+            'type': 'custom',
+            'value': 'Bearer eyJhbGciOi...',
+        },
         'type': 'websocket',
     }
 

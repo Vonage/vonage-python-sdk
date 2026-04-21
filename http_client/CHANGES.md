@@ -1,3 +1,6 @@
+# 1.5.2
+- Fixing imports for test file
+
 # 1.5.1
 - Remove unnecessary `Content-Type` check on error
 

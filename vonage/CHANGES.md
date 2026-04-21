@@ -1,3 +1,41 @@
+# 4.8.0
+
+## Account
+- Fixing imports for test file
+
+## Application
+- Fixing imports for test file
+
+## HTTP Client
+- Fixing imports for test file
+
+## Messages
+- Implement the `pool_id` parameter for SMS
+- Implement the `trusted_recipient` parameter for SMS, MMS, and RCS
+- Add new MMS types
+- Add RCS native types
+- Add Replying Indicator support to WhatsApp
+
+## SMS
+- Implement the `trusted_number` parameter
+
+## Users
+- Fix unit test
+
+## Verify
+- Add support for WhatsApp mode
+
+## Verify Legacy
+- Add support for Basic Auth
+
+## Voice
+- Add answer wehhook
+- Implement `Wait` NCCO action
+- Implement `Transfer` NCCO action
+- Add support for 24k audio in Websocket
+- Add `shaken` property to `Phone` endpoint
+- Add `authorization` to `WebSocket` endpoints
+
 # 4.7.2
 - vonage-numbers: Added `by_alias=True` to the numbers update model to correct issue with incorrect body payload
 

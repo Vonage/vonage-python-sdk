@@ -1,3 +1,6 @@
+# 1.2.2
+- Fix unit test
+
 # 1.2.1
 - Updated dependency versions
 

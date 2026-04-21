@@ -38,7 +38,7 @@ def test_create_valid_SmsMessage():
         'client_ref': 'ref123',
         'type': 'binary',
         'ttl': 3000000,
-        'trusted_sender': True,
+        'trusted_number': True,
         'status_report_req': True,
         'callback': 'https://example.com/callback',
         'message_class': 0,

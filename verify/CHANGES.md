@@ -1,3 +1,6 @@
+# 2.2.0
+- Add support for WhatsApp mode
+
 # 2.1.0
 - Add support for API key/secret header authentication
 - Updated dependency versions

@@ -1,3 +1,6 @@
+# 2.0.2
+- Fixing imports for test file
+
 # 2.0.1
 - Updated dependency versions
 

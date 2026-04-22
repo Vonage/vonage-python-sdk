@@ -10,6 +10,8 @@ from vonage_video import (
     TokenRole,
     Video,
 )
+from vonage_video.models.audio_connector import AudioTransportConfig
+from vonage_video.models.enums import AudioEncoding, AudioTransport
 
 from testutils import build_response, get_mock_jwt_auth
 
@@ -57,6 +59,83 @@ def test_audio_connector_options_model():
         },
     }
     assert actual == expected
+
+
+def test_audio_connector_options_with_audio_transport():
+    options = AudioConnectorOptions(
+        session_id='test_session_id',
+        token='test_token',
+        websocket=AudioConnectorWebSocket(
+            uri='test_uri',
+            streams=['test_stream_id'],
+            headers={'test_header': 'test_value'},
+            audio_rate=AudioSampleRate.KHZ_16,
+            audio_transport=AudioTransportConfig(
+                transport=AudioTransport.JSON,
+                encoding=AudioEncoding.BASE64,
+            ),
+        ),
+    )
+
+    actual = options.model_dump(by_alias=True, exclude_none=True)
+    assert actual['websocket']['audioTransport'] == '{"transport":"json","encoding":"base64"}'
+    assert 'audio_transport' not in actual['websocket']
+
+
+def test_audio_connector_options_with_audio_transport_full():
+    options = AudioConnectorOptions(
+        session_id='test_session_id',
+        token='test_token',
+        websocket=AudioConnectorWebSocket(
+            uri='test_uri',
+            audio_transport=AudioTransportConfig(
+                transport=AudioTransport.JSON,
+                encoding=AudioEncoding.BASE64,
+                audio_field='data',
+                static_fields={'event': 'media'},
+            ),
+        ),
+    )
+
+    actual = options.model_dump(by_alias=True, exclude_none=True)
+    transport_json = actual['websocket']['audioTransport']
+    import json
+
+    parsed = json.loads(transport_json)
+    assert parsed['transport'] == 'json'
+    assert parsed['encoding'] == 'base64'
+    assert parsed['audio_field'] == 'data'
+    assert parsed['static_fields'] == {'event': 'media'}
+
+
+def test_audio_connector_options_with_binary_transport():
+    options = AudioConnectorOptions(
+        session_id='test_session_id',
+        token='test_token',
+        websocket=AudioConnectorWebSocket(
+            uri='test_uri',
+            audio_transport=AudioTransportConfig(
+                transport=AudioTransport.BINARY,
+            ),
+        ),
+    )
+
+    actual = options.model_dump(by_alias=True, exclude_none=True)
+    assert actual['websocket']['audioTransport'] == '{"transport":"binary"}'
+
+
+def test_audio_connector_options_without_audio_transport():
+    options = AudioConnectorOptions(
+        session_id='test_session_id',
+        token='test_token',
+        websocket=AudioConnectorWebSocket(
+            uri='test_uri',
+        ),
+    )
+
+    actual = options.model_dump(by_alias=True, exclude_none=True)
+    assert 'audioTransport' not in actual['websocket']
+    assert 'audio_transport' not in actual['websocket']
 
 
 @responses.activate

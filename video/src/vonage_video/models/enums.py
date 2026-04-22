@@ -55,6 +55,19 @@ class AudioSampleRate(int, Enum):
     KHZ_16 = 16000
 
 
+class AudioTransport(str, Enum):
+    """Audio transport type for the WebSocket connection."""
+
+    BINARY = 'binary'
+    JSON = 'json'
+
+
+class AudioEncoding(str, Enum):
+    """Audio encoding type when using JSON transport."""
+
+    BASE64 = 'base64'
+
+
 class VideoResolution(str, Enum):
     """The resolution of the archive or broadcast.
 

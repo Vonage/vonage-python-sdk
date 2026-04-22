@@ -1,3 +1,6 @@
+# 1.1.2
+- Fixing imports for test file
+
 # 1.1.1
 - Update dependency versions
 

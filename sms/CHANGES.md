@@ -1,3 +1,6 @@
+# 1.2.0
+- Implement the `trusted_number` parameter
+
 # 1.1.6
 - Make returned response fields optional
 

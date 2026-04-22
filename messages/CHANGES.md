@@ -1,3 +1,10 @@
+# 1.7.0
+- Implement the `pool_id` parameter for SMS
+- Implement the `trusted_recipient` parameter for SMS, MMS, and RCS
+- Add new MMS types
+- Add RCS native types
+- Add Replying Indicator support to WhatsApp
+
 # 1.5.0
 - Add an optional "failover" property to `vonage_messages.Messages.send`
 

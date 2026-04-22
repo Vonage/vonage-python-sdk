@@ -1,3 +1,11 @@
+# 1.5.0
+- Add answer wehhook
+- Implement `Wait` NCCO action
+- Implement `Transfer` NCCO action
+- Add support for 24k audio in Websocket
+- Add `shaken` property to `Phone` endpoint
+- Add `authorization` to `WebSocket` endpoints
+
 # 1.4.0
 - Increase maximum value of call `length_timer` to 86400s
 - Add additional fields `eventUrl` and `eventMethod` to NCCO model

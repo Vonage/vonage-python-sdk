@@ -8,6 +8,7 @@ packages = [
     "vonage-account",
     "vonage-application",
     "vonage-http-client",
+    "vonage-identity-insights",
     "vonage-messages",
     "vonage-network-auth",
     "vonage-network-sim-swap",

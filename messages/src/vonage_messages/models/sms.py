@@ -51,7 +51,7 @@ class Sms(BaseMessage):
     """
 
     from_: Union[PhoneNumber, str] = Field(..., serialization_alias='from')
-    text: str = Field(..., max_length=1000)
+    text: str = Field(...)
     ttl: Optional[int] = None
     trusted_recipient: Optional[bool] = None
     sms: Optional[SmsOptions] = None

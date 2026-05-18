@@ -703,7 +703,7 @@ def test_create_rcs_card_message_with_optional_params():
             media_url='https://example.com/image.jpg',
         ),
         rcs=RcsOptionsCard(
-            card_orientation='VERTICAL',
+            card_orientation='HORIZONTAL',
             image_alignment='LEFT',
         ),
     )
@@ -716,7 +716,7 @@ def test_create_rcs_card_message_with_optional_params():
             'media_url': 'https://example.com/image.jpg',
         },
         'rcs': {
-            'card_orientation': 'VERTICAL',
+            'card_orientation': 'HORIZONTAL',
             'image_alignment': 'LEFT',
         },
         'channel': 'rcs',
@@ -732,6 +732,23 @@ def test_create_rcs_card_message_without_card():
             from_='asdf1234',
         )
     assert "Field required" in str(err.value)
+
+
+def test_create_rcs_card_message_card_orientation_vertical_without_media_height():
+    with pytest.raises(ValidationError) as err:
+        card = RcsCardMessage(
+            to='1234567890',
+            from_='asdf1234',
+            card=RcsCard(
+                title='Card title',
+                text='Card description',
+                media_url='https://example.com/image.jpg',
+            ),
+            rcs=RcsOptionsCard(
+                card_orientation='VERTICAL',
+            ),
+        )
+    assert "media_height must be specified when card_orientation is VERTICAL" in str(err.value)
 
 
 def test_create_rcs_carousel():
@@ -1754,6 +1771,12 @@ def test_create_rcs_options_card_image_alignment_with_invalid_option():
             card_orientation='HORIZONTAL', image_alignment='INVALID_ALIGNMENT'
         )
     assert "Input should be 'LEFT' or 'RIGHT'" in str(err.value)
+
+
+def test_create_rcs_options_card_card_orientation_horizontal_without_image_alignment():
+    with pytest.raises(ValidationError) as err:
+        options = RcsOptionsCard(card_orientation='HORIZONTAL')
+    assert "image_alignment must be specified when card_orientation is HORIZONTAL" in str(err.value)
 
 
 def test_create_rcs_options_carousel():

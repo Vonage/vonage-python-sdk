@@ -1,6 +1,6 @@
 from typing import List, Optional, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 from vonage_utils.types import PhoneNumber
 
 from .base_message import BaseMessage
@@ -175,6 +175,19 @@ class RcsOptionsCard(RcsOptions):
 
     card_orientation: Optional[RcsCardOrientation] = None
     image_alignment: Optional[RcsImageAlignment] = None
+
+    @model_validator(mode='after')
+    def horizontal_orientation_requires_image_alignment(self):
+        """Validate that if the card orientation is horizontal, the image alignment is
+        also specified."""
+        if (
+            self.card_orientation == RcsCardOrientation.HORIZONTAL
+            and not self.image_alignment
+        ):
+            raise ValueError(
+                'image_alignment must be specified when card_orientation is HORIZONTAL'
+            )
+        return self
 
 
 class RcsOptionsCarousel(RcsOptions):
@@ -354,6 +367,17 @@ class RcsCardMessage(BaseRcs):
     card: RcsCard
     rcs: Optional[RcsOptionsCard] = None
     message_type: MessageType = MessageType.CARD
+
+    @model_validator(mode='after')
+    def vertical_orientation_requires_media_height(self):
+        """Validate that if the card orientation is vertical, the media height is also
+        specified."""
+        if self.rcs and self.rcs.card_orientation == RcsCardOrientation.VERTICAL:
+            if not self.card.media_height:
+                raise ValueError(
+                    'media_height must be specified when card_orientation is VERTICAL'
+                )
+        return self
 
 
 class RcsCarousel(BaseModel):

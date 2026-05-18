@@ -79,3 +79,25 @@ def test_create_sms_with_invalid_encoding_type():
             sms=SmsOptions(encoding_type='invalid'),
         )
     assert 'Input should be' in str(err.value)
+
+
+def test_create_sms_ttl_too_short():
+    with pytest.raises(ValidationError) as err:
+        Sms(
+            to='1234567890',
+            from_='1234567890',
+            text='Hello, World!',
+            ttl=19,
+        )
+    assert 'Input should be greater than or equal to 20' in str(err.value)
+
+
+def test_create_sms_ttl_too_long():
+    with pytest.raises(ValidationError) as err:
+        Sms(
+            to='1234567890',
+            from_='1234567890',
+            text='Hello, World!',
+            ttl=604801,
+        )
+    assert 'Input should be less than or equal to 604800' in str(err.value)

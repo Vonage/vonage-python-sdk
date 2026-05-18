@@ -748,7 +748,9 @@ def test_create_rcs_card_message_card_orientation_vertical_without_media_height(
                 card_orientation='VERTICAL',
             ),
         )
-    assert "media_height must be specified when card_orientation is VERTICAL" in str(err.value)
+    assert "media_height must be specified when card_orientation is VERTICAL" in str(
+        err.value
+    )
 
 
 def test_create_rcs_carousel():
@@ -1776,7 +1778,9 @@ def test_create_rcs_options_card_image_alignment_with_invalid_option():
 def test_create_rcs_options_card_card_orientation_horizontal_without_image_alignment():
     with pytest.raises(ValidationError) as err:
         options = RcsOptionsCard(card_orientation='HORIZONTAL')
-    assert "image_alignment must be specified when card_orientation is HORIZONTAL" in str(err.value)
+    assert "image_alignment must be specified when card_orientation is HORIZONTAL" in str(
+        err.value
+    )
 
 
 def test_create_rcs_options_carousel():

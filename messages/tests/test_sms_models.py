@@ -89,7 +89,7 @@ def test_create_sms_ttl_too_short():
             text='Hello, World!',
             ttl=19,
         )
-    assert 'Number should be greater than or equal to 20' in str(err.value)
+    assert 'Input should be greater than or equal to 20' in str(err.value)
 
 
 def test_create_sms_ttl_too_long():
@@ -100,4 +100,4 @@ def test_create_sms_ttl_too_long():
             text='Hello, World!',
             ttl=604801,
         )
-    assert 'Number should be less than or equal to 604800' in str(err.value)
+    assert 'Input should be less than or equal to 604800' in str(err.value)

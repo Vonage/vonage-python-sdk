@@ -1,3 +1,7 @@
+# 1.7.1
+- Adds validations to the `ttl` param for `sms`
+- Adds model validators for the conditional validations for `rcs` based on `card_orientation`
+
 # 1.7.0
 - Implement the `pool_id` parameter for SMS
 - Implement the `trusted_recipient` parameter for SMS, MMS, and RCS

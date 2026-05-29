@@ -1,3 +1,6 @@
+# 4.8.1
+- Fixes some Messages API validations
+
 # 4.8.0
 
 ## Account

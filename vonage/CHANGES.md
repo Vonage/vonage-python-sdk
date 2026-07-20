@@ -1,3 +1,7 @@
+# 4.8.2
+- Updates the Voice API `Phone` model to fix a type constraint bug
+
+
 # 4.8.1
 - Fixes some Messages API validations
 

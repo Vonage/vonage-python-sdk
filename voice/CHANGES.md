@@ -1,3 +1,6 @@
+# 1.5.1
+- Updating the Voice API `Phone` model
+
 # 1.5.0
 - Add answer wehhook
 - Implement `Wait` NCCO action

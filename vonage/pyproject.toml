@@ -1,17 +1,45 @@
 [project]
 name = "vonage"
-dynamic = [ "version",]
+dynamic = ["version"]
 description = "Python Server SDK for using Vonage APIs"
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = [ "vonage-account>=1.1.2", "vonage-application>=2.0.2", "vonage-http-client>=1.5.2", "vonage-identity-insights>=1.0.0", "vonage-messages>=1.7.1", "vonage-network-auth>=1.0.2", "vonage-network-sim-swap>=1.1.2", "vonage-network-number-verification>=1.0.2", "vonage-number-insight>=1.0.7", "vonage-numbers>=1.0.5", "vonage-sms>=1.2.0", "vonage-subaccounts>=1.0.4", "vonage-users>=1.2.2", "vonage-utils>=1.1.4", "vonage-verify>=2.2.0", "vonage-verify-legacy>=1.1.0", "vonage-video>=1.5.1", "vonage-voice>=1.5.1",]
-classifiers = [ "Programming Language :: Python", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3.9", "Programming Language :: Python :: 3.10", "Programming Language :: Python :: 3.11", "Programming Language :: Python :: 3.12", "Programming Language :: Python :: 3.13", "License :: OSI Approved :: Apache Software License",]
+dependencies = [
+  "vonage-account>=1.1.2",
+  "vonage-application>=2.0.2",
+  "vonage-http-client>=1.5.2",
+  "vonage-identity-insights>=1.0.0",
+  "vonage-messages>=1.7.1",
+  "vonage-network-auth>=1.0.2",
+  "vonage-network-sim-swap>=1.1.2",
+  "vonage-network-number-verification>=1.0.2",
+  "vonage-number-insight>=1.0.7",
+  "vonage-numbers>=1.0.5",
+  "vonage-sms>=1.2.0",
+  "vonage-subaccounts>=1.0.4",
+  "vonage-users>=1.2.2",
+  "vonage-utils>=1.1.4",
+  "vonage-verify>=2.2.0",
+  "vonage-verify-legacy>=1.1.0",
+  "vonage-video>=1.5.1",
+  "vonage-voice>=1.5.1",
+]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "License :: OSI Approved :: Apache Software License",
+]
 [[project.authors]]
 name = "Vonage"
 email = "devrel@vonage.com"
 
 [build-system]
-requires = [ "setuptools>=61.0", "wheel",]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project.urls]

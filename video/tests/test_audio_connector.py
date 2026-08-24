@@ -12,6 +12,7 @@ from vonage_video import (
 )
 
 from vonage_video.models.audio_connector import AudioTransportConfiguration
+from vonage_video.models.enums import AudioTransportEncoding, AudioTransportTransport
 
 from testutils import build_response, get_mock_jwt_auth
 

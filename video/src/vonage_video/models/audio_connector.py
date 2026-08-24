@@ -2,6 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 from vonage_video.models.enums import AudioSampleRate
+from vonage_video.models.enums import AudioTransportEncoding, AudioTransportTransport
 
 class AudioTransportConfiguration(BaseModel):
     """The audio transport configuration.

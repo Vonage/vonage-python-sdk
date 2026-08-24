@@ -11,6 +11,8 @@ from vonage_video import (
     Video,
 )
 
+from vonage_video.models.audio_connector import AudioTransportConfiguration
+
 from testutils import build_response, get_mock_jwt_auth
 
 path = abspath(__file__)

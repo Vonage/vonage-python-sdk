@@ -3,6 +3,23 @@ from typing import Optional
 from pydantic import BaseModel, Field
 from vonage_video.models.enums import AudioSampleRate
 
+class AudioTransportConfiguration(BaseModel):
+    """The audio transport configuration.
+
+    Args:
+        transport (AudioTransportTransport): 'binary' (raw PCM16, the default) or 'json'.
+        encoding (AudioTransportEncoding): Required when transport is 'json'. Set to 'base64'.
+        audio_field (str): The JSON key for the outbound audio data. Defaults to 'audio'.
+        receive_audio_field (str): The JSON key for inbound audio data (when bidirectional is enabled). Defaults to the same value as audio_field.
+        static_fields (dict): A dictionary of extra key-value pairs included in every outbound JSON audio message.
+    """
+
+    transport: Optional[AudioTransportTransport] = None
+    encoding: Optional[AudioTransportEncoding] = None
+    audio_field: Optional[str] = None
+    receive_audio_field: Optional[str] = None
+    static_fields: Optional[dict] = None
+
 
 class AudioConnectorWebSocket(BaseModel):
     """The audio connector websocket options.

@@ -47,7 +47,7 @@ def test_audio_connector_options_model():
         ),
     )
 
-    actual = options.model_dump(by_alias=True)
+    actual = options.model_dump(by_alias=True, exclude_none=True)
     expected = {
         'sessionId': 'test_session_id',
         'token': 'test_token',
@@ -82,7 +82,7 @@ def test_audio_connector_options_model_with_audio_transport():
         ),
     )
 
-    actual = options.model_dump(by_alias=True)
+    actual = options.model_dump(by_alias=True, exclude_none=True)
     expected = {
         'sessionId': 'test_session_id',
         'token': 'test_token',

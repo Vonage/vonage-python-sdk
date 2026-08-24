@@ -31,6 +31,7 @@ class AudioConnectorWebSocket(BaseModel):
         headers (dict): The headers to send to your WebSocket server.
         audio_rate (AudioSampleRate): The audio sample rate in Hertz.
         bidirectional (bool): Whether the websocket is bidirectional.
+        audio_transport (AudioTransportConfiguration): The audio transport configuration. Configures how audio is serialized on the WebSocket wire. By default, audio is sent as raw binary PCM 16-bit frames.
     """
 
     uri: str
@@ -39,6 +40,9 @@ class AudioConnectorWebSocket(BaseModel):
     audio_rate: Optional[AudioSampleRate] = Field(None, serialization_alias='audioRate')
     bidirectional: Optional[bool] = Field(
         None, description="Whether the websocket is bidirectional."
+    )
+    audio_transport: Optional[AudioTransportConfiguration] = Field(
+        None, serialization_alias='audioTransport'
     )
 
     def model_dump(self, *args, **kwargs):

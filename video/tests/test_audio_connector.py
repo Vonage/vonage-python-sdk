@@ -10,7 +10,6 @@ from vonage_video import (
     TokenRole,
     Video,
 )
-
 from vonage_video.models.audio_connector import AudioTransportConfiguration
 from vonage_video.models.enums import AudioTransportEncoding, AudioTransportTransport
 
@@ -77,8 +76,8 @@ def test_audio_connector_options_model_with_audio_transport():
                 encoding=AudioTransportEncoding.BASE64,
                 audio_field='audio',
                 receive_audio_field='audio',
-                static_fields={'foo': 'bar'}
-            )
+                static_fields={'foo': 'bar'},
+            ),
         ),
     )
 
@@ -97,13 +96,12 @@ def test_audio_connector_options_model_with_audio_transport():
                 'encoding': 'base64',
                 'audio_field': 'audio',
                 'receive_audio_field': 'audio',
-                'static_fields': {
-                    'foo': 'bar'
-                }
+                'static_fields': {'foo': 'bar'},
             },
         },
     }
     assert actual == expected
+
 
 @responses.activate
 def test_start_audio_connector():

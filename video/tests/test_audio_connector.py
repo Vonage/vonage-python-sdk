@@ -59,6 +59,49 @@ def test_audio_connector_options_model():
     assert actual == expected
 
 
+def test_audio_connector_options_model_with_audio_transport():
+    options = AudioConnectorOptions(
+        session_id='test_session_id',
+        token='test_token',
+        websocket=AudioConnectorWebSocket(
+            uri='test_uri',
+            streams=['test_stream_id'],
+            headers={'test_header': 'test_value'},
+            audio_rate=AudioSampleRate.KHZ_16,
+            bidirectional=True,
+            audio_transport=AudioTransportConfiguration(
+                transport=AudioTransportTransport.JSON,
+                encoding=AudioTransportEncoding.BASE64,
+                audio_field='audio',
+                receive_audio_field='audio',
+                static_fields={'foo': 'bar'}
+            )
+        ),
+    )
+
+    actual = options.model_dump(by_alias=True)
+    expected = {
+        'sessionId': 'test_session_id',
+        'token': 'test_token',
+        'websocket': {
+            'uri': 'test_uri',
+            'streams': ['test_stream_id'],
+            'headers': {'test_header': 'test_value'},
+            'audioRate': 16000,
+            'bidirectional': True,
+            'audioTransport': {
+                'transport': 'json',
+                'encoding': 'base64',
+                'audio_field': 'audio',
+                'receive_audio_field': 'audio',
+                'static_fields': {
+                    'foo': 'bar'
+                }
+            },
+        },
+    }
+    assert actual == expected
+
 @responses.activate
 def test_start_audio_connector():
     build_response(

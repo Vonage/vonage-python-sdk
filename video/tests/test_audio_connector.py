@@ -1,6 +1,8 @@
 from os.path import abspath
 
 import responses
+import pytest
+from pydantic import ValidationError
 from vonage_http_client import HttpClient
 from vonage_video import (
     AudioConnectorOptions,
@@ -101,6 +103,12 @@ def test_audio_connector_options_model_with_audio_transport():
         },
     }
     assert actual == expected
+
+
+def test_audio_transport_configuration_model_with_json_transport_and_encoding_not_set():
+    with pytest.raises(ValidationError) as err:
+        config = AudioTransportConfiguration(transport=AudioTransportTransport.JSON)
+    assert "encoding must be specified when transport is JSON" in str(err.value)
 
 
 @responses.activate

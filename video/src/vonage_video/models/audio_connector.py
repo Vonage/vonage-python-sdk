@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 from vonage_video.models.enums import (
     AudioSampleRate,
     AudioTransportEncoding,
@@ -24,6 +24,14 @@ class AudioTransportConfiguration(BaseModel):
     audio_field: Optional[str] = None
     receive_audio_field: Optional[str] = None
     static_fields: Optional[dict] = None
+
+    @model_validator(mode='after')
+    def encoding_must_be_specified_for_json_transport(self):
+        if self.transport == AudioTransportTransport.JSON and not self.encoding:
+            raise ValueError(
+                "encoding must be specified when transport is JSON"
+            )
+        return self
 
 
 class AudioConnectorWebSocket(BaseModel):

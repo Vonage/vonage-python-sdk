@@ -1,7 +1,7 @@
 from os.path import abspath
 
-import responses
 import pytest
+import responses
 from pydantic import ValidationError
 from vonage_http_client import HttpClient
 from vonage_video import (

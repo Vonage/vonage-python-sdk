@@ -28,9 +28,7 @@ class AudioTransportConfiguration(BaseModel):
     @model_validator(mode='after')
     def encoding_must_be_specified_for_json_transport(self):
         if self.transport == AudioTransportTransport.JSON and not self.encoding:
-            raise ValueError(
-                "encoding must be specified when transport is JSON"
-            )
+            raise ValueError("encoding must be specified when transport is JSON")
         return self
 
 

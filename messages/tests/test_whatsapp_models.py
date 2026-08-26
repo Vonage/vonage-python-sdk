@@ -42,6 +42,23 @@ def test_whatsapp_text():
     assert whatsapp_model.model_dump(by_alias=True, exclude_none=True) == whatsapp_dict
 
 
+def test_whatsapp_text_with_bsuid():
+    whatsapp_model = WhatsappText(
+        to='US.13491208655302741918',
+        from_='1234567890',
+        text='Hello, World!',
+    )
+    whatsapp_dict = {
+        'to': 'US.13491208655302741918',
+        'from': '1234567890',
+        'text': 'Hello, World!',
+        'channel': 'whatsapp',
+        'message_type': 'text',
+    }
+
+    assert whatsapp_model.model_dump(by_alias=True, exclude_none=True) == whatsapp_dict
+
+
 def test_whatsapp_text_all_fields():
     whatsapp_model = WhatsappText(
         to='1234567890',

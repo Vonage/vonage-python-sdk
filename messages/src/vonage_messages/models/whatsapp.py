@@ -26,8 +26,8 @@ class BaseWhatsapp(BaseMessage):
     """Model for a base WhatsApp message.
 
     Args:
-        to (PhoneNumber): The recipient's phone number in E.164 format. Don't use a
-            leading plus sign.
+        to (str): The recipient's phone number in E.164 format. Don't use a
+            leading plus sign. Alternatively, a BSUID (e.g. "US.13491208655302741918").
         from_ (Union[PhoneNumber, str]): The sender's phone number in E.164 format.
             Don't use a leading plus sign.
         context (WhatsappContext, Optional): Used for quoting/replying/reacting to a
@@ -43,6 +43,7 @@ class BaseWhatsapp(BaseMessage):
             will be used to send Status Webhook messages for this particular message.
     """
 
+    to: Union[PhoneNumber, str]
     from_: Union[PhoneNumber, str] = Field(..., serialization_alias='from')
     context: Optional[WhatsappContext] = None
     channel: ChannelType = ChannelType.WHATSAPP

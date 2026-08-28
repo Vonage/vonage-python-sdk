@@ -3,6 +3,7 @@ from .audio_connector import (
     AudioConnectorData,
     AudioConnectorOptions,
     AudioConnectorWebSocket,
+    AudioTransportConfig,
 )
 from .broadcast import (
     Broadcast,
@@ -21,7 +22,9 @@ from .common import AddStreamRequest, ComposedLayout, ListVideoFilter, VideoStre
 from .enums import (
     ArchiveMode,
     ArchiveStatus,
+    AudioEncoding,
     AudioSampleRate,
+    AudioTransport,
     ExperienceComposerStatus,
     LanguageCode,
     LayoutType,
@@ -48,6 +51,7 @@ __all__ = [
     "AudioConnectorData",
     "AudioConnectorOptions",
     "AudioConnectorWebSocket",
+    "AudioTransportConfig",
     "Archive",
     "ListArchivesFilter",
     "Transcription",
@@ -69,7 +73,9 @@ __all__ = [
     "VideoStream",
     "AddStreamRequest",
     "ArchiveMode",
+    "AudioEncoding",
     "AudioSampleRate",
+    "AudioTransport",
     "LanguageCode",
     "MediaMode",
     "P2pPreference",

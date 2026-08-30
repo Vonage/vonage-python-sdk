@@ -1,0 +1,9 @@
+{
+    "message-count": "1",
+    "messages": [
+        {
+            "status": "1",
+            "error-text": "You are sending SMS faster than the account limit."
+        }
+    ]
+}

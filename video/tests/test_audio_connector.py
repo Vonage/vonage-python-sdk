@@ -1,6 +1,8 @@
 from os.path import abspath
 
+import pytest
 import responses
+from pydantic import ValidationError
 from vonage_http_client import HttpClient
 from vonage_video import (
     AudioConnectorOptions,
@@ -10,6 +12,8 @@ from vonage_video import (
     TokenRole,
     Video,
 )
+from vonage_video.models.audio_connector import AudioTransportConfiguration
+from vonage_video.models.enums import AudioTransportEncoding, AudioTransportTransport
 
 from testutils import build_response, get_mock_jwt_auth
 
@@ -44,7 +48,7 @@ def test_audio_connector_options_model():
         ),
     )
 
-    actual = options.model_dump(by_alias=True)
+    actual = options.model_dump(by_alias=True, exclude_none=True)
     expected = {
         'sessionId': 'test_session_id',
         'token': 'test_token',
@@ -57,6 +61,54 @@ def test_audio_connector_options_model():
         },
     }
     assert actual == expected
+
+
+def test_audio_connector_options_model_with_audio_transport():
+    options = AudioConnectorOptions(
+        session_id='test_session_id',
+        token='test_token',
+        websocket=AudioConnectorWebSocket(
+            uri='test_uri',
+            streams=['test_stream_id'],
+            headers={'test_header': 'test_value'},
+            audio_rate=AudioSampleRate.KHZ_16,
+            bidirectional=True,
+            audio_transport=AudioTransportConfiguration(
+                transport=AudioTransportTransport.JSON,
+                encoding=AudioTransportEncoding.BASE64,
+                audio_field='audio',
+                receive_audio_field='audio',
+                static_fields={'foo': 'bar'},
+            ),
+        ),
+    )
+
+    actual = options.model_dump(by_alias=True, exclude_none=True)
+    expected = {
+        'sessionId': 'test_session_id',
+        'token': 'test_token',
+        'websocket': {
+            'uri': 'test_uri',
+            'streams': ['test_stream_id'],
+            'headers': {'test_header': 'test_value'},
+            'audioRate': 16000,
+            'bidirectional': True,
+            'audioTransport': {
+                'transport': 'json',
+                'encoding': 'base64',
+                'audio_field': 'audio',
+                'receive_audio_field': 'audio',
+                'static_fields': {'foo': 'bar'},
+            },
+        },
+    }
+    assert actual == expected
+
+
+def test_audio_transport_configuration_model_with_json_transport_and_encoding_not_set():
+    with pytest.raises(ValidationError) as err:
+        config = AudioTransportConfiguration(transport=AudioTransportTransport.JSON)
+    assert "encoding must be specified when transport is JSON" in str(err.value)
 
 
 @responses.activate

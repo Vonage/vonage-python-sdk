@@ -3,6 +3,7 @@ from .audio_connector import (
     AudioConnectorData,
     AudioConnectorOptions,
     AudioConnectorWebSocket,
+    AudioTransportConfiguration,
 )
 from .broadcast import (
     Broadcast,
@@ -22,6 +23,8 @@ from .enums import (
     ArchiveMode,
     ArchiveStatus,
     AudioSampleRate,
+    AudioTransportEncoding,
+    AudioTransportTransport,
     ExperienceComposerStatus,
     LanguageCode,
     LayoutType,
@@ -48,6 +51,9 @@ __all__ = [
     "AudioConnectorData",
     "AudioConnectorOptions",
     "AudioConnectorWebSocket",
+    "AudioTransportConfiguration",
+    "AudioTransportEncoding",
+    "AudioTransportTransport",
     "Archive",
     "ListArchivesFilter",
     "Transcription",

@@ -9,7 +9,7 @@ dependencies = [
   "vonage-application>=2.0.2",
   "vonage-http-client>=1.5.2",
   "vonage-identity-insights>=1.0.0",
-  "vonage-messages>=1.7.1",
+  "vonage-messages>=1.8.0",
   "vonage-network-auth>=1.0.2",
   "vonage-network-sim-swap>=1.1.2",
   "vonage-network-number-verification>=1.0.2",
@@ -21,7 +21,7 @@ dependencies = [
   "vonage-utils>=1.1.4",
   "vonage-verify>=2.2.0",
   "vonage-verify-legacy>=1.1.0",
-  "vonage-video>=1.5.1",
+  "vonage-video>=1.6.0",
   "vonage-voice>=1.5.1",
 ]
 classifiers = [

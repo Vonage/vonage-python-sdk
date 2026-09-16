@@ -1,3 +1,7 @@
+# 4.9.0
+- Updates the Messages API package to add support for using a BSUID as the value of the `to` param when sending WhatsApp messages
+- Updates the Audio Connector implementation of Video API package to add configuration options for Audio Transport.
+
 # 4.8.2
 - Updates the Voice API `Phone` model to fix a type constraint bug
 

@@ -1,3 +1,6 @@
+# 1.8.0
+- Adds support for using a BSUID as the value of the `to` param when sending WhatsApp messages
+
 # 1.7.1
 - Adds validations to the `ttl` param for `sms`
 - Adds model validators for the conditional validations for `rcs` based on `card_orientation`

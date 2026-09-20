@@ -119,7 +119,7 @@ The Vonage class provides access to various Vonage APIs through its properties. 
 from vonage_sms import SmsMessage
 
 message = SmsMessage(to='1234567890', from_='Vonage', text='Hello World')
-response = client.sms.send(message)
+response = vonage.sms.send(message)
 print(response.model_dump_json(exclude_unset=True))
 ```
 

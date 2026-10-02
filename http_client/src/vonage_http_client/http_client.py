@@ -1,4 +1,3 @@
-from json import JSONDecodeError
 from logging import getLogger
 from platform import python_version
 from typing import Annotated, Literal, Optional, Union
@@ -6,7 +5,7 @@ from typing import Annotated, Literal, Optional, Union
 from pydantic import BaseModel, Field, ValidationError, validate_call
 from requests import PreparedRequest, Response
 from requests.adapters import HTTPAdapter
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError, JSONDecodeError
 from requests.sessions import Session
 from urllib3 import Retry
 from vonage_http_client.auth import Auth

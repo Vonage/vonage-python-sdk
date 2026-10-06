@@ -60,14 +60,31 @@ def test_create_sms_all_fields():
     assert sms_model.model_dump(by_alias=True) == sms_dict
 
 
+def test_create_sms_text_long_but_within_max_length():
+    sms_model = Sms(
+        to='1234567890',
+        from_='1234567890',
+        text='a' * 3200,
+    )
+    sms_dict = {
+        'to': '1234567890',
+        'from': '1234567890',
+        'text': 'a' * 3200,
+        'channel': 'sms',
+        'message_type': 'text',
+    }
+
+    assert sms_model.model_dump(by_alias=True, exclude_none=True) == sms_dict
+
+
 def test_create_sms_text_too_long():
     with pytest.raises(ValidationError) as err:
         Sms(
             to='1234567890',
             from_='1234567890',
-            text='a' * 1001,
+            text='a' * 3201,
         )
-    assert 'String should have at most 1000 characters' in str(err.value)
+    assert 'String should have at most 3200 characters' in str(err.value)
 
 
 def test_create_sms_with_invalid_encoding_type():

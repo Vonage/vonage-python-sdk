@@ -4,7 +4,7 @@ from os.path import abspath, dirname, join
 from unittest.mock import patch
 
 import responses
-from pytest import raises
+from pytest import mark, raises
 from requests import PreparedRequest, Response, Session
 from requests.exceptions import ConnectionError
 from responses import matchers
@@ -86,9 +86,12 @@ def test_make_get_request_and_last_request_and_response():
     assert client.last_response.headers == {'Content-Type': 'application/json'}
 
 
+@mark.parametrize('status_code, body', [(204, ''), (200, ''), (200, 'not json')])
 @responses.activate
-def test_make_get_request_no_content():
-    build_response(path, 'GET', 'https://example.com/get_json', status_code=204)
+def test_make_get_request_no_content(status_code, body):
+    responses.add(
+        responses.GET, 'https://example.com/get_json', status=status_code, body=body
+    )
     client = HttpClient(
         Auth('asdfqwer', 'asdfqwer1234'),
         http_client_options={'api_host': 'example.com'},

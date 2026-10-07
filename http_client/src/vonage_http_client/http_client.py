@@ -264,12 +264,12 @@ class HttpClient:
         request_params = {
             'method': request_type,
             'url': url,
-            'headers': self._headers,
+            'headers': self._headers.copy(),
             'timeout': self._timeout,
         }
 
         if sent_data_type == 'json':
-            self._headers['Content-Type'] = 'application/json'
+            request_params['headers']['Content-Type'] = 'application/json'
             request_params['json'] = params
         elif sent_data_type == 'query_params':
             request_params['params'] = params

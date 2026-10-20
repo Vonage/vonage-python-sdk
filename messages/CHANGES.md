@@ -1,3 +1,6 @@
+# 1.8.1
+- Fixes the incorrect `max_length` constraint of the `text` field in the `Sms` model
+
 # 1.8.0
 - Adds support for using a BSUID as the value of the `to` param when sending WhatsApp messages
 

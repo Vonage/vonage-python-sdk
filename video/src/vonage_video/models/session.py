@@ -30,7 +30,7 @@ class SessionOptions(BaseModel):
         if self.media_mode == MediaMode.ROUTED:
             self.p2p_preference = P2pPreference.DISABLED
         if self.media_mode == MediaMode.RELAYED:
-            self.p2p_preference = P2pPreference.ALWAYS
+            self.p2p_preference = P2pPreference.ENABLED
         return self
 
     @model_validator(mode='after')

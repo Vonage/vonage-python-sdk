@@ -2,7 +2,7 @@ from os.path import abspath
 
 import responses
 from vonage_http_client import HttpClient
-from vonage_video.models.enums import ArchiveMode, MediaMode
+from vonage_video.models.enums import ArchiveMode, MediaMode, P2pPreference
 from vonage_video.models.session import SessionOptions
 from vonage_video.video import Video
 
@@ -36,6 +36,14 @@ def test_session_options_model_set_params():
     )
 
     assert session_options.p2p_preference == 'always'
+
+
+def test_session_options_model_legacy_p2p_preference():
+    session_options = SessionOptions(
+        p2p_preference=P2pPreference.ALWAYS,
+    )
+
+    assert session_options.p2p_preference == 'enabled'
 
 
 @responses.activate

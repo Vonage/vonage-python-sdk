@@ -35,7 +35,7 @@ def test_session_options_model_set_params():
         e2ee=True,
     )
 
-    assert session_options.p2p_preference == 'always'
+    assert session_options.p2p_preference == 'enabled'
 
 
 def test_session_options_model_legacy_p2p_preference():

@@ -29,7 +29,8 @@ class P2pPreference(str, Enum):
     """The preference for peer-to-peer connections."""
 
     DISABLED = 'disabled'
-    ALWAYS = 'always'
+    ENABLED = 'enabled'
+    ALWAYS = 'enabled'  # Legacy value. Keeping for backward compatibility in case anyone is manually setting p2p_preference
 
 
 class LanguageCode(str, Enum):

@@ -1,3 +1,6 @@
+# 1.6.1
+- Fixes a bug with P2P preference setting when creating a video session.
+
 # 1.6.0
 - Updates the Audio Connector implementation to add configuration options for Audio Transport.
 

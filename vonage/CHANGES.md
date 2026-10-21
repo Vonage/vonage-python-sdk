@@ -1,3 +1,7 @@
+# 4.9.1
+- Updates the Messages API package to fix the incorrect `max_length` constraint of the `text` field in the `Sms` model
+- Updates the Video API package to fix a bug with P2P preference setting when creating a video session.
+
 # 4.9.0
 - Updates the Messages API package to add support for using a BSUID as the value of the `to` param when sending WhatsApp messages
 - Updates the Audio Connector implementation of Video API package to add configuration options for Audio Transport.

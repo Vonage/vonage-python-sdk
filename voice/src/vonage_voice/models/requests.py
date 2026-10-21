@@ -49,6 +49,7 @@ class CreateCallRequest(BaseModel):
             hangs up after the call state changes to "answered".
         ringing_timer (Optional[int]): Set the number of seconds that elapse before Vonage
             hangs up after the call state changes to `ringing`.
+        return_cps_on_started (Optional[bool]): Whether to return the CPS data when starting a call.
 
     Raises:
         VoiceError: If neither `ncco` nor `answer_url` is set.

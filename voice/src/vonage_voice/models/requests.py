@@ -69,6 +69,7 @@ class CreateCallRequest(BaseModel):
     advanced_machine_detection: Optional[AdvancedMachineDetection] = None
     length_timer: Optional[int] = Field(None, ge=1, le=86400)
     ringing_timer: Optional[int] = Field(None, ge=1, le=120)
+    return_cps_on_started: Optional[bool] = None
 
     @model_validator(mode='after')
     def validate_ncco_and_answer_url(self):

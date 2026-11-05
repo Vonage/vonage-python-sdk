@@ -3,18 +3,17 @@ from pydantic import ValidationError
 from vonage_messages.models import (
     EmailAdditionalRecipient,
     EmailContent,
+    EmailContentItemHtml,
+    EmailContentItemText,
     EmailHtml,
     EmailHtmlContent,
     EmailOptions,
     EmailText,
-    EmailContentItemText,
-    EmailContentItemHtml,
 )
 from vonage_messages.models.enums import (
     EmailImportance,
     EmailPriority,
     EmailSensitivity,
-    EmailContentItemType,
     WebhookVersion,
 )
 
@@ -211,7 +210,8 @@ def test_create_email_content_item_text():
     }
 
     assert (
-        email_content_element.model_dump(by_alias=True, exclude_none=True) == email_content_element_dict
+        email_content_element.model_dump(by_alias=True, exclude_none=True)
+        == email_content_element_dict
     )
 
 
@@ -232,7 +232,8 @@ def test_create_email_content_item_html():
     }
 
     assert (
-        email_content_element.model_dump(by_alias=True, exclude_none=True) == email_content_element_dict
+        email_content_element.model_dump(by_alias=True, exclude_none=True)
+        == email_content_element_dict
     )
 
 

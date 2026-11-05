@@ -3,7 +3,14 @@ from typing import Optional, Union
 from pydantic import BaseModel, Field
 
 from .base_message import BaseMessage
-from .enums import ChannelType, MessageType, EmailImportance, EmailPriority, EmailSensitivity, EmailContentItemType, WebhookVersion
+from .enums import (
+    ChannelType,
+    EmailContentItemType,
+    EmailImportance,
+    EmailPriority,
+    EmailSensitivity,
+    MessageType,
+)
 
 
 class EmailAdditionalRecipient(BaseModel):
@@ -130,6 +137,7 @@ class EmailContentItemHtml(BaseModel):
         EmailContentItemType.HTML, serialization_alias='type'
     )
     body: str
+
 
 class EmailContent(BaseEmail):
     """Model for an email message with content that can be of various types.

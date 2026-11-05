@@ -1,33 +1,33 @@
 import pytest
 from pydantic import ValidationError
 from vonage_messages.models import (
-    EmailText,
-    EmailHtml,
+    EmailAdditionalRecipient,
     EmailContent,
+    EmailHtml,
     EmailHtmlItem,
     EmailOptions,
-    EmailAdditionalRecipient,
+    EmailText,
 )
-from vonage_messages.models.enums import WebhookVersion, EmailImportance, EmailPriority, EmailSensitivity
+from vonage_messages.models.enums import (
+    EmailImportance,
+    EmailPriority,
+    EmailSensitivity,
+    WebhookVersion,
+)
+
 
 def test_create_email_additional_recipient():
     additional_recipient = EmailAdditionalRecipient(
-        address='john.doe@example.com',
-        name='John Doe'
+        address='john.doe@example.com', name='John Doe'
     )
-    additional_recipient_dict = {
-        'address': 'john.doe@example.com',
-        'name': 'John Doe'
-    }
+    additional_recipient_dict = {'address': 'john.doe@example.com', 'name': 'John Doe'}
 
     assert additional_recipient.model_dump(exclude_none=True) == additional_recipient_dict
 
 
 def test_create_email_additional_recipient_without_address():
     with pytest.raises(ValidationError) as err:
-        additional_recipient = EmailAdditionalRecipient(
-            name='John Doe'
-        )
+        additional_recipient = EmailAdditionalRecipient(name='John Doe')
 
     assert "Field required" in str(err.value)
 
@@ -51,14 +51,8 @@ def test_create_email_options_all_fields():
         importance=EmailImportance.HIGH,
         priority=EmailPriority.NORMAL,
         sensitivity=EmailSensitivity.PRIVATE,
-        cc=[EmailAdditionalRecipient(
-            address='john.doe@example.com',
-            name='John Doe'
-        )],
-        bcc=[EmailAdditionalRecipient(
-            address='jane.doe@example.com',
-            name='Jane Doe'
-        )],
+        cc=[EmailAdditionalRecipient(address='john.doe@example.com', name='John Doe')],
+        bcc=[EmailAdditionalRecipient(address='jane.doe@example.com', name='Jane Doe')],
         reply_to='no-reply@my-domain.com',
     )
     email_options_dict = {
@@ -68,18 +62,8 @@ def test_create_email_options_all_fields():
         'importance': 'high',
         'priority': 'normal',
         'sensitivity': 'private',
-        'cc': [
-            {
-                'address': 'john.doe@example.com',
-                'name': 'John Doe'
-            }
-        ],
-        'bcc': [
-            {
-                'address': 'jane.doe@example.com',
-                'name': 'Jane Doe'
-            }
-        ],
+        'cc': [{'address': 'john.doe@example.com', 'name': 'John Doe'}],
+        'bcc': [{'address': 'jane.doe@example.com', 'name': 'Jane Doe'}],
         'reply_to': 'no-reply@my-domain.com',
     }
 
@@ -101,9 +85,7 @@ def test_create_email_text():
         to='john.doe@example.com',
         from_='no-reply@my-domain.com',
         text='Hello, world!',
-        email=EmailOptions(
-            subject='Hello'
-        ),
+        email=EmailOptions(subject='Hello'),
     )
     email_text_dict = {
         'to': 'john.doe@example.com',
@@ -111,12 +93,12 @@ def test_create_email_text():
         'text': 'Hello, world!',
         'channel': 'email',
         'message_type': 'text',
-        'email': {
-            'subject': 'Hello'
-        },
+        'email': {'subject': 'Hello'},
     }
 
-    assert email_text_model.model_dump(by_alias=True, exclude_none=True) == email_text_dict
+    assert (
+        email_text_model.model_dump(by_alias=True, exclude_none=True) == email_text_dict
+    )
 
 
 def test_create_email_text_all_fields():
@@ -124,9 +106,7 @@ def test_create_email_text_all_fields():
         to='john.doe@example.com',
         from_='no-reply@my-domain.com',
         text='Hello, world!',
-        email=EmailOptions(
-            subject='Hello'
-        ),
+        email=EmailOptions(subject='Hello'),
         client_ref='client-ref',
         webhook_url='https://example.com',
         webhook_version=WebhookVersion.V1,
@@ -137,15 +117,15 @@ def test_create_email_text_all_fields():
         'text': 'Hello, world!',
         'channel': 'email',
         'message_type': 'text',
-        'email': {
-            'subject': 'Hello'
-        },
+        'email': {'subject': 'Hello'},
         'client_ref': 'client-ref',
         'webhook_url': 'https://example.com',
-        'webhook_version': 'v1'
+        'webhook_version': 'v1',
     }
 
-    assert email_text_model.model_dump(by_alias=True, exclude_none=True) == email_text_dict
+    assert (
+        email_text_model.model_dump(by_alias=True, exclude_none=True) == email_text_dict
+    )
 
 
 def test_create_email_html_item():
@@ -173,24 +153,20 @@ def test_create_email_html():
         html=EmailHtmlItem(
             body='<p>Hello, world!</p>',
         ),
-        email=EmailOptions(
-            subject='Hello'
-        ),
+        email=EmailOptions(subject='Hello'),
     )
     email_html_dict = {
         'to': 'john.doe@example.com',
         'from': 'no-reply@my-domain.com',
-        'html': {
-            'body': '<p>Hello, world!</p>'
-        },
+        'html': {'body': '<p>Hello, world!</p>'},
         'channel': 'email',
         'message_type': 'html',
-        'email': {
-            'subject': 'Hello'
-        },
+        'email': {'subject': 'Hello'},
     }
 
-    assert email_html_model.model_dump(by_alias=True, exclude_none=True) == email_html_dict
+    assert (
+        email_html_model.model_dump(by_alias=True, exclude_none=True) == email_html_dict
+    )
 
 
 def test_create_email_html_all_fields():
@@ -200,9 +176,7 @@ def test_create_email_html_all_fields():
         html=EmailHtmlItem(
             body='<p>Hello, world!</p>',
         ),
-        email=EmailOptions(
-            subject='Hello'
-        ),
+        email=EmailOptions(subject='Hello'),
         client_ref='client-ref',
         webhook_url='https://example.com',
         webhook_version=WebhookVersion.V1,
@@ -210,20 +184,18 @@ def test_create_email_html_all_fields():
     email_html_dict = {
         'to': 'john.doe@example.com',
         'from': 'no-reply@my-domain.com',
-        'html': {
-            'body': '<p>Hello, world!</p>'
-        },
+        'html': {'body': '<p>Hello, world!</p>'},
         'channel': 'email',
         'message_type': 'html',
-        'email': {
-            'subject': 'Hello'
-        },
+        'email': {'subject': 'Hello'},
         'client_ref': 'client-ref',
         'webhook_url': 'https://example.com',
-        'webhook_version': 'v1'
+        'webhook_version': 'v1',
     }
 
-    assert email_html_model.model_dump(by_alias=True, exclude_none=True) == email_html_dict
+    assert (
+        email_html_model.model_dump(by_alias=True, exclude_none=True) == email_html_dict
+    )
 
 
 def test_create_email_content_element_text():
@@ -236,7 +208,9 @@ def test_create_email_content_element_text():
         'text': 'Hello, world!',
     }
 
-    assert email_content_element.model_dump(exclude_none=True) == email_content_element_dict
+    assert (
+        email_content_element.model_dump(exclude_none=True) == email_content_element_dict
+    )
 
 
 def test_create_email_content_element_text_without_type():
@@ -267,7 +241,9 @@ def test_create_email_content_element_html():
         'body': '<p>Hello, world!</p>',
     }
 
-    assert email_content_element.model_dump(exclude_none=True) == email_content_element_dict
+    assert (
+        email_content_element.model_dump(exclude_none=True) == email_content_element_dict
+    )
 
 
 def test_create_email_content_element_html_without_type():
@@ -292,48 +268,30 @@ def test_create_email_content():
     email_content_model = EmailContent(
         to='john.doe@example.com',
         from_='no-reply@my-domain.com',
-        content=[
-            EmailContentElementText(
-                type='text',
-                text='Hello, world!'
-            )
-        ],
-        email=EmailOptions(
-            subject='Hello'
-        ),
+        content=[EmailContentElementText(type='text', text='Hello, world!')],
+        email=EmailOptions(subject='Hello'),
     )
     email_content_dict = {
         'to': 'john.doe@example.com',
         'from': 'no-reply@my-domain.com',
-        'content': [
-            {
-                'type': 'text',
-                'text': 'Hello, world!'
-            }
-        ],
+        'content': [{'type': 'text', 'text': 'Hello, world!'}],
         'channel': 'email',
         'message_type': 'html',
-        'email': {
-            'subject': 'Hello'
-        },
+        'email': {'subject': 'Hello'},
     }
 
-    assert email_content_model.model_dump(by_alias=True, exclude_none=True) == email_content_dict
+    assert (
+        email_content_model.model_dump(by_alias=True, exclude_none=True)
+        == email_content_dict
+    )
 
 
 def test_create_email_content_all_fields():
     email_content_model = EmailContent(
         to='john.doe@example.com',
         from_='no-reply@my-domain.com',
-        content=[
-            EmailContentElementText(
-                type='text',
-                text='Hello, world!'
-            )
-        ],
-        email=EmailOptions(
-            subject='Hello'
-        ),
+        content=[EmailContentElementText(type='text', text='Hello, world!')],
+        email=EmailOptions(subject='Hello'),
         client_ref='client-ref',
         webhook_url='https://example.com',
         webhook_version=WebhookVersion.V1,
@@ -341,23 +299,19 @@ def test_create_email_content_all_fields():
     email_content_dict = {
         'to': 'john.doe@example.com',
         'from': 'no-reply@my-domain.com',
-        'content': [
-            {
-                'type': 'text',
-                'text': 'Hello, world!'
-            }
-        ],
+        'content': [{'type': 'text', 'text': 'Hello, world!'}],
         'channel': 'email',
         'message_type': 'html',
-        'email': {
-            'subject': 'Hello'
-        },
+        'email': {'subject': 'Hello'},
         'client_ref': 'client-ref',
         'webhook_url': 'https://example.com',
         'webhook_version': 'v1',
     }
 
-    assert email_content_model.model_dump(by_alias=True, exclude_none=True) == email_content_dict
+    assert (
+        email_content_model.model_dump(by_alias=True, exclude_none=True)
+        == email_content_dict
+    )
 
 
 def test_create_email_content_all_content_types():
@@ -365,40 +319,27 @@ def test_create_email_content_all_content_types():
         to='john.doe@example.com',
         from_='no-reply@my-domain.com',
         content=[
-            EmailContentElementText(
-                type='text',
-                text='Hello, world!'
-            ),
-            EmailContentElementHtml(
-                type='html',
-                html='<p>Hello, world!</p>'
-            )
+            EmailContentElementText(type='text', text='Hello, world!'),
+            EmailContentElementHtml(type='html', html='<p>Hello, world!</p>'),
         ],
-        email=EmailOptions(
-            subject='Hello'
-        ),
+        email=EmailOptions(subject='Hello'),
     )
     email_content_dict = {
         'to': 'john.doe@example.com',
         'from': 'no-reply@my-domain.com',
         'content': [
-            {
-                'type': 'text',
-                'text': 'Hello, world!'
-            },
-            {
-                'type': 'html',
-                'html': '<p>Hello, world!</p>'
-            }
+            {'type': 'text', 'text': 'Hello, world!'},
+            {'type': 'html', 'html': '<p>Hello, world!</p>'},
         ],
         'channel': 'email',
         'message_type': 'html',
-        'email': {
-            'subject': 'Hello'
-        },
+        'email': {'subject': 'Hello'},
     }
 
-    assert email_content_model.model_dump(by_alias=True, exclude_none=True) == email_content_dict
+    assert (
+        email_content_model.model_dump(by_alias=True, exclude_none=True)
+        == email_content_dict
+    )
 
 
 def test_create_email_content_with_invalid_content_item():
@@ -411,9 +352,7 @@ def test_create_email_content_with_invalid_content_item():
                     body='<p>Hello, world!</p>',
                 )
             ],
-            email=EmailOptions(
-                subject='Hello'
-            ),
+            email=EmailOptions(subject='Hello'),
         )
 
     assert "Input should be a valid dictionary or instance" in str(err.value)

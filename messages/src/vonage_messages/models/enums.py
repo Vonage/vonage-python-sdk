@@ -16,6 +16,7 @@ class MessageType(str, Enum):
     CARD = 'card'
     CAROUSEL = 'carousel'
     CONTENT = 'content'
+    HTML = 'html'
 
 
 class ChannelType(str, Enum):
@@ -27,6 +28,7 @@ class ChannelType(str, Enum):
     WHATSAPP = 'whatsapp'
     MESSENGER = 'messenger'
     VIBER = 'viber_service'
+    EMAIL = 'email'
 
 
 class WebhookVersion(str, Enum):
@@ -115,3 +117,34 @@ class ReplyingIndicatorType(str, Enum):
     """The type of a WhatsApp replying indicator."""
 
     TEXT = 'text'
+
+
+class EmailImportance(str, Enum):
+    """The importance of an email message."""
+
+    HIGH = 'high'
+    NORMAL = 'normal'
+    LOW = 'low'
+
+
+class EmailPriority(str, Enum):
+    """The priority of an email message."""
+
+    URGENT = 'urgent'
+    NORMAL = 'normal'
+    NON_URGENT = 'non-urgent'
+
+
+class EmailSensitivity(str, Enum):
+    """The sensitivity of an email message."""
+
+    PERSONAL = 'personal'
+    PRIVATE = 'private'
+    COMPANY_CONFIDENTIAL = 'company-confidential'
+
+
+class EmailContentItemType(str, Enum):
+    """The type of a content item in an email content message."""
+
+    TEXT = 'text'
+    HTML = 'html'

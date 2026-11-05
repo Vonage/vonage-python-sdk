@@ -4,14 +4,17 @@ from vonage_messages.models import (
     EmailAdditionalRecipient,
     EmailContent,
     EmailHtml,
-    EmailHtmlItem,
+    EmailHtmlContent,
     EmailOptions,
     EmailText,
+    EmailContentItemText,
+    EmailContentItemHtml,
 )
 from vonage_messages.models.enums import (
     EmailImportance,
     EmailPriority,
     EmailSensitivity,
+    EmailContentItemType,
     WebhookVersion,
 )
 
@@ -128,20 +131,20 @@ def test_create_email_text_all_fields():
     )
 
 
-def test_create_email_html_item():
-    email_html_item = EmailHtmlItem(
+def test_create_email_html_content():
+    email_html_content = EmailHtmlContent(
         body='<p>Hello, world!</p>',
     )
-    email_html_item_dict = {
+    email_html_content_dict = {
         'body': '<p>Hello, world!</p>',
     }
 
-    assert email_html_item.model_dump(exclude_none=True) == email_html_item_dict
+    assert email_html_content.model_dump(exclude_none=True) == email_html_content_dict
 
 
-def test_create_email_html_item_without_body():
+def test_create_email_html_content_without_body():
     with pytest.raises(ValidationError) as err:
-        email_html_item = EmailHtmlItem()
+        email_html_content = EmailHtmlContent()
 
     assert "Field required" in str(err.value)
 
@@ -150,7 +153,7 @@ def test_create_email_html():
     email_html_model = EmailHtml(
         to='john.doe@example.com',
         from_='no-reply@my-domain.com',
-        html=EmailHtmlItem(
+        html=EmailHtmlContent(
             body='<p>Hello, world!</p>',
         ),
         email=EmailOptions(subject='Hello'),
@@ -173,7 +176,7 @@ def test_create_email_html_all_fields():
     email_html_model = EmailHtml(
         to='john.doe@example.com',
         from_='no-reply@my-domain.com',
-        html=EmailHtmlItem(
+        html=EmailHtmlContent(
             body='<p>Hello, world!</p>',
         ),
         email=EmailOptions(subject='Hello'),
@@ -198,9 +201,8 @@ def test_create_email_html_all_fields():
     )
 
 
-def test_create_email_content_element_text():
-    email_content_element = EmailContentElementText(
-        type='text',
+def test_create_email_content_item_text():
+    email_content_element = EmailContentItemText(
         text='Hello, world!',
     )
     email_content_element_dict = {
@@ -209,31 +211,19 @@ def test_create_email_content_element_text():
     }
 
     assert (
-        email_content_element.model_dump(exclude_none=True) == email_content_element_dict
+        email_content_element.model_dump(by_alias=True, exclude_none=True) == email_content_element_dict
     )
 
 
-def test_create_email_content_element_text_without_type():
+def test_create_email_content_item_text_without_text():
     with pytest.raises(ValidationError) as err:
-        email_content_element = EmailContentElementText(
-            text='Hello, world!',
-        )
+        email_content_element = EmailContentItemText()
 
     assert "Field required" in str(err.value)
 
 
-def test_create_email_content_element_text_without_text():
-    with pytest.raises(ValidationError) as err:
-        email_content_element = EmailContentElementText(
-            type='text',
-        )
-
-    assert "Field required" in str(err.value)
-
-
-def test_create_email_content_element_html():
-    email_content_element = EmailContentElementHtml(
-        type='html',
+def test_create_email_content_item_html():
+    email_content_element = EmailContentItemHtml(
         body='<p>Hello, world!</p>',
     )
     email_content_element_dict = {
@@ -242,24 +232,13 @@ def test_create_email_content_element_html():
     }
 
     assert (
-        email_content_element.model_dump(exclude_none=True) == email_content_element_dict
+        email_content_element.model_dump(by_alias=True, exclude_none=True) == email_content_element_dict
     )
 
 
-def test_create_email_content_element_html_without_type():
+def test_create_email_content_item_html_without_body():
     with pytest.raises(ValidationError) as err:
-        email_content_element = EmailContentElementHtml(
-            body='<p>Hello, world!</p>',
-        )
-
-    assert "Field required" in str(err.value)
-
-
-def test_create_email_content_element_html_without_body():
-    with pytest.raises(ValidationError) as err:
-        email_content_element = EmailContentElementHtml(
-            type='html',
-        )
+        email_content_element = EmailContentItemHtml()
 
     assert "Field required" in str(err.value)
 
@@ -268,7 +247,7 @@ def test_create_email_content():
     email_content_model = EmailContent(
         to='john.doe@example.com',
         from_='no-reply@my-domain.com',
-        content=[EmailContentElementText(type='text', text='Hello, world!')],
+        content=[EmailContentItemText(text='Hello, world!')],
         email=EmailOptions(subject='Hello'),
     )
     email_content_dict = {
@@ -276,7 +255,7 @@ def test_create_email_content():
         'from': 'no-reply@my-domain.com',
         'content': [{'type': 'text', 'text': 'Hello, world!'}],
         'channel': 'email',
-        'message_type': 'html',
+        'message_type': 'content',
         'email': {'subject': 'Hello'},
     }
 
@@ -290,7 +269,7 @@ def test_create_email_content_all_fields():
     email_content_model = EmailContent(
         to='john.doe@example.com',
         from_='no-reply@my-domain.com',
-        content=[EmailContentElementText(type='text', text='Hello, world!')],
+        content=[EmailContentItemText(text='Hello, world!')],
         email=EmailOptions(subject='Hello'),
         client_ref='client-ref',
         webhook_url='https://example.com',
@@ -301,7 +280,7 @@ def test_create_email_content_all_fields():
         'from': 'no-reply@my-domain.com',
         'content': [{'type': 'text', 'text': 'Hello, world!'}],
         'channel': 'email',
-        'message_type': 'html',
+        'message_type': 'content',
         'email': {'subject': 'Hello'},
         'client_ref': 'client-ref',
         'webhook_url': 'https://example.com',
@@ -319,8 +298,8 @@ def test_create_email_content_all_content_types():
         to='john.doe@example.com',
         from_='no-reply@my-domain.com',
         content=[
-            EmailContentElementText(type='text', text='Hello, world!'),
-            EmailContentElementHtml(type='html', html='<p>Hello, world!</p>'),
+            EmailContentItemText(text='Hello, world!'),
+            EmailContentItemHtml(body='<p>Hello, world!</p>'),
         ],
         email=EmailOptions(subject='Hello'),
     )
@@ -329,10 +308,10 @@ def test_create_email_content_all_content_types():
         'from': 'no-reply@my-domain.com',
         'content': [
             {'type': 'text', 'text': 'Hello, world!'},
-            {'type': 'html', 'html': '<p>Hello, world!</p>'},
+            {'type': 'html', 'body': '<p>Hello, world!</p>'},
         ],
         'channel': 'email',
-        'message_type': 'html',
+        'message_type': 'content',
         'email': {'subject': 'Hello'},
     }
 
@@ -348,7 +327,7 @@ def test_create_email_content_with_invalid_content_item():
             to='john.doe@example.com',
             from_='no-reply@my-domain.com',
             content=[
-                EmailHtmlItem(
+                EmailHtmlContent(
                     body='<p>Hello, world!</p>',
                 )
             ],

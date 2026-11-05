@@ -16,6 +16,7 @@ class MessageType(str, Enum):
     CARD = 'card'
     CAROUSEL = 'carousel'
     CONTENT = 'content'
+    HTML = 'html'
 
 
 class ChannelType(str, Enum):
@@ -27,6 +28,7 @@ class ChannelType(str, Enum):
     WHATSAPP = 'whatsapp'
     MESSENGER = 'messenger'
     VIBER = 'viber_service'
+    EMAIL = 'email'
 
 
 class WebhookVersion(str, Enum):
@@ -139,3 +141,10 @@ class EmailSensitivity(str, Enum):
     PERSONAL = 'personal'
     PRIVATE = 'private'
     COMPANY_CONFIDENTIAL = 'company-confidential'
+
+
+class EmailContentItemType(str, Enum):
+    """The type of a content item in an email content message."""
+
+    TEXT = 'text'
+    HTML = 'html'

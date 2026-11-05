@@ -1,6 +1,20 @@
 from .base_message import BaseMessage
+from .email import (
+    EmailAdditionalRecipient,
+    EmailContent,
+    EmailHtml,
+    EmailHtmlContent,
+    EmailOptions,
+    EmailText,
+    EmailContentItemText,
+    EmailContentItemHtml,
+)
 from .enums import (
     ChannelType,
+    EmailImportance,
+    EmailPriority,
+    EmailSensitivity,
+    EmailContentItemType,
     EncodingType,
     MessageType,
     MmsContentItemType,

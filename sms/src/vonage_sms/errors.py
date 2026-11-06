@@ -15,3 +15,7 @@ class PartialFailureError(SmsError):
         )
         super().__init__(self.message)
         self.response = response
+
+
+class SmsThrottleError(SmsError):
+    """Indicates that the SMS requests are being throttled due to too many requests in a short period."""

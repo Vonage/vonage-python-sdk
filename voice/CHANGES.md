@@ -1,3 +1,6 @@
+# 1.6.0
+- Adds support for the CPS tracking feature
+
 # 1.5.1
 - Updating the Voice API `Phone` model
 

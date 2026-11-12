@@ -1,3 +1,7 @@
+# 4.10.0
+- Adds support for the `email` channel to the Messages API package
+- Adds support for the CPS tracking feature to the Voice API package
+
 # 4.9.1
 - Updates the Messages API package to fix the incorrect `max_length` constraint of the `text` field in the `Sms` model
 - Updates the Video API package to fix a bug with P2P preference setting when creating a video session.

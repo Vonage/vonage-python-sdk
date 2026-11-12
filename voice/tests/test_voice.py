@@ -98,6 +98,7 @@ def test_create_call_ncco_options():
         machine_detection="hangup",
         length_timer=60,
         ringing_timer=30,
+        return_cps_on_started=True,
     )
     response = voice.create_call(call)
 

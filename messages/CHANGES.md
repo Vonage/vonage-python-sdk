@@ -1,3 +1,6 @@
+# 1.9.0
+- Adds support for the `email` channel
+
 # 1.8.1
 - Fixes the incorrect `max_length` constraint of the `text` field in the `Sms` model
 

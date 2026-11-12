@@ -9,7 +9,7 @@ dependencies = [
   "vonage-application>=2.0.2",
   "vonage-http-client>=1.5.2",
   "vonage-identity-insights>=1.0.0",
-  "vonage-messages>=1.8.1",
+  "vonage-messages>=1.9.0",
   "vonage-network-auth>=1.0.2",
   "vonage-network-sim-swap>=1.1.2",
   "vonage-network-number-verification>=1.0.2",
@@ -22,7 +22,7 @@ dependencies = [
   "vonage-verify>=2.2.0",
   "vonage-verify-legacy>=1.1.0",
   "vonage-video>=1.6.1",
-  "vonage-voice>=1.5.1",
+  "vonage-voice>=1.6.0",
 ]
 classifiers = [
   "Programming Language :: Python",

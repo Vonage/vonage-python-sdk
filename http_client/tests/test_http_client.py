@@ -4,7 +4,7 @@ from os.path import abspath, dirname, join
 from unittest.mock import patch
 
 import responses
-from pytest import raises
+from pytest import mark, raises
 from requests import PreparedRequest, Response, Session
 from requests.exceptions import ConnectionError
 from responses import matchers
@@ -113,6 +113,40 @@ def test_make_post_request():
     assert res['hello'] == 'world!'
 
     assert loads(responses.calls[0].request.body) == params
+
+
+@mark.parametrize('sent_data_type', ['form', 'query_params'])
+@responses.activate
+def test_json_content_type_does_not_leak_to_later_requests(sent_data_type):
+    responses.add(responses.POST, 'https://example.com/json', json={})
+    responses.add(responses.POST, 'https://example.com/next', json={})
+    client = HttpClient(Auth('test-key', 'test-secret'))
+
+    client.post(
+        host='example.com',
+        request_path='/json',
+        params={'value': 'first'},
+        auth_type='basic',
+    )
+    client.post(
+        host='example.com',
+        request_path='/next',
+        params={'value': 'second'},
+        auth_type='basic',
+        sent_data_type=sent_data_type,
+    )
+
+    assert responses.calls[0].request.headers['Content-Type'] == 'application/json'
+    second = responses.calls[1].request
+    if sent_data_type == 'form':
+        assert second.headers['Content-Type'] == 'application/x-www-form-urlencoded'
+        assert second.body == 'value=second'
+    else:
+        assert 'Content-Type' not in second.headers
+        assert second.url == 'https://example.com/next?value=second'
+    assert second.headers['User-Agent'] == client.user_agent
+    assert second.headers['Accept'] == 'application/json'
+    assert second.headers['Authorization'] == client.auth.create_basic_auth_string()
 
 
 @responses.activate
